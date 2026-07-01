@@ -91,9 +91,27 @@ ok('kill objective tracks partial progress (4/5 not complete)',
 q.onKill('training_rat');
 ok('kill objective completes at 5/5', statusOf('rats_in_the_storehouse') === 'complete');
 
+// --- Act 2: chained off Act 1 completions ------------------------------------
+// The Grubpit Problem requires rats_in_the_storehouse (just completed) → available.
+ok('Act 2 quest unlocks when its Act 1 prerequisite completes',
+  statusOf('the_grubpit_problem') === 'available');
+// A still-gated Act 2 quest (needs an Act 1 quest we haven't done) stays locked.
+ok('Act 2 quest still locked behind an unfinished Act 1 quest',
+  statusOf('grublake_fish_thieves') === 'locked');
+// Multi-objective kill quest: 8 cave bugs + 2 quarry imps.
+q.startQuest('the_grubpit_problem');
+for (let i = 0; i < 8; i++) q.onKill('cave_bug');
+ok('multi-objective quest not complete with only one objective met',
+  statusOf('the_grubpit_problem') === 'active');
+for (let i = 0; i < 2; i++) q.onKill('quarry_imp');
+ok('multi-objective quest completes when all objectives met',
+  statusOf('the_grubpit_problem') === 'complete');
+
 // --- progress view sanity ----------------------------------------------------
 const b = board();
-ok('board reports the right completed count', b.completedCount === 3, `${b.completedCount}/3`);
+ok('board reports the right completed count', b.completedCount === 4, `${b.completedCount}/4`);
+ok('board exposes both acts', q.allQuests().some(x => x.act === 2) && q.allQuests().length >= 11,
+  `${q.allQuests().length} quests`);
 
 // --- persistence roundtrip ---------------------------------------------------
 const saved = q.serializeQuests();

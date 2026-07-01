@@ -518,6 +518,7 @@
     #topbar { gap: 0; padding: 0 calc(6px + env(safe-area-inset-left)) 0 calc(6px + env(safe-area-inset-left));
       overflow-x: auto; overflow-y: hidden; white-space: nowrap; }
     #topbar::-webkit-scrollbar { display: none; }
+    #topbar > * { flex: 0 0 auto; } /* keep width so the bar scrolls, not squishes */
     #topbar .tb { padding: 0 11px; font-size: 13px; }
     #topbar #tb-name { font-size: 15px; padding: 0 8px; }
     #tb-tick { display: none; }
@@ -567,6 +568,10 @@
   @media (hover: none) and (pointer: coarse) {
     .skill-cell:hover { transform: none; box-shadow: var(--raise); }
     .inv-slot, .doll-slot { min-height: 44px; }
+    /* Stop the long-press text-selection callout from fighting our menu. */
+    .inv-slot, .doll-slot, .tab-btn, .ctx-item, button, #chatlog, #topbar {
+      -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+    #chat-input { -webkit-user-select: text; user-select: text; }
   }
 </style>
 </head>

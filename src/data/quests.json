@@ -77,5 +77,78 @@
       { "id": "cull_rats", "type": "kill", "target": "training_rat", "count": 5, "text": "Defeat 5 Training Rats" }
     ],
     "rewards": { "coins": 60, "xp": [{ "skill": "Strength", "amount": 200 }, { "skill": "Hitpoints", "amount": 80 }], "items": [] }
+  },
+
+  {
+    "id": "bridge_over_dumb_water",
+    "name": "Bridge Over Dumb Water",
+    "act": 2,
+    "giver": "Timber Row Foreman",
+    "autoStart": false,
+    "summary": "The river cuts the warren off from the willow lands, and a bandit's been squatting on the old crossing. Bring timber and nails to rebuild the West Bridge — and clear whoever's in the way.",
+    "requires": { "quests": ["first_pickaxe"], "level": { "skill": "Woodcutting", "level": 10 } },
+    "steps": [
+      { "id": "logs", "type": "obtain", "target": "normal_logs", "count": 10, "text": "Cut 10 Logs" },
+      { "id": "oak", "type": "obtain", "target": "oak_logs", "count": 5, "text": "Cut 5 Oak Logs" },
+      { "id": "nails", "type": "obtain", "target": "bronze_nails", "count": 3, "text": "Smith 3 Bronze Nails" },
+      { "id": "bandit", "type": "kill", "target": "bridge_bandit", "count": 1, "text": "Drive off the Bridge Bandit" }
+    ],
+    "rewards": { "coins": 120, "xp": [{ "skill": "Crafting", "amount": 400 }, { "skill": "Woodcutting", "amount": 250 }], "items": [] }
+  },
+  {
+    "id": "the_grubpit_problem",
+    "name": "The Grubpit Problem",
+    "act": 2,
+    "giver": "Miner Keeper",
+    "autoStart": false,
+    "summary": "The Grubpit Quarry is crawling with cave bugs and the miners refuse to go down. Thin them out so a goblin can swing a pickaxe in peace.",
+    "requires": { "quests": ["rats_in_the_storehouse"] },
+    "steps": [
+      { "id": "bugs", "type": "kill", "target": "cave_bug", "count": 8, "text": "Exterminate 8 Cave Bugs" },
+      { "id": "imp", "type": "kill", "target": "quarry_imp", "count": 2, "text": "Banish 2 Quarry Imps" }
+    ],
+    "rewards": { "coins": 150, "xp": [{ "skill": "Strength", "amount": 450 }, { "skill": "Defence", "amount": 200 }], "items": [] }
+  },
+  {
+    "id": "a_proper_goblin_axe",
+    "name": "A Proper Goblin Axe",
+    "act": 2,
+    "giver": "Weapon Shop Keeper",
+    "autoStart": false,
+    "summary": "A rusty hatchet is no way to fell a war. Smelt iron and forge yourself a proper Iron Battle-Axe — the smith won't do it for you, that's the point.",
+    "requires": { "quests": ["goblin_pointy_stick"], "level": { "skill": "Smithing", "level": 15 } },
+    "steps": [
+      { "id": "bars", "type": "obtain", "target": "iron_bar", "count": 3, "text": "Smelt 3 Iron Bars" },
+      { "id": "axe", "type": "obtain", "target": "iron_axe", "count": 1, "text": "Forge an Iron Battle-Axe" }
+    ],
+    "rewards": { "coins": 180, "xp": [{ "skill": "Smithing", "amount": 500 }, { "skill": "Attack", "amount": 300 }], "items": [] }
+  },
+  {
+    "id": "the_farmers_bad_smell",
+    "name": "The Farmer's Bad Smell",
+    "act": 2,
+    "giver": "Grocer Keeper",
+    "autoStart": false,
+    "summary": "Something's rotten in the farmlands — pests in the crops and a stink nobody will name. Cull the swarm and bring back onions; the Grocer insists the onions help. They do not.",
+    "requires": { "quests": ["cabbage_for_cowards"] },
+    "steps": [
+      { "id": "swarm", "type": "kill", "target": "crop_bug_swarm", "count": 4, "text": "Wipe out 4 Crop Bug Swarms" },
+      { "id": "onions", "type": "obtain", "target": "onion", "count": 5, "text": "Harvest 5 Onions" }
+    ],
+    "rewards": { "coins": 130, "xp": [{ "skill": "Cooking", "amount": 300 }, { "skill": "Hitpoints", "amount": 200 }], "items": [] }
+  },
+  {
+    "id": "grublake_fish_thieves",
+    "name": "Grublake Fish Thieves",
+    "act": 2,
+    "giver": "Fishmonger Keeper",
+    "autoStart": false,
+    "summary": "Someone's been raiding the Grublake nets. Catch the crazed fishers red-handed, and land a few honest trout while you're there to prove the lake still gives.",
+    "requires": { "quests": ["fish_for_chief"], "level": { "skill": "Fishing", "level": 10 } },
+    "steps": [
+      { "id": "fishers", "type": "kill", "target": "crazed_fisher_gob", "count": 6, "text": "Catch 6 Crazed Fisher-goblins" },
+      { "id": "trout", "type": "obtain", "target": "raw_trout", "count": 3, "text": "Land 3 Raw Trout" }
+    ],
+    "rewards": { "coins": 140, "xp": [{ "skill": "Fishing", "amount": 400 }, { "skill": "Strength", "amount": 200 }], "items": [] }
   }
 ]

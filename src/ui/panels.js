@@ -259,7 +259,11 @@ function buildLayout() {
     ['shop', 'Shop', '🏪'], ['bank', 'Bank', '🏦'],
   ];
   els.tabButtons = {};
+  // [economy lane] Exchange + Stations are opened from the WORLD (merchant /
+  // anvil), not a persistent tab — the views still exist, they just get no button.
+  const NO_BUTTON = new Set(['ge', 'stations']);
   for (const [id, label, icon] of tabs) {
+    if (NO_BUTTON.has(id)) continue;
     const b = document.createElement('button');
     b.className = 'tab-btn';
     b.title = label;
@@ -286,7 +290,7 @@ function switchTab(id) {
   hideTip();
   for (const key of Object.keys(els.views)) {
     els.views[key].style.display = key === id ? 'block' : 'none';
-    els.tabButtons[key].classList.toggle('active', key === id);
+    if (els.tabButtons[key]) els.tabButtons[key].classList.toggle('active', key === id);
   }
   Game.refresh();
 }
@@ -576,6 +580,9 @@ function exchangeMerchantInRange() {
 
 // Talking to the merchant jumps you to the Exchange tab (called from main.js).
 export function openExchange() { switchTab('ge'); }
+// [economy lane] Open the data-driven crafting UI for a specific station type,
+// triggered by clicking that station in the world (furnace/anvil/range/bench).
+export function openStation(stationType) { if (stationType) currentStation = stationType; switchTab('stations'); }
 
 export function renderGrandExchange() {
   const v = els.views.ge;

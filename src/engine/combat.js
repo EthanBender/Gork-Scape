@@ -69,9 +69,7 @@ export function weaponRange(weapon) {
 // max_attack_roll = (Attack_eff + 9) * (atk_bonus + 64)
 export function maxAttackRoll(profile) {
   const style = STYLES[profile.style] || STYLES.Aggressive;
-  const isRanged = profile.weaponType === 'ranged';
-  const lvl = isRanged ? profile.levels.ranged : profile.levels.attack;
-  const eff = lvl + style.atk;
+  const eff = attackLevel(profile) + style.atk;
   const { atkBonus } = offensiveBonuses(profile);
   return (eff + 9) * (atkBonus + 64);
 }

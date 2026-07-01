@@ -35,7 +35,7 @@ import { emptyBonuses, ITEMS } from './items/equipment.js';
 import { rollLoot } from './world/loot.js';
 import { randInt } from './engine/rng.js';
 import { placeTransports, boardTransport } from './systems/travel.js'; // [economy lane] fast travel (carts/portal)
-import { initPanels, showContextMenu, openExchange, openShop, openBank } from './ui/panels.js'; // openExchange/openShop/openBank [economy lane]
+import { initPanels, showContextMenu, openExchange, openShop, openBank, openStation } from './ui/panels.js'; // open* panels [economy lane]
 // [economy lane] — combat drops from the database drop tables. See COORDINATION.md.
 import { rollMonsterDrops } from './systems/drops.js';
 import { monsterIdForSpawn } from './data/worldContract.js';
@@ -1338,14 +1338,36 @@ function approach(o, key, target, maxStep) {
   else o[key] += Math.sign(d) * maxStep;
 }
 
+// ---- 2.5D relief -----------------------------------------------------------
+// The world ships a coherent elevation field (world.elevation, 0–255; baseline
+// ~80 = plains). We lift each tile's draw position by its height so mountains
+// rise, water sinks into valleys, and grassland gently rolls — then fill the
+// south-facing gap below any raised tile with a darker "side wall" so steps
+// (mountain fronts, cliff lips, lake banks) read as solid faces instead of
+// leaving seams. Painter order (north→south, front tiles drawn last) makes
+// raised tiles occlude what's behind them for free. Purely visual: collision,
+// pathing and hit-testing all stay on the flat grid.
+const ELEV_BASE = 80, ELEV_K = 0.34;
+function elevLift(elev, i) { return elev ? (elev[i] - ELEV_BASE) * ELEV_K : 0; }
+function shadeColor(c, f) { const r = (c >> 16) & 255, g = (c >> 8) & 255, b = c & 255; return ((Math.min(255, r * f) | 0) << 16) | ((Math.min(255, g * f) | 0) << 8) | (Math.min(255, b * f) | 0); }
+
 function drawTerrain() {
   const g = terrainGfx; g.clear();
   const v = viewRange();
-  const W = Game.world.W, ter = Game.world.terrain;
+  const W = Game.world.W, H = Game.world.H, ter = Game.world.terrain, elev = Game.world.elevation;
   for (let y = v.y0; y <= v.y1; y++) {
     for (let x = v.x0; x <= v.x1; x++) {
-      g.fillStyle(TERRAIN_DEFS[ter[y * W + x]].color, 1);
-      g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+      const i = y * W + x;
+      const color = TERRAIN_DEFS[ter[i]].color;
+      const lift = elevLift(elev, i);
+      const topY = y * TILE_SIZE - lift;
+      if (elev) {
+        const eSouth = (y < H - 1) ? elev[i + W] : elev[i];
+        const side = lift - (eSouth - ELEV_BASE) * ELEV_K; // px of front face exposed above the tile in front
+        if (side > 0.5) { g.fillStyle(shadeColor(color, 0.5), 1); g.fillRect(x * TILE_SIZE, topY + TILE_SIZE - 1, TILE_SIZE + 1, side + 2); }
+      }
+      g.fillStyle(color, 1);
+      g.fillRect(x * TILE_SIZE, topY, TILE_SIZE + 1, TILE_SIZE + 1);
     }
   }
 }
@@ -1353,8 +1375,9 @@ function drawTerrain() {
 function drawObjects() {
   const g = objectsGfx; g.clear();
   const v = viewRange();
+  const elevO = Game.world.elevation, Wo = Game.world.W;
   for (const o of objectsInView(Game.world, v.x0, v.y0, v.x1, v.y1)) {
-    const cx = o.x * TILE_SIZE, cy = o.y * TILE_SIZE;
+    const cx = o.x * TILE_SIZE, cy = o.y * TILE_SIZE - elevLift(elevO, o.y * Wo + o.x);
     if (o.type === 'decor') {
       g.fillStyle(o.color, 1);
       if (o.shape === 'circle') g.fillCircle(cx + 16, cy + 16, o.size);

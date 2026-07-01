@@ -306,6 +306,26 @@ Client-side until Phase 4; each phase keeps the player-freeze + world-continuity
   Rerouting would risk the legacy cook/smith branches; revisit with id migration.
 
 ## Change log
+- 2026-07-01 — Economy agent: **MOBILE / phone responsiveness pass (pre-public
+  launch).** The layout was desktop-only side-by-side; on a phone the game got
+  squeezed to a sliver. Added (all `index.html` CSS + `panels.js` touch JS, my
+  lane): (1) viewport meta — `viewport-fit=cover`, `maximum-scale=1`, web-app metas;
+  `100dvh` (+ `100vh` fallback) so the iOS URL bar doesn't clip; `overscroll-behavior:none`;
+  `touch-action:none` on the canvas. (2) `@media (max-width:720px)` **stacks** the
+  game over the tabbed panel (game flex 6 / panel flex 5), scrollable top bar
+  (hides dev Tick), finger-sized tabs/buttons (≥40–44px), 16px inputs (kills iOS
+  focus-zoom), overlays fit `dvh`/width, safe-area insets for the notch. HUD
+  buttons repositioned to top corners; `#cam-hint` (keyboard hints) hidden on
+  touch. (3) `@media (max-height:500px)` trims bars for landscape phones. (4)
+  coarse-pointer query kills hover-stick + text-callout. (5) **long-press → context
+  menu** (`bindLongPress` in panels.js, on inventory + equipment) so Drop/Examine/
+  Offer work without right-click. Validated: parse, CSS 303/303. **Could NOT live-
+  verify** (Chrome ext + preview both unavailable this session).
+  **⚠️ WORLD-GEN:** the make-or-break for phone play is **canvas touch input** —
+  tap-to-move, tap the minimap to travel, tap a monster/node to interact, and pinch/
+  drag for camera zoom (the Q/E/scroll keys don't exist on touch). That's your
+  `main.js` Phaser input lane — please confirm pointer/touch events drive movement
+  and add pinch-zoom, or the game won't be playable on a phone regardless of my UI.
 - 2026-07-01 — Economy agent: **RuneScape-style skill guide popup + inventory/
   equipment tidy.** Clicking any skill in the Skills tab now opens a modal listing
   every unlock for it by level from `level_unlocks.json` — ✓ available at your
