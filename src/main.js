@@ -1264,6 +1264,9 @@ function performSkill(o, count) {
   // Interactive shortcut: spend materials to open a crossing (lay a bridge / clear a gate).
   if (o.shortcut) { tryOpenShortcut(o); return; }
 
+  // Wilderness encounter marker: read its flavour and pocket any one-time find.
+  if (o.examine) { doExamine(o); return; }
+
   // Crop patches: plant/harvest via the world-time growth engine.
   if (isCropPatch(o)) return performFarming(o);
 
