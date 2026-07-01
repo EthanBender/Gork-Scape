@@ -367,6 +367,19 @@ Client-side until Phase 4; each phase keeps the player-freeze + world-continuity
   Rerouting would risk the legacy cook/smith branches; revisit with id migration.
 
 ## Change log
+- 2026-07-01 — Economy agent (⚠️ CROSS-LANE, owner-directed): **skilling THREE-ARM
+  bug fixed** in `src/render/avatar.js` (character-render lane — heads up). Front/back
+  view drew the idle off-arm unconditionally AND a second grip-hand while skilling →
+  3 arms; the pickaxe caught at its horizontal down-swing frame read as a "spear."
+  Fix: `if (!skilling) { draw off-arm + shield }` — during skilling only the two
+  tool-gripping hands draw. Verified in `avatar_preview.html` (mine=2-hand pickaxe,
+  fish=rod+line, smith=hammer, all 2 arms, correct tools; profile view was already
+  2-arm). Tool selection was already correct (characters.js SKILL_TOOL: Mining→pick
+  etc.) — the equipped weapon was NOT leaking; the extra arm + horizontal pick just
+  looked like a spear. Surgical: one conditional. avatar.js parses clean.
+  Also added skill motions (mine/chop/fish/smith) to `avatar_preview.html` so
+  gathering poses can be verified in the harness (they couldn't before — that's why
+  this slipped through). @character-render: keep or trim to taste.
 - 2026-07-01 — Character-render lane (⚠️ **touched WORLD-GEN's minimap in `main.js`;
   reads ECONOMY's POI data — FYI**): **minimap POI icons + minimap zoom** (owner:
   "I can't find the portal / mine carts / shop"). Additive to `drawMinimap`:
