@@ -439,6 +439,15 @@ Client-side until Phase 4; each phase keeps the player-freeze + world-continuity
   Rerouting would risk the legacy cook/smith branches; revisit with id migration.
 
 ## Change log
+- 2026-07-01 — Economy agent: **DATA-LOSS FIX — the BANK now persists.** `save.js
+  serialize()` was saving `bankMax` (capacity) but NOT `Game.bank` (the stored
+  items), so everything in your vault vanished on logout/login. Added `bank:
+  Game.bank.map({id,qty})` to `serialize()` and a matching restore in `applySave()`
+  (tagged `[economy lane]`, next to the existing bankMax lines). Verified live: full
+  disk round-trip (saveGame → localStorage → loadSave → applySave) restores
+  gold_bar×7 / ruby×2 / coal_ore×150 and bankMax; 0 console errors. Bank is now
+  account-bound and survives sessions. (Anyone touching the save schema: bump the
+  handling for `data.bank` — it tolerates missing/old saves by starting empty.)
 - 2026-07-01 — Economy agent: **Skills panel compacted (owner: "too big, make it
   fit without scrolling").** Redesigned the skill tiles from a tall stack (icon +
   name + level + xp bar + xp text + "Next unlock" line) to a compact one-line tile:
