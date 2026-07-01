@@ -128,7 +128,7 @@
       { "type": "kill", "target": "quarry_imp", "count": 2, "text": "Banish 2 Quarry Imps", "say": "The imps are tougher — mind yourself." },
       { "type": "talk", "target": "shopkeeper_miner_camp", "name": "Miner Camp Boss", "text": "Report to the Miner Camp Boss", "say": "Come back to the camp when the quarry's clear." }
     ],
-    "rewards": { "coins": 150, "xp": [ { "skill": "Strength", "amount": 450 }, { "skill": "Defence", "amount": 200 } ], "items": [] }
+    "rewards": { "coins": 150, "xp": [ { "skill": "Strength", "amount": 450 }, { "skill": "Defence", "amount": 200 } ], "items": [ { "id": "iron_legs" } ] }
   },
   {
     "id": "a_proper_goblin_axe",
@@ -144,7 +144,7 @@
       { "type": "obtain", "target": "iron_axe", "count": 1, "text": "Forge an Iron Battle-Axe", "say": "Take the bars to the anvil and hammer out the axe." },
       { "type": "talk", "target": "shopkeeper_weapon_shop", "name": "Weapon Shop Keeper", "text": "Show the axe to the Weapon Keeper", "say": "Bring it here so I can admire your handiwork." }
     ],
-    "rewards": { "coins": 180, "xp": [ { "skill": "Smithing", "amount": 500 }, { "skill": "Attack", "amount": 300 } ], "items": [] }
+    "rewards": { "coins": 180, "xp": [ { "skill": "Smithing", "amount": 500 }, { "skill": "Attack", "amount": 300 } ], "items": [ { "id": "iron_shield" } ] }
   },
   {
     "id": "the_farmers_bad_smell",
@@ -161,7 +161,7 @@
       { "type": "obtain", "target": "onion", "count": 5, "text": "Harvest 5 Onions", "say": "Pull onions from the farm patches while you're there." },
       { "type": "talk", "target": "shopkeeper_farming_shed", "name": "Farmhand", "text": "Bring it all back to the Farmhand", "say": "Carry the onions up to the shed at Greengate." }
     ],
-    "rewards": { "coins": 130, "xp": [ { "skill": "Cooking", "amount": 300 }, { "skill": "Hitpoints", "amount": 200 } ], "items": [] }
+    "rewards": { "coins": 130, "xp": [ { "skill": "Cooking", "amount": 300 }, { "skill": "Hitpoints", "amount": 200 } ], "items": [], "bankSpace": 10 }
   },
   {
     "id": "grublake_fish_thieves",
@@ -178,6 +178,6 @@
       { "type": "obtain", "target": "raw_trout", "count": 3, "text": "Land 3 Raw Trout", "say": "Fish the lake spots for trout while you're here." },
       { "type": "talk", "target": "shopkeeper_fishmonger", "name": "Fishmonger", "text": "Return to the Fishmonger", "say": "Bring the trout back to my Wharf." }
     ],
-    "rewards": { "coins": 140, "xp": [ { "skill": "Fishing", "amount": 400 }, { "skill": "Strength", "amount": 200 } ], "items": [] }
+    "rewards": { "coins": 140, "xp": [ { "skill": "Fishing", "amount": 400 }, { "skill": "Strength", "amount": 200 } ], "items": [ { "id": "iron_body" } ] }
   }
 ]

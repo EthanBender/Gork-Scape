@@ -434,7 +434,13 @@ function rewardSummary(r) {
   const bits = [];
   if (r.coins) bits.push(`${r.coins} coins`);
   if (Array.isArray(r.xp)) for (const x of r.xp) bits.push(`${x.amount} ${x.skill} xp`);
-  if (Array.isArray(r.items)) for (const it of r.items) bits.push(`${it.qty || 1}× ${it.id}`);
+  if (Array.isArray(r.items)) for (const it of r.items) {
+    const def = GameData.item(it.id);
+    const name = (def && def.display_name) || it.id;
+    bits.push(`${it.qty && it.qty > 1 ? it.qty + '× ' : ''}${name}`);
+  }
+  if (r.bankSpace) bits.push(`+${r.bankSpace} bank slots`);
+  if (r.openShortcut) bits.push('opens a shortcut');
   return bits.join(' · ');
 }
 function questCard(q, opts = {}) {

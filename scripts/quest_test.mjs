@@ -102,6 +102,28 @@ q.onKill('training_rat');
 q.onTalk('shopkeeper_general_store');
 ok('kill quest completes + turns in', statusOf('rats_in_the_storehouse') === 'complete');
 
+// --- reward payoffs: gear + bank space (from Rats in the Storehouse) ----------
+ok('quest reward grew bank space (bankMax += 10)', Game.bankMax >= 130, `bankMax=${Game.bankMax}`);
+ok('quest reward granted gear into the inventory',
+  Game.inventory.some((s) => s && s.id === 'bronze_body'));
+
+// --- reward payoff: openShortcut calls the world hook -------------------------
+// The Bridge quest grants openShortcut:'west_bridge'. Mock the world hook main.js
+// would install, then drive the quest to completion and assert it fired.
+Game.grantShortcut = (id) => { Game.__sc = id; return true; };
+grantXp('Woodcutting', 2000);           // reach the Woodcutting 10 prereq
+q.refreshAvailability();
+q.onTalk('shopkeeper_lumber_stall');    // start Bridge Over Dumb Water
+for (let i = 0; i < 10; i++) addItem('normal_logs', 1);
+for (let i = 0; i < 5; i++) addItem('oak_logs', 1);
+for (let i = 0; i < 3; i++) addItem('bronze_nails', 1);
+for (let i = 0; i < 3; i++) q.evaluate();   // advance the 3 ordered obtain steps
+q.onArrive('willow', 340, 435);             // goto the West Bridge
+q.onKill('bridge_bandit');                  // drive off the bandit
+q.onTalk('shopkeeper_lumber_stall');        // turn in
+ok('multi-step Bridge quest completes end to end', statusOf('bridge_over_dumb_water') === 'complete');
+ok('openShortcut reward fired the world hook', Game.__sc === 'west_bridge', `sc=${Game.__sc}`);
+
 // --- Act 2 chains off Act 1 --------------------------------------------------
 ok('Act 2 quest unlocks when its Act 1 prereq is done',
   statusOf('the_grubpit_problem') === 'available');

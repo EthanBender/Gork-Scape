@@ -796,8 +796,11 @@ export function generateWorld(seed = DEFAULT_SEED) {
       const l = terrain[i - 1], r = terrain[i + 1], u = terrain[i - WORLD_W], d = terrain[i + WORLD_W];
       const nearW = l === T.WATER || r === T.WATER || u === T.WATER || d === T.WATER || l === T.SWAMP || r === T.SWAMP || u === T.SWAMP || d === T.SWAMP;
       const nearR = l === T.ROCK || r === T.ROCK || u === T.ROCK || d === T.ROCK;
-      if (nearW) { if (rng() < 0.12) decor(x, y, rng() < 0.5 ? 0x5f7d3c : 0x7bb489, 5, 'rect'); }                                             // cattails / marsh reeds
-      else if (nearR && rng() < 0.10) { decor(x, y, 0x6a6a6a, 5, 'rect'); if (rng() < 0.35) decor(x + (rng() < 0.5 ? 1 : -1), y, 0x7c7c7c, 4, 'rect'); } // foothill scree/boulders
+      // Reeds gather in BEDS along the shore and scree in TALUS patches at the cliff
+      // foot — gated by a low-frequency noise mask so decor clumps into intentional
+      // fields instead of an even per-tile sprinkle (which reads as random speckle).
+      if (nearW) { if (vnoise(x / 7, y / 7, Sr + 51) > 0.60 && rng() < 0.32) decor(x, y, rng() < 0.5 ? 0x5f7d3c : 0x7bb489, 5, 'rect'); }            // cattail / reed beds
+      else if (nearR && vnoise(x / 6, y / 6, Sr + 53) > 0.62 && rng() < 0.30) { decor(x, y, 0x6a6a6a, 5, 'rect'); if (rng() < 0.3) decor(x + (rng() < 0.5 ? 1 : -1), y, 0x7c7c7c, 4, 'rect'); } // talus / scree fields
     }
   })();
 
