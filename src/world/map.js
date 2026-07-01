@@ -185,6 +185,10 @@ export function generateWorld(seed = DEFAULT_SEED) {
     building(515, 412, 2, 1, 'Town Anvil', 0x3a3a3a, 'Smithing', 'S');
     building(477, 412, 1, 1, 'Weapon Shop', 0x9a5a4a, null, 'S');
     building(523, 412, 1, 1, 'Armour Shop', 0x6a7a9a, null, 'S');
+    // [economy lane] Tinker's Workbench — a world node for the Tinkering skill
+    // (replaces the old floating HUD button). skill flag routes the click to
+    // performSkill, which opens the workbench popup (main.js hook).
+    structure(496, 416, "Tinker's Workbench", 0xb8863a, 'Tinkering');
 
     // ---- THE WHARF (E gate ↔ water road): fish from Grublake to the east ----
     building(540, 448, 2, 1, 'Fishing Shack', 0x4f8fae, null, 'W');

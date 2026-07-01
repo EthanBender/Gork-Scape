@@ -451,7 +451,7 @@ function create() {
   if (runBtn) runBtn.onclick = () => { toggleRun(); };
   updateRunHud(true);
 
-  initTinkerHud(); // [economy lane] Tinker's Workbench HUD button + overlay
+  initTinkerHud(); // [economy lane] readies the Tinker's Workbench popup CSS (opened from the world node)
 
   this.input.mouse.disableContextMenu();
   this.input.on('pointerdown', onPointerDown);
@@ -1253,6 +1253,16 @@ function reapplyOpenedShortcuts() {
     const o = findShortcutObj(id);
     if (o && !o.shortcut.opened) applyShortcutOpen(o);
   }
+}
+
+// Examine a wilderness encounter marker: log its flavour the first time, and grant
+// its one-time `loot` (guarded — skipped if the item id isn't in the registry).
+function doExamine(o) {
+  const p = Game.player;
+  Game.log(o._examined ? `${o.label}.` : `${o.label}: ${o.examine}`);
+  o._examined = true;
+  if (o.loot && !o._looted && ITEMS[o.loot]) { o._looted = true; if (addItem(o.loot)) Game.log(`You find ${ITEMS[o.loot].name}.`); }
+  p.interactTarget = null;
 }
 
 function performSkill(o, count) {

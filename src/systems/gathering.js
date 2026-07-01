@@ -65,6 +65,27 @@ export function gather(nodeId) {
   if (engine) grantXp(engine, xp);
   const def = GameData.item(out);
   Game.log(`You get ${(def && def.display_name) || out}. (+${xp} ${r.node.related_skill} xp)`);
+  rollGatherByproduct(engine);
   Game.refresh();
   return { ok: true, item: out };
+}
+
+// [economy lane] Cross-pollination: gathering ANY node has a small chance to also
+// yield a Tinkering raw material + a little Tinkering XP. A held tool that
+// `boosts` the skill (e.g. the Prospector's Lens boosts mining) doubles the odds.
+// Called from gather() (data nodes) and main.js performSkill (baseline nodes).
+const TINKER_BYPRODUCT = {
+  Mining: ['saltpeter', 'sulfur'], Woodcutting: ['tree_resin'], Fishing: ['scrap_metal'],
+};
+export function rollGatherByproduct(engineSkillName) {
+  const pool = TINKER_BYPRODUCT[engineSkillName];
+  if (!pool) return;
+  const boosted = [...EQUIP_SLOTS.map((s) => Game.equipment[s]), ...Game.inventory]
+    .some((it) => it && it.boosts && it.boosts.toLowerCase() === engineSkillName.toLowerCase());
+  if (Math.random() >= 0.06 * (boosted ? 2 : 1)) return;
+  const id = pool[Math.floor(Math.random() * pool.length)];
+  if (!addItem(id)) return;
+  grantXp('Tinkering', 6);
+  const def = GameData.item(id);
+  Game.log(`You salvage a bit of ${(def && def.display_name) || id}! (+6 Tinkering xp)`);
 }

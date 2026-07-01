@@ -19,11 +19,6 @@ function injectCss() {
   const s = document.createElement('style');
   s.id = 'tinker-css';
   s.textContent = `
-  #tinker-btn { position:absolute; left:10px; top:96px; z-index:30; cursor:pointer;
-    background:linear-gradient(180deg,#3d3728,#26221a); color:#e8c65a; font-weight:700;
-    border:1px solid #0d0c08; border-radius:6px; padding:6px 10px; font-size:12px;
-    box-shadow:inset 1px 1px 0 #6b6144, inset -1px -1px 0 #0d0c08, 0 2px 5px rgba(0,0,0,.4); }
-  #tinker-btn:hover { color:#fff; }
   #tinker-overlay { position:absolute; inset:0; z-index:60; display:flex;
     align-items:center; justify-content:center; background:rgba(0,0,0,.55); }
   #tinker-overlay[hidden] { display:none; }
