@@ -322,6 +322,13 @@ function create() {
   // the restored one (returning character). Idempotent — never restarts a quest
   // that's already active/complete; auto-starts the opening tutorial for newcomers.
   initQuests();
+  // [economy lane] Onboarding nudge: point a brand-new goblin at their first
+  // quest-giver (the '!' on the map), so the very first thing they learn is
+  // "walk to the marker and talk". Only when the opening quest is still available.
+  if (Game.questState && Game.questState.tutorial_first_scrap
+      && Game.questState.tutorial_first_scrap.status === 'available') {
+    Game.log('A quest-giver awaits — look for the gold ✦ marker and talk to the Goblin Elder to begin.');
+  }
 
   // [economy lane] Restore the shared Grand Exchange world state and fast-forward
   // it over the real time everyone was away — the market kept trading offline.
