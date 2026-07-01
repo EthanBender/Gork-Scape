@@ -29,6 +29,7 @@ import {
 } from './engine/state.js';
 import { resolveAttack, resolveSpecial, combatLevel, weaponRange } from './engine/combat.js';
 import { RUN_TILES, ensureRun, wantsToRun, updateRunEnergy, toggleRun, updateRunHud } from './engine/run.js';
+import { HOME_COOLDOWN_TICKS, TICK_SECONDS, homeState, isChanneling, beginHomeTeleport, cancelHomeTeleport, tickHomeTeleport, resetHomeTeleport } from './systems/homeTeleport.js'; // [economy lane] OSRS-style home teleport
 import { styleOfWeapon, PROTECT_FACTOR } from './engine/prayer.js';
 // [economy lane] Tinkering — the sapper combat style. Importing registers its
 // generated item catalogue into ITEMS and exposes the gadget combat effects.
@@ -369,6 +370,7 @@ function create() {
     if (!isLast) return;
     updateWorldClockHud();
     updateWorldEventHud();
+    updateHomeHud();
     restockShops(); // self-throttled (~15s); refills NPC shops during live play too
     updateCropLabels(); // reflect crop growth in patch labels without a click
   });
@@ -465,6 +467,11 @@ function create() {
   const runBtn = document.getElementById('run-btn');
   if (runBtn) runBtn.onclick = () => { toggleRun(); };
   updateRunHud(true);
+  // [economy lane] Home Teleport button
+  resetHomeTeleport();
+  const homeBtn = document.getElementById('home-btn');
+  if (homeBtn) homeBtn.onclick = () => startHomeTeleport();
+  updateHomeHud();
 
   initTinkerHud(); // [economy lane] readies the Tinker's Workbench popup CSS (opened from the world node)
 
@@ -977,6 +984,16 @@ function gameTick(count, isLast = true) {
     worldUpkeep(count);
     if (isLast) Game.refresh();
     return;
+  }
+
+  // [economy lane] Home Teleport channel: any movement/combat/interact interrupts
+  // it; otherwise advance, and teleport home the tick it completes.
+  if (isChanneling()) {
+    if (p.combatTarget || p.interactTarget || p.pickupTarget || p.travelTarget || (p.path && p.path.length)) {
+      cancelHomeTeleport(); Game.log('Your Home Teleport is interrupted.'); updateHomeHud();
+    } else if (tickHomeTeleport(count)) {
+      teleportHome(); updateHomeHud();
+    } else { updateHomeHud(); }
   }
 
   // --- player movement target -> path ---
@@ -1643,6 +1660,7 @@ function npcAttack(n, count) {
   }
   if (r.hit && dmg > 0) {
     Game.hp = Math.max(0, Game.hp - dmg);
+    if (cancelHomeTeleport()) Game.log('Your Home Teleport fizzles as you take a hit.');
     floatText(Game.player, '-' + dmg, '#ff5b5b');
     Game.log(`The ${n.name} hits you for ${dmg} damage.`);
   } else {
@@ -1662,6 +1680,49 @@ function playerDeath() {
   p.tileX = s.x; p.tileY = s.y; p.px = tilePx(s.x); p.py = tilePx(s.y);
   clearTargets(p); p.path = [];
   for (const n of Game.npcs) n.target = null;
+}
+
+// [economy lane] OSRS-style Home Teleport: free, but a channelled cast (interrupted
+// by acting/moving/taking damage) then a cooldown, that returns you to spawn.
+function startHomeTeleport() {
+  const count = Game.ticker ? Game.ticker.count : 0;
+  if (Game.playerFrozen) return;
+  const s = homeState(count);
+  if (s.status === 'channeling') return;
+  if (s.status === 'cooldown') { Game.log(`Home Teleport is recharging — ${Math.ceil(s.remaining * TICK_SECONDS)}s to go.`); return; }
+  clearTargets(Game.player); Game.player.path = [];
+  beginHomeTeleport(count);
+  Game.log('You raise your hands and begin to channel a Home Teleport… stand still.');
+  updateHomeHud();
+}
+function teleportHome() {
+  const sp = Game.world.spawn, p = Game.player;
+  clearTargets(p); p.path = [];
+  p.tileX = sp.x; p.tileY = sp.y; p.px = tilePx(sp.x); p.py = tilePx(sp.y);
+  for (const n of Game.npcs) n.target = null;
+  Game.location = regionAt(p.tileX, p.tileY);
+  Game.log('🏠 The world folds and you step out at the settlement.');
+  Game.refresh();
+}
+function updateHomeHud() {
+  const btn = document.getElementById('home-btn');
+  if (!btn) return;
+  const count = Game.ticker ? Game.ticker.count : 0;
+  const s = homeState(count);
+  btn.classList.toggle('channeling', s.status === 'channeling');
+  btn.classList.toggle('cooldown', s.status === 'cooldown');
+  const lbl = document.getElementById('home-state');
+  if (s.status === 'channeling') {
+    btn.style.setProperty('--home-pct', Math.round(s.progress * 100));
+    if (lbl) lbl.textContent = '…';
+  } else if (s.status === 'cooldown') {
+    btn.style.setProperty('--home-pct', 100 - Math.round((s.remaining / HOME_COOLDOWN_TICKS) * 100));
+    const sec = Math.ceil(s.remaining * TICK_SECONDS);
+    if (lbl) lbl.textContent = sec >= 60 ? `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, '0')}` : `${sec}`;
+  } else {
+    btn.style.setProperty('--home-pct', 100);
+    if (lbl) lbl.textContent = '';
+  }
 }
 
 function reviveNpc(n) {

@@ -384,6 +384,14 @@ Client-side until Phase 4; each phase keeps the player-freeze + world-continuity
   Rerouting would risk the legacy cook/smith branches; revisit with id migration.
 
 ## Change log
+- 2026-07-01 — Economy agent: **bank quantity controls (OSRS-style).** The bank
+  modal gained a **Move: [1] [5] [10] [X] [All]** row that sets what a left-click
+  moves; the active mode highlights and the column titles update live ("left-click
+  withdraw 5…"). Left-click a bank item = withdraw that amount, an inventory item
+  = deposit that amount (clamped to what's there). **Right-click** any item for a
+  context menu (Deposit/Withdraw 1/5/10/All/X). X prompts for a custom number.
+  Verified live: mode 5 deposits 5, mode 10 withdraw clamps to the 5 available,
+  right-click "Deposit 10" moves 10; 0 console errors. `panels.js` + `index.html`.
 - 2026-07-01 — Economy agent (⚠️ CROSS-LANE, owner-directed): **"walking on water"
   investigated + shore-overhang nudge.** FIRST verified the movement system is
   airtight — all 3 water types are `walkable:false`, the collision grid is built
