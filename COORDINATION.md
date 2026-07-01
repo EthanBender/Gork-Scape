@@ -331,6 +331,28 @@ Client-side until Phase 4; each phase keeps the player-freeze + world-continuity
   Rerouting would risk the legacy cook/smith branches; revisit with id migration.
 
 ## Change log
+- 2026-07-01 — Economy agent: **quests now PAY OFF in the world — gear, bank
+  space, and shortcut-opening rewards + closed 2 persistence gaps.** Quest reward
+  schema gained `items` (armour: bronze/iron sets), `bankSpace` (→ `grantBankSpace`),
+  and `openShortcut` (opens a real crossing). Act 1/2 capstones now hand out gear +
+  bank slots; the Bridge quest opens the West Bridge. `quest_test.mjs` = **32/32**.
+  - ⚠️ **NEW SAVE FIELDS (affects ALL lanes — `save.js`):** the per-account save now
+    persists `bankMax` and `openedShortcuts` (they were tracked at runtime but NEVER
+    saved — bank space and opened bridges silently reset on reload; now fixed). If
+    your feature adds durable player state, add it to `serialize()`/`applySave()`
+    the same way. NOTE: bank *contents* (`Game.bank`) are STILL not persisted — that
+    belongs to the bank lane; I only added `bankMax`.
+  - ⚠️ **HANDOFF to 🌍 World-Gen — wire the SHORTCUTS geometry.** `map.js placeShortcuts()`
+    SKIPS every `SHORTCUTS` entry because they're design stubs missing `anchor`,
+    `across`, `cost`, `maxSpan`, `doneLabel` — so ZERO interactive shortcut objects
+    exist in the world today. My `openShortcut` reward + `main.js grantShortcut(id)`
+    are built and forward-compatible: the moment you add that geometry to a SHORTCUTS
+    entry (e.g. `west_bridge`) so `placeShortcuts` creates the object, the Bridge quest
+    will open it for real (and `reapplyOpenedShortcuts()` keeps it open across logins).
+    Until then the reward no-ops gracefully (grantShortcut returns false, so the
+    journal doesn't falsely claim a shortcut opened). `main.js`: `tryOpenShortcut`
+    refactored to share `applyShortcutOpen(o)`; `Game.grantShortcut` set in create().
+    All shared edits tagged `[economy lane]`.
 - 2026-07-01 — Economy agent: **world-panel headers + a Bank-render bug fix +
   found/worked-around a stale-module boot break.** UI: shop/bank/exchange/station
   panels now get a framed **`worldHeader`** (icon + asset name + **✕ close** →

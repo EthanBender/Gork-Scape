@@ -121,7 +121,7 @@ export function generateWorld(seed = DEFAULT_SEED) {
     const factor = ramp(depth, 12, 26); // rock density fades toward/just past the edge
     const n = vnoise(x / 6, y / 6, Sr) * 0.6 + vnoise(x / 22, y / 22, Sr) * 0.4;
     if (n < h.density * factor) setT(x, y, T.ROCK);
-    else if (getT(x, y) === T.GRASS && depth > -12 && depth < 8 && vnoise(x / 4, y / 4, Sr + 2) > 0.72) decor(x, y, 0x6a6a6a, 6, 'rect'); // scattered boulders in the transition band
+    else if (getT(x, y) === T.GRASS && depth > -12 && depth < 8 && vnoise(x / 4, y / 4, Sr + 2) > 0.84) decor(x, y, 0x6a6a6a, 6, 'rect'); // occasional boulders in the transition band (sparse — the rock terrain already reads as mountain)
   });
 
   // ---- PASS 2b: lake + rivers + bog ----
@@ -581,7 +581,7 @@ export function generateWorld(seed = DEFAULT_SEED) {
         const gx = Math.round(x + Math.cos(ang) * d), gy = Math.round(y + Math.sin(ang) * d);
         if (getT(gx, gy) !== T.GRASS || occupied.has(okey(gx, gy))) continue;
         if (rng() > 1 - d / (BAND + 1)) continue; // density falls off with distance from the edge
-        if (t === T.ROCK) { if (rng() < 0.18) setT(gx, gy, T.ROCK); else decor(gx, gy, 0x6a6a6a, 4, 'rect'); } // rocky hills + stones
+        if (t === T.ROCK) { if (rng() < 0.20) decor(gx, gy, 0x6a6a6a, 4, 'rect'); } // occasional loose stones at the rock foot (not a stone on every fringe tile)
         else if (t === T.WATER) decor(gx, gy, 0x6fae7a, 4, 'rect');                                            // reeds on the shore
         else decor(gx, gy, rng() < 0.5 ? 0x5a6a3a : 0x6a5a3a, 3, 'circle');                                    // mud / wet grass
       }
