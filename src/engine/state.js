@@ -44,6 +44,10 @@ export const Game = {
   specEnergy: 100,
   specArmed: false,    // when true, the next attack is a special
 
+  // Feature unlocks granted by quests (e.g. 'tinkering'). A Set, re-derived from
+  // completed quests on load (see quests.recomputeUnlocks) — not saved separately.
+  unlocks: null,
+
   logLines: [],
   ui: {},              // render hooks installed by panels.js
 
@@ -84,6 +88,7 @@ export function initState() {
   Game.activePrayers = [];
   Game.specEnergy = 100;
   Game.specArmed = false;
+  Game.unlocks = new Set();
   Game.inventory = new Array(INVENTORY_SIZE).fill(null);
   Game.equipment = {};
   Game.selectedInv = null;

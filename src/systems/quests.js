@@ -163,6 +163,37 @@ function advance(id, speaker) {
   syncUI();
 }
 
+// ---- feature unlocks (quest-gated content, e.g. the Tinkering skill) ----
+// Unlocks are re-derived from completed quests, so they survive save/load without
+// a separate save field. Content checks hasUnlock(id).
+const UNLOCK_LABELS = {
+  tinkering: 'Tinkering unlocked!',
+  tinkering_powder: 'Blackpowder & bombs unlocked',
+  tinkering_cannons: 'Hand Cannons unlocked',
+  tinkering_voltaic: 'Voltaic tier unlocked',
+  tinkering_tools: 'Powered tinker-tools unlocked',
+};
+function unlockLabel(id) { return UNLOCK_LABELS[id] || `${id} unlocked`; }
+
+export function grantUnlock(id) {
+  if (!Game.unlocks) Game.unlocks = new Set();
+  if (Game.unlocks.has(id)) return;
+  Game.unlocks.add(id);
+  Game.log(`🔓 ${unlockLabel(id)}`);
+  if (Game.ui.onUnlock) Game.ui.onUnlock(id);
+}
+export function hasUnlock(id) {
+  return !!(Game.unlocks && Game.unlocks.has(id));
+}
+// Rebuild the unlock set from completed quests (call after load / init).
+export function recomputeUnlocks() {
+  if (!Game.unlocks) Game.unlocks = new Set();
+  for (const q of QUESTS) {
+    const st = Game.questState && Game.questState[q.id];
+    if (st && st.status === 'complete' && q.rewards && q.rewards.unlock) Game.unlocks.add(q.rewards.unlock);
+  }
+}
+
 function completeQuest(id, speaker) {
   const q = Q_BY_ID.get(id);
   const st = Game.questState[id];
@@ -176,6 +207,7 @@ function completeQuest(id, speaker) {
   // grantBankSpace lives in state.js; opening a shortcut is a world action, so it
   // routes through a hook main.js installs (Game.grantShortcut) to avoid a cycle.
   if (r.bankSpace) grantBankSpace(r.bankSpace);
+  if (r.unlock) grantUnlock(r.unlock);
   const shortcutOpened = (r.openShortcut && Game.grantShortcut) ? Game.grantShortcut(r.openShortcut) : false;
   const lines = [];
   if (q.outro) lines.push(q.outro);
@@ -184,6 +216,7 @@ function completeQuest(id, speaker) {
   if (Array.isArray(r.xp)) for (const x of r.xp) bits.push(`${x.amount} ${x.skill} xp`);
   if (Array.isArray(r.items)) for (const it of r.items) bits.push(`${it.qty || 1}× ${it.id}`);
   if (r.bankSpace) bits.push(`+${r.bankSpace} bank slots`);
+  if (r.unlock) bits.push(unlockLabel(r.unlock));
   if (shortcutOpened) bits.push('a new shortcut opens');
   if (bits.length) lines.push(`Reward: ${bits.join(', ')}.`);
   emitDialogue(speaker || q.giver?.name || q.name, lines);

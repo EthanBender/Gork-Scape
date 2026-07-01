@@ -57,6 +57,7 @@ import {
   initQuests, evaluate as tickQuests, onKill as questOnKill,
   onTalk as questOnTalk, onArrive as questOnArrive, questMarkers,
 } from './systems/quests.js'; // [economy lane] quest engine v2
+import { playCutscene } from './systems/cutscene.js'; // [economy lane] cinematic quest beats
 // [character-render lane] — the visible avatar. Pure rendering; reads state only.
 import { drawAvatar } from './render/avatar.js';
 import { gearHints, weaponStyleFor, bodyTypeFor } from './render/gear.js';
@@ -88,6 +89,7 @@ const ZOOM_MIN = 1, ZOOM_MAX = 2.6, ZOOM_STEP = 0.12;
 const ROT_STEP = Math.PI / 12; // 15° per key tap / wheel notch
 let targetZoom = 1;            // smoothed-toward values; main cam eases to these
 let targetRot = 0;            // radians, accumulates (not wrapped)
+const csCamPx = { x: null, y: null }; // [economy lane] eased cutscene camera position
 
 // ---------------------------------------------------------------- world setup
 function buildWorld() {
@@ -328,6 +330,12 @@ function create() {
   // player had already opened so bridges stay open across sessions.
   Game.grantShortcut = grantShortcut;
   reapplyOpenedShortcuts();
+
+  // [economy lane] Cutscene hooks: the quest engine plays intro/outro cutscenes
+  // via Game.playCutscene; the DOM player drives the camera pan through these.
+  Game.playCutscene = playCutscene;
+  window.__cutsceneCamSet = (x, y) => { Game.cutsceneCam = { x, y }; };
+  window.__cutsceneCamClear = () => { Game.cutsceneCam = null; };
 
   // [economy lane] Quest engine: build the quest slate (new character) or reconcile
   // the restored one (returning character). Idempotent — never restarts a quest
