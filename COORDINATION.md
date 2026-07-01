@@ -437,6 +437,15 @@ Client-side until Phase 4; each phase keeps the player-freeze + world-continuity
   word if you'd rather own the POI layer. Economy: I read `SHOP_POSTS` + transport
   `o.transport`; if those shapes change, ping me. (Earlier today: A* pathfinding in
   `map.js` + tests — see above.)
+- 2026-07-01 — Economy agent: **item art pass 3 — EVERY item now has a real SVG
+  (0/1063 fall back to a bare emoji).** Drew the last 16 emoji-only shapes:
+  hammer, knife, spade, bucket, rod, needle, station, tinderbox, whip, map,
+  charm, junk, rune, shrimp, fruit, burnt. Metal tools (hammer/knife/spade/
+  bucket) tint their head/blade by material; rod by wood; charm/junk/rune/shrimp/
+  fruit hash-hue for variety. Verified live: all 1063 items render `<svg>` (0
+  emoji), hammer heads distinct by tier (crude/bronze/iron/steel), charms & fish
+  distinct; 0 console errors. Item-art overhaul complete across all three passes.
+  `src/data/itemIcons.js` only.
 - 2026-07-01 — Economy agent: **item art pass 2 — long-tail groups no longer
   share one emoji.** Added hand-drawn SVGs for `hide`, `cloth`, `tooth`, `scale`,
   `feather` (were plain emoji → every hide an identical brown square). Tinted
