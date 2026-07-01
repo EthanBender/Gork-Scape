@@ -9,7 +9,7 @@ import { applySave } from './engine/save.js';
 import * as WorldClock from './engine/worldClock.js';
 import * as WorldEvents from './systems/worldEvents.js';
 import {
-  generateWorld, isWalkable, findPath, regionAt, objectsInView,
+  generateWorld, isWalkable, findPath, regionAt, objectsInView, addWorldObject,
   TILE_SIZE, WORLD_W, WORLD_H, TERRAIN_DEFS, T,
 } from './world/map.js';
 import { TOOLS, LANDMARKS, REGION_ANCHORS } from './world/worldData.js';
@@ -32,7 +32,7 @@ import { RUN_TILES, ensureRun, wantsToRun, updateRunEnergy, toggleRun, updateRun
 import { styleOfWeapon, PROTECT_FACTOR } from './engine/prayer.js';
 // [economy lane] Tinkering — the sapper combat style. Importing registers its
 // generated item catalogue into ITEMS and exposes the gadget combat effects.
-import { isTinkerWeapon, tinkerEffect } from './systems/tinkering.js';
+import { isTinkerWeapon, effectiveGadgetEffect } from './systems/tinkering.js';
 import { initTinkerHud, openWorkbench } from './systems/tinkeringUI.js';
 import { gather as gatherNode, rollGatherByproduct } from './systems/gathering.js'; // [economy lane] data-driven world-node gathering + byproducts
 import { rollSkillSuccess } from './engine/skills.js';
@@ -230,8 +230,7 @@ function buildWorld() {
       label: 'Bones Altar', color: 0xcfc4e0, blocking: true,
       depleted: false, respawnAt: 0,
     };
-    world.objects.push(altar);
-    world.objectAt.set(altarPos.x + ',' + altarPos.y, altar);
+    addWorldObject(world, altar); // [economy lane] chunk-index so it renders
   }
 
   // [economy lane] Fast-travel transports (cart / mine-cart stations + blood
@@ -1446,7 +1445,7 @@ function playerAttack(npc, count) {
   // an ordinary single attack.
   const weapon = Game.equipment.weapon;
   const spec = weaponSpec();
-  const gadget = isTinkerWeapon(weapon) ? tinkerEffect(weapon) : null;
+  const gadget = isTinkerWeapon(weapon) ? effectiveGadgetEffect(weapon) : null;
   let results;
   let areaEffect = null;
   if (Game.specArmed && spec && Game.specEnergy >= spec.cost) {
@@ -1709,6 +1708,37 @@ function drawTerrain() {
   }
 }
 
+// [economy lane] Procedural art for post-gen world objects that used to render as
+// a plain colored square: an animated blood/portal gateway and a mine-cart for
+// the fast-travel transports, and a small shrine for the Bones Altar.
+function drawTransport(g, cx, cy, kind) {
+  const x = cx + 16, y = cy + 16, t = Date.now() * 0.004;
+  if (kind === 'portal') {
+    g.fillStyle(0x241a16, 1); g.fillEllipse(x, y, 24, 32);          // stone arch
+    g.fillStyle(0x0e0305, 1); g.fillEllipse(x, y, 17, 25);          // void
+    for (let i = 3; i >= 1; i--) {
+      const pulse = 0.5 + 0.5 * Math.sin(t + i * 1.2);
+      g.lineStyle(2, 0xaa1030, 0.3 + 0.25 * pulse);
+      g.strokeEllipse(x, y, 5 * i + 2 * pulse, 7.5 * i + 3 * pulse); // swirling rings
+    }
+    g.fillStyle(0xff3a5a, 0.55 + 0.35 * Math.sin(t * 1.6)); g.fillEllipse(x, y, 6, 10); // core glow
+    g.fillStyle(0xffd6dc, 0.85); g.fillEllipse(x, y - 1, 2.4, 4);   // hot centre
+  } else {                                                          // cart / minecart
+    g.fillStyle(0x4a3c2c, 1); g.fillRect(x - 10, y - 5, 20, 11);
+    g.fillStyle(0x2f2519, 1); g.fillRect(x - 8, y - 3, 16, 7);
+    g.fillStyle(0x8a6a3a, 1); g.fillRect(x - 10, y + 5, 20, 2);
+    g.fillStyle(0x1a1a1a, 1); g.fillCircle(x - 6, y + 8, 3); g.fillCircle(x + 6, y + 8, 3);
+    g.fillStyle(0x888888, 1); g.fillCircle(x - 6, y + 8, 1.2); g.fillCircle(x + 6, y + 8, 1.2);
+  }
+}
+function drawAltar(g, cx, cy) {
+  const x = cx + 16, y = cy + 16, t = Date.now() * 0.005;
+  g.fillStyle(0x413a5c, 1); g.fillRect(x - 12, y + 6, 24, 4);       // plinth
+  g.fillStyle(0x2b2740, 1); g.fillRect(x - 10, y - 2, 20, 10);      // body
+  g.fillStyle(0xcfc4e0, 1); g.fillRect(x - 8, y - 6, 16, 5);        // top slab
+  g.fillStyle(0x9a7bff, 0.4 + 0.3 * Math.sin(t)); g.fillCircle(x, y - 3, 2.4); // rune glow
+}
+
 function drawObjects() {
   const g = objectsGfx; g.clear();
   const v = viewRange();
@@ -1731,6 +1761,8 @@ function drawObjects() {
       }
       g.fillStyle(o.depleted ? 0x555555 : o.color, 1); g.fillRect(cx + 5, cy + 5, TILE_SIZE - 10, TILE_SIZE - 10); continue; // ore rock
     }
+    if (o.transport) { drawTransport(g, cx, cy, o.kind); continue; } // [economy lane] portal/cart art
+    if (o.altar) { drawAltar(g, cx, cy); continue; } // [economy lane] altar art
     g.fillStyle(o.depleted ? 0x555555 : o.color, 1);
     g.fillRect(cx + 4, cy + 4, TILE_SIZE - 8, TILE_SIZE - 8);
     if (o.label === 'Range' && !o.depleted) { g.fillStyle(0xffd24d, 0.8); g.fillCircle(cx + 16, cy + 16, 5); }

@@ -93,7 +93,7 @@ function beginSession(name, { isNew }) {
 }
 
 function reasonText(reason, who) {
-  if (reason === 'idle') return `${who || 'You'} were logged out after 5 minutes of inactivity. Your progress was saved.`;
+  if (reason === 'idle') return `${who ? `${who} was` : 'You were'} logged out after 5 minutes of inactivity. Your progress was saved.`;
   return '';
 }
 

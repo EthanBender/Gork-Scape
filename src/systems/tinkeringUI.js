@@ -9,7 +9,7 @@
 
 import { Game } from '../engine/state.js';
 import { ITEMS } from '../items/equipment.js';
-import { recipeGroups, canAssemble, assemble, countMaterial } from './tinkering.js';
+import { recipeGroups, canAssemble, assemble, countMaterial, installMod, uninstallMod, modInfo, MOD_SLOTS } from './tinkering.js';
 import { hasUnlock } from './quests.js';
 
 let mounted = false;
@@ -47,6 +47,10 @@ function injectCss() {
   .tk-make:disabled { filter:grayscale(1) brightness(.7); cursor:default; }
   .tk-locked { padding:22px 18px; text-align:center; color:#c9b489; font-size:13px; line-height:1.5; }
   .tk-locked b { color:#e8c65a; }
+  .tk-rig { padding:8px; margin-bottom:8px; background:#191710; border:1px solid #0d0c08; border-radius:6px; }
+  .tk-riglabel { font-size:12px; font-weight:700; color:#8ab0e0; margin-bottom:6px; }
+  .tk-chip { margin:2px 4px 2px 0; padding:4px 8px; font-size:11px; font-weight:700; cursor:pointer;
+    color:#dbe6f2; background:linear-gradient(180deg,#3a507a,#28405f); border:1px solid #0d0c08; border-radius:5px; }
   `;
   document.head.appendChild(s);
 }
@@ -76,6 +80,26 @@ function render() {
       progress <b>The Tinkerer's Path</b> quest line.</div>`;
     return;
   }
+  // Mods tab leads with the rig's installed-mods slots (click to remove).
+  if (activeTab === 'Mods') {
+    const rig = document.createElement('div');
+    rig.className = 'tk-rig';
+    const installed = (Game.gadgetMods || []);
+    rig.innerHTML = `<div class="tk-riglabel">Rig — ${installed.length}/${MOD_SLOTS} mod slots</div>`;
+    if (installed.length) {
+      for (const id of installed) {
+        const m = modInfo(id);
+        const chip = document.createElement('button');
+        chip.className = 'tk-chip';
+        chip.textContent = `${m ? m.name : id} ✕`;
+        chip.title = 'Remove (back to inventory)';
+        chip.onclick = () => { uninstallMod(id); Game.refresh(); render(); };
+        rig.appendChild(chip);
+      }
+    } else rig.insertAdjacentHTML('beforeend', `<span class="tip-dim">No mods installed. Build a mod below, then Install it.</span>`);
+    list.appendChild(rig);
+  }
+
   const groups = recipeGroups();
   for (const r of groups[activeTab]) {
     const chk = canAssemble(r.id);
@@ -83,10 +107,21 @@ function render() {
     row.className = 'tk-row';
     const out = nameOf(r.output);
     const gate = lvl < r.level ? ` <span class="tk-req">Lv ${r.level}</span>` : '';
+    const modHint = r.makes === 'mod' && modInfo(r.output) ? ` <span class="tip-dim">(${modInfo(r.output).blurb})</span>` : '';
     row.innerHTML = `<div class="tk-info">
-      <div class="tk-name">${out}${r.outQty > 1 ? ` ×${r.outQty}` : ''}${gate}</div>
+      <div class="tk-name">${out}${r.outQty > 1 ? ` ×${r.outQty}` : ''}${gate}${modHint}</div>
       <div class="tk-inputs">${r.inputs.map(inputLabel).join(' · ')} &nbsp;→&nbsp; +${r.xp} xp</div>
     </div>`;
+    // Mods you already own show an Install button (into a free rig slot).
+    if (r.makes === 'mod' && countMaterial({ id: r.output }) > 0 && !(Game.gadgetMods || []).includes(r.output)) {
+      const ins = document.createElement('button');
+      ins.className = 'tk-make';
+      ins.style.background = 'linear-gradient(180deg,#4a6ea0,#33507a)';
+      ins.textContent = 'Install';
+      ins.disabled = (Game.gadgetMods || []).length >= MOD_SLOTS;
+      ins.onclick = () => { installMod(r.output); Game.refresh(); render(); };
+      row.appendChild(ins);
+    }
     const btn = document.createElement('button');
     btn.className = 'tk-make';
     btn.textContent = 'Build';
@@ -113,7 +148,7 @@ export function openWorkbench() {
     overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.hidden = true; });
     overlay.querySelector('.tk-x').onclick = () => { overlay.hidden = true; };
     const tabs = overlay.querySelector('.tk-tabs');
-    for (const t of ['Gadgets', 'Ammo', 'Components']) {
+    for (const t of ['Gadgets', 'Ammo', 'Mods', 'Components']) {
       const b = document.createElement('div');
       b.className = 'tk-tab' + (t === activeTab ? ' active' : '');
       b.textContent = t;

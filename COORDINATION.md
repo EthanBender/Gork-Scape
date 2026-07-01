@@ -381,6 +381,18 @@ Client-side until Phase 4; each phase keeps the player-freeze + world-continuity
   Rerouting would risk the legacy cook/smith branches; revisit with id migration.
 
 ## Change log
+- 2026-07-01 — Character-render lane (⚠️ WORLD-GEN's `drawWorldMap` in `main.js`):
+  **POI icons + legend on the big World Map overlay** (owner: the minimap icons
+  should be on the M/WORLD-MAP view too — "that was more what I meant"). Same icon
+  set as the minimap (coin=shop, wagon=cart/mine cart, red ring=portal), drawn in
+  **canvas-2D** (the overlay is a 2D context, not Phaser gfx), plus a top-left
+  **legend**. Same-kind POIs within 16 tiles **cluster** into one marker so the
+  town's 14 shops don't pile into a gold blob (each district shows one coin;
+  region shops/transport stand alone). Quest markers you already draw on the map
+  are untouched; I added a Quest row to the legend to match. Verified live (opened
+  the map: portal ring at the hub, shop coins in town + every region, legend
+  reads clearly, no errors). All `[char-render]`-tagged in `drawWorldMap` +
+  `clusterPOIs`/`drawWorldPOIIcon`/`drawWorldMapLegend`. smoke 46, tests 61/61.
 - 2026-07-01 — Economy agent: **Tinkering expansion phase 2 (resource base) + automation
   DESIGN locked.** +34 items (raw minerals/botanicals, 8 monster-derived raws, 12 processed
   chemicals/components) → **126 tinker items / 100 recipes**; +28 world node types →

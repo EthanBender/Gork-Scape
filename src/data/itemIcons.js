@@ -113,6 +113,22 @@ const ICON_SVG = {
   scale: `<g stroke="#00000033" stroke-width=".4"><path d="M4 8 a3.2 3.2 0 0 1 6.4 0 Z" fill="${P.glass}"/><path d="M10.4 8 a3.2 3.2 0 0 1 6.4 0 Z" fill="${P.glass}"/><path d="M7.2 12.5 a3.2 3.2 0 0 1 6.4 0 Z" fill="${P.glass}"/><path d="M4 17 a3.2 3.2 0 0 1 6.4 0 Z" fill="${P.glass}"/><path d="M10.4 17 a3.2 3.2 0 0 1 6.4 0 Z" fill="${P.glass}"/></g>`,
   feather: `<path d="M17 5 Q6 8.5 8 19 Q17 15.5 17 5 Z" fill="${P.glass}" stroke="#7a8894" stroke-width=".4"/><line x1="17" y1="5" x2="8" y2="19" stroke="#ffffffaa" stroke-width=".7"/>`,
   box: `<rect x="5" y="8" width="14" height="11" fill="${P.wood}" stroke="${P.woodD}"/><path d="M5 8 L12 5 L19 8 Z" fill="#b98a52"/><line x1="12" y1="5" x2="12" y2="19" stroke="${P.woodD}"/>`,
+  hammer: `<rect x="11" y="8" width="1.8" height="12" rx=".8" fill="${P.wood}"/><rect x="6.5" y="4.5" width="11" height="4" rx="1" fill="${P.steel}" stroke="${P.steelD}" stroke-width=".5"/>`,
+  knife: `<polygon points="6,15 15,6 17,8 8,17" fill="${P.steel}" stroke="${P.steelD}" stroke-width=".4"/><rect x="4.5" y="15" width="4.5" height="2.4" rx="1.1" transform="rotate(-45 6.7 16.2)" fill="${P.wood}"/>`,
+  spade: `<rect x="11" y="3" width="2" height="10" fill="${P.wood}"/><rect x="9" y="2.5" width="6" height="2" rx="1" fill="${P.wood}"/><path d="M7.5 12 H16.5 L14 20 H10 Z" fill="${P.steel}" stroke="${P.steelD}" stroke-width=".5"/>`,
+  bucket: `<path d="M7 8 H17 L15.8 19 H8.2 Z" fill="${P.steel}" stroke="${P.steelD}"/><path d="M7.5 8 Q12 3.5 16.5 8" fill="none" stroke="${P.steelD}" stroke-width="1.1"/>`,
+  rod: `<line x1="4" y1="20.5" x2="18.5" y2="5" stroke="${P.wood}" stroke-width="1.8" stroke-linecap="round"/><circle cx="6.5" cy="17" r="2" fill="none" stroke="${P.steelD}" stroke-width="1"/><path d="M18.5 5 Q20.5 9 19 13" fill="none" stroke="#cfe0ea" stroke-width=".7"/>`,
+  shrimp: `<path d="M7 8 Q18 6 18 13 Q18 19 10 18.5 Q5.5 18 7 13" fill="none" stroke="#e08a6a" stroke-width="2.6" stroke-linecap="round"/><circle cx="16.8" cy="9" r=".9" fill="#3a2320"/>`,
+  charm: `<circle cx="12" cy="9" r="1.6" fill="none" stroke="${P.gold}" stroke-width="1.2"/><circle cx="12" cy="15" r="5" fill="${P.gold}" stroke="${P.goldD}" stroke-width=".6"/><circle cx="12" cy="15" r="2.3" fill="${P.goldD}" opacity=".5"/>`,
+  junk: `<path d="M5 16 L7 10 L11 11 L13 7 L18 10 L17 17 Z" fill="${P.stoneD}" stroke="#3a352c" stroke-width=".5"/><rect x="9" y="12" width="2.2" height="2.2" fill="#4a4238" transform="rotate(18 10 13)"/>`,
+  station: `<rect x="5" y="14" width="14" height="5" rx=".6" fill="${P.stoneD}" stroke="#3a352c"/><path d="M7 13 H17 L15 9 H9 Z" fill="${P.steelD}" stroke="${P.steel}" stroke-width=".4"/><rect x="10.5" y="6" width="3" height="3.5" fill="${P.steelD}"/>`,
+  tinderbox: `<rect x="6" y="10" width="12" height="8" rx="1.2" fill="${P.leather}" stroke="${P.woodD}"/><rect x="6" y="10" width="12" height="2.4" fill="${P.woodD}" opacity=".5"/><path d="M11 9 L13 4 L13.5 7.5 L16 5.5 L14 10 Z" fill="#f2b04a"/>`,
+  needle: `<line x1="6" y1="18.5" x2="18" y2="5.5" stroke="${P.steel}" stroke-width="1.4"/><ellipse cx="17" cy="7" rx="1.2" ry="2" fill="none" stroke="${P.steel}" stroke-width=".8"/>`,
+  rune: `<rect x="6" y="4" width="12" height="16" rx="2" fill="#4a5a8a" stroke="#2f3a5a"/><path d="M12 7 V17 M9 12 H15 M9.5 9.5 L14.5 14.5" stroke="#dcecff" stroke-width="1.2" fill="none"/>`,
+  map: `<path d="M5 6 L10 5 L14 7 L19 6 V18 L14 19 L10 17 L5 18 Z" fill="#d8c89a" stroke="#9a875a"/><path d="M10 5 V17 M14 7 V19" stroke="#9a875a" stroke-width=".5"/><path d="M13 11 l2 2 M15 11 l-2 2" stroke="#c0392b" stroke-width="1"/>`,
+  whip: `<path d="M6 18 Q11 6 16.5 8.5 Q20 10 18 14" fill="none" stroke="${P.leather}" stroke-width="2" stroke-linecap="round"/><path d="M18 14 l2.5 1 M18 14 l1 2.5" stroke="${P.leather}" stroke-width="1.2" stroke-linecap="round"/>`,
+  burnt: `<circle cx="11" cy="13" r="6" fill="#2b2620"/><circle cx="9" cy="11" r="1.3" fill="#463c33"/><circle cx="13" cy="14" r="1" fill="#463c33"/><path d="M14 6 q2 -2 1 -4" fill="none" stroke="#7a7268" stroke-width="1" opacity=".6"/>`,
+  fruit: `<circle cx="12" cy="14" r="6" fill="#c0392b"/><path d="M12 8.5 Q13 5 15.5 5" fill="none" stroke="${P.greenD}" stroke-width="1.4"/><path d="M12 9 Q15 8 16 10 Q13.5 11 12 9" fill="${P.leaf}"/><ellipse cx="10" cy="12" rx="1.4" ry="2.4" fill="#ffffff" opacity=".25"/>`,
 };
 
 // Resolve an item (id string, or { id, name }) to a canonical icon key.
@@ -188,12 +204,17 @@ const TINT = {
   seed: [[P.green], [P.greenD]], book: [['#7a3b3b'], ['#4a2020']],
   hide: [[P.leather], [P.woodD]], cloth: [[P.glass], []], tooth: [[P.bone], []],
   scale: [[P.glass], []], feather: [[P.glass], []], bow: [[P.wood], []],
+  hammer: [[P.steel], [P.steelD]], knife: [[P.steel], [P.steelD]], spade: [[P.steel], [P.steelD]],
+  bucket: [[P.steel], [P.steelD]], rod: [[P.wood], []], charm: [[P.gold], [P.goldD]],
+  junk: [[P.stoneD], []], rune: [['#4a5a8a'], ['#2f3a5a']], shrimp: [['#e08a6a'], []],
+  fruit: [['#c0392b'], []], whip: [[P.leather], []],
   staff: [[P.wood], []], box: [[P.wood], [P.woodD]], bones: [[P.bone], []],
 };
 // Keys that should get a hash-hue when no known material matches (naturally
 // multi-coloured item groups). Metal/wood shapes stay their default otherwise.
 const HASH_KEYS = new Set(['gem', 'fish', 'herb', 'potion', 'cape', 'amulet', 'ring', 'charm', 'seed', 'book',
-  'cloth', 'tooth', 'scale', 'feather', 'box', 'bones', 'hide']);
+  'cloth', 'tooth', 'scale', 'feather', 'box', 'bones', 'hide',
+  'junk', 'rune', 'shrimp', 'fruit']);
 
 function hueFromString(str) {
   // djb2 over a 32-bit range then fold to hue — spreads similar names far apart
