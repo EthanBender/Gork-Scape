@@ -21,6 +21,7 @@ globalThis.fetch = async (url, opts) => {
 };
 
 const { Game, initState, addItem, grantXp } = await import('../src/engine/state.js');
+await import('../src/data/questItems.js'); // register unique quest items into ITEMS
 const q = await import('../src/systems/quests.js');
 
 let pass = 0, fail = 0;
@@ -135,6 +136,26 @@ ok('Act 2 quest still locked behind an unfinished Act 1 quest',
 q.onTalk('shopkeeper_miner_camp'); // start the_grubpit_problem
 ok('an active quest exposes a marker for its current step',
   q.questMarkers().some((m) => m.kind === 'active'));
+
+// --- showcase quest: cutscenes + unique boss + unique item rewards -----------
+// (cutscenes are cosmetic and no-op headless since Game.playCutscene is unset.)
+Game.inventory = new Array(Game.inventory.length).fill(null); // room for offerings + rewards
+Game.spawnQuestBoss = (spec) => { Game.__boss = spec; };        // mock the world spawn hook
+ok('The Hollow Idol is available after the tutorial', statusOf('the_hollow_idol') === 'available');
+q.onTalk('elder'); // the Elder gives it
+ok('showcase quest starts from its giver (the Elder)', statusOf('the_hollow_idol') === 'active');
+q.onArrive('settlement', 515, 486);          // goto the old training yard
+addItem('bones', 3); q.evaluate();           // lay the 3 bone offerings
+ok('a unique boss spawns when the boss step activates',
+  Game.__boss && Game.__boss.id === 'grukk_the_hollow', `boss=${Game.__boss && Game.__boss.id}`);
+ok('boss carries its authored combat stats', Game.__boss && Game.__boss.name === 'Grukk the Hollow');
+q.onKill('grukk_the_hollow');                // slay the boss → advance to turn-in
+q.onTalk('elder');                           // return to the Elder → complete
+ok('showcase quest completes end to end', statusOf('the_hollow_idol') === 'complete');
+ok('unique WEAPON reward granted (equippable)',
+  Game.inventory.some((s) => s && s.id === 'gorks_first_fang'));
+ok('unique CROWN reward granted', Game.inventory.some((s) => s && s.id === 'the_hollow_crown'));
+ok('unique relic keepsake granted', Game.inventory.some((s) => s && s.id === 'hollow_idol_shard'));
 
 // --- persistence roundtrip ---------------------------------------------------
 const saved = JSON.parse(JSON.stringify(q.serializeQuests()));

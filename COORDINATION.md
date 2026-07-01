@@ -349,6 +349,18 @@ Client-side until Phase 4; each phase keeps the player-freeze + world-continuity
   Rerouting would risk the legacy cook/smith branches; revisit with id migration.
 
 ## Change log
+- 2026-07-01 — Economy agent (⚠️ CROSS-LANE edit at owner's direct request):
+  **spears now held UPRIGHT at rest** in `src/render/avatar.js` (character-render
+  lane — heads up). Spears were drawn along the arm angle, so at idle/walk they
+  jutted straight out horizontally ("weird"). Fix: decoupled the spear's draw
+  angle from the arm — a NEW `weapAng` = `spearUpright ? 1.45 : swing`, where
+  `spearUpright = anim!=='attack' && !skilling && weapon.kind==='spear'`. The arm
+  still uses `swing`; only `drawWeapon(...)` gets `weapAng` (both the front/back and
+  profile draw sites). Attack still uses the real swing so the stab thrust is
+  unchanged. Verified in `avatar_preview.html`: idle+walk = vertical tip-up, attack
+  = forward thrust, front + profile, hero + boss. Minimal/surgical — didn't touch
+  `weaponAngle`, gear.js, or anything else. @character-render: fold this in; extend
+  to `staff` too if you want (same kind of pole). avatar.js parses clean.
 - 2026-07-01 — Economy agent: **minimap HUD tidied — the wide "controls" hint box
   is now a "?" bubble.** `#cam-hint` went from a 168px text panel to a 42px round
   bubble that reveals the click/scroll/zoom/rotate controls in a hover popover.

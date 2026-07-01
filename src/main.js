@@ -688,7 +688,7 @@ function onPointerDown(pointer) {
 
   if (npc && npc.type === 'elder') return startTalk(npc);
   if (npc && npc.type === 'guard') return startAttack(npc);
-  if (usableObj && (usableObj.skill || usableObj.altar || usableObj.transport || usableObj.shortcut)) return startInteract(usableObj);
+  if (usableObj && (usableObj.skill || usableObj.altar || usableObj.transport || usableObj.shortcut || usableObj.examine)) return startInteract(usableObj);
   if (usableObj && isCropPatch(usableObj)) return startInteract(usableObj); // plant/harvest
   if (usableObj && usableObj.nodeId) return startInteract(usableObj); // [economy lane] data-driven gather node
   if (usableObj) { Game.log(`${usableObj.label}. (Nothing to do here yet.)`); return walkTo(tx, ty); }
@@ -947,7 +947,7 @@ function gameTick(count, isLast = true) {
     // [economy lane] fires and crop patches are non-blocking, so act while
     // standing ON them (dist 0) or beside them (dist 1); every other target
     // stays adjacency-only.
-    const inReach = (o.fire || isCropPatch(o) || o.transport || o.shortcut) ? dist <= 1 : dist === 1;
+    const inReach = (o.fire || isCropPatch(o) || o.transport || o.shortcut || o.examine) ? dist <= 1 : dist === 1;
     if (!o.depleted && p.path.length === 0 && inReach) {
       performSkill(o, count);
     }
@@ -1312,6 +1312,10 @@ function performSkill(o, count) {
   // their auto-cook path below.
   const STATION_OF = { 'Town Furnace': 'furnace', 'Town Anvil': 'anvil', 'Cooking Range': 'fire_or_range', 'Crafting Bench': 'crafting_bench', 'Sawmill': 'sawmill' };
   if (!o.fire && STATION_OF[o.label]) { openStation(STATION_OF[o.label]); panelAnchor = { tab: 'stations', x: o.x, y: o.y, range: 2 }; p.interactTarget = null; return; }
+
+  // [economy lane] Tinker's Workbench is a world object (design doc's station model),
+  // not a HUD button — clicking it opens the workbench popup.
+  if (o.label === "Tinker's Workbench") { openWorkbench(); p.interactTarget = null; return; }
 
   // Structures: Smithing / Cooking / Crafting (legacy quick-craft + firemaking fires)
   switch (o.skill) {

@@ -93,6 +93,35 @@
     ],
     "rewards": { "coins": 60, "xp": [ { "skill": "Strength", "amount": 200 }, { "skill": "Hitpoints", "amount": 80 } ], "items": [ { "id": "bronze_body" } ], "bankSpace": 10 }
   },
+  {
+    "id": "the_hollow_idol",
+    "name": "The Hollow Idol",
+    "act": 1,
+    "giver": { "npc": "elder", "name": "Goblin Elder", "where": { "x": 492, "y": 448 } },
+    "summary": "The Goblin Elder has felt something stir beneath the old training yard. He needs a brave goblin to face it.",
+    "intro": "You've proven you can fight. Good — because I need you for something the others are too frightened for. There is an old idol beneath the training yard, older than the warren itself. Lately it… whispers. Take it three bone offerings, and whatever crawls out — put it down.",
+    "outro": "So. The Hollow Idol is silent at last, and you walk away wearing its crown. The whispers named you, goblin — I heard them. Keep the Fang close. I suspect this was only the beginning.",
+    "requires": { "quests": ["tutorial_first_scrap"] },
+    "introCutscene": [
+      { "title": "The Hollow Idol", "sub": "a goblin legend", "fade": "out" },
+      { "fade": "in" },
+      { "who": "Goblin Elder", "say": "You hear it too, don't you? The hum beneath the yard, every night since you arrived." },
+      { "pan": { "x": 515, "y": 486 }, "wait": 1200 },
+      { "who": "???", "say": "…freeee… meee…", "shake": true },
+      { "who": "Goblin Elder", "say": "Go. Silence the idol before it wakes the whole warren." }
+    ],
+    "outroCutscene": [
+      { "who": "The Idol", "say": "…at last… a goblin worthy of the crown…", "shake": true },
+      { "title": "The Hollow Crown", "sub": "is yours" }
+    ],
+    "steps": [
+      { "type": "goto", "where": { "x": 515, "y": 486, "name": "The Old Training Yard", "radius": 6 }, "text": "Seek the idol beneath the old training yard", "say": "The Elder points east, past the training posts. The ground hums as you approach." },
+      { "type": "obtain", "target": "bones", "count": 3, "text": "Gather 3 Bones as an offering", "say": "Bones for the idol — the rats in the yard will provide. Lay three at its feet." },
+      { "type": "boss", "target": "grukk_the_hollow", "count": 1, "text": "Defeat Grukk the Hollow", "say": "The idol splits open with a crack of old stone — and something climbs out!", "where": { "x": 515, "y": 487, "name": "The Idol", "radius": 6 }, "boss": { "name": "Grukk the Hollow", "combatLevel": 16, "hp": 48, "att": 9, "str": 9, "def": 6, "attackSpeed": 3, "weaponType": "crush", "aggressive": true, "color": 9068224 } },
+      { "type": "talk", "target": "elder", "name": "Goblin Elder", "text": "Return to the Goblin Elder", "say": "It's done. Carry the crown back to the Elder in the settlement." }
+    ],
+    "rewards": { "coins": 100, "xp": [ { "skill": "Attack", "amount": 300 }, { "skill": "Strength", "amount": 300 }, { "skill": "Prayer", "amount": 150 } ], "items": [ { "id": "gorks_first_fang" }, { "id": "the_hollow_crown" }, { "id": "hollow_idol_shard" } ] }
+  },
 
   {
     "id": "bridge_over_dumb_water",

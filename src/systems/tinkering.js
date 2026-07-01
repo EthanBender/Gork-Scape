@@ -118,9 +118,9 @@ const TOOL_ITEMS = {
   gum_tap:         { name: 'Gum Tap',            color: 0x9a7a4a, tool: 'tap',      value: 25 },
   chem_kit:        { name: 'Chemistry Kit',      color: 0x6aa06a, tool: 'chem_kit', value: 60 },
   heat_tongs:      { name: 'Heat Tongs',         color: 0xc25a3a, tool: 'heat_tongs', value: 70 },
-  prospector_lens: { name: "Prospector's Lens",  color: 0xc9b45a, tool: 'prospect', value: 240, boosts: 'mining' },
-  clockwork_hatchet: { name: 'Clockwork Hatchet', color: 0xb0894a, tool: 'axe',     value: 260, boosts: 'woodcutting' },
-  powered_pickaxe: { name: 'Powered Pickaxe',    color: 0x9a9aa8, tool: 'pickaxe',  value: 280, boosts: 'mining' },
+  prospector_lens: { name: "Prospector's Lens",  color: 0xc9b45a, tool: 'prospect',    value: 240, boosts: 'mining' },
+  clockwork_hatchet: { name: 'Clockwork Hatchet', color: 0xb0894a, tool: 'woodcutting', value: 260, boosts: 'woodcutting' },
+  powered_pickaxe: { name: 'Powered Pickaxe',    color: 0x9a9aa8, tool: 'mining',       value: 280, boosts: 'mining' },
 };
 for (const [id, d] of Object.entries(TOOL_ITEMS)) {
   reg(id, { slot: null, stackable: false, value: d.value, tinkerTool: true, ...d });

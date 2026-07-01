@@ -20,6 +20,7 @@ import { EQUIP_SLOTS } from '../items/equipment.js';
 const SKILL_MAP = {
   woodcutting: 'Woodcutting', fishing: 'Fishing', mining: 'Mining',
   cooking: 'Cooking', smithing: 'Smithing', crafting: 'Crafting',
+  farming: 'Farming', firemaking: 'Firemaking', alchemy: 'Alchemy', tinkering: 'Tinkering',
   attack: 'Attack', strength: 'Strength', defence: 'Defence', ranged: 'Ranged',
   hitpoints: 'Hitpoints',
 };
