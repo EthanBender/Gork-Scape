@@ -1831,8 +1831,7 @@ function aggroMark(g, cx, feetY) {
 function collectCharacters(time) {
   const p = Game.player;
   const list = [];
-  for (const n of Game.npcs) {
-    if (manhattan(n.tileX, n.tileY, p.tileX, p.tileY) > ACTIVATE + 4) continue;
+  for (const n of Game.activeNpcs) {
     if (n.dead) {
       if (!n._wasDead) { n._wasDead = true; n._deathAt = time; }
       if ((time - n._deathAt) / 700 >= 1) continue; // topple finished; hidden until respawn
@@ -2060,8 +2059,8 @@ function drawMinimap() {
     if (!inMini(mx, my)) continue;
     g.fillStyle(o.depleted ? 0x555555 : o.color, 1); g.fillRect(mx - 1, my - 1, 2.5, 2.5);
   }
-  // entities
-  for (const n of Game.npcs) {
+  // entities (active set covers a larger radius than the minimap ever shows)
+  for (const n of Game.activeNpcs) {
     if (n.dead) continue;
     if (manhattan(n.tileX, n.tileY, p.tileX, p.tileY) > R + 1) continue;
     const mx = toMiniX(n.px), my = toMiniY(n.py);
@@ -2264,7 +2263,7 @@ function drawWorldMap(canvas) {
   // nearby enemies
   const p = Game.player;
   ctx.fillStyle = '#ff3030';
-  for (const n of Game.npcs) {
+  for (const n of Game.activeNpcs) {
     if (n.dead || n.type === 'elder') continue;
     if (manhattan(n.tileX, n.tileY, p.tileX, p.tileY) > ACTIVATE + 4) continue;
     ctx.fillRect(n.tileX * sx - 1.5, n.tileY * sy - 1.5, 3, 3);

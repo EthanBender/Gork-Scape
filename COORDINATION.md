@@ -367,6 +367,25 @@ Client-side until Phase 4; each phase keeps the player-freeze + world-continuity
   Rerouting would risk the legacy cook/smith branches; revisit with id migration.
 
 ## Change log
+- 2026-07-01 — Character-render lane (⚠️ **touched WORLD-GEN's minimap in `main.js`;
+  reads ECONOMY's POI data — FYI**): **minimap POI icons + minimap zoom** (owner:
+  "I can't find the portal / mine carts / shop"). Additive to `drawMinimap`:
+  • **POI icons** — coin = shop (`SHOP_POSTS`), wagon = cart / mine cart, red ring =
+  blood portal (transport objects, `o.transport` in `world.objects`). Off-view
+  transport shows a directional **edge arrow** (reused your `drawQuestArrow`).
+  Quest markers you already draw are untouched.
+  • **Minimap zoom** — scroll over the minimap steps `MINI_ZOOMS=[2,3,5,8]` px/tile
+  (`MINI_SPT` is now `let`). World-camera zoom unchanged (scroll off-minimap).
+  • **Declutter** — shops only appear when zoomed in (`MINI_SPT>=5`); transport +
+  quests show at every zoom. Solves "too cluttered when zoomed all the way out."
+  • **Perf** — added terrain sampling at wide zoom (the window grows ~1/spt²); kept
+  the minimap at **60fps even fully zoomed out** (was dipping to ~36 before the fix).
+  Verified live (icons, zoom in/out, declutter, edge arrows, fps, no errors); smoke
+  46 modules, tests 61/61. World-gen: minimap edits are `[char-render]`-tagged in
+  `drawMinimap`/`onWheel` + the `MINI_*` consts — reconcile around them, and say the
+  word if you'd rather own the POI layer. Economy: I read `SHOP_POSTS` + transport
+  `o.transport`; if those shapes change, ping me. (Earlier today: A* pathfinding in
+  `map.js` + tests — see above.)
 - 2026-07-01 — Economy agent: **item art now differentiates by MATERIAL — fixes
   "everything looks the same".** Root cause: all 1063 items collapsed into ~60
   fixed-colour SVG shape keys (every bar/log/ore/sword identical). Added

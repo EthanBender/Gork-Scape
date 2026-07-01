@@ -107,6 +107,11 @@ const ICON_SVG = {
   arrow: `<line x1="4" y1="20" x2="18.5" y2="5.5" stroke="${P.wood}" stroke-width="1.7"/><polygon points="19,5 14.8,6 18,9.2" fill="${P.steel}"/><path d="M4 20 L7.2 19 L5 22.2 Z" fill="#e8e2d0"/>`,
   trophy: `<path d="M8 4 H16 V7 A4 4 0 0 1 8 7 Z" fill="${P.gold}"/><path d="M8 5 H5.5 V7 Q5.5 9 8 9" fill="none" stroke="${P.gold}" stroke-width="1.2"/><path d="M16 5 H18.5 V7 Q18.5 9 16 9" fill="none" stroke="${P.gold}" stroke-width="1.2"/><rect x="11" y="11" width="2" height="4" fill="${P.goldD}"/><rect x="8" y="15" width="8" height="2.4" rx="1" fill="${P.goldD}"/>`,
   potionfallback: '',
+  hide: `<path d="M5 6 Q8 3 12 5 Q16 3 19 6 L17.5 17 Q12 20.5 6.5 17 Z" fill="${P.leather}" stroke="${P.woodD}" stroke-width=".6"/><circle cx="9.5" cy="10" r="1" fill="${P.woodD}" opacity=".45"/><circle cx="14" cy="12.5" r="1" fill="${P.woodD}" opacity=".45"/>`,
+  cloth: `<rect x="5" y="6" width="14" height="12" rx="1.2" fill="${P.glass}" stroke="#8a7a5a" stroke-width=".5"/><path d="M5 9.5 H19 M5 12.5 H19 M5 15.5 H19" stroke="#0000002a" stroke-width="1"/><path d="M8 6 V18 M13 6 V18" stroke="#00000018" stroke-width=".7"/>`,
+  tooth: `<path d="M9 4 Q12 2.6 15 4 Q14.2 12 12 20.5 Q9.8 12 9 4 Z" fill="${P.bone}" stroke="#c9bfa0" stroke-width=".5"/>`,
+  scale: `<g stroke="#00000033" stroke-width=".4"><path d="M4 8 a3.2 3.2 0 0 1 6.4 0 Z" fill="${P.glass}"/><path d="M10.4 8 a3.2 3.2 0 0 1 6.4 0 Z" fill="${P.glass}"/><path d="M7.2 12.5 a3.2 3.2 0 0 1 6.4 0 Z" fill="${P.glass}"/><path d="M4 17 a3.2 3.2 0 0 1 6.4 0 Z" fill="${P.glass}"/><path d="M10.4 17 a3.2 3.2 0 0 1 6.4 0 Z" fill="${P.glass}"/></g>`,
+  feather: `<path d="M17 5 Q6 8.5 8 19 Q17 15.5 17 5 Z" fill="${P.glass}" stroke="#7a8894" stroke-width=".4"/><line x1="17" y1="5" x2="8" y2="19" stroke="#ffffffaa" stroke-width=".7"/>`,
   box: `<rect x="5" y="8" width="14" height="11" fill="${P.wood}" stroke="${P.woodD}"/><path d="M5 8 L12 5 L19 8 Z" fill="#b98a52"/><line x1="12" y1="5" x2="12" y2="19" stroke="${P.woodD}"/>`,
 };
 
@@ -162,7 +167,8 @@ const MAT = [
   ['yew', '#63764a', '#42502e'], ['oak', '#8a6a2f', '#5a4420'],
   ['normal_log', '#a9843f', '#6f5426'], ['normal_plank', '#c9975a', '#9a6a2e'],
   // leather / cloth
-  ['dragonhide', '#4a7a4a', '#2f5030'], ['leather', '#8a5a34', '#5f3d1f'],
+  ['dragonhide', '#4a7a4a', '#2f5030'], ['snakeskin', '#7a8a4a', '#4f5a2e'],
+  ['cowhide', '#9a7a5a', '#6a5238'], ['leather', '#8a5a34', '#5f3d1f'],
   ['hide', '#8a5a34', '#5f3d1f'], ['wool', '#d8cbb0', '#a89b80'],
 ];
 // Match materials on WORD boundaries (so 'tin' doesn't hit 'woodcutting', 'oak'
@@ -180,10 +186,14 @@ const TINT = {
   herb: [[P.leaf], [P.greenD]], potion: [[P.red], []], boots: [[P.leather], [P.woodD]],
   gloves: [[P.leather], [P.woodD]], cape: [['#7a3b5a'], ['#4a2338']],
   seed: [[P.green], [P.greenD]], book: [['#7a3b3b'], ['#4a2020']],
+  hide: [[P.leather], [P.woodD]], cloth: [[P.glass], []], tooth: [[P.bone], []],
+  scale: [[P.glass], []], feather: [[P.glass], []], bow: [[P.wood], []],
+  staff: [[P.wood], []], box: [[P.wood], [P.woodD]], bones: [[P.bone], []],
 };
 // Keys that should get a hash-hue when no known material matches (naturally
 // multi-coloured item groups). Metal/wood shapes stay their default otherwise.
-const HASH_KEYS = new Set(['gem', 'fish', 'herb', 'potion', 'cape', 'amulet', 'ring', 'charm', 'seed', 'book']);
+const HASH_KEYS = new Set(['gem', 'fish', 'herb', 'potion', 'cape', 'amulet', 'ring', 'charm', 'seed', 'book',
+  'cloth', 'tooth', 'scale', 'feather', 'box', 'bones']);
 
 function hueFromString(str) {
   // djb2 over a 32-bit range then fold to hue — spreads similar names far apart
