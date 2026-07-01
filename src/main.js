@@ -729,7 +729,11 @@ function startTalk(npc) {
 }
 
 function talkTo(npc) {
-  Game.log(`${npc.name}: "${npc.dialog}"`);
+  // [economy lane] Quest first: talking to a marked giver starts / advances /
+  // turns in a quest (the engine emits the dialogue itself). If it wasn't a quest
+  // conversation, fall back to the NPC's flavour line.
+  const handledQuest = questOnTalk(npc.id);
+  if (!handledQuest) Game.log(`${npc.name}: "${npc.dialog}"`);
   if (npc.id === 'exchange_merchant') { openExchange(); panelAnchor = { tab: 'ge', x: npc.tileX, y: npc.tileY, range: 3 }; }
   else if (npc.id && npc.id.startsWith('shopkeeper_')) { openShop(npc.id.replace('shopkeeper_', '')); panelAnchor = { tab: 'shop', x: npc.tileX, y: npc.tileY, range: 3 }; }
   else if (npc.id === 'banker') { openBank(); panelAnchor = { tab: 'bank', x: npc.tileX, y: npc.tileY, range: 3 }; }

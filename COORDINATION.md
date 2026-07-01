@@ -306,6 +306,25 @@ Client-side until Phase 4; each phase keeps the player-freeze + world-continuity
   Rerouting would risk the legacy cook/smith branches; revisit with id migration.
 
 ## Change log
+- 2026-07-01 — Economy/items lane: **starter money-makers near spawn + hubs +
+  in-world fast-travel (carts/portal).** (A) Fast travel is now CLICKABLE WORLD
+  OBJECTS, not a HUD button (owner-directed): `src/systems/travel.js` places cart /
+  mine-cart stations (coin fares: 15/20) + a **Blood Portal** (costs ½ current HP,
+  never lethal) near the hub, with a return at each destination; click → walk →
+  `boardTransport` charges + teleports. main.js hooks: `placeTransports` in
+  buildWorld, transport branches in the click handler / `gameTick` reach /
+  `performSkill`. (B) **Spawn was resource-bare** (the settlement has no entry in
+  the — unused — REGION_RESOURCES; all placement is hand-authored in map.js). NEW
+  `src/systems/spawnActivities.js` scatters a starter yard around spawn (trees +
+  copper/tin) and tops up each hub (mine rocks / trees / grublake fishing), built
+  from RESOURCE_TYPES so the existing gather+draw+respawn systems handle them.
+  Verified against a fresh generateWorld(): **42 nodes placed**, spawn 0→~11
+  gathering nodes within 20 tiles; hubs topped up. Piggybacked on placeTransports()
+  (called from the same buildWorld hook) to dodge the heavy main.js edit-races.
+  ⚠️ Couldn't grab an in-game screenshot — boot was rolling through breakage from a
+  concurrent panels.js/main.js export refactor (`openStation`, then `activePanel`
+  not exported). My modules import clean; verified logic on a standalone world.
+  TUNE: fares (15/20), blood cost (½ HP), and node counts are easy knobs.
 - 2026-07-01 — Economy agent: **removed the Exchange + Stations tabs — you now
   craft/trade at world assets (owner-directed).** Audited both first: Exchange was
   already world-wired (talk to the Exchange Merchant → `openExchange`), but the
