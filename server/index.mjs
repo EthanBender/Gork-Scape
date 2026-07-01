@@ -31,10 +31,12 @@ import { dirname, join, normalize, extname } from 'node:path';
 import { Market } from '../src/systems/grandExchange.js';
 import * as WorldClock from '../src/engine/worldClock.js';
 import * as WorldEvents from '../src/systems/worldEvents.js';
+import { Accounts } from './accounts.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');            // repo root (serve the client from here)
 const STATE_FILE = join(__dirname, 'world-state.json');
+const ACCOUNTS_FILE = join(__dirname, 'accounts.json');
 const PORT = Number(process.env.PORT) || process.argv[2] || 5200;
 
 const LOOP_MS = 2000;        // world tick cadence (economy loop can be slow)
@@ -60,6 +62,12 @@ function loadItems() {
   }
   return items.length;
 }
+
+// ---------------------------------------------------------------- accounts
+// Server-authoritative player accounts (username + password) and their saves.
+// See server/accounts.mjs. This is what makes profiles real: the save lives on
+// the server keyed to the account, not in one browser's localStorage.
+const accounts = new Accounts(ACCOUNTS_FILE);
 
 // ---------------------------------------------------------------- world state
 const market = new Market();
@@ -236,9 +244,63 @@ function readBody(req) {
   });
 }
 
+// Read + JSON-parse a request body, tolerating an empty/garbage body.
+async function readJson(req) {
+  try { return JSON.parse(await readBody(req) || '{}'); } catch { return null; }
+}
+
 const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
   const path = url.pathname;
+
+  // CORS preflight: the client is normally same-origin (this server serves it),
+  // but answering OPTIONS lets the auth API also work from a separate client host.
+  if (req.method === 'OPTIONS') {
+    res.writeHead(204, {
+      'access-control-allow-origin': '*',
+      'access-control-allow-methods': 'GET, POST, OPTIONS',
+      'access-control-allow-headers': 'content-type',
+      'access-control-max-age': '86400',
+    });
+    return res.end();
+  }
+
+  // ---- accounts / auth ----
+  // Create a new account. The username IS the in-game character name.
+  if (path === '/api/auth/register' && req.method === 'POST') {
+    const body = await readJson(req);
+    if (!body) return sendJson(res, 400, { error: 'Bad request.' });
+    const r = accounts.register(body.username, body.password);
+    return sendJson(res, r.ok ? 200 : (r.code || 400), r.ok ? r : { error: r.error });
+  }
+
+  // Sign in to an existing account; returns a session token + the stored save.
+  if (path === '/api/auth/login' && req.method === 'POST') {
+    const body = await readJson(req);
+    if (!body) return sendJson(res, 400, { error: 'Bad request.' });
+    const r = accounts.login(body.username, body.password);
+    return sendJson(res, r.ok ? 200 : (r.code || 401), r.ok ? r : { error: r.error });
+  }
+
+  // Resume a session from a held token (page refresh) — no password needed.
+  if (path === '/api/auth/me' && req.method === 'POST') {
+    const body = await readJson(req);
+    const r = accounts.me(body && body.token);
+    return sendJson(res, r.ok ? 200 : (r.code || 401), r.ok ? r : { error: r.error });
+  }
+
+  if (path === '/api/auth/logout' && req.method === 'POST') {
+    const body = await readJson(req);
+    return sendJson(res, 200, accounts.logout(body && body.token));
+  }
+
+  // Persist a player's save server-side (authenticated by their token).
+  if (path === '/api/auth/save' && req.method === 'POST') {
+    const body = await readJson(req);
+    if (!body) return sendJson(res, 400, { error: 'Bad request.' });
+    const r = accounts.putSave(body.token, body.save);
+    return sendJson(res, r.ok ? 200 : (r.code || 400), r.ok ? r : { error: r.error });
+  }
 
   // ---- API ----
   if (path === '/api/world') return sendJson(res, 200, worldSnapshot());
@@ -344,6 +406,7 @@ server.listen(PORT, () => {
 function shutdown() {
   console.log('\n[world] saving + shutting down…');
   saveState();
+  accounts.flush();
   server.close(() => process.exit(0));
   setTimeout(() => process.exit(0), 500);
 }
