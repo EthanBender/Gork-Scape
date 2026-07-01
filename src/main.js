@@ -34,7 +34,7 @@ import { rollSkillSuccess } from './engine/skills.js';
 import { emptyBonuses, ITEMS } from './items/equipment.js';
 import { rollLoot } from './world/loot.js';
 import { randInt } from './engine/rng.js';
-import { initTravel } from './systems/travel.js'; // [economy lane] fast travel (carts/portal)
+import { placeTransports, boardTransport } from './systems/travel.js'; // [economy lane] fast travel (carts/portal)
 import { initPanels, showContextMenu, openExchange, openShop, openBank } from './ui/panels.js'; // openExchange/openShop/openBank [economy lane]
 // [economy lane] — combat drops from the database drop tables. See COORDINATION.md.
 import { rollMonsterDrops } from './systems/drops.js';
@@ -202,6 +202,10 @@ function buildWorld() {
     world.objects.push(altar);
     world.objectAt.set(altarPos.x + ',' + altarPos.y, altar);
   }
+
+  // [economy lane] Fast-travel transports (cart / mine-cart stations + blood
+  // portal) as clickable world objects — near the hub, with a return at each stop.
+  placeTransports(world);
 
   // Friendly (non-combat) NPCs — tutors, prospectors, farmers, etc.
   (world.friendlies || []).forEach((f, i) => {
@@ -375,9 +379,6 @@ function create() {
   const runBtn = document.getElementById('run-btn');
   if (runBtn) runBtn.onclick = () => { toggleRun(); };
   updateRunHud(true);
-
-  // Fast travel: HUD button + carts/portal menu (testing convenience).
-  initTravel();
 
   this.input.mouse.disableContextMenu();
   this.input.on('pointerdown', onPointerDown);
@@ -614,7 +615,7 @@ function onPointerDown(pointer) {
 
   if (npc && npc.type === 'elder') return talkTo(npc);
   if (npc && npc.type === 'guard') return startAttack(npc);
-  if (usableObj && (usableObj.skill || usableObj.altar)) return startInteract(usableObj);
+  if (usableObj && (usableObj.skill || usableObj.altar || usableObj.transport)) return startInteract(usableObj);
   if (usableObj && isCropPatch(usableObj)) return startInteract(usableObj); // plant/harvest
   if (usableObj) { Game.log(`${usableObj.label}. (Nothing to do here yet.)`); return walkTo(tx, ty); }
   if (fire) return startInteract(fire); // [economy lane] walk to & cook at the fire
@@ -839,7 +840,7 @@ function gameTick(count, isLast = true) {
     // [economy lane] fires and crop patches are non-blocking, so act while
     // standing ON them (dist 0) or beside them (dist 1); every other target
     // stays adjacency-only.
-    const inReach = (o.fire || isCropPatch(o)) ? dist <= 1 : dist === 1;
+    const inReach = (o.fire || isCropPatch(o) || o.transport) ? dist <= 1 : dist === 1;
     if (!o.depleted && p.path.length === 0 && inReach) {
       performSkill(o, count);
     }

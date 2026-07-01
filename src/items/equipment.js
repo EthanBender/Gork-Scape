@@ -16,9 +16,9 @@ export const EQUIP_SLOTS = [
 
 // Every stat key an item can contribute. Used to build zeroed totals.
 export const STAT_KEYS = [
-  'stab_atk', 'slash_atk', 'crush_atk', 'magic_atk', 'range_atk',
-  'stab_def', 'slash_def', 'crush_def', 'magic_def', 'range_def',
-  'melee_str', 'range_str', 'magic_dmg', 'prayer',
+  'stab_atk', 'slash_atk', 'crush_atk', 'magic_atk', 'range_atk', 'tinker_atk',
+  'stab_def', 'slash_def', 'crush_def', 'magic_def', 'range_def', 'tinker_def',
+  'melee_str', 'range_str', 'tinker_str', 'magic_dmg', 'prayer',
 ];
 
 export function emptyBonuses() {

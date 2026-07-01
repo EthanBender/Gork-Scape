@@ -235,14 +235,18 @@ Client-side until Phase 4; each phase keeps the player-freeze + world-continuity
   needed**; but `MARKET_EVENTS` + the random scheduler are GONE (removed) and the market
   snapshot no longer persists the event. **Farming growth engine:** new pure `src/systems/farming.js`
   (`Game.farming`) grows crops on the world clock (offline too), persisted
-  `goblin_empire:world_farms`. ⚠️ **The plant/harvest interaction + a `Farming` skill are
-  UNWIRED** — `crop_patch` nodes in `world_nodes.json` are placed by map.js as non-interactive
-  labels, and `Farming` isn't in `SKILL_NAMES`. Wiring it (use seed on patch → plant → harvest,
-  add the skill) is the next farming step; the growth/persistence half is done.
+  `goblin_empire:world_farms`. **NOW FULLY WIRED + browser-verified (2026-07-01):**
+  `Farming` added to `SKILL_NAMES` (⚠️ shared `engine/skills.js` edit — now 14 skills; panels
+  render it automatically). main.js makes `crop_patch` nodes interactive: `cropPatchDef(o)`
+  (memoized `GameData.node(o.nodeId)`) routes clicks in `onPointerDown` + right-click menu;
+  `performSkill`→`performFarming(o)` plants a matching seed (`<crop>_seed`, consumes 1, +8 XP)
+  on an empty patch or harvests when ripe (+26 XP). Patch `o.label` shows the growth stage and
+  `o._farm = {cropId,stage,ready}` is set for the render lane to draw richer crop visuals.
 
-  Remaining Phase-3 ideas: wire the farming plant/harvest interaction + `Farming` skill,
-  unify the *runtime* GE event scheduler fully into `ensureLiquidity`. World-gen: day/night
-  tint via `worldClock.daylight(now)`/`phase(now)` + ambient, theme by `worldEvents.activeEvent()`.
+  Remaining Phase-3 ideas: unify the *runtime* GE event scheduler fully into `ensureLiquidity`
+  (offline + banner already unified). World-gen: day/night tint via
+  `worldClock.daylight(now)`/`phase(now)` + ambient, theme by `worldEvents.activeEvent()`,
+  and optional crop-growth sprites via `object._farm`.
 - **Phase 4 — authoritative server (the real "always-on" world).** Node + WebSocket
   owns the tick loop and world state 24/7; `main.js` becomes a thin client sending
   intents + rendering snapshots. Swap the local GE `market` singleton for a network
@@ -291,6 +295,46 @@ Client-side until Phase 4; each phase keeps the player-freeze + world-continuity
   Rerouting would risk the legacy cook/smith branches; revisit with id migration.
 
 ## Change log
+- 2026-07-01 — Economy agent: **RuneScape-style skill guide popup + inventory/
+  equipment tidy.** Clicking any skill in the Skills tab now opens a modal listing
+  every unlock for it by level from `level_unlocks.json` — ✓ available at your
+  level vs 🔒 locked, with item/node kind (`showSkillGuide` in `panels.js` +
+  reusable `.modal-*` CSS in `index.html`; closes via ✕ / backdrop / Esc). Also
+  added an **"Inventory · N/28" slot counter** header. Audited the Inventory +
+  Equipment tabs — both functionally sound (drag-rearrange, drop-to-ground,
+  context menus, paperdoll + stat summary all working), so this was polish, not
+  bug-fixing. Verified live on :5189 (Woodcutting guide = 33 unlocks, 4 available
+  /29 locked; header reads 12/28; all close paths work; 0 console errors), released.
+- 2026-07-01 — Character-render lane: **owner-directed "top-3 holes" pass (tests /
+  server decision / main.js split).**
+  **#1 TEST HARNESS (new, high-leverage):** `test/run.mjs` — zero-dep runner (same
+  spirit as smoke) + a Node `fetch` shim so even the data-driven economy modules
+  test headlessly. **35 tests** across `skills` (XP anchors), `combat` (level/max-hit/
+  bounds), `grandExchange` (matching, partial fills, price-time priority, self-skip,
+  guide clamp), `gear` (silhouettes), and `economy` (drop tables via the DB). It
+  already **caught a real bug** — `bronze_pickaxe` classified as an *axe* (the
+  `/axe/` regex matched "pick**axe**"); fixed in `gear.js`. Run `node test/run.mjs`
+  before "done", now part of the gate (see WORKFLOW ↑). Add `<system>.test.mjs` for
+  your systems — economy/world-gen lanes, your pure evaluators are the highest-value
+  next targets (crafting, gathering, shops, worldClock).
+  **#2 SERVER DECISION (owner-facing):** `docs/SERVER_DECISION.md` — the MMO-vision-
+  vs-single-player-localStorage gap is an *unmade decision*, not a task. Doc frames
+  A (build minimal authoritative server) / B (own single-player, park MMO features) /
+  C (keep client-side with a deadline), recommends **B→A**, and lists per-lane
+  implications. **Owner: please pick.** Until then assume C (no NEW cross-player-only
+  features on localStorage — that's the effort most likely to be redone).
+  **#3 main.js DECOMPOSITION (started, my slice done):** extracted my ~180-line
+  avatar-state block out of `main.js` → new `src/render/characters.js`
+  (`avatarStateFor`, `playerSkillTarget`, `drawSkillFx`, `npcGear`, creature variants,
+  AV_* consts). main.js imports them; smoke+tests green; runtime import verified.
+  **Proposal for the rest (do in worktrees):** main.js is still ~1790 lines shared by
+  all 3 lanes — the collision epicenter. Suggested split: `scene/input.js`,
+  `render/worldRender.js` (world-gen), `combat/combatController.js`, `ui/hud.js`,
+  `engine/boot.js` (session/save/clock wiring). Each lane owns files, not regions.
+  ⚠️ nit: `main.js` line ~54 `import {gearHints,weaponStyleFor,bodyTypeFor} from
+  './render/gear.js'` is now **unused** (moved to characters.js) — safe to delete; I
+  kept losing the race to trim it. Also: **the game is NOT broken — it's a login
+  gate**; enter a character name → world boots (my earlier "blank" alarm was that).
 - 2026-07-01 — Economy/items lane: **fast travel (carts + magic portal), owner-
   requested for testing/getting around.** NEW self-contained `src/systems/travel.js`
   + one import & `initTravel()` call in `main.js create()` (next to the run wiring).

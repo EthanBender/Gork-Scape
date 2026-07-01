@@ -15,7 +15,7 @@
 // (water < grass < rock, settlements raised). SOFT invariants (warn only):
 // per-region mob density in sane bounds, no large stranded walkable island.
 
-import { generateWorld, isWalkable } from '../src/world/map.js';
+import { generateWorld, isWalkable, regionAt } from '../src/world/map.js';
 import { T, TERRAIN_DEFS, REGION_ANCHORS } from '../src/world/worldData.js';
 
 const SEED = Number(process.argv[2]) || 1337;
@@ -47,20 +47,21 @@ for (let i = 0; i < N; i++) { if (!w.collision[i]) { walkTotal++; if (reach[i]) 
 if (isWalkable(w, w.spawn.x, w.spawn.y)) notes.push(`spawn (${w.spawn.x},${w.spawn.y}) walkable`);
 else fails.push(`spawn (${w.spawn.x},${w.spawn.y}) is NOT walkable`);
 
-// ---------- 2. every region reachable from spawn ----------
-// nearest walkable tile to an anchor (spiral out); then check it's in the flood set
-function nearestWalkable(cx, cy, maxR) {
-  if (isWalkable(w, cx, cy)) return [cx, cy];
-  for (let r = 1; r <= maxR; r++) for (let a = 0; a < 360; a += 15) {
-    const x = Math.round(cx + r * Math.cos(a * Math.PI / 180)), y = Math.round(cy + r * Math.sin(a * Math.PI / 180));
-    if (x >= 0 && y >= 0 && x < W && y < H && isWalkable(w, x, y)) return [x, y];
-  }
-  return null;
-}
+// ---------- 2. every region reachable from spawn (can you enter its bounds?) ----------
+// A region passes if a meaningful share of its walkable ground is reachable on
+// foot — you can get IN, even if its watery centre or far corners aren't. Regions
+// sealed behind an earned shortcut (Troll Ridge's key gate) are expected to stay
+// sealed until unlocked, so they're noted rather than failed.
+const GATED = new Set(['troll']); // locked until a key/shortcut is earned
 for (const a of REGION_ANCHORS) {
-  const t = nearestWalkable(a.x, a.y, Math.max(40, a.r | 0));
-  if (!t) { fails.push(`region "${a.name}": no walkable ground within ${Math.max(40, a.r | 0)} of anchor (${a.x},${a.y})`); continue; }
-  if (!reach[idx(t[0], t[1])]) fails.push(`region "${a.name}" UNREACHABLE on foot from spawn (nearest ground ${t[0]},${t[1]})`);
+  if (!a.bounds) continue;
+  const [x0, y0, x1, y1] = a.bounds;
+  let wb = 0, rb = 0;
+  for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) { const i = idx(x, y); if (!w.collision[i]) { wb++; if (reach[i]) rb++; } }
+  const frac = wb ? rb / wb : 0;
+  if (frac >= 0.05) continue; // you can walk in
+  if (GATED.has(a.id)) notes.push(`region "${a.name}" sealed (${(frac * 100).toFixed(1)}% reachable) — gated by design, opens with a shortcut`);
+  else fails.push(`region "${a.name}" UNREACHABLE on foot — only ${(frac * 100).toFixed(1)}% of its ground reachable from spawn`);
 }
 
 // ---------- 3. elevation rules ----------
@@ -102,10 +103,30 @@ for (const a of REGION_ANCHORS) {
   if (a.mobs && a.mobs.length && n === 0) warns.push(`region "${a.name}" expects mobs but has none inside its bounds`);
 }
 
-// ---------- 6. stranded land (soft) ----------
+// ---------- 6. stranded land — is any large pocket accidentally walled off? (soft) ----------
+// Total stranded ground is expected (gated regions, lake islands). What matters
+// is whether one big CONNECTED pocket sits in a non-gated region — that signals a
+// pass accidentally sealed somewhere the player should be able to reach.
 const stranded = walkTotal - walkReached;
-notes.push(`connectivity ${(100 * walkReached / walkTotal).toFixed(2)}% of walkable ground reachable from spawn (${stranded} tiles stranded)`);
-if (stranded > 2000) warns.push(`${stranded} walkable tiles are stranded (>2000) — likely an isolated island/pocket`);
+const seenC = new Uint8Array(N);
+let biggest = 0, biggestSample = -1;
+for (let i0 = 0; i0 < N; i0++) {
+  if (w.collision[i0] || reach[i0] || seenC[i0]) continue;
+  let size = 0; const stack = [i0]; seenC[i0] = 1;
+  while (stack.length) {
+    const c = stack.pop(); size++; const x = c % W, y = (c - x) / W;
+    const nb = [c - 1, c + 1, c - W, c + W]; const ok = [x > 0, x < W - 1, y > 0, y < H - 1];
+    for (let k = 0; k < 4; k++) { if (!ok[k]) continue; const n = nb[k]; if (w.collision[n] || reach[n] || seenC[n]) continue; seenC[n] = 1; stack.push(n); }
+  }
+  if (size > biggest) { biggest = size; biggestSample = i0; }
+}
+notes.push(`connectivity ${(100 * walkReached / walkTotal).toFixed(2)}% reachable from spawn (${stranded} tiles stranded, largest pocket ${biggest})`);
+if (biggestSample >= 0 && biggest > 1500) {
+  const bx = biggestSample % W, by = (biggestSample - biggestSample % W) / W;
+  const rg = regionAt(bx, by);
+  const gatedNames = [...GATED].map(id => (REGION_ANCHORS.find(z => z.id === id) || {}).name);
+  if (!gatedNames.includes(rg)) warns.push(`largest stranded pocket (${biggest} tiles) is in "${rg}" near (${bx},${by}) — check it isn't accidentally walled off`);
+}
 
 // ---------- report ----------
 const line = '─'.repeat(66);

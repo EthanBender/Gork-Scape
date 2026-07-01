@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Goblin Empire</title>
 <script src="https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js"></script>
 <style>
@@ -28,8 +31,10 @@
   * { box-sizing: border-box; }
   html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text);
     font-family: "Segoe UI", Tahoma, sans-serif; overflow: hidden;
-    -webkit-font-smoothing: antialiased; }
-  #app { display: flex; flex-direction: column; height: 100vh; }
+    -webkit-font-smoothing: antialiased; -webkit-text-size-adjust: 100%;
+    overscroll-behavior: none; }
+  #app { display: flex; flex-direction: column; height: 100vh; height: 100dvh; }
+  #game-canvas { touch-action: none; } /* game taps shouldn't scroll/zoom the page */
 
   /* Themed scrollbars */
   * { scrollbar-width: thin; scrollbar-color: var(--border) var(--panel-lo); }
@@ -494,6 +499,75 @@
   #worldmap-canvas { display: block; background: #0c0c0a; border: 1px solid var(--border);
     cursor: crosshair; max-width: 88vh; max-height: 88vh; }
   .wm-hint { color: var(--muted); font-size: 11px; margin-top: 6px; text-align: center; }
+
+  /* ============================================================
+     MOBILE — portrait phones (≤720px wide): stack the game over the
+     panel, shrink chrome, finger-size the controls, fit overlays.
+     Tablets/desktop keep the side-by-side layout.
+     ============================================================ */
+  @media (max-width: 720px) {
+    /* Stack: game on top, tabbed panel below, chat at the bottom. */
+    #main { flex-direction: column; }
+    #game-panel { flex: 6 1 0; min-height: 180px; }
+    #side-panel { flex: 5 1 0; min-width: 0; max-width: none; width: 100%;
+      border-left: none; border-top: 2px solid var(--bevel-lo);
+      box-shadow: inset 0 1px 0 var(--bevel-hi); }
+
+    /* Top bar: scroll horizontally instead of overflowing; hide dev tick;
+       respect the notch. */
+    #topbar { gap: 0; padding: 0 calc(6px + env(safe-area-inset-left)) 0 calc(6px + env(safe-area-inset-left));
+      overflow-x: auto; overflow-y: hidden; white-space: nowrap; }
+    #topbar::-webkit-scrollbar { display: none; }
+    #topbar .tb { padding: 0 11px; font-size: 13px; }
+    #topbar #tb-name { font-size: 15px; padding: 0 8px; }
+    #tb-tick { display: none; }
+
+    /* Bigger tab hit-targets for thumbs. */
+    .tab-btn { padding: 9px 2px 7px; }
+    .tab-btn .tab-icon { font-size: 18px; }
+    .tab-btn .tab-label { font-size: 10px; }
+
+    /* Canvas HUD controls: keyboard hints are useless on touch; shrink the
+       buttons and split them to the top corners so they don't cover the map. */
+    #cam-hint { display: none; }
+    #map-btn { top: calc(8px + env(safe-area-inset-top)); right: 8px; left: auto;
+      width: auto; padding: 8px 12px; font-size: 12px; }
+    #run-btn { top: calc(8px + env(safe-area-inset-top)); left: 8px; right: auto;
+      width: auto; min-width: 118px; }
+
+    /* Chat: a touch shorter; input big enough that iOS won't zoom on focus. */
+    #chatlog { flex-basis: 84px; height: 84px; padding: 6px 12px; }
+    #chat-input-bar { padding: 5px 10px calc(5px + env(safe-area-inset-bottom)); }
+    #chat-input { font-size: 16px; padding: 9px 10px; }
+    .ge-form input { font-size: 16px; }
+
+    /* Comfortable tap sizes for the common action buttons. */
+    .style-btn, .station-btn, .craft-btn, .ge-btn, .ge-chip, .ge-mini,
+    .modal-close, .tab-btn { min-height: 40px; }
+    .craft-btn, .ge-btn { padding: 10px 12px; }
+
+    /* Overlays fit the dynamic viewport and never exceed screen width. */
+    .modal-panel { width: min(440px, 94vw); max-height: 86dvh; }
+    .wm-box { max-height: 94dvh; padding: 10px; }
+    #worldmap-canvas { max-width: min(88vh, 92vw); max-height: 76dvh; }
+
+    /* Hover tooltips don't exist on touch — keep them from lingering huge. */
+    #item-tip { max-width: 70vw; }
+  }
+
+  /* Landscape phones (short height): trim the fixed bars so the game/panel
+     still get room; keep the side-by-side layout, which reads well wide. */
+  @media (max-height: 500px) and (min-width: 721px) {
+    #topbar { height: 38px; flex-basis: 38px; }
+    #chatlog { flex-basis: 62px; height: 62px; }
+  }
+
+  /* Coarse pointer (touch) anywhere: remove hover-only affordances that can
+     stick on tap, and make selectable slots easy to hit. */
+  @media (hover: none) and (pointer: coarse) {
+    .skill-cell:hover { transform: none; box-shadow: var(--raise); }
+    .inv-slot, .doll-slot { min-height: 44px; }
+  }
 </style>
 </head>
 <body>

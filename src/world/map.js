@@ -875,6 +875,13 @@ export function generateWorld(seed = DEFAULT_SEED) {
   const collision = new Uint8Array(WORLD_W * WORLD_H);
   for (let i = 0; i < collision.length; i++) collision[i] = TERRAIN_DEFS[terrain[i]].walkable ? 0 : 1;
   for (const o of objects) if (o.blocking) collision[idx(o.x, o.y)] = 1;
+  // safety: a later terrain pass (a wonder wall, waterfall/spring disc, etc.) can
+  // seal a tile a mob was already standing on. Lift any such mob onto the nearest
+  // walkable ground so nothing spawns trapped inside a wall or in open water.
+  for (const s of enemySpawns) {
+    if (!collision[idx(s.x, s.y)]) continue;
+    for (let r = 1; r <= 5; r++) { let done = false; for (let a = 0; a < 360; a += 30) { const nx = Math.round(s.x + r * Math.cos(a * Math.PI / 180)), ny = Math.round(s.y + r * Math.sin(a * Math.PI / 180)); if (nx >= 0 && ny >= 0 && nx < WORLD_W && ny < WORLD_H && !collision[idx(nx, ny)]) { s.x = nx; s.y = ny; done = true; break; } } if (done) break; }
+  }
   const objectsByChunk = new Map();
   for (const o of objects) { const k = chunkKey(o.x, o.y); if (!objectsByChunk.has(k)) objectsByChunk.set(k, []); objectsByChunk.get(k).push(o); }
 
