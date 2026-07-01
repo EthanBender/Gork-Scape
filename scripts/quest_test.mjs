@@ -77,6 +77,16 @@ ok('completion paid coins', Game.inventory.some((s) => s && s.id === 'coins'));
 ok('completing the tutorial unlocks its dependants',
   statusOf('first_pickaxe') === 'available' && statusOf('goblin_pointy_stick') === 'available');
 
+// --- quest tracking: the map follows only ONE selected quest -----------------
+ok('a default quest is auto-tracked after the tutorial', !!q.trackedQuestId());
+ok('the map shows at most one marker (the tracked quest)', q.questMarkers().length <= 1);
+q.trackQuest(q.trackedQuestId()); // toggle the tracked quest OFF
+ok('untracking clears all map markers',
+  q.trackedQuestId() === null && q.questMarkers().length === 0);
+q.trackQuest('first_pickaxe');    // track a specific available quest
+ok('tracking a quest surfaces exactly its marker',
+  q.trackedQuestId() === 'first_pickaxe' && q.questMarkers().length === 1);
+
 // --- a goto + obtain quest: First Pickaxe -------------------------------------
 q.onTalk('shopkeeper_general_store'); // starts first_pickaxe (its giver)
 ok('First Pickaxe starts from its own giver', statusOf('first_pickaxe') === 'active');
