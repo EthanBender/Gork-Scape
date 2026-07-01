@@ -381,6 +381,19 @@ Client-side until Phase 4; each phase keeps the player-freeze + world-continuity
   Rerouting would risk the legacy cook/smith branches; revisit with id migration.
 
 ## Change log
+- 2026-07-01 — Economy agent: **fixed INVISIBLE world objects + gave them art
+  (blood portal, carts, Bones Altar, starter activities).** ⚠️ **GOTCHA all lanes
+  must know:** `world.objectsByChunk` (the spatial index `drawObjects`/`objectsInView`
+  read) is built ONCE inside `generateWorld()`. Anything pushed straight onto
+  `world.objects` AFTER world-gen is interactable (via `objectAt`) but **never
+  renders** — it's not chunk-indexed. This silently hid the fast-travel blood
+  portal + carts (`travel.js`), starter spawn activities (`spawnActivities.js`),
+  and the Bones Altar (`main.js`). **FIX:** new `addWorldObject(world, o)` in
+  `map.js` keeps `objects` + `objectAt` + `objectsByChunk` + collision consistent —
+  **use it for ANY post-generation object placement, never a bare `world.objects.push`.**
+  Also added real procedural art in `main.js drawObjects` (was a plain colored
+  square): an animated blood-portal gateway, a mine-cart for cart/minecart
+  transports, and a shrine for the altar. Verified in-browser (0 render errors).
 - 2026-07-01 — Character-render lane (⚠️ WORLD-GEN's `drawWorldMap` in `main.js`):
   **POI icons + legend on the big World Map overlay** (owner: the minimap icons
   should be on the M/WORLD-MAP view too — "that was more what I meant"). Same icon
