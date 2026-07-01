@@ -150,6 +150,10 @@ export function applySave(data) {
   // [economy lane] Bank capacity + opened shortcuts (quest-reward payoffs). main.js
   // re-applies the shortcut terrain flips after the world is built (reapplyOpenedShortcuts).
   if (typeof data.bankMax === 'number') Game.bankMax = data.bankMax;
+  // [economy lane] Restore stored bank items (account-bound; persists across logout).
+  Game.bank = Array.isArray(data.bank)
+    ? data.bank.map((b) => ({ id: b.id, qty: b.qty })).filter((b) => b.id && b.qty > 0)
+    : [];
   Game.openedShortcuts = Array.isArray(data.openedShortcuts) ? data.openedShortcuts.slice() : [];
   Game.selectedInv = null;
 }
