@@ -13,6 +13,7 @@
 
 import { market } from '../systems/grandExchange.js';
 import { Game } from '../engine/state.js';
+import { api } from './config.js';
 
 const PRICES_URL = '/api/prices';
 const POLL_ONLINE_MS = 5000;   // stay fresh while connected
@@ -30,7 +31,7 @@ async function fetchJson(url) {
   const ctrl = new AbortController();
   const t = setTimeout(() => ctrl.abort(), FETCH_TIMEOUT_MS);
   try {
-    const res = await fetch(url, { cache: 'no-store', signal: ctrl.signal });
+    const res = await fetch(api(url), { cache: 'no-store', signal: ctrl.signal });
     if (!res.ok) return null;
     return await res.json();
   } catch {
@@ -61,7 +62,7 @@ export async function postOrder(side, itemId, qty, limit, trader) {
   const ctrl = new AbortController();
   const t = setTimeout(() => ctrl.abort(), FETCH_TIMEOUT_MS);
   try {
-    const res = await fetch('/api/order', {
+    const res = await fetch(api('/api/order'), {
       method: 'POST', signal: ctrl.signal, headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ side, itemId, qty, limit, trader }),
     });
@@ -78,7 +79,7 @@ async function postJson(url, body) {
   const ctrl = new AbortController();
   const t = setTimeout(() => ctrl.abort(), FETCH_TIMEOUT_MS);
   try {
-    const res = await fetch(url, {
+    const res = await fetch(api(url), {
       method: 'POST', signal: ctrl.signal, headers: { 'content-type': 'application/json' },
       body: JSON.stringify(body),
     });

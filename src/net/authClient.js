@@ -12,6 +12,8 @@
 // The session token is kept in localStorage so a page refresh keeps you signed
 // in (resume() re-validates it) — standard for a browser game.
 
+import { api } from './config.js';
+
 const TOKEN_KEY = 'goblin_empire:token';
 const FETCH_TIMEOUT_MS = 6000; // password hashing (scrypt) can take a moment server-side
 
@@ -33,7 +35,7 @@ async function post(path, body) {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), FETCH_TIMEOUT_MS);
   try {
-    const res = await fetch(path, {
+    const res = await fetch(api(path), {
       method: 'POST', signal: ctrl.signal,
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify(body || {}),
@@ -65,7 +67,7 @@ export async function probe() {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), 3000);
   try {
-    const res = await fetch('/api/world', { signal: ctrl.signal, cache: 'no-store' });
+    const res = await fetch(api('/api/world'), { signal: ctrl.signal, cache: 'no-store' });
     return res.ok;
   } catch {
     return false;
@@ -115,7 +117,7 @@ export function beaconSave(save) {
   if (!token || !navigator.sendBeacon) return false;
   try {
     const blob = new Blob([JSON.stringify({ token, save })], { type: 'application/json' });
-    return navigator.sendBeacon('/api/auth/save', blob);
+    return navigator.sendBeacon(api('/api/auth/save'), blob);
   } catch {
     return false;
   }
