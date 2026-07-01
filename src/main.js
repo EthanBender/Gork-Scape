@@ -476,6 +476,18 @@ function create() {
   initTinkerHud(); // [economy lane] readies the Tinker's Workbench popup CSS (opened from the world node)
 
   this.input.mouse.disableContextMenu();
+  // iPad/touch: give Phaser extra pointer slots. With the default single pointer, a
+  // touch that ENDS over the HTML side-panel never delivers pointerup to the canvas,
+  // so that pointer stays stuck "down" and every later tap on the world is read as the
+  // same held pointer — the player stops moving. Extra pointers + a global release keep
+  // touch input from wedging after the player uses the inventory or side panel.
+  this.input.addPointer(3);
+  const releaseStuckPointers = () => {
+    const mgr = this.input && this.input.manager; if (!mgr || !mgr.pointers) return;
+    for (const pt of mgr.pointers) { if (pt && pt.isDown && pt.wasTouch) { pt.isDown = false; pt.primaryDown = false; pt.dirty = true; } }
+  };
+  for (const ev of ['touchend', 'touchcancel', 'pointerup', 'pointercancel']) window.addEventListener(ev, releaseStuckPointers, false);
+  this.events.once('shutdown', () => { for (const ev of ['touchend', 'touchcancel', 'pointerup', 'pointercancel']) window.removeEventListener(ev, releaseStuckPointers, false); });
   this.input.on('pointerdown', onPointerDown);
   this.input.on('pointermove', onPointerMove);
   this.input.on('wheel', onWheel);
