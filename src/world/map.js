@@ -7,7 +7,7 @@
 
 import {
   WORLD_W, WORLD_H, CHUNK, DEFAULT_SEED, T, TERRAIN_DEFS, REGION_ANCHORS,
-  RESOURCE_TYPES, ENEMY_TYPES, ROADS, LANDMARKS, MOB_MAP,
+  RESOURCE_TYPES, ENEMY_TYPES, ROADS, LANDMARKS, MOB_MAP, SHORTCUTS,
 } from './worldData.js';
 // The design database (items/monsters/nodes). Loaded via resilient top-level
 // await; empty in Node so world-gen falls back to the hand-authored baseline.
@@ -763,6 +763,26 @@ export function generateWorld(seed = DEFAULT_SEED) {
     // Waterfall where the north river spills off the hills into the lowlands
     for (let y = 314; y <= 322; y++) { for (const x of [684, 685, 686]) { const t = getT(x, y); if (t === T.GRASS || t === T.ROCK) setT(x, y, T.WATER); } }
     ringDecor(685, 324, 3, 40, 0xdfefff, 3, 'circle'); disc(685, 326, 2, (x, y) => { if (getT(x, y) === T.GRASS) setT(x, y, T.WATER); }); S(688, 318, 'Waterfall', 0x9ecfe0, false);
+  })();
+
+  // ---- Interactive shortcuts: repairable marker on the shore + the gap to span ----
+  // Runs before the texture pass so the crossing is still raw T.WATER. Scans from
+  // each shortcut's anchor across to the water gap, records the span tiles for the
+  // interaction handler to bridge at open-time, and drops a reachable marker on the
+  // near shore. Skips quietly if the generated terrain has no gap there.
+  (function placeShortcuts() {
+    for (const s of SHORTCUTS) {
+      const [ax, ay] = s.anchor, [dx, dy] = s.across;
+      let x = ax, y = ay, guard = 0;
+      while (guard++ < 40 && inB(x, y) && getT(x, y) !== T.WATER) { x += dx; y += dy; }
+      const span = [];
+      while (span.length < s.maxSpan && inB(x, y) && getT(x, y) === T.WATER) { span.push([x, y]); x += dx; y += dy; }
+      if (!span.length) continue;
+      const mx = span[0][0] - dx, my = span[0][1] - dy; // near-shore land tile
+      if (!inB(mx, my) || occupied.has(okey(mx, my))) continue;
+      placeObj({ x: mx, y: my, type: 'structure', label: s.label, color: s.color, skill: null, blocking: false, depleted: false,
+        shortcut: { id: s.id, kind: s.kind, cost: s.cost, span, doneLabel: s.doneLabel, doneMsg: s.doneMsg, hint: s.hint, opened: false } });
+    }
   })();
 
   // ---- POLISH (Phase D): ecotone transition content at biome edges ----

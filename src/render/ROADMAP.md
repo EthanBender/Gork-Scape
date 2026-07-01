@@ -46,9 +46,13 @@ attack swings (stab/slash/crush/ranged), hit-flash, death topple, gear overlays
   that reuse the shared pose numbers (walk/attack/hit/death/shadow all apply).
   Verified: rat, cave bug, giant spider (8 legs + eyes), bog slime, oak boar all
   render distinctly; Gork stays humanoid.
+- **Extra forms (DONE, verified in harness):** added `avian` (bats — hovering,
+  flapping membrane wings) and `serpent` (snakes/eels — undulating tapering body
+  with a lunging head), plus a **boss aura** (pulsing gold ring) that layers under
+  any silhouette for named bosses (`boss` flag from `bodyTypeFor`). `avatar_preview.html`
+  now has a body-type gallery + cache-busted module imports (no more stale-preview).
 - *Still open (later):* authoritative `render.bodyType` on `monsters.json`
-  (JSON-first, would override the keyword guess); boss phase-transition FX;
-  a dedicated avian/serpent form (bats/snakes currently fall back to quadruped).
+  (JSON-first, would override the keyword guess); boss phase-transition FX.
 
 ## ✅ Phase 4 — NPC & world-character variety (DONE, verified in-game)
 - `npcLoadout(name, type)` in `main.js` picks a role loadout by name keyword →

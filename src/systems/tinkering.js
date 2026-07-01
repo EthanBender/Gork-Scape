@@ -38,12 +38,12 @@ export const TIERS = [
 //   chain  — extra nearby targets the shot arcs to
 //   snare  — briefly roots the target (area denial)
 export const CLASSES = [
-  { id: 'bombard', name: 'Bombard',       speed: 5, range: 5, ammo: 'bomb', atkB: 2, atkS: 3, strB: 5, strS: 6, effect: { splash: 0.5 },            blurb: 'Lobs bombs — splash damage to everything around the target.' },
-  { id: 'cannon',  name: 'Hand Cannon',   speed: 6, range: 6, ammo: 'slug', atkB: 3, atkS: 4, strB: 5, strS: 6, effect: { pierce: 0.5 },            blurb: 'A single armour-piercing slug. Wrecks heavy armour.' },
-  { id: 'spitter', name: 'Dart Spitter',  speed: 2, range: 4, ammo: 'dart', atkB: 4, atkS: 4, strB: 1, strS: 3, effect: { hits: 2 },                blurb: 'Rapid spring-fed darts. Out-DPS on lightly armoured foes.' },
-  { id: 'bellows', name: 'Flame Bellows', speed: 4, range: 3, ammo: 'fuel', atkB: 2, atkS: 3, strB: 3, strS: 4, effect: { burn: 3 },                blurb: 'A short cone of flame that keeps burning for several ticks.' },
-  { id: 'trapper', name: 'Trap Launcher', speed: 6, range: 3, ammo: 'trap', atkB: 2, atkS: 3, strB: 4, strS: 5, effect: { snare: true, pierce: 0.2 }, blurb: 'Fires spring-traps that bite and briefly root the target.' },
-  { id: 'tesla',   name: 'Tesla Coil',    speed: 4, range: 5, ammo: 'cell', atkB: 3, atkS: 4, strB: 3, strS: 4, effect: { chain: 1, pierce: 0.35 },  blurb: 'Arcs lightning to a second nearby foe, ignoring some armour.' },
+  { id: 'bombard', name: 'Bombard',       speed: 5, range: 5, ammo: 'bomb', atkB: 2, atkS: 3, strB: 5, strS: 6, effect: { splash: 0.5 },                  blurb: 'Lobs bombs — splash damage to everything around the target.' },
+  { id: 'cannon',  name: 'Hand Cannon',   speed: 6, range: 6, ammo: 'slug', atkB: 3, atkS: 4, strB: 5, strS: 6, effect: { armorPierce: 0.5 },            blurb: 'A single armour-piercing slug. Wrecks heavy armour.' },
+  { id: 'spitter', name: 'Dart Spitter',  speed: 2, range: 4, ammo: 'dart', atkB: 4, atkS: 4, strB: 1, strS: 3, effect: { hits: 2 },                      blurb: 'Rapid spring-fed darts. Out-DPS on lightly armoured foes.' },
+  { id: 'bellows', name: 'Flame Bellows', speed: 4, range: 3, ammo: 'fuel', atkB: 2, atkS: 3, strB: 3, strS: 4, effect: { burn: 3 },                      blurb: 'A short cone of flame that keeps burning for several ticks.' },
+  { id: 'trapper', name: 'Trap Launcher', speed: 6, range: 3, ammo: 'trap', atkB: 2, atkS: 3, strB: 4, strS: 5, effect: { snare: true, armorPierce: 0.2 }, blurb: 'Fires spring-traps that bite and briefly root the target.' },
+  { id: 'tesla',   name: 'Tesla Coil',    speed: 4, range: 5, ammo: 'cell', atkB: 3, atkS: 4, strB: 3, strS: 4, effect: { chain: 1, armorPierce: 0.35 },  blurb: 'Arcs lightning to a second nearby foe, ignoring some armour.' },
 ];
 
 // Ammo families: id prefix, display noun, and the per-tier tinker_str it adds.

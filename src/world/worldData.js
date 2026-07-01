@@ -95,6 +95,21 @@ export const ROADS = [
   { id: 'lake_to_bog_waterline', type: 'water_or_boardwalk', w: 2, pts: [[735, 560], [705, 640], [685, 710], [725, 775]] },
 ];
 
+// Interactive shortcuts: a blocked crossing (rotted bridge, locked gate) that the
+// player opens by spending materials, flipping collision so a new route appears.
+// `anchor` is the land tile you interact from; `across`/`maxSpan` scan for the
+// water/wall gap to lay `BRIDGE` (or clear) at open-time (see placeShortcuts in
+// map.js). Coords are validated against the *generated* terrain, not the art pack.
+export const SHORTCUTS = [
+  {
+    id: 'west_bridge', kind: 'bridge', label: 'Rotted Bridge', doneLabel: 'West Bridge',
+    color: 0x7a5a3a, anchor: [320, 466], across: [1, 0], maxSpan: 12,
+    cost: [['oak_plank', 2], ['iron_bar', 1]],
+    hint: 'The old bridge has rotted away. With 2 oak planks and an iron bar you could rebuild it.',
+    doneMsg: 'You rebuild the West Bridge — the willow-river crossing is open!',
+  },
+];
+
 // Pack mob names -> base enemy stat block in ENEMY_TYPES (display name is the
 // prettified pack name, so region flavour is preserved).
 export const MOB_MAP = {

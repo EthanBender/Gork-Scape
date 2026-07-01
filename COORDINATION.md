@@ -319,6 +319,24 @@ Client-side until Phase 4; each phase keeps the player-freeze + world-continuity
   Rerouting would risk the legacy cook/smith branches; revisit with id migration.
 
 ## Change log
+- 2026-07-01 — Character-render lane: **verified the render path live + added
+  creature forms + save-test coverage.**
+  (1) **Verified live** (logged in past the gate): the `characters.js` extraction,
+  creature variations, and occlusion-seam refactor all render correctly in the
+  actual game — 138 NPCs, 60fps, no errors. (My earlier "blank boot" was the login
+  gate; the game is healthy.)
+  (2) **New creature silhouettes** in `avatar.js`: `avian` (bats — flapping wings)
+  and `serpent` (snakes/eels — undulating body), plus a **boss aura** (pulsing gold
+  ring under any silhouette). Driven by `bodyTypeFor` now returning `{type,size,boss}`
+  — bats→avian, snakes/eels→serpent, and `king|horror|golem|guardian|dragon…`→boss.
+  Verified in the `avatar_preview.html` body-type gallery.
+  (3) **Save round-trip tests** (`test/save.test.mjs`, +6 → **41 tests total**):
+  `serialize`/`applySave` are boot-critical and cross-lane, so they're now covered
+  (skills/inventory/equipment/pos/hp round-trip, idempotence, junk tolerance,
+  backup parse). Economy/engine lanes: this guards YOUR save changes too — run
+  `node test/run.mjs`.
+  (4) Fixed the harness's stale-module problem with cache-busted dynamic imports.
+  All render-path only; smoke 41 modules green.
 - 2026-07-01 — Economy agent: **Shop + Bank tabs removed too; all world panels
   now talk-to-open and auto-close on walk-away (owner-directed).** `NO_BUTTON` in
   `panels.js` now covers `ge/stations/shop/bank` — tabbar down to **6** (Skills/

@@ -628,7 +628,7 @@ function onPointerDown(pointer) {
 
   if (npc && npc.type === 'elder') return startTalk(npc);
   if (npc && npc.type === 'guard') return startAttack(npc);
-  if (usableObj && (usableObj.skill || usableObj.altar || usableObj.transport)) return startInteract(usableObj);
+  if (usableObj && (usableObj.skill || usableObj.altar || usableObj.transport || usableObj.shortcut)) return startInteract(usableObj);
   if (usableObj && isCropPatch(usableObj)) return startInteract(usableObj); // plant/harvest
   if (usableObj) { Game.log(`${usableObj.label}. (Nothing to do here yet.)`); return walkTo(tx, ty); }
   if (fire) return startInteract(fire); // [economy lane] walk to & cook at the fire
@@ -881,7 +881,7 @@ function gameTick(count, isLast = true) {
     // [economy lane] fires and crop patches are non-blocking, so act while
     // standing ON them (dist 0) or beside them (dist 1); every other target
     // stays adjacency-only.
-    const inReach = (o.fire || isCropPatch(o) || o.transport) ? dist <= 1 : dist === 1;
+    const inReach = (o.fire || isCropPatch(o) || o.transport || o.shortcut) ? dist <= 1 : dist === 1;
     if (!o.depleted && p.path.length === 0 && inReach) {
       performSkill(o, count);
     }
@@ -939,6 +939,16 @@ function gameTick(count, isLast = true) {
     if (n.type === 'elder') continue;
     if (manhattan(n.tileX, n.tileY, p.tileX, p.tileY) > ACTIVATE) continue;
 
+    // Tinker burn DoT: a burning enemy loses HP each tick.
+    if (n.burnTicks > 0) {
+      n.burnTicks -= 1;
+      n.hp = Math.max(0, n.hp - (n.burnDmg || 1));
+      floatText(n, '-' + (n.burnDmg || 1), '#ff7a2a');
+      if (n.hp <= 0) { Game.log(`The ${n.name} burns to a crisp!`); killNpc(n, count); continue; }
+    }
+    // Tinker snare: a trapped enemy can still attack but cannot move.
+    const snared = count < (n.snaredUntil || 0);
+
     const distPlayer = manhattan(n.tileX, n.tileY, p.tileX, p.tileY);
     const distHome = manhattan(n.tileX, n.tileY, n.homeX, n.homeY);
     if (n.aggressive && distPlayer <= n.aggroRange && distHome <= n.leashRadius) n.target = p;
@@ -952,10 +962,12 @@ function gameTick(count, isLast = true) {
       if (canAttackFrom(world, n, p.tileX, p.tileY, nRange)) {
         n.path = [];
         if (count - n.lastAttackTick >= n.attackSpeed) { n.lastAttackTick = count; npcAttack(n, count); }
-      } else {
+      } else if (!snared) {
         n.path = findPath(world, n.tileX, n.tileY, p.tileX, p.tileY, true);
         stepAlongPath(n);
       }
+    } else if (snared) {
+      // rooted — hold position this tick
     } else if (distHome > n.wanderRadius) {
       n.path = findPath(world, n.tileX, n.tileY, n.homeX, n.homeY, false);
       stepAlongPath(n);
@@ -1102,11 +1114,33 @@ function updateCropLabels() {
   }
 }
 
+// Open an interactive shortcut: check + consume its material cost, then bridge the
+// recorded span (flip terrain to BRIDGE + clear collision) so the crossing opens.
+// Records the id on Game.openedShortcuts so the save layer can re-apply it on load.
+function tryOpenShortcut(o) {
+  const p = Game.player, sc = o.shortcut, W = Game.world.W;
+  if (sc.opened) { Game.log(`The ${sc.doneLabel} is already open.`); p.interactTarget = null; return; }
+  if (sc.cost.some(([id, q]) => countItem(id) < q)) {
+    const need = sc.cost.map(([id, q]) => `${q}× ${ITEMS[id] ? ITEMS[id].name : id}`).join(', ');
+    Game.log(`${sc.hint || 'It needs materials.'} (Need ${need}.)`);
+    p.interactTarget = null; return;
+  }
+  for (const [id, q] of sc.cost) for (let k = 0; k < q; k++) removeOneById(id);
+  for (const [tx, ty] of sc.span) { const i = ty * W + tx; Game.world.terrain[i] = T.BRIDGE; Game.world.collision[i] = 0; }
+  sc.opened = true; o.label = sc.doneLabel; o.color = 0x9a7a4a;
+  (Game.openedShortcuts || (Game.openedShortcuts = [])).includes(sc.id) || Game.openedShortcuts.push(sc.id);
+  Game.log(sc.doneMsg || `You open the ${sc.doneLabel}.`);
+  p.interactTarget = null;
+}
+
 function performSkill(o, count) {
   const p = Game.player;
 
   // Fast-travel transports: pay the fare (coins) or blood cost (HP) and teleport.
   if (o.transport) { boardTransport(o); return; }
+
+  // Interactive shortcut: spend materials to open a crossing (lay a bridge / clear a gate).
+  if (o.shortcut) { tryOpenShortcut(o); return; }
 
   // Crop patches: plant/harvest via the world-time growth engine.
   if (isCropPatch(o)) return performFarming(o);
@@ -1266,6 +1300,42 @@ function playerAttack(npc, count) {
     dropLoot(npc, count);
     questOnKill(npc.monsterId); // [economy lane] tally kills for active quests
   }
+}
+
+// Kill an NPC (shared by combat, gadget blasts, and burn ticks).
+function killNpc(n, count) {
+  n.dead = true; n.respawnAt = count + 16; n.target = null;
+  if (Game.player.combatTarget === n) Game.player.combatTarget = null;
+  dropLoot(n, count);
+  questOnKill(n.monsterId);
+}
+
+// Deal splash/chain damage to a secondary target and resolve its death.
+function hitNpcExtra(n, dmg, count) {
+  if (!n.target) n.target = Game.player;
+  n.hp = Math.max(0, n.hp - dmg);
+  floatText(n, '-' + dmg, '#ffb14d');
+  grantCombatXp(dmg);
+  if (n.hp <= 0) { Game.log(`The ${n.name} is caught in the blast!`); killNpc(n, count); }
+}
+
+// Apply a gadget's area effects after a landed hit: splash to adjacent foes,
+// chain to the nearest others, a burn DoT, and/or a brief snare (root).
+function applyAreaEffects(target, effect, dmg, count) {
+  const others = (pred) => Game.npcs.filter((n) => n !== target && !n.dead && n.type === 'guard' && pred(n));
+  if (effect.splash) {
+    for (const n of others((n) => manhattan(n.tileX, n.tileY, target.tileX, target.tileY) <= 1)) {
+      hitNpcExtra(n, Math.max(1, Math.floor(dmg * effect.splash)), count);
+    }
+  }
+  if (effect.chain) {
+    const near = others((n) => manhattan(n.tileX, n.tileY, target.tileX, target.tileY) <= 4)
+      .sort((a, b) => manhattan(a.tileX, a.tileY, target.tileX, target.tileY) - manhattan(b.tileX, b.tileY, target.tileX, target.tileY))
+      .slice(0, effect.chain);
+    for (const n of near) hitNpcExtra(n, Math.max(1, Math.floor(dmg * 0.6)), count);
+  }
+  if (effect.burn) { target.burnTicks = effect.burn; target.burnDmg = Math.max(1, Math.floor(dmg * 0.25)); }
+  if (effect.snare) target.snaredUntil = count + 4;
 }
 
 function dropLoot(npc, count) {
