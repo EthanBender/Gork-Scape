@@ -101,6 +101,8 @@ export function serialize() {
     quests: serializeQuests(), // quest status + kill tallies (obtain/level recompute live)
     bankMax: Game.bankMax,     // [economy lane] bank capacity (quest / GP upgrades)
     bank: Array.isArray(Game.bank) ? Game.bank.map((b) => ({ id: b.id, qty: b.qty })) : [], // [economy lane] stored items (tied to the account, must persist)
+    gadgetMods: Array.isArray(Game.gadgetMods) ? Game.gadgetMods.slice() : [], // [economy lane] installed Tinker rig mods (crafted progression)
+    trackedQuest: Game.trackedQuest || null, // the pinned/tracked quest
     openedShortcuts: Array.isArray(Game.openedShortcuts) ? Game.openedShortcuts.slice() : [], // opened bridges/gates
   };
 }
@@ -154,6 +156,9 @@ export function applySave(data) {
   Game.bank = Array.isArray(data.bank)
     ? data.bank.map((b) => ({ id: b.id, qty: b.qty })).filter((b) => b.id && b.qty > 0)
     : [];
+  // [economy lane] installed Tinker rig mods + pinned quest (both progression/UI state).
+  Game.gadgetMods = Array.isArray(data.gadgetMods) ? data.gadgetMods.slice() : [];
+  Game.trackedQuest = data.trackedQuest || null;
   Game.openedShortcuts = Array.isArray(data.openedShortcuts) ? data.openedShortcuts.slice() : [];
   Game.selectedInv = null;
 }

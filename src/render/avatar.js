@@ -586,44 +586,94 @@ function drawBlob(ctx, skin, p, facing, t, feat = {}) {
   }
 }
 
-// A winged flier (bats, etc.). Hovers above its ground shadow; membranous wings
-// beat with time (and snap on an attack). Ears + glowing eyes read as "bat".
-function drawAvian(ctx, skin, p, facing, t) {
+// A winged flier that hovers above its ground shadow, wings beating with time
+// (snapping on an attack). Feature-driven so a bat, a raven, a moth and a wasp
+// each read distinctly: wing shape, head (ears/beak/antennae), and body markings.
+function drawAvian(ctx, skin, p, facing, t, feat = {}) {
   const dark = shade(skin, 0.7);
   const bY = 9;                                   // body floats above the feet/shadow
   const flap = Math.sin(t / 90) * 1.0 + (p.strike || 0) * 0.6;
-  // wings first (behind body): membrane quads whose tips rise/fall with the beat
   const wy = bY + 1 + flap * 2.2;
-  poly(ctx, [[-2, bY + 1], [-9, wy + 2], [-8, wy - 2.5], [-2.5, bY - 1]], dark, 0.95);
-  poly(ctx, [[2, bY + 1], [9, wy + 2], [8, wy - 2.5], [2.5, bY - 1]], dark, 0.95);
-  // dangling feet
+  const wing = feat.wing || 'membrane';
+  const ec = feat.eyeColor || 0xffd23a;
+
+  // ---- wings (behind the body) ----
+  if (wing === 'feather') {                       // bird: layered quills
+    for (const s of [1, -1]) {
+      poly(ctx, [[2 * s, bY + 1], [9 * s, wy + 1], [9 * s, wy - 3], [2.5 * s, bY - 1]], dark, 0.95);
+      seg(ctx, 3 * s, bY - 0.2, 8.5 * s, wy - 1.4, 0.7, shade(skin, 0.85));
+      seg(ctx, 3 * s, bY - 1, 8 * s, wy - 2.6, 0.6, shade(skin, 0.85));
+    }
+  } else if (wing === 'moth') {                    // moth: broad rounded, eyespots
+    for (const s of [1, -1]) {
+      poly(ctx, [[1.5 * s, bY + 2], [8 * s, bY + 5 + flap], [10 * s, bY + 1 + flap], [7 * s, bY - 3 + flap], [2 * s, bY - 1]], shade(skin, 1.08), 0.9);
+      disc(ctx, 6.5 * s, bY + 1 + flap, 1.3, feat.eyeSpot || dark, 0.8);
+    }
+  } else if (wing === 'insect') {                  // wasp: narrow translucent
+    for (const s of [1, -1]) poly(ctx, [[1.5 * s, bY + 1], [7 * s, wy + 2], [7.5 * s, wy - 1], [2 * s, bY - 0.5]], 0xdfeef5, 0.5);
+  } else {                                         // bat: leathery membrane
+    poly(ctx, [[-2, bY + 1], [-9, wy + 2], [-8, wy - 2.5], [-2.5, bY - 1]], dark, 0.95);
+    poly(ctx, [[2, bY + 1], [9, wy + 2], [8, wy - 2.5], [2.5, bY - 1]], dark, 0.95);
+  }
+
+  // feet
   seg(ctx, -1, bY - 2, -1, bY - 4, 0.8, dark); seg(ctx, 1, bY - 2, 1, bY - 4, 0.8, dark);
-  // body + head
+
+  // ---- body + head ----
   disc(ctx, 0, bY, 3.0, skin);
+  if (feat.stripes) for (let s = -1; s <= 1; s++) seg(ctx, -2.4, bY + s * 1.3, 2.4, bY + s * 1.3, 0.8, dark, 0.85);
   disc(ctx, 0, bY + 3, 2.2, skin);
-  poly(ctx, [[-1.4, bY + 5], [-2.6, bY + 8], [-0.5, bY + 5.5]], dark);  // ears
-  poly(ctx, [[1.4, bY + 5], [2.6, bY + 8], [0.5, bY + 5.5]], dark);
-  if (facing !== 'N') { disc(ctx, -1, bY + 3.2, 0.6, 0xffd23a); disc(ctx, 1, bY + 3.2, 0.6, 0xffd23a); }
+
+  const head = feat.head || 'ears';
+  if (head === 'ears') {
+    poly(ctx, [[-1.4, bY + 5], [-2.6, bY + 8], [-0.5, bY + 5.5]], dark);
+    poly(ctx, [[1.4, bY + 5], [2.6, bY + 8], [0.5, bY + 5.5]], dark);
+  } else if (head === 'beak') {
+    poly(ctx, [[-1, bY + 3], [1, bY + 3], [0, bY + 0.6]], 0xe8a83a);   // beak points down-forward
+  } else if (head === 'antennae') {
+    seg(ctx, -0.8, bY + 5, -2.2, bY + 8, 0.5, dark); disc(ctx, -2.2, bY + 8, 0.6, dark);
+    seg(ctx, 0.8, bY + 5, 2.2, bY + 8, 0.5, dark); disc(ctx, 2.2, bY + 8, 0.6, dark);
+  }
+
+  if (facing !== 'N') { disc(ctx, -1, bY + 3.2, 0.6, ec); disc(ctx, 1, bY + 3.2, 0.6, ec); }
+
+  // wasp stinger (below the abdomen)
+  if (feat.stinger) poly(ctx, [[-1, bY - 2.5], [0, bY - 5 - (p.strike || 0) * 2], [1, bY - 2.5]], dark);
 }
 
-// A legless serpent: a tapering chain of segments that undulates in a sine wave;
-// the head (front) lunges forward on a strike, tongue flicking.
-function drawSerpent(ctx, skin, p, facing, t) {
-  const SEGS = 9, baseY = 4, lunge = (p.strike || 0) * 3;
+// A legless serpent: a chain of segments undulating in a sine wave; the head
+// lunges forward on a strike. Feature-driven so a banded snake, a diamond-back
+// viper, a hooded cobra, a finned eel, a fat segmented worm and a slug (eyestalks)
+// all read distinctly.
+function drawSerpent(ctx, skin, p, facing, t, feat = {}) {
+  const worm = !!feat.segmented;
+  const SEGS = worm ? 7 : 9, baseY = 4, lunge = (p.strike || 0) * 3;
+  const amp = feat.fins ? 2.2 : 3.0;
+  const ec = feat.eyeColor || 0x141414;
   let hx = 0, hy = baseY;
-  // long, thin, tapering body along a sine wave so it reads as a SNAKE, not a blob
   for (let i = 0; i < SEGS; i++) {
     const lx = -12 + i * 3.0 + lunge;
-    const ly = baseY + Math.sin(t / 150 + i * 0.7) * 3.0;
-    const r = 1.0 + i * 0.24;                      // thin tail -> thick neck
+    const ly = baseY + Math.sin(t / 150 + i * 0.7) * amp;
+    const r = worm ? 2.0 : (1.0 + i * 0.24);       // worm = uniform fat; snake = tapered
     disc(ctx, lx, ly, r, i % 2 ? shade(skin, 0.86) : skin);
+    // scale patterns
+    if (feat.pattern === 'diamond' && i % 2 === 0) disc(ctx, lx, ly, r * 0.5, feat.markColor || shade(skin, 0.55), 0.85);
+    else if (feat.pattern === 'bands' && i % 2 === 0) disc(ctx, lx, ly - r * 0.3, r * 0.45, feat.markColor || shade(skin, 0.5), 0.7);
+    if (feat.fins) seg(ctx, lx, ly + r, lx, ly + r + 1.6, 0.8, shade(skin, 1.15), 0.6); // eel dorsal fin
     hx = lx; hy = ly;
   }
-  const headX = hx + 2.3;                          // head just ahead of the neck
-  disc(ctx, headX, hy, 2.9, skin);
-  poly(ctx, [[headX + 1, hy + 1.7], [headX + 3.6, hy], [headX + 1, hy - 1.7]], skin); // snout
-  if (facing !== 'N') disc(ctx, headX + 0.6, hy + 1.0, 0.55, 0x141414); // eye
-  if (Math.sin(t / 200) > 0.4) {                   // forked tongue flick
+  if (feat.hood) { // cobra hood flaring behind the head
+    poly(ctx, [[hx - 1, hy + 4], [hx + 3, hy + 1.5], [hx + 3, hy - 1.5], [hx - 1, hy - 4]], shade(skin, 0.92), 0.9);
+  }
+  const headX = hx + 2.3;
+  disc(ctx, headX, hy, worm ? 2.0 : 2.9, skin);
+  if (!worm) poly(ctx, [[headX + 1, hy + 1.7], [headX + 3.6, hy], [headX + 1, hy - 1.7]], skin); // snout
+  if (facing !== 'N') disc(ctx, headX + 0.6, hy + 1.0, 0.55, ec);
+  if (feat.eyestalks) {                            // slug eyestalks
+    for (const dx of [0.4, 1.8]) { seg(ctx, headX + dx, hy + 1.5, headX + dx + 0.8, hy + 4, 0.5, skin); disc(ctx, headX + dx + 0.8, hy + 4, 0.7, skin); disc(ctx, headX + dx + 0.8, hy + 4, 0.3, ec); }
+  }
+  // forked tongue flick — snakes only (not eels/worms/slugs)
+  if (feat.tongue !== false && !worm && !feat.fins && !feat.eyestalks && Math.sin(t / 200) > 0.4) {
     seg(ctx, headX + 3.6, hy, headX + 6, hy + 0.7, 0.5, 0xcf2b2b);
     seg(ctx, headX + 3.6, hy, headX + 6, hy - 0.7, 0.5, 0xcf2b2b);
   }

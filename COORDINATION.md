@@ -69,24 +69,30 @@ So **"pushing to the domain" = keeping the tree GREEN.** The ONLY requirements o
   that needs `npm install` / a bundler to run client-side.
 - **Don't delete** `_headers`, `netlify.toml`, or `wrangler.jsonc` (deploy config).
 
-**What is NOT on the domain: the server.** `server/index.mjs` (password accounts +
-login + the always-on 24/7 economy) is a **Node process** — a static host can't run it.
-**Owner decision (2026-07-01): run it LOCALLY on the owner's laptop for now**
-(`node server/index.mjs` → http://localhost:5200), **pay for a dynamic host later**
-when the game is more polished. Until then, **gorkscape.ca is client-only**, so the
-account system correctly shows its **offline fallback there — that is EXPECTED, not a bug.**
+**The server is REQUIRED (owner decision, 2026-07-01 — "one canonical world, no
+confusing offline mode").** `server/index.mjs` (password accounts + login + the
+always-on economy) is a **Node process** a static host can't run. It runs on the
+owner's **laptop for now** (`node server/index.mjs` → :5200), exposed to the public
+domain via a **Cloudflare Tunnel at `api.gorkscape.ca`** (see `DEPLOY_SERVER.md`);
+a paid host comes later. **Architecture:** the static client (Pages, gorkscape.ca)
+points its API calls at `api.gorkscape.ca` via `src/net/config.js` (`API_BASE`).
+- **Server up** → the real game: Sign In / Create Account, server-saved profiles.
+- **Server down (laptop closed)** → the client shows the **"server resting" landing
+  page** (`session.js showComingSoon()`) — an ad for the game. **There is NO local /
+  offline play mode anymore.** Don't reintroduce one.
 
-**⛔ HARD RULE for every lane — the client must ALWAYS boot with NO server reachable.**
-Never make a client feature hard-depend on `/api/*`. Follow the `serverLink.js` /
-`src/net/authClient.js` pattern: probe with a timeout, fall back to local on ANY
-failure. This is exactly what keeps the static domain working while the server lives
-only on a laptop. A networked feature that can't degrade to standalone will
-**black-screen the live site** — and the green gate won't catch it (it boots fine
-against localhost). Test with the server OFF.
+**⛔ HARD RULE for every lane — DEV + PREVIEW NOW NEED THE NODE SERVER.**
+Because the client requires the server, **preview against `node server/index.mjs`,
+NOT a python static server** — launch config `goblin-empire-worldserver` (it serves
+the client AND the API same-origin). If you preview on a static server you'll just
+see the coming-soon page (that's correct behaviour, not a bug). All server calls MUST
+go through `api()` from `src/net/config.js` (never hardcode `/api/...`) so the
+static-client / remote-server split stays invisible. The green smoke gate does NOT
+catch a broken networked feature (it's static-only), so **test signed in against the
+running server.**
 
-When the server IS hosted later: point gorkscape.ca (or a subdomain — `play.`/`api.`)
-at the Node host; the client auto-detects it via `authClient.probe()`, **no client
-change needed.**
+If the server moves (paid host / different subdomain): change `PROD_API_BASE` in
+`src/net/config.js` and point DNS — **no other client change needed.**
 
 ---
 
@@ -439,6 +445,24 @@ Client-side until Phase 4; each phase keeps the player-freeze + world-continuity
   Rerouting would risk the legacy cook/smith branches; revisit with id migration.
 
 ## Change log
+- 2026-07-01 — Character-render lane (⚠️ one line in WORLD-GEN's `drawObjects`,
+  `[char-render]`-tagged): **structure props — flat coloured squares → recognisable
+  objects.** New `src/render/props.js`: `drawProp(g, cx, cy, o)` keyword-maps a
+  `type:'structure'` object's `label` to a little prop (anvil, chest/bank, market
+  stall, Grand Exchange w/ price board, weapon rack, combat dummy, banner, well,
+  shrine/idol, cauldron/herbalist, fire, coal/rock/log piles, cart, table, hide
+  rack, bin, cave entrance, signpost, hut for houses/sheds, barrel for taverns…)
+  with a **crate fallback** so nothing's worse than the old square. Hooked into
+  `drawObjects` (one `if (o.type==='structure') drawProp(...); continue;` before
+  the generic fill — decor/resource/transport/altar paths untouched; Economy's
+  `drawTransport`/`drawAltar` still win). These are the "thing inside" — a later
+  pass builds the actual walls around them, per owner. Verified live: market
+  stalls, Grand Exchange, carts render as clear props, no errors; smoke 51, tests
+  61/61. World-gen: this is the object-art seam — happy to hand it over or keep
+  extending as you place new structures (add a keyword to `propKind`).
+  Separate observation (not from this change): town fps dips to ~25-35 during the
+  Goblin Festival with 400+ NPCs on screen — that's crowd *avatar* rendering (my
+  lane); worth an LOD pass for big crowds later.
 - 2026-07-01 — Economy agent: **DATA-LOSS FIX — the BANK now persists.** `save.js
   serialize()` was saving `bankMax` (capacity) but NOT `Game.bank` (the stored
   items), so everything in your vault vanished on logout/login. Added `bank:

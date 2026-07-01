@@ -182,6 +182,32 @@ export function creatureFeatures(name = '') {
     f.blob = 'slime'; f.core = 0xffffff; f.translucent = 0.82; f.drips = true;
   }
 
+  // --- fliers (avian rig): bat / bird / moth / wasp ---
+  else if (/\bbat\b|vampire/.test(n)) {
+    f.wing = 'membrane'; f.head = 'ears'; f.eyeColor = 0xff5a3a;
+  } else if (/moth/.test(n)) {
+    f.wing = 'moth'; f.head = 'antennae'; f.eyeColor = 0xffe0a0; f.eyeSpot = 0x6a4a2a;
+  } else if (/wasp|hornet|\bbee\b/.test(n)) {
+    f.wing = 'insect'; f.head = 'antennae'; f.stripes = true; f.stinger = true; f.eyeColor = 0x141414;
+  } else if (/raven|crow|\bbird\b|hawk|eagle|owl|harpy|vulture|falcon/.test(n)) {
+    f.wing = 'feather'; f.head = 'beak'; f.eyeColor = 0xffd23a;
+  }
+
+  // --- legless (serpent rig): snake / viper / cobra / eel / worm / slug ---
+  else if (/viper|adder/.test(n)) {
+    f.pattern = 'diamond'; f.tongue = true; f.markColor = 0x2a1a10; f.eyeColor = 0xffcf3a;
+  } else if (/cobra/.test(n)) {
+    f.pattern = 'bands'; f.tongue = true; f.hood = true; f.eyeColor = 0xffcf3a;
+  } else if (/snake|serpent|python/.test(n)) {
+    f.pattern = 'bands'; f.tongue = true; f.eyeColor = 0xffcf3a;
+  } else if (/\beel\b/.test(n)) {
+    f.pattern = 'none'; f.tongue = false; f.fins = true; f.eyeColor = 0x141414;
+  } else if (/\bworm\b/.test(n)) {
+    f.segmented = true; f.tongue = false; f.pattern = 'none';
+  } else if (/slug/.test(n)) {
+    f.eyestalks = true; f.tongue = false; f.pattern = 'none'; f.eyeColor = 0x141414;
+  }
+
   return f;
 }
 
