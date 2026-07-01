@@ -7,6 +7,12 @@
 // lanes can later spawn as visible, moving bots (each has a name + activity).
 
 import { Game } from '../engine/state.js';
+import { sendChat } from '../net/presence.js';
+
+// [presence lane] Chat is REAL now: messages go to the server and every online
+// player sees them (see src/net/presence.js). The old local bot chatter/replies
+// below are disabled so chat only shows actual players.
+const AMBIENT_BOTS = false;
 
 const NAMES = [
   'Grimtooth', 'Zog the Bold', 'xX_Slayer_Xx', 'MudFoot', 'Snagglepike', 'IronGut Ada',
@@ -74,6 +80,7 @@ let running = false;
 export function startWorldChat() {
   if (running) return;
   running = true;
+  if (!AMBIENT_BOTS) return; // [presence lane] real chat only — no fake bot chatter
   pickOnline();
   setInterval(() => { if (chance(0.5)) pickOnline(); }, 60000); // roster churn
   const tick = () => {
@@ -140,16 +147,10 @@ async function llmReply(playerText) {
 export function playerSay(text) {
   text = (text || '').trim().slice(0, 120);
   if (!text || !Game.ui.postChat) return;
+  // Echo my own line immediately (no round-trip lag), then broadcast it to every
+  // other online player via the server. Their clients show it on their next beat.
   Game.ui.postChat({ channel: 'public', name: Game.account || 'Gork', text, self: true });
-  const replies = chance(0.65) ? (chance(0.3) ? 2 : 1) : 0;
-  for (let i = 0; i < replies; i++) {
-    setTimeout(async () => {
-      const bot = rng(online) || { name: rng(NAMES) };
-      let msg = llm.enabled ? await llmReply(text) : null;
-      if (!msg) msg = replyTo(text).text; // templated fallback
-      if (Game.ui.postChat) Game.ui.postChat({ channel: 'public', name: bot.name, text: msg });
-    }, 700 + i * 900 + Math.random() * 800);
-  }
+  sendChat(text);
 }
 
 // ---- bot "brain": activity → concrete world intent (the seam for VISIBLE bots) ---
@@ -186,6 +187,7 @@ if (typeof window !== 'undefined') {
 
 // A bot congratulates your level-ups now and then — chat reacts to gameplay.
 export function cheerLevel(skill, level) {
+  if (!AMBIENT_BOTS) return; // [presence lane] no fake congratulations
   if (!online.length || !Game.ui.postChat || !chance(0.5)) return;
   setTimeout(() => {
     if (Game.ui.postChat) {

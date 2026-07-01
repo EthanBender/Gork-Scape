@@ -32,6 +32,7 @@ import { Market } from '../src/systems/grandExchange.js';
 import * as WorldClock from '../src/engine/worldClock.js';
 import * as WorldEvents from '../src/systems/worldEvents.js';
 import { Accounts } from './accounts.mjs';
+import { Presence } from './presence.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');            // repo root (serve the client from here)
@@ -68,6 +69,11 @@ function loadItems() {
 // See server/accounts.mjs. This is what makes profiles real: the save lives on
 // the server keyed to the account, not in one browser's localStorage.
 const accounts = new Accounts(ACCOUNTS_FILE);
+
+// ---------------------------------------------------------------- presence
+// Live multiplayer presence + shared chat (who's online, where, recent chat).
+// Ephemeral — see server/presence.mjs.
+const presence = new Presence();
 
 // ---------------------------------------------------------------- world state
 const market = new Market();
@@ -300,6 +306,26 @@ const server = http.createServer(async (req, res) => {
     if (!body) return sendJson(res, 400, { error: 'Bad request.' });
     const r = accounts.putSave(body.token, body.save);
     return sendJson(res, r.ok ? 200 : (r.code || 400), r.ok ? r : { error: r.error });
+  }
+
+  // ---- multiplayer presence + shared chat ----
+  // Heartbeat: report my position, get everyone else + new chat. Token-authed.
+  if (path === '/api/presence' && req.method === 'POST') {
+    const body = await readJson(req);
+    if (!body) return sendJson(res, 400, { error: 'Bad request.' });
+    const rec = accounts.resolve(body.token);
+    if (!rec) return sendJson(res, 401, { error: 'Session expired.' });
+    return sendJson(res, 200, presence.heartbeat(rec.username, body, body.sinceChat));
+  }
+
+  // Post a shared-chat line (seen by everyone online). Token-authed.
+  if (path === '/api/chat' && req.method === 'POST') {
+    const body = await readJson(req);
+    if (!body) return sendJson(res, 400, { error: 'Bad request.' });
+    const rec = accounts.resolve(body.token);
+    if (!rec) return sendJson(res, 401, { error: 'Session expired.' });
+    const msg = presence.say(rec.username, body.text);
+    return sendJson(res, 200, { ok: true, msg });
   }
 
   // ---- API ----

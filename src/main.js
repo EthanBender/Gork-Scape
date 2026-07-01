@@ -49,6 +49,7 @@ import { GameData } from './data/gameData.js'; // [economy lane] crop-patch node
 import { shopkeeperSpawns, loadAndRestockShops, saveWorldShops, restockShops, SHOP_POSTS } from './systems/shops.js'; // [economy lane] shopkeeper NPCs + world-time restock ([char-render] SHOP_POSTS for minimap POIs)
 import * as Farming from './systems/farming.js'; // [economy lane] crops grow on world time (offline too)
 import { connectServerLink } from './net/serverLink.js'; // [economy lane] shared-world GE price feed (Phase 4)
+import { startPresence, stopPresence } from './net/presence.js'; // [presence lane] see other players + shared chat
 // [economy lane] — Firemaking: temporary ground fires (lit from inventory in
 // panels.js) render here, expire on the global tick, and cook via performSkill.
 import { activeFires, tickFires, fireAt, fireLifeRatio } from './systems/firemaking.js';
@@ -421,6 +422,9 @@ function create() {
   // its live guide prices replace the local ones (shared, always-on market).
   // Non-blocking and self-healing — no server → silently stays local.
   connectServerLink();
+  // [presence lane] Start live multiplayer presence + shared chat: heartbeat my
+  // position and render other signed-in players walking the same world.
+  startPresence();
   // [world-continuity] Tell the returning player what's happening in the world
   // right now and what's coming — events run on the world calendar regardless.
   announceWorldEvents();
@@ -934,6 +938,7 @@ function reachFP(world, big, px, py, range) {
 function mobFootprintAt(x, y, exclude) {
   for (const n of Game.activeNpcs) {
     if (n.dead || n === exclude || n.type === 'elder') continue;
+    if (n.type === 'player') continue; // [presence lane] walk through other players
     if (npcFR(n) > 0 && inFootprint(n, x, y)) return n;
   }
   return null;
@@ -1145,6 +1150,7 @@ function gameTick(count, isLast = true) {
   for (const n of Game.activeNpcs) {
     if (n.dead) continue; // revival handled in worldUpkeep()
     if (n.type === 'elder') continue;
+    if (n.type === 'player') continue; // [presence lane] remote players are network-driven, never local AI
 
     // Tinker burn DoT: a burning enemy loses HP each tick.
     if (n.burnTicks > 0) {
@@ -2125,7 +2131,8 @@ function updateLabels() {
   // DE-OVERLAP them: in a tight melee scrum the name/level tags would otherwise
   // pile on top of each other. We nudge colliding labels upward so they stack
   // legibly, letting the player and the current combat target keep their spot.
-  playerLabel.setText(`${Game.account || 'Gork'} (Lv ${playerCombatLevel()})`);
+  Game.myCombat = playerCombatLevel(); // [presence lane] shared with the heartbeat
+  playerLabel.setText(`${Game.account || 'Gork'} (Lv ${Game.myCombat})`);
   const labelSet = [{
     t: playerLabel, x: p.px,
     y: p.py + AV_FEET - AV_TOP - 4 - tileLiftXY(p.tileX, p.tileY),
@@ -2147,7 +2154,7 @@ function updateLabels() {
       t.setStroke('#000', 3); npcLabelPool.push(t);
       if (uiCam) uiCam.ignore(t);
     }
-    t.setText(npcLabelText(n)).setColor(n.type === 'elder' ? '#d8b0ff' : '#ffb0b0').setVisible(true);
+    t.setText(npcLabelText(n)).setColor(n.type === 'player' ? '#8fd0ff' : n.type === 'elder' ? '#d8b0ff' : '#ffb0b0').setVisible(true);
     labelSet.push({ t, x: n.px, y: n.py + AV_FEET - AV_TOP - 2 - tileLiftXY(n.tileX, n.tileY), w: t.width, prio: (n === p.combatTarget || n.target === p) ? 1 : 0 });
   }
   for (let i = shownNpcs.length; i < npcLabelPool.length; i++) npcLabelPool[i].setVisible(false);
@@ -2568,6 +2575,7 @@ function startGame() {
   phaserGame = new Phaser.Game(config);
 }
 function stopGame() {
+  stopPresence(); // [presence lane] end heartbeat + clear remote players on logout
   if (Game.ticker) Game.ticker.stop();
   if (phaserGame) { phaserGame.destroy(true); phaserGame = null; }
   scene = null;
