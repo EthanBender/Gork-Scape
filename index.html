@@ -467,6 +467,13 @@
     border-radius: 0 4px 4px 0; line-height: 1.4; }
   .quest-starthint { margin-top: 6px; font-size: 11px; color: var(--accent); line-height: 1.4; }
   .quest-starthint b { color: var(--gold); }
+  .quest-track { margin-top: 8px; padding: 5px 12px; cursor: pointer; font-size: 11px;
+    font-weight: 700; border-radius: 5px; color: var(--muted);
+    background: var(--panel-lo); border: 1px solid var(--bevel-lo); }
+  .quest-track:hover { color: var(--text); border-color: var(--accent); }
+  .quest-track.on { color: #1a1710; background: linear-gradient(180deg, #f2d774, var(--gold-dk));
+    border-color: var(--gold); }
+  .quest-card.quest-tracked { box-shadow: var(--raise), -3px 0 0 var(--gold) inset; }
 
   /* Quest-giver speech box over the game view */
   #dialogue-box { position: absolute; left: 50%; bottom: 18px; transform: translateX(-50%);

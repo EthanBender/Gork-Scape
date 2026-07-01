@@ -1881,20 +1881,58 @@ function drawEntities() {
   drawProjectiles(g, time);
 }
 
+// [labels] Greedy vertical anti-overlap for head labels. Higher-priority labels
+// (player, combat target) are placed first and keep their natural height; lower
+// ones that would collide are pushed straight up in ~one-line steps until clear.
+// Works in world units (label.width/height are pre-zoom), so it holds at any zoom.
+const LABEL_LINE = 12; // world-units bump per stacking step (~one text line)
+function declutterLabels(labels) {
+  const order = labels.slice().sort((a, b) => (b.prio - a.prio) || (a.y - b.y));
+  const placed = [];
+  for (const L of order) {
+    let guard = 0, moved = true;
+    while (moved && guard++ < 24) {
+      moved = false;
+      for (const q of placed) {
+        const minGap = (L.w + q.w) / 2 + 4;         // horizontal footprint overlap
+        if (Math.abs(L.x - q.x) < minGap && Math.abs(L.y - q.y) < LABEL_LINE) {
+          L.y = q.y - LABEL_LINE; moved = true;      // bump up above the blocker
+        }
+      }
+    }
+    placed.push(L);
+  }
+}
+
 function updateLabels() {
   const p = Game.player;
   // World-space labels ride the rotating main camera; spin them back so the text
   // stays upright and readable at any camera angle (no-op when rotation is 0).
   const rot = -scene.cameras.main.rotation;
-  // labels sit above the avatar head (feet + AV_FEET, up past the rig top)
-  playerLabel.setText(`Gork (Lv ${playerCombatLevel()})`)
-    .setPosition(p.px, p.py + AV_FEET - AV_TOP - 4 - tileLiftXY(p.tileX, p.tileY)).setRotation(rot);
+  // [labels] Gather every visible head-label (player + nearby NPCs) so we can
+  // DE-OVERLAP them: in a tight melee scrum the name/level tags would otherwise
+  // pile on top of each other. We nudge colliding labels upward so they stack
+  // legibly, letting the player and the current combat target keep their spot.
+  playerLabel.setText(`Gork (Lv ${playerCombatLevel()})`);
+  const labelSet = [{
+    t: playerLabel, x: p.px,
+    y: p.py + AV_FEET - AV_TOP - 4 - tileLiftXY(p.tileX, p.tileY),
+    w: playerLabel.width, prio: 2,
+  }];
   for (const n of Game.npcs) {
     if (!n._label) continue;
     const near = !n.dead && manhattan(n.tileX, n.tileY, p.tileX, p.tileY) <= 18;
     n._label.setVisible(near);
-    if (near) n._label.setPosition(n.px, n.py + AV_FEET - AV_TOP - 2 - tileLiftXY(n.tileX, n.tileY)).setRotation(rot);
+    if (!near) continue;
+    labelSet.push({
+      t: n._label, x: n.px,
+      y: n.py + AV_FEET - AV_TOP - 2 - tileLiftXY(n.tileX, n.tileY),
+      w: n._label.width,
+      prio: (n === p.combatTarget || n.target === p) ? 1 : 0,
+    });
   }
+  declutterLabels(labelSet);
+  for (const L of labelSet) L.t.setPosition(L.x, L.y).setRotation(rot);
   // Object labels: nearest labeled visible objects, pooled.
   const v = viewRange();
   const near = objectsInView(Game.world, v.x0, v.y0, v.x1, v.y1)

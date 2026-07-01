@@ -177,10 +177,11 @@ const TINT = {
   gem: [[P.glass, '#a8ecff'], ['#3aa0c8']], fish: [['#6fa8c8'], ['#3f7590']],
   herb: [[P.leaf], [P.greenD]], potion: [[P.red], []], boots: [[P.leather], [P.woodD]],
   gloves: [[P.leather], [P.woodD]], cape: [['#7a3b5a'], ['#4a2338']],
+  seed: [[P.green], [P.greenD]], book: [['#7a3b3b'], ['#4a2020']],
 };
 // Keys that should get a hash-hue when no known material matches (naturally
 // multi-coloured item groups). Metal/wood shapes stay their default otherwise.
-const HASH_KEYS = new Set(['gem', 'fish', 'herb', 'potion', 'cape', 'amulet', 'ring', 'charm']);
+const HASH_KEYS = new Set(['gem', 'fish', 'herb', 'potion', 'cape', 'amulet', 'ring', 'charm', 'seed', 'book']);
 
 function hueFromString(str) {
   let h = 0;
