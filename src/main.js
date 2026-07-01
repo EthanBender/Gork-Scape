@@ -76,6 +76,7 @@ let terrainGfx, objectsGfx, groundGfx, entitiesGfx, miniGfx;
 let uiCam; // dedicated HUD camera: keeps the minimap upright under main-cam zoom/rotation
 let compassN = null; // the "N" marker on the minimap compass
 let objLabelPool = [];
+let npcLabelPool = [];   // pooled, positioned on nearby NPCs each frame (never one-per-NPC)
 let groundLabels = [];
 let playerLabel = null;
 let projectiles = []; // [character-render lane] in-flight arrows/bolts: {x,y,tx,ty,at,dur}
@@ -114,6 +115,7 @@ function buildWorld() {
   addItem('coins', 25);
 
   Game.npcs = [];
+  Game.activeNpcs = [];   // near-player subset, rebuilt each tick; all per-frame NPC work iterates THIS, not Game.npcs
   // Elder in town.
   const elderLevels = { attack: 1, strength: 1, defence: 1, ranged: 1, hitpoints: 20 };
   Game.npcs.push(new NPC({
@@ -431,13 +433,9 @@ function create() {
     fontFamily: 'monospace', fontSize: '11px', color: '#bff29a', fontStyle: 'bold',
   }).setOrigin(0.5, 1).setDepth(40);
   playerLabel.setStroke('#000', 3);
-  for (const n of Game.npcs) {
-    n._label = this.add.text(0, 0, npcLabelText(n), {
-      fontFamily: 'monospace', fontSize: '11px',
-      color: n.type === 'elder' ? '#d8b0ff' : '#ffb0b0', fontStyle: 'bold',
-    }).setOrigin(0.5, 1).setDepth(40).setVisible(false);
-    n._label.setStroke('#000', 3);
-  }
+  // NPC name labels are POOLED (see updateLabels) — a fixed handful positioned on the
+  // nearest NPCs each frame — so the world can hold thousands of mobs without thousands
+  // of Phaser text objects sitting in the display list.
 
   miniGfx = this.add.graphics().setScrollFactor(0).setDepth(1001);
 
@@ -450,8 +448,7 @@ function create() {
   uiCam = this.cameras.add(0, 0, this.scale.width, this.scale.height);
   uiCam.setScroll(0, 0);
   this.cameras.main.ignore(miniGfx);
-  uiCam.ignore([terrainGfx, objectsGfx, groundGfx, entitiesGfx, playerLabel,
-    ...Game.npcs.map((n) => n._label).filter(Boolean)]);
+  uiCam.ignore([terrainGfx, objectsGfx, groundGfx, entitiesGfx, playerLabel]); // pooled NPC labels get uiCam.ignore on creation (see updateLabels)
   this.scale.on('resize', (size) => uiCam.setSize(size.width, size.height));
 
   // Compass "N" marker — rides the HUD camera (screen-space, upright), repositioned
@@ -2022,16 +2019,20 @@ function drawMinimap() {
   const toMiniX = (wpx) => cx + ((wpx - p.px) / TILE_SIZE) * MINI_SPT;
   const toMiniY = (wpy) => cy + ((wpy - p.py) / TILE_SIZE) * MINI_SPT;
 
-  // terrain window
-  for (let ty = p.tileY - R; ty <= p.tileY + R; ty++) {
+  // terrain window. At wide (zoomed-out) minimap zoom, sample every Nth tile and
+  // draw a bigger cell — the tile window grows as 1/MINI_SPT^2, so without this a
+  // zoomed-out minimap tanks fps. [char-render] added with minimap zoom.
+  const step = MINI_SPT >= 5 ? 1 : MINI_SPT >= 3 ? 1 : 2;
+  const cell = MINI_SPT * step + 0.5;
+  for (let ty = p.tileY - R; ty <= p.tileY + R; ty += step) {
     if (ty < 0 || ty >= H) continue;
-    for (let tx = p.tileX - R; tx <= p.tileX + R; tx++) {
+    for (let tx = p.tileX - R; tx <= p.tileX + R; tx += step) {
       if (tx < 0 || tx >= W) continue;
       const mx = toMiniX(tx * TILE_SIZE + 16) - MINI_SPT / 2;
       const my = toMiniY(ty * TILE_SIZE + 16) - MINI_SPT / 2;
       if (!inMini(mx, my)) continue;
       g.fillStyle(TERRAIN_DEFS[ter[ty * W + tx]].color, 1);
-      g.fillRect(mx, my, MINI_SPT + 0.5, MINI_SPT + 0.5);
+      g.fillRect(mx, my, cell, cell);
     }
   }
   // resource/structure dots

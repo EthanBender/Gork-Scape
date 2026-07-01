@@ -47,7 +47,20 @@ const _bust = '?v=' + Date.now();
 const { drawAvatar } = await import('./src/render/avatar.js' + _bust);
 const { gearHints, weaponStyleFor } = await import('./src/render/gear.js' + _bust);
 
-const PV = { facing:'S', anim:'attack', weapon:'Spear', body:'Hide', helm:null, shield:false, cape:false };
+const PV = { facing:'S', anim:'attack', animLabel:'attack', skillType:null, tool:null, weapon:'Spear', body:'Hide', helm:null, shield:false, cape:false };
+
+// Skill motions the avatar mimes (mirrors characters.js SKILL_TOOL) so we can
+// verify gathering poses in isolation — mine=pickaxe, chop=axe, fish=rod, smith=hammer.
+const SKILLMAP = {
+  mine:  { skillType:'chop', tool:{ kind:'pick', color:0x8f9196, len:12 } },
+  chop:  { skillType:'chop', tool:{ kind:'axe',  color:0xb5793a, len:12 } },
+  fish:  { skillType:'fish', tool:{ kind:'rod',  color:0x8a5a2b, len:17 } },
+  smith: { skillType:'work', tool:{ kind:'mace', color:0x6b6b6b, len:9  } },
+};
+function setAnim(v){
+  if (SKILLMAP[v]) { PV.anim='skill'; PV.animLabel=v; PV.skillType=SKILLMAP[v].skillType; PV.tool=SKILLMAP[v].tool; }
+  else { PV.anim=v; PV.animLabel=v; PV.skillType=null; PV.tool=null; }
+}
 
 // ---- control wiring -------------------------------------------------------
 function mkButtons(hostId, items, getActive, onPick){
@@ -66,7 +79,7 @@ function mkButtons(hostId, items, getActive, onPick){
 function render(){ ['facing','anim','weapon','body','acc'].forEach(id => document.getElementById(id)._refresh()); }
 
 mkButtons('facing', ['N','E','S','W'].map(v=>({label:v,value:v})), ()=>PV.facing, v=>PV.facing=v);
-mkButtons('anim', ['idle','walk','attack','hit','dead'].map(v=>({label:v,value:v})), ()=>PV.anim, v=>PV.anim=v);
+mkButtons('anim', ['idle','walk','attack','hit','dead','mine','chop','fish','smith'].map(v=>({label:v,value:v})), ()=>PV.animLabel, v=>setAnim(v));
 mkButtons('weapon', ['Unarmed','Spear','Sword','Axe','Mace','Bow'].map(v=>({label:v,value:v})), ()=>PV.weapon, v=>PV.weapon=v);
 mkButtons('body', ['None','Hide','Bronze'].map(v=>({label:v,value:v})), ()=>PV.body||'None', v=>PV.body=(v==='None'?null:v));
 mkButtons('acc', [
@@ -134,6 +147,7 @@ const scene = {
     const heroS = 6, hx = w*0.42;
     drawAvatar(gfx, hx, heroGY, {
       facing: PV.facing, anim: PV.anim, phase, t: time,
+      skillType: PV.skillType, tool: PV.tool,
       weaponStyle, gear, scale: heroS,
     });
     label.setText(`${PV.weapon} · ${PV.anim} · facing ${PV.facing} · style:${weaponStyle}`)

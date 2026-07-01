@@ -39,6 +39,8 @@ q.initQuests();
 
 // --- boot state --------------------------------------------------------------
 ok('quests loaded (Act 1 + Act 2)', q.allQuests().length >= 11, `${q.allQuests().length} quests`);
+ok('Act 3 exists with a boss finale',
+  q.allQuests().some((x) => x.act === 3 && x.steps.some((s) => s.type === 'boss')));
 ok('tutorial is AVAILABLE at spawn (not auto-started)', statusOf('tutorial_first_scrap') === 'available');
 ok('follow-ups locked behind the tutorial', statusOf('first_pickaxe') === 'locked');
 ok('an available quest exposes a giver marker',

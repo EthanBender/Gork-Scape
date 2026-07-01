@@ -11,7 +11,7 @@
 // the static registries; no sim mutation.
 
 import { Game } from '../engine/state.js';
-import { gearHints, weaponStyleFor, bodyTypeFor } from './gear.js';
+import { gearHints, weaponStyleFor, bodyTypeFor, creatureFeatures } from './gear.js';
 import { TILE_SIZE } from '../world/map.js';
 
 const tilePx = (t) => t * TILE_SIZE + TILE_SIZE / 2;
@@ -147,6 +147,8 @@ export function avatarStateFor(e, isPlayer, time, skillObj = null) {
     e._tOff = tOffFor(e.id || e.name || '');
     // per-enemy visual variety (tint + size); townsfolk stay uniform.
     e._variant = elder ? null : creatureVariant((e.id || e.name || '') + 'v', e.combatLevel);
+    // per-creature distinctive features (spider legs/fangs, etc.) — see gear.js.
+    e._features = elder ? null : creatureFeatures(e.name);
   }
   const body = isPlayer ? { type: 'humanoid', size: 1 } : e._body;
   const gear = isPlayer ? gearHints(equip) : e._gearCache;
@@ -160,6 +162,7 @@ export function avatarStateFor(e, isPlayer, time, skillObj = null) {
     phase: attacking ? (time - e._swingAt) / 420 : hit ? (time - e._hitAt) / 300 : 0,
     t,
     bodyType: body.type,
+    features: isPlayer ? null : e._features,
     boss: !isPlayer && !!body.boss,
     weaponStyle: isPlayer ? weaponStyleFor(equip.weapon)
       : (elder ? 'unarmed' : (gear.weapon ? gear.weapon.style : 'crush')),

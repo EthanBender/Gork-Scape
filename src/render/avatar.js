@@ -385,20 +385,72 @@ function drawQuadruped(ctx, skin, p, facing, t) {
     }
   }
 }
-function drawInsectoid(ctx, skin, p, facing, t) {
-  const dark = shade(skin, 0.7);
-  const bY = 6, wig = Math.sin(t / 130) * 0.5 + (p.legSwing || 0) * 0.5, strike = p.strike || 0;
-  for (let i = 0; i < 4; i++) {
-    const reach = 5 + i * 1.6, w = wig * (i % 2 ? -1 : 1);
-    seg(ctx, 2, bY, 2 + reach * 0.5, bY + 3 + w, 1.0, dark);
-    seg(ctx, 2 + reach * 0.5, bY + 3 + w, 2 + reach, 0, 1.0, dark);
-    seg(ctx, -2, bY, -2 - reach * 0.5, bY + 3 - w, 1.0, dark);
-    seg(ctx, -2 - reach * 0.5, bY + 3 - w, -2 - reach, 0, 1.0, dark);
+function drawInsectoid(ctx, skin, p, facing, t, feat = {}) {
+  const dark = shade(skin, 0.6), mid = shade(skin, 0.8);
+  const bY = 6;
+  const wig = Math.sin(t / 130) * 0.5 + (p.legSwing || 0) * 0.5;
+  const strike = p.strike || 0;
+  const legPairs = feat.legPairs || 4;          // spiders 4, insects 3
+  const legW = feat.legW || 1.0;
+  const ab = feat.abdomen || 1;                 // abdomen bulk multiplier
+  const abX = -2.5 * ab;
+
+  // Legs: two-segment, bent-knee legs that splay out and taper. A subtle idle
+  // ripple + the walk swing animate them; a strike braces the front pair.
+  for (let i = 0; i < legPairs; i++) {
+    const reach = 4.5 + i * 1.7, w = wig * (i % 2 ? -1 : 1);
+    const kneeUp = 3.4 + w + strike * (i === legPairs - 1 ? -1.5 : 0);
+    seg(ctx, 2, bY, 2 + reach * 0.55, bY + kneeUp, legW, dark);
+    seg(ctx, 2 + reach * 0.55, bY + kneeUp, 2 + reach, bY - 0.5, legW, dark);
+    seg(ctx, -2, bY, -2 - reach * 0.55, bY + kneeUp, legW, dark);
+    seg(ctx, -2 - reach * 0.55, bY + kneeUp, -2 - reach, bY - 0.5, legW, dark);
   }
-  disc(ctx, -2.5, bY + 1, 4.6, skin);   // abdomen
-  disc(ctx, 3, bY, 2.6, dark);          // cephalothorax
-  disc(ctx, 4, bY + 1, 0.6, 0xcf2b2b); disc(ctx, 4, bY - 0.6, 0.5, 0xcf2b2b); // eyes
-  if (strike > 0.3) seg(ctx, 4.5, bY - 1, 5.8 + strike * 2, bY - 2, 0.9, 0xffffff); // fang lunge
+
+  // Abdomen (bulbous), with an optional glossy sheen highlight.
+  disc(ctx, abX, bY + 1, 4.7 * ab, skin);
+  if (feat.gloss) disc(ctx, abX - 1.3, bY + 2.8, 1.7 * ab, shade(skin, 1.5), feat.gloss);
+
+  // Abdomen marking — e.g. a widow's red hourglass, unmistakably a spider.
+  if (feat.mark === 'hourglass') {
+    const mc = feat.markColor || 0xc0392b;
+    poly(ctx, [[abX, bY + 1], [abX - 1.5, bY - 0.6], [abX + 1.5, bY - 0.6]], mc, 0.95);
+    poly(ctx, [[abX, bY + 1], [abX - 1.5, bY + 2.6], [abX + 1.5, bY + 2.6]], mc, 0.95);
+  } else if (feat.mark === 'stripes') {
+    const mc = feat.markColor || shade(skin, 0.5);
+    for (let s = -1; s <= 1; s++) seg(ctx, abX - 3, bY + 1 + s * 1.6, abX + 3, bY + 1 + s * 1.6, 0.7, mc, 0.7);
+  }
+
+  // Cephalothorax (front body segment).
+  disc(ctx, 3, bY, 2.7, mid);
+
+  // Eyes: a spider's glinting cluster, or a simple pair.
+  const ec = feat.eyeColor || 0xcf2b2b;
+  if (feat.eyes === 'cluster') {
+    for (const [dx, dy] of [[3.4, 0.9], [4.3, 0.5], [3.4, -0.3], [4.3, -0.9], [2.8, 0.3], [2.8, -0.6]]) {
+      disc(ctx, dx, bY + dy, 0.5, ec);
+    }
+  } else {
+    disc(ctx, 4, bY + 1, 0.6, ec); disc(ctx, 4, bY - 0.6, 0.55, ec);
+  }
+
+  // Chelicerae / fangs — always shown for fanged creatures; snap forward on a bite.
+  if (feat.fangs || strike > 0.3) {
+    const lunge = strike * 2;
+    seg(ctx, 4.6, bY + 1.4, 5.9 + lunge, bY + 2.7, 0.9, dark);
+    seg(ctx, 4.6, bY - 1.4, 5.9 + lunge, bY - 2.7, 0.9, dark);
+    if (strike > 0.3) {
+      disc(ctx, 5.9 + lunge, bY + 2.7, 0.5, 0xffffff);
+      disc(ctx, 5.9 + lunge, bY - 2.7, 0.5, 0xffffff);
+    }
+  }
+
+  // Optional pincers (crabs/scorpions) — claw arms reaching forward.
+  if (feat.pincers) {
+    for (const s of [1, -1]) {
+      seg(ctx, 4, bY + 2.2 * s, 7, bY + 3.2 * s, 1.3, mid);
+      poly(ctx, [[7, bY + 2.2 * s], [9, bY + 3.5 * s], [7, bY + 4 * s]], mid);
+    }
+  }
 }
 function ellipsePts(cx, cy, rx, ry, n, wob, t) {
   const pts = [];
@@ -527,11 +579,12 @@ export function drawAvatar(g, cx, cy, state = {}) {
   const bodyType = state.bodyType || 'humanoid';
   if (bodyType !== 'humanoid') {
     const t = state.t || 0;
-    if (bodyType === 'quadruped') drawQuadruped(ctx, skin, p, facing, t);
-    else if (bodyType === 'insectoid') drawInsectoid(ctx, skin, p, facing, t);
-    else if (bodyType === 'avian') drawAvian(ctx, skin, p, facing, t);
-    else if (bodyType === 'serpent') drawSerpent(ctx, skin, p, facing, t);
-    else drawBlob(ctx, skin, p, facing, t);
+    const feat = state.features || {};   // per-creature distinctive visual hints
+    if (bodyType === 'quadruped') drawQuadruped(ctx, skin, p, facing, t, feat);
+    else if (bodyType === 'insectoid') drawInsectoid(ctx, skin, p, facing, t, feat);
+    else if (bodyType === 'avian') drawAvian(ctx, skin, p, facing, t, feat);
+    else if (bodyType === 'serpent') drawSerpent(ctx, skin, p, facing, t, feat);
+    else drawBlob(ctx, skin, p, facing, t, feat);
     if (p.flash > 0) {
       fill(ctx, 0xff4030, 0.5 * p.flash);
       const [hx, hy] = ctx.P(0, 7);

@@ -165,7 +165,9 @@ const MAT = [
   ['dragonhide', '#4a7a4a', '#2f5030'], ['leather', '#8a5a34', '#5f3d1f'],
   ['hide', '#8a5a34', '#5f3d1f'], ['wool', '#d8cbb0', '#a89b80'],
 ];
-const MAT_MAP = MAT.map(([kw, m, md]) => [kw.replace(/_/g, ' '), m, md, kw]);
+// Match materials on WORD boundaries (so 'tin' doesn't hit 'woodcutting', 'oak'
+// doesn't hit 'cloak', etc.). Underscores are normalised to spaces first.
+const MAT_MAP = MAT.map(([kw, m, md]) => [new RegExp('\\b' + kw.replace(/_/g, ' ') + '\\b'), m, md]);
 
 // Which palette colours in each shape are the "material" (→ m) vs shadow (→ md).
 const TINT = {
@@ -184,12 +186,15 @@ const TINT = {
 const HASH_KEYS = new Set(['gem', 'fish', 'herb', 'potion', 'cape', 'amulet', 'ring', 'charm', 'seed', 'book']);
 
 function hueFromString(str) {
-  let h = 0;
-  for (let i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) % 360;
-  return h;
+  // djb2 over a 32-bit range then fold to hue — spreads similar names far apart
+  // (so "apprentice ..." and "journeyman ..." manuals aren't near-identical hues).
+  let h = 5381;
+  for (let i = 0; i < str.length; i++) h = ((h << 5) + h + str.charCodeAt(i)) | 0;
+  return ((h % 360) + 360) % 360;
 }
 function materialTint(hay, key) {
-  for (const [kw, m, md] of MAT_MAP) if (hay.includes(kw)) return { m, md };
+  const h2 = hay.replace(/_/g, ' ');
+  for (const [re, m, md] of MAT_MAP) if (re.test(h2)) return { m, md };
   if (HASH_KEYS.has(key)) { const h = hueFromString(hay); return { m: `hsl(${h},55%,62%)`, md: `hsl(${h},50%,40%)` }; }
   return null;
 }

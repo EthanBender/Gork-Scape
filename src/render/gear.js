@@ -113,6 +113,37 @@ export function bodyTypeFor(name = '') {
   return { type, size, boss };
 }
 
+// ---- per-creature distinctive features -----------------------------------
+// Keyword-based visual flourishes that make each mob look UNIQUE within its
+// shared body-type silhouette (a spider vs a beetle, a wolf vs a rat). Returns a
+// small hint object the creature draw functions read; unknown creatures get a
+// sensible default for their body type. The economy lane can later add an
+// authoritative `render.features` on monsters.json to override this. Built up
+// one mob at a time — see COORDINATION (character-render lane).
+export function creatureFeatures(name = '') {
+  const n = name.toLowerCase();
+  const f = {};
+
+  // --- arachnids & insects (insectoid rig) ---
+  if (/spider/.test(n)) {
+    // A menacing widow: 8 bent legs, bulbous glossy abdomen with a red hourglass,
+    // a cluster of glinting eyes and ever-bared fangs.
+    f.legPairs = 4; f.legW = 1.1; f.abdomen = 1.3; f.gloss = 0.45;
+    f.eyes = 'cluster'; f.eyeColor = 0xd23a3a;
+    f.mark = 'hourglass'; f.markColor = 0xc0392b; f.fangs = true;
+  } else if (/scorpion/.test(n)) {
+    f.legPairs = 4; f.pincers = true; f.eyes = 'two'; f.eyeColor = 0xffd23a;
+  } else if (/crab|snapper/.test(n)) {
+    f.legPairs = 3; f.pincers = true; f.eyes = 'two'; f.eyeColor = 0x141414; f.abdomen = 1.1;
+  } else if (/beetle|scarab/.test(n)) {
+    f.legPairs = 3; f.mark = 'stripes'; f.gloss = 0.4; f.eyes = 'two'; f.eyeColor = 0x141414;
+  } else if (/bug|grub|mite|mosquito|wasp|hornet/.test(n)) {
+    f.legPairs = 3; f.eyes = 'two'; f.eyeColor = 0xffb03a;
+  }
+
+  return f;
+}
+
 // ---- top-level: whole-loadout hints --------------------------------------
 // `equipment` is the Game.equipment slot map ({ weapon, shield, body, head,
 // legs, cape } -> item | undefined). Missing slots yield null hints.

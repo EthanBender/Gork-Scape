@@ -88,11 +88,49 @@ const MATERIALS = {
   blackpowder:  { name: 'Blackpowder',    color: 0x1c1c22, value: 30 },
   scrap_metal:  { name: 'Scrap Metal',    color: 0x777066, value: 8 },
   machine_oil:  { name: 'Machine Oil',    color: 0x6a5a2a, value: 12 },
-  // raw gatherables (from the new world nodes — the cross-skill sources)
+  // raw gatherables (from the world nodes — the cross-skill sources)
   saltpeter:    { name: 'Saltpeter',      color: 0xd8d0b8, value: 10 },
   sulfur:       { name: 'Sulfur',         color: 0xd8c84a, value: 10 },
   tree_resin:   { name: 'Tree Resin',     color: 0xc98a3a, value: 8 },
   sparkstone:   { name: 'Sparkstone',     color: 0x6a8acf, value: 45 },
+  // minerals
+  quicksilver:  { name: 'Quicksilver',    color: 0xc0c4cc, value: 30 },
+  flux_stone:   { name: 'Flux Stone',     color: 0xcabf8a, value: 14 },
+  chalk:        { name: 'Chalk',          color: 0xe8e4d8, value: 6 },
+  lodestone:    { name: 'Lodestone',      color: 0x4a4a5a, value: 26 },
+  oilsand:      { name: 'Oilsand',        color: 0x6a5a3a, value: 12 },
+  obsidian_shard: { name: 'Obsidian Shard', color: 0x1c1c22, value: 40 },
+  ember_glass:  { name: 'Ember Glass',    color: 0xd05a2a, value: 55 },
+  // botanical
+  rubber_sap:   { name: 'Rubber Sap',     color: 0x8a6a4a, value: 12 },
+  gall_nut:     { name: 'Gall Nut',       color: 0x7a5a3a, value: 14 },
+  amber:        { name: 'Amber',          color: 0xd8a63a, value: 35 },
+  cork_bark:    { name: 'Cork Bark',      color: 0xb08a5a, value: 9 },
+  fungal_rubber:{ name: 'Fungal Rubber',  color: 0x9a7aaa, value: 18 },
+  pitch:        { name: 'Pitch',          color: 0x2a221a, value: 10 },
+  tar:          { name: 'Tar',            color: 0x201812, value: 10 },
+  // monster-derived (drops)
+  spark_gland:  { name: 'Spark Gland',    color: 0x8ac0e0, value: 40 },
+  oil_sac:      { name: 'Oil Sac',        color: 0x6a5a2a, value: 22 },
+  powder_gland: { name: 'Powder Gland',   color: 0x4a4a52, value: 45 },
+  sinew:        { name: 'Sinew',          color: 0xc9a98a, value: 16 },
+  chitin_plate: { name: 'Chitin Plate',   color: 0x7a6a4a, value: 30 },
+  troll_grease: { name: 'Troll Grease',   color: 0x8a9a6a, value: 38 },
+  bog_gas_bladder: { name: 'Bog-Gas Bladder', color: 0x7a9a5a, value: 34 },
+  ember_heart:  { name: 'Ember Heart',    color: 0xe04a2a, value: 90 },
+  // processed chemicals / precision components
+  nitro_paste:  { name: 'Nitro Paste',    color: 0xc9b46a, value: 60 },
+  incendiary_gel: { name: 'Incendiary Gel', color: 0xd8642a, value: 55 },
+  acid_vial:    { name: 'Acid Vial',      color: 0x9ad04a, value: 50 },
+  coolant:      { name: 'Coolant',        color: 0x5ac0d0, value: 34 },
+  flux_paste:   { name: 'Flux Paste',     color: 0xcabf8a, value: 22 },
+  conductive_gel: { name: 'Conductive Gel', color: 0x6acfaa, value: 44 },
+  firing_pin:   { name: 'Firing Pin',     color: 0xb0b0b8, value: 30 },
+  breech:       { name: 'Breech Block',   color: 0x8a8a94, value: 60 },
+  flywheel:     { name: 'Flywheel',       color: 0xa0a0aa, value: 48 },
+  capacitor:    { name: 'Capacitor',      color: 0x6a5acf, value: 70 },
+  ignition_coil:{ name: 'Ignition Coil',  color: 0xc9a24a, value: 55 },
+  pressure_valve: { name: 'Pressure Valve', color: 0x9aa0a8, value: 52 },
   // components
   metal_casing: { name: 'Metal Casing',   color: 0xa08050, value: 20 },
   iron_barrel:  { name: 'Iron Barrel',    color: 0x8a8a94, value: 40 },
@@ -167,6 +205,19 @@ recipe('heat_tongs',      { output: 'heat_tongs',      outQty: 1, level: 30, xp:
 recipe('prospector_lens', { output: 'prospector_lens', outQty: 1, level: 35, xp: 130, unlock: 'tinkering_tools', inputs: [{ id: 'sparkstone', qty: 1 }, { id: 'brass_cog', qty: 2 }, { any: 'bar', qty: 2 }] });
 recipe('clockwork_hatchet', { output: 'clockwork_hatchet', outQty: 1, level: 40, xp: 160, unlock: 'tinkering_tools', inputs: [{ id: 'steam_piston', qty: 1 }, { id: 'coil_spring', qty: 2 }, { any: 'log', qty: 3 }] });
 recipe('powered_pickaxe', { output: 'powered_pickaxe', outQty: 1, level: 45, xp: 180, unlock: 'tinkering_tools', inputs: [{ id: 'steam_piston', qty: 1 }, { id: 'metal_casing', qty: 2 }, { id: 'sparkstone', qty: 1 }] });
+// Processed chemicals + precision components (deepen the crafting web off the new raws).
+recipe('nitro_paste',    { output: 'nitro_paste',    outQty: 2, level: 22, xp: 40, unlock: 'tinkering_powder', inputs: [{ id: 'saltpeter', qty: 2 }, { id: 'machine_oil', qty: 1 }, { id: 'sulfur', qty: 1 }] });
+recipe('incendiary_gel', { output: 'incendiary_gel', outQty: 2, level: 18, xp: 32, inputs: [{ id: 'pitch', qty: 1 }, { id: 'sulfur', qty: 1 }, { id: 'machine_oil', qty: 1 }] });
+recipe('acid_vial',      { output: 'acid_vial',      outQty: 2, level: 16, xp: 28, inputs: [{ id: 'gall_nut', qty: 2 }, { id: 'sulfur', qty: 1 }] });
+recipe('coolant',        { output: 'coolant',        outQty: 2, level: 24, xp: 30, inputs: [{ id: 'quicksilver', qty: 1 }, { id: 'machine_oil', qty: 1 }] });
+recipe('flux_paste',     { output: 'flux_paste',     outQty: 3, level: 10, xp: 16, inputs: [{ id: 'flux_stone', qty: 2 }, { id: 'chalk', qty: 1 }] });
+recipe('conductive_gel', { output: 'conductive_gel', outQty: 2, level: 40, xp: 60, inputs: [{ id: 'sparkstone', qty: 1 }, { id: 'quicksilver', qty: 1 }] });
+recipe('firing_pin',     { output: 'firing_pin',     outQty: 2, level: 14, xp: 20, inputs: [{ any: 'bar', qty: 1 }, { id: 'brass_cog', qty: 1 }] });
+recipe('breech',         { output: 'breech',         outQty: 1, level: 34, xp: 48, inputs: [{ id: 'steel_bar', qty: 2 }, { id: 'coil_spring', qty: 1 }] });
+recipe('flywheel',       { output: 'flywheel',       outQty: 1, level: 26, xp: 34, inputs: [{ any: 'bar', qty: 2 }, { id: 'brass_cog', qty: 2 }] });
+recipe('capacitor',      { output: 'capacitor',      outQty: 1, level: 52, xp: 80, unlock: 'tinkering_voltaic', inputs: [{ id: 'sparkstone', qty: 1 }, { id: 'conductive_gel', qty: 1 }, { id: 'metal_casing', qty: 1 }] });
+recipe('ignition_coil',  { output: 'ignition_coil',  outQty: 1, level: 44, xp: 62, inputs: [{ id: 'lodestone', qty: 1 }, { id: 'conductive_gel', qty: 1 }] });
+recipe('pressure_valve', { output: 'pressure_valve', outQty: 1, level: 36, xp: 50, inputs: [{ id: 'steel_bar', qty: 1 }, { id: 'coolant', qty: 1 }, { id: 'coil_spring', qty: 1 }] });
 recipe('metal_casing', { output: 'metal_casing', outQty: 2, level: 6,  xp: 14, inputs: [{ any: 'bar', qty: 1 }] });
 recipe('iron_barrel',  { output: 'iron_barrel',  outQty: 1, level: 15, xp: 30, inputs: [{ id: 'iron_bar', qty: 2 }] });
 recipe('coil_spring',  { output: 'coil_spring',  outQty: 2, level: 10, xp: 16, inputs: [{ any: 'bar', qty: 1 }, { id: 'scrap_metal', qty: 1 }] });

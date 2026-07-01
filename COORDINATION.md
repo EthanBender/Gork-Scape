@@ -367,6 +367,23 @@ Client-side until Phase 4; each phase keeps the player-freeze + world-continuity
   Rerouting would risk the legacy cook/smith branches; revisit with id migration.
 
 ## Change log
+- 2026-07-01 — Economy agent: **item art now differentiates by MATERIAL — fixes
+  "everything looks the same".** Root cause: all 1063 items collapsed into ~60
+  fixed-colour SVG shape keys (every bar/log/ore/sword identical). Added
+  **material tinting** in `itemIcons.js`: `itemIconSVG` now injects a per-item
+  colour into the shared shape. Semantic palette for known materials — metals
+  (copper→orange, iron→grey, gold, silver, tin, bronze, steel, black-iron,
+  mithril/adamant/runite/dragon/deep-metal/meteor), woods (oak/willow/deadwood/
+  moonwillow/ironbark/blackroot/fungal…), gems, leather — matched on **word
+  boundaries** (so 'tin' doesn't hit 'woodcutting'). Groups that vary by name
+  (gem/fish/herb/potion/seed/book/cape/amulet/ring/charm) get a stable djb2
+  hash-hue so no two look alike. Tinted keys: bar, ore, log, plank, sword,
+  dagger, axe, pickaxe, spear, mace, shield, helm, body, legs, arrow, gem, fish,
+  herb, potion, boots, gloves, cape, seed, book. Verified live: copper/iron/gold/
+  black-iron bars all distinct; oak/willow/deadwood/moonwillow logs distinct;
+  ruby/sapphire/emerald gems; per-metal dagger blades; manuals/potions/seeds each
+  unique-hued; 0 console errors. **Long tail still shares plain emoji** (tooth,
+  scale, shrimp, etc.) — can extend if needed. All in `src/data/itemIcons.js`.
 - 2026-07-01 — Economy agent: **Tinkering EXPANSION — proof slice: quest-gated skill +
   world nodes + cross-skill byproducts + kit/out tools.** Plan: `docs/TINKERING_EXPANSION_PLAN.md`
   (owner picked: proof slice → phase; craft-your-own kit tools; out-tools now; and

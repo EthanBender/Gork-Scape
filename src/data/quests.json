@@ -12,8 +12,8 @@
    }
   },
   "summary": "The Goblin Elder wants to see if you can fight. Find him in the settlement to begin.",
-  "intro": "Ah \u2014 a fresh goblin, still smelling of the spawning pit! Good. Before you're any use, you must learn to scrap. Head EAST to the training yard and batter one of the rats. Click the ground to walk, click a rat to hit it.",
-  "outro": "Ha! Not bad for a first swing. You'll do. Here \u2014 a few coins to start you off, and my blessing. The settlement is yours to explore; folk here have work for a goblin with initiative. Look for the '!' markers.",
+  "intro": "Ah — a fresh goblin, still smelling of the spawning pit! Good. Before you're any use, you must learn to scrap. Head EAST to the training yard and batter one of the rats. Click the ground to walk, click a rat to hit it.",
+  "outro": "Ha! Not bad for a first swing. You'll do. Here — a few coins to start you off, and my blessing. The settlement is yours to explore; folk here have work for a goblin with initiative. Look for the '!' markers.",
   "requires": {},
   "steps": [
    {
@@ -32,14 +32,14 @@
     "target": "training_rat",
     "count": 1,
     "text": "Defeat a Training Rat",
-    "say": "There's the rat. Left-click it to attack \u2014 Gork will walk up and swing on his own."
+    "say": "There's the rat. Left-click it to attack — Gork will walk up and swing on his own."
    },
    {
     "type": "obtain",
     "target": "bones",
     "count": 1,
     "text": "Pick up the Bones it dropped",
-    "say": "It dropped some bones. Walk over them to pick them up \u2014 that's how you loot."
+    "say": "It dropped some bones. Walk over them to pick them up — that's how you loot."
    },
    {
     "type": "talk",
@@ -77,8 +77,8 @@
    }
   },
   "summary": "The General Store Keeper needs copper from the quarry.",
-  "intro": "You've got arms on you \u2014 how about you use 'em? There's copper up in the Grubpit Quarry, NORTH of town. Take a pickaxe, bring me five copper ore. Simple.",
-  "outro": "Proper ore, that. Knew you had it in you. Here's your cut \u2014 and remember, anything you gather, you can sell. Try the Grand Exchange by the fountain.",
+  "intro": "You've got arms on you — how about you use 'em? There's copper up in the Grubpit Quarry, NORTH of town. Take a pickaxe, bring me five copper ore. Simple.",
+  "outro": "Proper ore, that. Knew you had it in you. Here's your cut — and remember, anything you gather, you can sell. Try the Grand Exchange by the fountain.",
   "requires": {
    "quests": [
     "tutorial_first_scrap"
@@ -95,7 +95,7 @@
      "radius": 40
     },
     "text": "Travel north to the Grubpit Quarry",
-    "say": "Head north up the road. Watch for cave bugs \u2014 you can fight or run past them."
+    "say": "Head north up the road. Watch for cave bugs — you can fight or run past them."
    },
    {
     "type": "obtain",
@@ -109,7 +109,7 @@
     "target": "shopkeeper_general_store",
     "name": "General Store Keeper",
     "text": "Bring the ore back to the Store Keeper",
-    "say": "Good haul \u2014 now carry it back to me in the settlement."
+    "say": "Good haul — now carry it back to me in the settlement."
    }
   ],
   "rewards": {
@@ -187,8 +187,8 @@
    }
   },
   "summary": "The Weapon Shop Keeper in the Forge Ward thinks you need a real blade.",
-  "intro": "That twig you're waving? Embarrassing. A proper goblin carries a Bronze Dagger. Buy one from me, smith one at the anvil, or take one off something \u2014 I don't care how. Just come back armed.",
-  "outro": "NOW you look like a warrior. Bronze today, iron tomorrow. Keep at the smithing and you'll out-fight the lot of them. Here \u2014 a little something for listening.",
+  "intro": "That twig you're waving? Embarrassing. A proper goblin carries a Bronze Dagger. Buy one from me, smith one at the anvil, or take one off something — I don't care how. Just come back armed.",
+  "outro": "NOW you look like a warrior. Bronze today, iron tomorrow. Keep at the smithing and you'll out-fight the lot of them. Here — a little something for listening.",
   "requires": {
    "quests": [
     "tutorial_first_scrap"
@@ -238,7 +238,7 @@
    }
   },
   "summary": "The Greengate Grocer swears cabbage makes a goblin brave.",
-  "intro": "Cabbage! Cabbage makes a goblin BRAVE \u2014 that's science, that is. Get down to the farmlands SOUTH of the gate and bring me back three good heads.",
+  "intro": "Cabbage! Cabbage makes a goblin BRAVE — that's science, that is. Get down to the farmlands SOUTH of the gate and bring me back three good heads.",
   "outro": "Look at these beauties. You're braver already, I can tell. Don't argue. Take your coins and eat your greens.",
   "requires": {
    "quests": [
@@ -296,9 +296,9 @@
     "y": 501
    }
   },
-  "summary": "The General Store Keeper has a rat problem \u2014 and needs a goblin who can fight.",
-  "intro": "Right, you can swing a blade now \u2014 prove it. My storehouse is overrun. Clear out FIVE of the rats in the training yard and I'll make it worth your while. Off you go.",
-  "outro": "Five rats, gone. You're handy in a scrap, I'll give you that. Here's your pay \u2014 and if you want a real challenge, the world beyond the gates is full of it.",
+  "summary": "The General Store Keeper has a rat problem — and needs a goblin who can fight.",
+  "intro": "Right, you can swing a blade now — prove it. My storehouse is overrun. Clear out FIVE of the rats in the training yard and I'll make it worth your while. Off you go.",
+  "outro": "Five rats, gone. You're handy in a scrap, I'll give you that. Here's your pay — and if you want a real challenge, the world beyond the gates is full of it.",
   "requires": {
    "quests": [
     "tutorial_first_scrap"
@@ -314,7 +314,7 @@
     "target": "training_rat",
     "count": 5,
     "text": "Defeat 5 Training Rats",
-    "say": "The yard's east of town \u2014 thin them out."
+    "say": "The yard's east of town — thin them out."
    },
    {
     "type": "talk",
@@ -357,8 +357,8 @@
    }
   },
   "summary": "The Goblin Elder has felt something stir beneath the old training yard. He needs a brave goblin to face it.",
-  "intro": "You've proven you can fight. Good \u2014 because I need you for something the others are too frightened for. There is an old idol beneath the training yard, older than the warren itself. Lately it\u2026 whispers. Take it three bone offerings, and whatever crawls out \u2014 put it down.",
-  "outro": "So. The Hollow Idol is silent at last, and you walk away wearing its crown. The whispers named you, goblin \u2014 I heard them. Keep the Fang close. I suspect this was only the beginning.",
+  "intro": "You've proven you can fight. Good — because I need you for something the others are too frightened for. There is an old idol beneath the training yard, older than the warren itself. Lately it… whispers. Take it three bone offerings, and whatever crawls out — put it down.",
+  "outro": "So. The Hollow Idol is silent at last, and you walk away wearing its crown. The whispers named you, goblin — I heard them. Keep the Fang close. I suspect this was only the beginning.",
   "requires": {
    "quests": [
     "tutorial_first_scrap"
@@ -386,7 +386,7 @@
    },
    {
     "who": "???",
-    "say": "\u2026freeee\u2026 meee\u2026",
+    "say": "…freeee… meee…",
     "shake": true
    },
    {
@@ -397,7 +397,7 @@
   "outroCutscene": [
    {
     "who": "The Idol",
-    "say": "\u2026at last\u2026 a goblin worthy of the crown\u2026",
+    "say": "…at last… a goblin worthy of the crown…",
     "shake": true
    },
    {
@@ -422,14 +422,14 @@
     "target": "bones",
     "count": 3,
     "text": "Gather 3 Bones as an offering",
-    "say": "Bones for the idol \u2014 the rats in the yard will provide. Lay three at its feet."
+    "say": "Bones for the idol — the rats in the yard will provide. Lay three at its feet."
    },
    {
     "type": "boss",
     "target": "grukk_the_hollow",
     "count": 1,
     "text": "Defeat Grukk the Hollow",
-    "say": "The idol splits open with a crack of old stone \u2014 and something climbs out!",
+    "say": "The idol splits open with a crack of old stone — and something climbs out!",
     "where": {
      "x": 515,
      "y": 487,
@@ -498,9 +498,9 @@
     "y": 468
    }
   },
-  "summary": "The Timber Row Foreman wants the West Bridge rebuilt \u2014 and a squatter cleared off it.",
+  "summary": "The Timber Row Foreman wants the West Bridge rebuilt — and a squatter cleared off it.",
   "intro": "That river's been cutting us off from the willow lands for a season, and now some bandit's set up on the old crossing. Bring me timber and nails, then go clear the bridge yourself. Ten logs, five oak, three bronze nails.",
-  "outro": "A bridge AND one less bandit. The willow lands are open again \u2014 good work, goblin. This is more than pocket change; you've earned it.",
+  "outro": "A bridge AND one less bandit. The willow lands are open again — good work, goblin. This is more than pocket change; you've earned it.",
   "requires": {
    "quests": [
     "first_pickaxe"
@@ -523,7 +523,7 @@
     "target": "oak_logs",
     "count": 5,
     "text": "Cut 5 Oak Logs",
-    "say": "Oak grows in Chopper's Hollow to the west \u2014 you'll need Woodcutting 15 for it."
+    "say": "Oak grows in Chopper's Hollow to the west — you'll need Woodcutting 15 for it."
    },
    {
     "type": "obtain",
@@ -591,9 +591,9 @@
     "y": 206
    }
   },
-  "summary": "The Miner Camp Boss can't work the quarry \u2014 it's crawling with bugs.",
-  "intro": "Can't get a lick of work done in that quarry \u2014 cave bugs everywhere and imps nicking the ore. You look like you can swing. Clear 'em out: eight bugs, two imps. Then the copper's ours again.",
-  "outro": "Quarry's quiet for the first time in weeks. The lads can mine again thanks to you. Take this \u2014 miners look after those who look after them.",
+  "summary": "The Miner Camp Boss can't work the quarry — it's crawling with bugs.",
+  "intro": "Can't get a lick of work done in that quarry — cave bugs everywhere and imps nicking the ore. You look like you can swing. Clear 'em out: eight bugs, two imps. Then the copper's ours again.",
+  "outro": "Quarry's quiet for the first time in weeks. The lads can mine again thanks to you. Take this — miners look after those who look after them.",
   "requires": {
    "quests": [
     "rats_in_the_storehouse"
@@ -610,7 +610,7 @@
      "radius": 40
     },
     "text": "Go to the Grubpit Quarry",
-    "say": "The quarry's in the hills \u2014 head there and get to work."
+    "say": "The quarry's in the hills — head there and get to work."
    },
    {
     "type": "kill",
@@ -624,7 +624,7 @@
     "target": "quarry_imp",
     "count": 2,
     "text": "Banish 2 Quarry Imps",
-    "say": "The imps are tougher \u2014 mind yourself."
+    "say": "The imps are tougher — mind yourself."
    },
    {
     "type": "talk",
@@ -666,8 +666,8 @@
    }
   },
   "summary": "The Weapon Shop Keeper dares you to forge your own iron battle-axe.",
-  "intro": "Bronze was for the fledgling you were. Time for iron. But I'll not hand it to you \u2014 SMELT three iron bars and FORGE the battle-axe yourself. That's the only way it means anything.",
-  "outro": "You made that. With your own hands and your own fire. That's a real goblin's weapon. Wear it proud \u2014 you've earned every swing.",
+  "intro": "Bronze was for the fledgling you were. Time for iron. But I'll not hand it to you — SMELT three iron bars and FORGE the battle-axe yourself. That's the only way it means anything.",
+  "outro": "You made that. With your own hands and your own fire. That's a real goblin's weapon. Wear it proud — you've earned every swing.",
   "requires": {
    "quests": [
     "goblin_pointy_stick"
@@ -731,8 +731,8 @@
     "y": 499
    }
   },
-  "summary": "Something is rotten in the farmlands \u2014 pests, and a smell nobody will name.",
-  "intro": "Crops are crawling with bug swarms and there's a stink over the whole field I won't describe to you. Clear four swarms and bring me five onions \u2014 Grocer swears the onions help with the smell. They don't. Do it anyway.",
+  "summary": "Something is rotten in the farmlands — pests, and a smell nobody will name.",
+  "intro": "Crops are crawling with bug swarms and there's a stink over the whole field I won't describe to you. Clear four swarms and bring me five onions — Grocer swears the onions help with the smell. They don't. Do it anyway.",
   "outro": "Fields are clearing and I've onions to spare. The smell? Still there. But the crops'll live, and that's down to you. Here's your wage, pest-hunter.",
   "requires": {
    "quests": [
@@ -757,7 +757,7 @@
     "target": "crop_bug_swarm",
     "count": 4,
     "text": "Wipe out 4 Crop Bug Swarms",
-    "say": "The swarms move fast \u2014 corner them among the rows."
+    "say": "The swarms move fast — corner them among the rows."
    },
    {
     "type": "obtain",
@@ -803,7 +803,7 @@
    }
   },
   "summary": "Someone is raiding the Grublake nets. The Fishmonger wants them caught.",
-  "intro": "Been losing fish off the Grublake nets every night \u2014 crazed fisher-goblins, gone feral. Head EAST to the lake, catch six of 'em in the act, and land three honest trout to prove the water's still good.",
+  "intro": "Been losing fish off the Grublake nets every night — crazed fisher-goblins, gone feral. Head EAST to the lake, catch six of 'em in the act, and land three honest trout to prove the water's still good.",
   "outro": "Six thieves and a fine string of trout. The nets are safe and the Chief eats well. You've come a long way from netting shrimp on my Wharf, goblin. Well earned.",
   "requires": {
    "quests": [
@@ -832,7 +832,7 @@
     "target": "crazed_fisher_gob",
     "count": 6,
     "text": "Catch 6 Crazed Fisher-goblins",
-    "say": "They lurk by the water \u2014 deal with them."
+    "say": "They lurk by the water — deal with them."
    },
    {
     "type": "obtain",
@@ -881,8 +881,8 @@
    }
   },
   "summary": "Sprocket the Tinker, near the settlement, reckons a goblin with initiative could learn to build machines that go BANG.",
-  "intro": "Oi! You've got clever hands, I can tell. Tinkering's the goblin art \u2014 bombs, cannons, contraptions. But first you scavenge. See that Rough Scrap Heap? Claw 5 bits of scrap out of it (no tools needed) and bring 'em back.",
-  "outro": "HA! Look at that \u2014 proper scrap. You're a Tinker now, near enough. Here's a Rusty Wrench so you can crack open the tougher heaps, and use my Workbench any time. Come back when you want to learn about POWDER.",
+  "intro": "Oi! You've got clever hands, I can tell. Tinkering's the goblin art — bombs, cannons, contraptions. But first you scavenge. See that Rough Scrap Heap? Claw 5 bits of scrap out of it (no tools needed) and bring 'em back.",
+  "outro": "HA! Look at that — proper scrap. You're a Tinker now, near enough. Here's a Rusty Wrench so you can crack open the tougher heaps, and use my Workbench any time. Come back when you want to learn about POWDER.",
   "requires": {
    "quests": [
     "tutorial_first_scrap"
@@ -894,7 +894,7 @@
     "target": "scrap_metal",
     "count": 5,
     "text": "Salvage 5 Scrap Metal from a Rough Scrap Heap",
-    "say": "Rough Scrap Heaps are near the settlement and the Old Forest Ruins. Click one \u2014 bare hands work fine."
+    "say": "Rough Scrap Heaps are near the settlement and the Old Forest Ruins. Click one — bare hands work fine."
    },
    {
     "type": "talk",
@@ -934,8 +934,8 @@
    }
   },
   "summary": "Sprocket wants the makings of blackpowder: saltpeter from the rocks and charcoal from the fire.",
-  "intro": "Now \u2014 BANG needs powder, and powder needs saltpeter and charcoal. Mine me 3 Saltpeter (Quarry or Mine Hills), and char 3 logs into Charcoal at my Workbench. Then we'll talk.",
-  "outro": "Beautiful. Mix saltpeter, sulfur and charcoal and you've got blackpowder \u2014 the heart of every good bomb. Bombs and the Bombard are yours to build now. Go make some noise.",
+  "intro": "Now — BANG needs powder, and powder needs saltpeter and charcoal. Mine me 3 Saltpeter (Quarry or Mine Hills), and char 3 logs into Charcoal at my Workbench. Then we'll talk.",
+  "outro": "Beautiful. Mix saltpeter, sulfur and charcoal and you've got blackpowder — the heart of every good bomb. Bombs and the Bombard are yours to build now. Go make some noise.",
   "requires": {
    "quests": [
     "tinker_intro"
@@ -961,7 +961,7 @@
     "target": "sprocket",
     "count": 1,
     "text": "Report back to Sprocket",
-    "say": "Powder's within reach \u2014 come tell me."
+    "say": "Powder's within reach — come tell me."
    }
   ],
   "rewards": {
@@ -994,7 +994,7 @@
   },
   "summary": "Prove you can handle powder, and Sprocket will teach you Hand Cannons.",
   "intro": "Powder's fine, but a Tinker dreams of CANNONS. Build me 3 Blackpowder and forge an Iron Barrel, and I'll show you how to point a hand cannon at something you don't like.",
-  "outro": "There it is \u2014 the Hand Cannon line is yours. Slugs punch clean through armour. No knight stands a chance against a goblin with a tube of powder.",
+  "outro": "There it is — the Hand Cannon line is yours. Slugs punch clean through armour. No knight stands a chance against a goblin with a tube of powder.",
   "requires": {
    "quests": [
     "tinker_powder"
@@ -1046,7 +1046,7 @@
    }
   },
   "summary": "The master's lesson: build tools that do YOUR work for you.",
-  "intro": "Last lesson, and the best one: a real Tinker builds machines that make the OTHER skills easier. Build a Hand Cannon and blast 3 foes with it, then I'll teach you powered tools \u2014 a Prospector's Lens, a Powered Pickaxe, the lot.",
+  "intro": "Last lesson, and the best one: a real Tinker builds machines that make the OTHER skills easier. Build a Hand Cannon and blast 3 foes with it, then I'll teach you powered tools — a Prospector's Lens, a Powered Pickaxe, the lot.",
   "outro": "Now you're a proper Tinker. Powered tools speed your mining and chopping, and the Lens sniffs out richer veins. Go build an empire of gadgets, goblin.",
   "requires": {
    "quests": [
@@ -1090,6 +1090,301 @@
      "qty": 1
     }
    ]
+  }
+ },
+ {
+  "id": "scouts_in_the_oakwoods",
+  "name": "Scouts in the Oakwoods",
+  "act": 3,
+  "giver": {
+   "npc": "elder",
+   "name": "Goblin Elder",
+   "where": {
+    "x": 492,
+    "y": 448
+   }
+  },
+  "summary": "The Goblin Elder has had word: rival scouts are creeping through the Eastern Oakwoods.",
+  "intro": "War is coming, and it starts in the trees. Rival goblins are scouting the Eastern Oakwoods to the FAR EAST — six of them, at least. Cut them down, and skin a couple of the moss wolves while you're at it; we'll want the pelts. Go.",
+  "outro": "Six scouts silenced and good pelts besides. The Red-Ears will think twice about the oakwoods now. Wear the Mosswarden Cape with pride — the trees chose you.",
+  "requires": {
+   "quests": [
+    "grublake_fish_thieves"
+   ],
+   "level": {
+    "skill": "Attack",
+    "level": 15
+   }
+  },
+  "steps": [
+   {
+    "type": "goto",
+    "target": "oakwoods",
+    "where": {
+     "x": 820,
+     "y": 330,
+     "name": "Eastern Oakwoods",
+     "radius": 55
+    },
+    "text": "Travel east to the Eastern Oakwoods",
+    "say": "Take the east road past Grublake, deep into the oaks."
+   },
+   {
+    "type": "kill",
+    "target": "rival_goblin_scout",
+    "count": 6,
+    "text": "Cut down 6 Rival Goblin Scouts",
+    "say": "They travel in ones and twos — hunt them through the trees."
+   },
+   {
+    "type": "obtain",
+    "target": "moss_wolf_pelt",
+    "count": 2,
+    "text": "Skin 2 Moss Wolf Pelts",
+    "say": "The moss wolves prowl the same woods. Two good pelts will do."
+   },
+   {
+    "type": "talk",
+    "target": "elder",
+    "name": "Goblin Elder",
+    "text": "Return to the Goblin Elder",
+    "say": "Bring the pelts and the news back to me in the settlement."
+   }
+  ],
+  "rewards": {
+   "coins": 200,
+   "xp": [
+    {
+     "skill": "Attack",
+     "amount": 600
+    },
+    {
+     "skill": "Ranged",
+     "amount": 300
+    }
+   ],
+   "items": [
+    {
+     "id": "mosswarden_cape"
+    }
+   ],
+   "bankSpace": 10
+  }
+ },
+ {
+  "id": "the_bog_bites_back",
+  "name": "The Bog Bites Back",
+  "act": 3,
+  "giver": {
+   "npc": "elder",
+   "name": "Goblin Elder",
+   "where": {
+    "x": 492,
+    "y": 448
+   }
+  },
+  "summary": "Something in the Bog of Grub is stirring, and the Elder wants it understood before it's too late.",
+  "intro": "The scouts were the easy part. The Bog of Grub to the SOUTHEAST has gone wrong — the slimes are thick as soup and the water's turned black. Clear five of the bog slimes and bring me three swamp herbs. Tread careful. The bog remembers.",
+  "outro": "Black water, black herbs, and something older than all of us waking beneath it. You did well to come back at all. Rest — because I fear the worst is still down there.",
+  "requires": {
+   "quests": [
+    "scouts_in_the_oakwoods"
+   ]
+  },
+  "steps": [
+   {
+    "type": "goto",
+    "target": "bog",
+    "where": {
+     "x": 685,
+     "y": 710,
+     "name": "Bog of Grub",
+     "radius": 55
+    },
+    "text": "Journey to the Bog of Grub",
+    "say": "Follow the south road past the farms, then east into the mire."
+   },
+   {
+    "type": "kill",
+    "target": "bog_slime",
+    "count": 5,
+    "text": "Destroy 5 Bog Slimes",
+    "say": "They split and reform — hit them hard and fast."
+   },
+   {
+    "type": "obtain",
+    "target": "swamp_herb",
+    "count": 3,
+    "text": "Gather 3 Swamp Herbs",
+    "say": "The herbs grow where the water's blackest."
+   },
+   {
+    "type": "talk",
+    "target": "elder",
+    "name": "Goblin Elder",
+    "text": "Report back to the Goblin Elder",
+    "say": "Bring the herbs and what you've seen back to me."
+   }
+  ],
+  "rewards": {
+   "coins": 220,
+   "xp": [
+    {
+     "skill": "Strength",
+     "amount": 650
+    },
+    {
+     "skill": "Defence",
+     "amount": 350
+    },
+    {
+     "skill": "Crafting",
+     "amount": 200
+    }
+   ],
+   "items": [
+    {
+     "id": "iron_shield"
+    }
+   ]
+  }
+ },
+ {
+  "id": "heart_of_the_bog",
+  "name": "Heart of the Bog",
+  "act": 3,
+  "giver": {
+   "npc": "elder",
+   "name": "Goblin Elder",
+   "where": {
+    "x": 492,
+    "y": 448
+   }
+  },
+  "summary": "The thing beneath the Bog of Grub has a name now. The Elder asks you to end it before it fully wakes.",
+  "intro": "It has a name, the thing in the bog. Mggwrath. The Sunken One. It slept a thousand years and your war woke it. There is no army for this, goblin — only you. Go to the black heart of the bog and put it back to sleep. Forever.",
+  "outro": "The bog is still. The water runs clear for the first time in living memory, and you walk out of it carrying the Sunken One's own barbed spear. The warren will sing of this. …Rest, hero. You've more than earned it.",
+  "requires": {
+   "quests": [
+    "the_bog_bites_back"
+   ]
+  },
+  "introCutscene": [
+   {
+    "title": "Heart of the Bog",
+    "sub": "the sunken one wakes",
+    "fade": "out"
+   },
+   {
+    "fade": "in"
+   },
+   {
+    "who": "Goblin Elder",
+    "say": "Whatever you do down there — do not let it speak your name three times."
+   },
+   {
+    "pan": {
+     "x": 685,
+     "y": 722
+    },
+    "wait": 1200
+   },
+   {
+    "who": "Mggwrath",
+    "say": "…goblin… goblin… gob—",
+    "shake": true
+   },
+   {
+    "who": "Goblin Elder",
+    "say": "GO. Before it finishes."
+   }
+  ],
+  "outroCutscene": [
+   {
+    "who": "Mggwrath",
+    "say": "…you… will… drooown… like all the… rest…",
+    "shake": true
+   },
+   {
+    "fade": "out"
+   },
+   {
+    "title": "The Bog Is Still",
+    "sub": "Bogfang is yours",
+    "fade": "in"
+   }
+  ],
+  "steps": [
+   {
+    "type": "goto",
+    "where": {
+     "x": 685,
+     "y": 722,
+     "name": "The Black Heart of the Bog",
+     "radius": 8
+    },
+    "text": "Descend to the black heart of the bog",
+    "say": "The water goes still as glass. Something vast turns beneath it."
+   },
+   {
+    "type": "boss",
+    "target": "mggwrath_the_sunken",
+    "count": 1,
+    "text": "Slay Mggwrath, the Sunken One",
+    "say": "The bog erupts — a mountain of black water and teeth rises to meet you!",
+    "where": {
+     "x": 685,
+     "y": 723,
+     "name": "Mggwrath",
+     "radius": 8
+    },
+    "boss": {
+     "name": "Mggwrath, the Sunken One",
+     "combatLevel": 42,
+     "hp": 120,
+     "att": 24,
+     "str": 24,
+     "def": 18,
+     "attackSpeed": 4,
+     "weaponType": "crush",
+     "aggressive": true,
+     "color": 3824186
+    }
+   },
+   {
+    "type": "talk",
+    "target": "elder",
+    "name": "Goblin Elder",
+    "text": "Return to the Goblin Elder, a hero",
+    "say": "It's over. Carry the spear — and the story — back to the Elder."
+   }
+  ],
+  "rewards": {
+   "coins": 400,
+   "xp": [
+    {
+     "skill": "Attack",
+     "amount": 1200
+    },
+    {
+     "skill": "Strength",
+     "amount": 1200
+    },
+    {
+     "skill": "Hitpoints",
+     "amount": 600
+    },
+    {
+     "skill": "Prayer",
+     "amount": 400
+    }
+   ],
+   "items": [
+    {
+     "id": "bogfang_spear"
+    }
+   ],
+   "bankSpace": 20
   }
  }
 ]

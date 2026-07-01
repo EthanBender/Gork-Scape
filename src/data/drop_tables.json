@@ -1,2738 +1,2936 @@
 [
-  {
-    "drop_table_id": "training_rat_drops",
-    "monster_id": "training_rat",
-    "item_id": "rat_meat",
-    "chance_percent": 60,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "training_rat_drops",
-    "monster_id": "training_rat",
-    "item_id": "bones",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "training_rat_drops",
-    "monster_id": "training_rat",
-    "item_id": "torn_hide",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "training_rat_drops",
-    "monster_id": "training_rat",
-    "item_id": "rat_tooth_charm",
-    "chance_percent": 12,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "cave_bug_drops",
-    "monster_id": "cave_bug",
-    "item_id": "bug_shell",
-    "chance_percent": 60,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "cave_bug_drops",
-    "monster_id": "cave_bug",
-    "item_id": "bones",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "cave_bug_drops",
-    "monster_id": "cave_bug",
-    "item_id": "copper_ore",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "cave_bug_drops",
-    "monster_id": "cave_bug",
-    "item_id": "clay",
-    "chance_percent": 12,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "cave_bug_drops",
-    "monster_id": "cave_bug",
-    "item_id": "bug_eye_ring",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "mud_grub_drops",
-    "monster_id": "mud_grub",
-    "item_id": "grub_meat",
-    "chance_percent": 60,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "mud_grub_drops",
-    "monster_id": "mud_grub",
-    "item_id": "slime_glob",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "mud_grub_drops",
-    "monster_id": "mud_grub",
-    "item_id": "fishing_bait",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "mud_grub_drops",
-    "monster_id": "mud_grub",
-    "item_id": "raw_mudfish",
-    "chance_percent": 12,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "mud_grub_drops",
-    "monster_id": "mud_grub",
-    "item_id": "mud_grub_pet",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "goblin_trainee_drops",
-    "monster_id": "goblin_trainee",
-    "item_id": "coins",
-    "chance_percent": 60,
-    "qty_min": 5,
-    "qty_max": 20,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "goblin_trainee_drops",
-    "monster_id": "goblin_trainee",
-    "item_id": "bronze_dagger",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "goblin_trainee_drops",
-    "monster_id": "goblin_trainee",
-    "item_id": "cooked_shrimp",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "goblin_trainee_drops",
-    "monster_id": "goblin_trainee",
-    "item_id": "torn_cloth",
-    "chance_percent": 12,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "goblin_trainee_drops",
-    "monster_id": "goblin_trainee",
-    "item_id": "trainee_headband",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "giant_spider_drops",
-    "monster_id": "giant_spider",
-    "item_id": "spider_silk",
-    "chance_percent": 60,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "giant_spider_drops",
-    "monster_id": "giant_spider",
-    "item_id": "poison_gland",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "giant_spider_drops",
-    "monster_id": "giant_spider",
-    "item_id": "bones",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "giant_spider_drops",
-    "monster_id": "giant_spider",
-    "item_id": "coins",
-    "chance_percent": 12,
-    "qty_min": 8,
-    "qty_max": 32,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "giant_spider_drops",
-    "monster_id": "giant_spider",
-    "item_id": "spider_fang_dagger",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "forest_rat_drops",
-    "monster_id": "forest_rat",
-    "item_id": "rat_meat",
-    "chance_percent": 60,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "forest_rat_drops",
-    "monster_id": "forest_rat",
-    "item_id": "torn_hide",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "forest_rat_drops",
-    "monster_id": "forest_rat",
-    "item_id": "bones",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "forest_rat_drops",
-    "monster_id": "forest_rat",
-    "item_id": "oak_logs",
-    "chance_percent": 12,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "forest_rat_drops",
-    "monster_id": "forest_rat",
-    "item_id": "forest_rat_tail",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "river_bandit_drops",
-    "monster_id": "river_bandit",
-    "item_id": "coins",
-    "chance_percent": 60,
-    "qty_min": 12,
-    "qty_max": 48,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "river_bandit_drops",
-    "monster_id": "river_bandit",
-    "item_id": "raw_trout",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "river_bandit_drops",
-    "monster_id": "river_bandit",
-    "item_id": "fishing_bait",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "river_bandit_drops",
-    "monster_id": "river_bandit",
-    "item_id": "bronze_sword",
-    "chance_percent": 12,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "river_bandit_drops",
-    "monster_id": "river_bandit",
-    "item_id": "bandit_hook",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "mud_bug_drops",
-    "monster_id": "mud_bug",
-    "item_id": "bug_shell",
-    "chance_percent": 60,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "mud_bug_drops",
-    "monster_id": "mud_bug",
-    "item_id": "slime_glob",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "mud_bug_drops",
-    "monster_id": "mud_bug",
-    "item_id": "clay",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "mud_bug_drops",
-    "monster_id": "mud_bug",
-    "item_id": "raw_mudfish",
-    "chance_percent": 12,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "mud_bug_drops",
-    "monster_id": "mud_bug",
-    "item_id": "mud_shell_shield",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "crazed_fisher_gob_drops",
-    "monster_id": "crazed_fisher_gob",
-    "item_id": "raw_trout",
-    "chance_percent": 60,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "crazed_fisher_gob_drops",
-    "monster_id": "crazed_fisher_gob",
-    "item_id": "raw_pike",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "crazed_fisher_gob_drops",
-    "monster_id": "crazed_fisher_gob",
-    "item_id": "fishing_rod",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "crazed_fisher_gob_drops",
-    "monster_id": "crazed_fisher_gob",
-    "item_id": "coins",
-    "chance_percent": 12,
-    "qty_min": 15,
-    "qty_max": 60,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "crazed_fisher_gob_drops",
-    "monster_id": "crazed_fisher_gob",
-    "item_id": "fisher_gob_hat",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "oak_boar_drops",
-    "monster_id": "oak_boar",
-    "item_id": "boar_meat",
-    "chance_percent": 60,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "oak_boar_drops",
-    "monster_id": "oak_boar",
-    "item_id": "tough_hide",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "oak_boar_drops",
-    "monster_id": "oak_boar",
-    "item_id": "bones",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "oak_boar_drops",
-    "monster_id": "oak_boar",
-    "item_id": "oak_logs",
-    "chance_percent": 12,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "oak_boar_drops",
-    "monster_id": "oak_boar",
-    "item_id": "boar_tusk_spear_tip",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "cave_bat_drops",
-    "monster_id": "cave_bat",
-    "item_id": "bat_wing",
-    "chance_percent": 60,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "cave_bat_drops",
-    "monster_id": "cave_bat",
-    "item_id": "bones",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "cave_bat_drops",
-    "monster_id": "cave_bat",
-    "item_id": "iron_ore",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "cave_bat_drops",
-    "monster_id": "cave_bat",
-    "item_id": "coins",
-    "chance_percent": 12,
-    "qty_min": 20,
-    "qty_max": 80,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "cave_bat_drops",
-    "monster_id": "cave_bat",
-    "item_id": "echo_fang",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "iron_rock_crab_drops",
-    "monster_id": "iron_rock_crab",
-    "item_id": "iron_ore",
-    "chance_percent": 60,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "iron_rock_crab_drops",
-    "monster_id": "iron_rock_crab",
-    "item_id": "stone_chunk",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "iron_rock_crab_drops",
-    "monster_id": "iron_rock_crab",
-    "item_id": "crab_meat",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "iron_rock_crab_drops",
-    "monster_id": "iron_rock_crab",
-    "item_id": "coal_ore",
-    "chance_percent": 12,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "iron_rock_crab_drops",
-    "monster_id": "iron_rock_crab",
-    "item_id": "iron_crab_shell",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "moss_wolf_drops",
-    "monster_id": "moss_wolf",
-    "item_id": "wolf_meat",
-    "chance_percent": 60,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "moss_wolf_drops",
-    "monster_id": "moss_wolf",
-    "item_id": "wolf_hide",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "moss_wolf_drops",
-    "monster_id": "moss_wolf",
-    "item_id": "bones",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "moss_wolf_drops",
-    "monster_id": "moss_wolf",
-    "item_id": "oak_logs",
-    "chance_percent": 12,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "moss_wolf_drops",
-    "monster_id": "moss_wolf",
-    "item_id": "moss_wolf_pelt",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "rival_goblin_scout_drops",
-    "monster_id": "rival_goblin_scout",
-    "item_id": "coins",
-    "chance_percent": 60,
-    "qty_min": 28,
-    "qty_max": 112,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "rival_goblin_scout_drops",
-    "monster_id": "rival_goblin_scout",
-    "item_id": "iron_dagger",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "rival_goblin_scout_drops",
-    "monster_id": "rival_goblin_scout",
-    "item_id": "raw_pike",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "rival_goblin_scout_drops",
-    "monster_id": "rival_goblin_scout",
-    "item_id": "scout_map_scrap",
-    "chance_percent": 12,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "rival_goblin_scout_drops",
-    "monster_id": "rival_goblin_scout",
-    "item_id": "scout_hood",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "swamp_frog_drops",
-    "monster_id": "swamp_frog",
-    "item_id": "frog_legs",
-    "chance_percent": 60,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "swamp_frog_drops",
-    "monster_id": "swamp_frog",
-    "item_id": "slime_glob",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "swamp_frog_drops",
-    "monster_id": "swamp_frog",
-    "item_id": "poison_gland",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "swamp_frog_drops",
-    "monster_id": "swamp_frog",
-    "item_id": "swamp_herb",
-    "chance_percent": 12,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "swamp_frog_drops",
-    "monster_id": "swamp_frog",
-    "item_id": "frog_crown",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "bog_rat_drops",
-    "monster_id": "bog_rat",
-    "item_id": "rat_meat",
-    "chance_percent": 60,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "bog_rat_drops",
-    "monster_id": "bog_rat",
-    "item_id": "torn_hide",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "bog_rat_drops",
-    "monster_id": "bog_rat",
-    "item_id": "bones",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "bog_rat_drops",
-    "monster_id": "bog_rat",
-    "item_id": "deadwood_logs",
-    "chance_percent": 12,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "bog_rat_drops",
-    "monster_id": "bog_rat",
-    "item_id": "bog_rat_charm",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "fungal_goblin_drops",
-    "monster_id": "fungal_goblin",
-    "item_id": "redcap",
-    "chance_percent": 60,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "fungal_goblin_drops",
-    "monster_id": "fungal_goblin",
-    "item_id": "fungal_logs",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "fungal_goblin_drops",
-    "monster_id": "fungal_goblin",
-    "item_id": "coins",
-    "chance_percent": 25,
-    "qty_min": 34,
-    "qty_max": 136,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "fungal_goblin_drops",
-    "monster_id": "fungal_goblin",
-    "item_id": "bone_needle",
-    "chance_percent": 12,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "fungal_goblin_drops",
-    "monster_id": "fungal_goblin",
-    "item_id": "spore_mask",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "cave_goblin_miner_drops",
-    "monster_id": "cave_goblin_miner",
-    "item_id": "iron_ore",
-    "chance_percent": 60,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "cave_goblin_miner_drops",
-    "monster_id": "cave_goblin_miner",
-    "item_id": "coal_ore",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "cave_goblin_miner_drops",
-    "monster_id": "cave_goblin_miner",
-    "item_id": "pickaxe_head",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "cave_goblin_miner_drops",
-    "monster_id": "cave_goblin_miner",
-    "item_id": "coins",
-    "chance_percent": 12,
-    "qty_min": 36,
-    "qty_max": 144,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "cave_goblin_miner_drops",
-    "monster_id": "cave_goblin_miner",
-    "item_id": "miners_belt",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "bog_slime_drops",
-    "monster_id": "bog_slime",
-    "item_id": "slime_glob",
-    "chance_percent": 60,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "bog_slime_drops",
-    "monster_id": "bog_slime",
-    "item_id": "swamp_herb",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "bog_slime_drops",
-    "monster_id": "bog_slime",
-    "item_id": "raw_bog_eel",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "bog_slime_drops",
-    "monster_id": "bog_slime",
-    "item_id": "poison_gland",
-    "chance_percent": 12,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "bog_slime_drops",
-    "monster_id": "bog_slime",
-    "item_id": "slime_core",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "lake_snapper_drops",
-    "monster_id": "lake_snapper",
-    "item_id": "raw_pike",
-    "chance_percent": 60,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "lake_snapper_drops",
-    "monster_id": "lake_snapper",
-    "item_id": "raw_lake_carp",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "lake_snapper_drops",
-    "monster_id": "lake_snapper",
-    "item_id": "snapper_shell",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "lake_snapper_drops",
-    "monster_id": "lake_snapper",
-    "item_id": "water_herb",
-    "chance_percent": 12,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "lake_snapper_drops",
-    "monster_id": "lake_snapper",
-    "item_id": "snapper_tooth_necklace",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "rival_goblin_warrior_drops",
-    "monster_id": "rival_goblin_warrior",
-    "item_id": "coins",
-    "chance_percent": 60,
-    "qty_min": 42,
-    "qty_max": 168,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "rival_goblin_warrior_drops",
-    "monster_id": "rival_goblin_warrior",
-    "item_id": "iron_sword",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "rival_goblin_warrior_drops",
-    "monster_id": "rival_goblin_warrior",
-    "item_id": "steel_arrows",
-    "chance_percent": 25,
-    "qty_min": 5,
-    "qty_max": 42,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "rival_goblin_warrior_drops",
-    "monster_id": "rival_goblin_warrior",
-    "item_id": "cooked_pike",
-    "chance_percent": 12,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "rival_goblin_warrior_drops",
-    "monster_id": "rival_goblin_warrior",
-    "item_id": "rival_blade_fragment",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "rival_goblin_archer_drops",
-    "monster_id": "rival_goblin_archer",
-    "item_id": "iron_arrows",
-    "chance_percent": 60,
-    "qty_min": 5,
-    "qty_max": 44,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "rival_goblin_archer_drops",
-    "monster_id": "rival_goblin_archer",
-    "item_id": "oak_bow",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "rival_goblin_archer_drops",
-    "monster_id": "rival_goblin_archer",
-    "item_id": "bowstring",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "rival_goblin_archer_drops",
-    "monster_id": "rival_goblin_archer",
-    "item_id": "coins",
-    "chance_percent": 12,
-    "qty_min": 44,
-    "qty_max": 176,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "rival_goblin_archer_drops",
-    "monster_id": "rival_goblin_archer",
-    "item_id": "archer_wristguard",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "deep_cave_crawler_drops",
-    "monster_id": "deep_cave_crawler",
-    "item_id": "coal_ore",
-    "chance_percent": 60,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "deep_cave_crawler_drops",
-    "monster_id": "deep_cave_crawler",
-    "item_id": "gold_ore",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "deep_cave_crawler_drops",
-    "monster_id": "deep_cave_crawler",
-    "item_id": "raw_cavefish",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "deep_cave_crawler_drops",
-    "monster_id": "deep_cave_crawler",
-    "item_id": "chitin_plate",
-    "chance_percent": 12,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "deep_cave_crawler_drops",
-    "monster_id": "deep_cave_crawler",
-    "item_id": "crawler_claw",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "black_iron_crab_drops",
-    "monster_id": "black_iron_crab",
-    "item_id": "black_iron_ore",
-    "chance_percent": 60,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "black_iron_crab_drops",
-    "monster_id": "black_iron_crab",
-    "item_id": "coal_ore",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "black_iron_crab_drops",
-    "monster_id": "black_iron_crab",
-    "item_id": "crab_meat",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "black_iron_crab_drops",
-    "monster_id": "black_iron_crab",
-    "item_id": "heavy_shell",
-    "chance_percent": 12,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "black_iron_crab_drops",
-    "monster_id": "black_iron_crab",
-    "item_id": "black_crab_core",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "swamp_shaman_drops",
-    "monster_id": "swamp_shaman",
-    "item_id": "swamp_herb",
-    "chance_percent": 60,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "swamp_shaman_drops",
-    "monster_id": "swamp_shaman",
-    "item_id": "bone_amulet",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "swamp_shaman_drops",
-    "monster_id": "swamp_shaman",
-    "item_id": "gold_ore",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "swamp_shaman_drops",
-    "monster_id": "swamp_shaman",
-    "item_id": "coins",
-    "chance_percent": 12,
-    "qty_min": 52,
-    "qty_max": 208,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "swamp_shaman_drops",
-    "monster_id": "swamp_shaman",
-    "item_id": "shaman_totem",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "rival_goblin_brute_drops",
-    "monster_id": "rival_goblin_brute",
-    "item_id": "steel_bar",
-    "chance_percent": 60,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "rival_goblin_brute_drops",
-    "monster_id": "rival_goblin_brute",
-    "item_id": "black_iron_ore",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "rival_goblin_brute_drops",
-    "monster_id": "rival_goblin_brute",
-    "item_id": "cooked_lake_carp",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "rival_goblin_brute_drops",
-    "monster_id": "rival_goblin_brute",
-    "item_id": "coins",
-    "chance_percent": 12,
-    "qty_min": 55,
-    "qty_max": 220,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "rival_goblin_brute_drops",
-    "monster_id": "rival_goblin_brute",
-    "item_id": "brute_club_head",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "troll_whelp_drops",
-    "monster_id": "troll_whelp",
-    "item_id": "troll_meat",
-    "chance_percent": 60,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "troll_whelp_drops",
-    "monster_id": "troll_whelp",
-    "item_id": "big_bones",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "troll_whelp_drops",
-    "monster_id": "troll_whelp",
-    "item_id": "coal_ore",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "troll_whelp_drops",
-    "monster_id": "troll_whelp",
-    "item_id": "gold_ore",
-    "chance_percent": 12,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "troll_whelp_drops",
-    "monster_id": "troll_whelp",
-    "item_id": "troll_tooth",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "red_ear_captain_drops",
-    "monster_id": "red_ear_captain",
-    "item_id": "coins",
-    "chance_percent": 60,
-    "qty_min": 62,
-    "qty_max": 248,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "red_ear_captain_drops",
-    "monster_id": "red_ear_captain",
-    "item_id": "steel_spear",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "red_ear_captain_drops",
-    "monster_id": "red_ear_captain",
-    "item_id": "black_iron_bar",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "red_ear_captain_drops",
-    "monster_id": "red_ear_captain",
-    "item_id": "war_feast",
-    "chance_percent": 12,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "red_ear_captain_drops",
-    "monster_id": "red_ear_captain",
-    "item_id": "captains_banner",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "red_ear_captain_drops",
-    "monster_id": "red_ear_captain",
-    "item_id": "red_ear_spear_tip",
-    "chance_percent": 1,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "unique"
-  },
-  {
-    "drop_table_id": "cave_troll_drops",
-    "monster_id": "cave_troll",
-    "item_id": "big_bones",
-    "chance_percent": 60,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "cave_troll_drops",
-    "monster_id": "cave_troll",
-    "item_id": "coal_ore",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "cave_troll_drops",
-    "monster_id": "cave_troll",
-    "item_id": "gold_ore",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "cave_troll_drops",
-    "monster_id": "cave_troll",
-    "item_id": "troll_hide",
-    "chance_percent": 12,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "cave_troll_drops",
-    "monster_id": "cave_troll",
-    "item_id": "troll_club",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "cave_troll_drops",
-    "monster_id": "cave_troll",
-    "item_id": "mountain_key_fragment",
-    "chance_percent": 1,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "unique"
-  },
-  {
-    "drop_table_id": "grub_bog_horror_drops",
-    "monster_id": "grub_bog_horror",
-    "item_id": "slime_core",
-    "chance_percent": 60,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "grub_bog_horror_drops",
-    "monster_id": "grub_bog_horror",
-    "item_id": "swamp_herb",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "grub_bog_horror_drops",
-    "monster_id": "grub_bog_horror",
-    "item_id": "black_iron_ore",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "grub_bog_horror_drops",
-    "monster_id": "grub_bog_horror",
-    "item_id": "raw_grubshark",
-    "chance_percent": 12,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "grub_bog_horror_drops",
-    "monster_id": "grub_bog_horror",
-    "item_id": "bog_horror_hide",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "grub_bog_horror_drops",
-    "monster_id": "grub_bog_horror",
-    "item_id": "horror_heart",
-    "chance_percent": 1,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "unique"
-  },
-  {
-    "drop_table_id": "reed_snake_drops",
-    "monster_id": "reed_snake",
-    "item_id": "poison_gland",
-    "chance_percent": 60,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "reed_snake_drops",
-    "monster_id": "reed_snake",
-    "item_id": "river_opal",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "reed_snake_drops",
-    "monster_id": "reed_snake",
-    "item_id": "raw_river_eel",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "reed_snake_drops",
-    "monster_id": "reed_snake",
-    "item_id": "bones",
-    "chance_percent": 12,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "reed_snake_drops",
-    "monster_id": "reed_snake",
-    "item_id": "reed_snake_trophy",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "lost_lumber_gob_drops",
-    "monster_id": "lost_lumber_gob",
-    "item_id": "oak_logs",
-    "chance_percent": 60,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "lost_lumber_gob_drops",
-    "monster_id": "lost_lumber_gob",
-    "item_id": "normal_plank",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "lost_lumber_gob_drops",
-    "monster_id": "lost_lumber_gob",
-    "item_id": "coins",
-    "chance_percent": 25,
-    "qty_min": 19,
-    "qty_max": 76,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "lost_lumber_gob_drops",
-    "monster_id": "lost_lumber_gob",
-    "item_id": "crude_hatchet",
-    "chance_percent": 12,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "lost_lumber_gob_drops",
-    "monster_id": "lost_lumber_gob",
-    "item_id": "lost_lumber_gob_mask",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "quarry_imp_drops",
-    "monster_id": "quarry_imp",
-    "item_id": "copper_ore",
-    "chance_percent": 60,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "quarry_imp_drops",
-    "monster_id": "quarry_imp",
-    "item_id": "tin_ore",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "quarry_imp_drops",
-    "monster_id": "quarry_imp",
-    "item_id": "bronze_bar",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "quarry_imp_drops",
-    "monster_id": "quarry_imp",
-    "item_id": "bug_shell",
-    "chance_percent": 12,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "quarry_imp_drops",
-    "monster_id": "quarry_imp",
-    "item_id": "quarry_imp_trophy",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "lake_thief_drops",
-    "monster_id": "lake_thief",
-    "item_id": "raw_pike",
-    "chance_percent": 60,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "lake_thief_drops",
-    "monster_id": "lake_thief",
-    "item_id": "fishing_net",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "lake_thief_drops",
-    "monster_id": "lake_thief",
-    "item_id": "coins",
-    "chance_percent": 25,
-    "qty_min": 24,
-    "qty_max": 96,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "lake_thief_drops",
-    "monster_id": "lake_thief",
-    "item_id": "bandit_hook",
-    "chance_percent": 12,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "lake_thief_drops",
-    "monster_id": "lake_thief",
-    "item_id": "lake_thief_banner",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "moss_spider_drops",
-    "monster_id": "moss_spider",
-    "item_id": "spider_silk",
-    "chance_percent": 60,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "moss_spider_drops",
-    "monster_id": "moss_spider",
-    "item_id": "moss_agate",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "moss_spider_drops",
-    "monster_id": "moss_spider",
-    "item_id": "poison_gland",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "moss_spider_drops",
-    "monster_id": "moss_spider",
-    "item_id": "bones",
-    "chance_percent": 12,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "moss_spider_drops",
-    "monster_id": "moss_spider",
-    "item_id": "moss_spider_claw",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "ruin_wisp_drops",
-    "monster_id": "ruin_wisp",
-    "item_id": "moon_carrot",
-    "chance_percent": 60,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "ruin_wisp_drops",
-    "monster_id": "ruin_wisp",
-    "item_id": "goblin_jade",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "ruin_wisp_drops",
-    "monster_id": "ruin_wisp",
-    "item_id": "bone_amulet",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "ruin_wisp_drops",
-    "monster_id": "ruin_wisp",
-    "item_id": "old_forest_ruins_map_piece",
-    "chance_percent": 12,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "ruin_wisp_drops",
-    "monster_id": "ruin_wisp",
-    "item_id": "ruin_wisp_trophy",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "fungal_rat_drops",
-    "monster_id": "fungal_rat",
-    "item_id": "rat_meat",
-    "chance_percent": 60,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "fungal_rat_drops",
-    "monster_id": "fungal_rat",
-    "item_id": "redcap",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "fungal_rat_drops",
-    "monster_id": "fungal_rat",
-    "item_id": "glowshroom",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "fungal_rat_drops",
-    "monster_id": "fungal_rat",
-    "item_id": "spider_silk",
-    "chance_percent": 12,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "fungal_rat_drops",
-    "monster_id": "fungal_rat",
-    "item_id": "fungal_rat_mask",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "bog_mosquito_drops",
-    "monster_id": "bog_mosquito",
-    "item_id": "poison_gland",
-    "chance_percent": 60,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "bog_mosquito_drops",
-    "monster_id": "bog_mosquito",
-    "item_id": "swamp_herb",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "bog_mosquito_drops",
-    "monster_id": "bog_mosquito",
-    "item_id": "slime_glob",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "bog_mosquito_drops",
-    "monster_id": "bog_mosquito",
-    "item_id": "bog_rat_charm",
-    "chance_percent": 12,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "bog_mosquito_drops",
-    "monster_id": "bog_mosquito",
-    "item_id": "bog_mosquito_claw",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "mine_skulker_drops",
-    "monster_id": "mine_skulker",
-    "item_id": "iron_ore",
-    "chance_percent": 60,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "mine_skulker_drops",
-    "monster_id": "mine_skulker",
-    "item_id": "coal_ore",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "mine_skulker_drops",
-    "monster_id": "mine_skulker",
-    "item_id": "cave_ruby",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "mine_skulker_drops",
-    "monster_id": "mine_skulker",
-    "item_id": "miners_belt",
-    "chance_percent": 12,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "mine_skulker_drops",
-    "monster_id": "mine_skulker",
-    "item_id": "mine_skulker_trophy",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "oakwood_berserker_drops",
-    "monster_id": "oakwood_berserker",
-    "item_id": "steel_sword",
-    "chance_percent": 60,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "oakwood_berserker_drops",
-    "monster_id": "oakwood_berserker",
-    "item_id": "wolf_hide",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "oakwood_berserker_drops",
-    "monster_id": "oakwood_berserker",
-    "item_id": "moss_wolf_pelt",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "oakwood_berserker_drops",
-    "monster_id": "oakwood_berserker",
-    "item_id": "coins",
-    "chance_percent": 12,
-    "qty_min": 48,
-    "qty_max": 192,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "oakwood_berserker_drops",
-    "monster_id": "oakwood_berserker",
-    "item_id": "oakwood_berserker_banner",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "swamp_mireling_drops",
-    "monster_id": "swamp_mireling",
-    "item_id": "deadwood_logs",
-    "chance_percent": 60,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "swamp_mireling_drops",
-    "monster_id": "swamp_mireling",
-    "item_id": "swamp_herb",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "swamp_mireling_drops",
-    "monster_id": "swamp_mireling",
-    "item_id": "raw_bog_eel",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "swamp_mireling_drops",
-    "monster_id": "swamp_mireling",
-    "item_id": "slime_core",
-    "chance_percent": 12,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "swamp_mireling_drops",
-    "monster_id": "swamp_mireling",
-    "item_id": "swamp_mireling_mask",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "spore_crawler_drops",
-    "monster_id": "spore_crawler",
-    "item_id": "chitin_plate",
-    "chance_percent": 60,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "spore_crawler_drops",
-    "monster_id": "spore_crawler",
-    "item_id": "fungal_logs",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "spore_crawler_drops",
-    "monster_id": "spore_crawler",
-    "item_id": "blackcap_spore",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "spore_crawler_drops",
-    "monster_id": "spore_crawler",
-    "item_id": "crawler_claw",
-    "chance_percent": 12,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "spore_crawler_drops",
-    "monster_id": "spore_crawler",
-    "item_id": "spore_crawler_claw",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "rival_supplier_drops",
-    "monster_id": "rival_supplier",
-    "item_id": "iron_nails",
-    "chance_percent": 60,
-    "qty_min": 5,
-    "qty_max": 45,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "rival_supplier_drops",
-    "monster_id": "rival_supplier",
-    "item_id": "steel_bar",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "rival_supplier_drops",
-    "monster_id": "rival_supplier",
-    "item_id": "war_pumpkin",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "rival_supplier_drops",
-    "monster_id": "rival_supplier",
-    "item_id": "coins",
-    "chance_percent": 12,
-    "qty_min": 45,
-    "qty_max": 180,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "rival_supplier_drops",
-    "monster_id": "rival_supplier",
-    "item_id": "rival_supply_crate",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "rival_sharpshooter_drops",
-    "monster_id": "rival_sharpshooter",
-    "item_id": "steel_arrows",
-    "chance_percent": 60,
-    "qty_min": 5,
-    "qty_max": 57,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "rival_sharpshooter_drops",
-    "monster_id": "rival_sharpshooter",
-    "item_id": "willow_bow",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "rival_sharpshooter_drops",
-    "monster_id": "rival_sharpshooter",
-    "item_id": "archer_wristguard",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "rival_sharpshooter_drops",
-    "monster_id": "rival_sharpshooter",
-    "item_id": "coins",
-    "chance_percent": 12,
-    "qty_min": 57,
-    "qty_max": 228,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "rival_sharpshooter_drops",
-    "monster_id": "rival_sharpshooter",
-    "item_id": "rival_sharpshooter_mask",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "troll_miner_drops",
-    "monster_id": "troll_miner",
-    "item_id": "gold_ore",
-    "chance_percent": 60,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "troll_miner_drops",
-    "monster_id": "troll_miner",
-    "item_id": "deep_metal_ore",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "troll_miner_drops",
-    "monster_id": "troll_miner",
-    "item_id": "troll_tooth",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "troll_miner_drops",
-    "monster_id": "troll_miner",
-    "item_id": "big_bones",
-    "chance_percent": 12,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "troll_miner_drops",
-    "monster_id": "troll_miner",
-    "item_id": "troll_miner_trophy",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "meteor_sprite_drops",
-    "monster_id": "meteor_sprite",
-    "item_id": "meteor_ore",
-    "chance_percent": 60,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "meteor_sprite_drops",
-    "monster_id": "meteor_sprite",
-    "item_id": "meteor_bloom",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "meteor_sprite_drops",
-    "monster_id": "meteor_sprite",
-    "item_id": "meteor_diamond",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "meteor_sprite_drops",
-    "monster_id": "meteor_sprite",
-    "item_id": "mooncap",
-    "chance_percent": 12,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "meteor_sprite_drops",
-    "monster_id": "meteor_sprite",
-    "item_id": "meteor_sprite_banner",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "meteor_sprite_drops",
-    "monster_id": "meteor_sprite",
-    "item_id": "meteor_core",
-    "chance_percent": 5,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "old_guardian_drops",
-    "monster_id": "old_guardian",
-    "item_id": "goblin_jade",
-    "chance_percent": 60,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "old_guardian_drops",
-    "monster_id": "old_guardian",
-    "item_id": "silver_bar",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "old_guardian_drops",
-    "monster_id": "old_guardian",
-    "item_id": "old_forest_ruins_rusted_key",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "old_guardian_drops",
-    "monster_id": "old_guardian",
-    "item_id": "bone_amulet",
-    "chance_percent": 12,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "old_guardian_drops",
-    "monster_id": "old_guardian",
-    "item_id": "old_guardian_trophy",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "blackroot_stalker_drops",
-    "monster_id": "blackroot_stalker",
-    "item_id": "blackroot_logs",
-    "chance_percent": 60,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "blackroot_stalker_drops",
-    "monster_id": "blackroot_stalker",
-    "item_id": "blackcap_spore",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "blackroot_stalker_drops",
-    "monster_id": "blackroot_stalker",
-    "item_id": "poison_gland",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "blackroot_stalker_drops",
-    "monster_id": "blackroot_stalker",
-    "item_id": "blackroot_bow",
-    "chance_percent": 12,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "blackroot_stalker_drops",
-    "monster_id": "blackroot_stalker",
-    "item_id": "blackroot_stalker_mask",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "deep_metal_golem_drops",
-    "monster_id": "deep_metal_golem",
-    "item_id": "deep_metal_ore",
-    "chance_percent": 60,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "deep_metal_golem_drops",
-    "monster_id": "deep_metal_golem",
-    "item_id": "deep_metal_bar",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "deep_metal_golem_drops",
-    "monster_id": "deep_metal_golem",
-    "item_id": "gem",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "deep_metal_golem_drops",
-    "monster_id": "deep_metal_golem",
-    "item_id": "big_bones",
-    "chance_percent": 12,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "deep_metal_golem_drops",
-    "monster_id": "deep_metal_golem",
-    "item_id": "deep_metal_golem_claw",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "lake_island_guard_drops",
-    "monster_id": "lake_island_guard",
-    "item_id": "raw_lake_carp",
-    "chance_percent": 60,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "lake_island_guard_drops",
-    "monster_id": "lake_island_guard",
-    "item_id": "river_opal",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "lake_island_guard_drops",
-    "monster_id": "lake_island_guard",
-    "item_id": "snapper_shell",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "lake_island_guard_drops",
-    "monster_id": "lake_island_guard",
-    "item_id": "snapper_tooth_necklace",
-    "chance_percent": 12,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "lake_island_guard_drops",
-    "monster_id": "lake_island_guard",
-    "item_id": "lake_island_guard_banner",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "farm_scavenger_drops",
-    "monster_id": "farm_scavenger",
-    "item_id": "potato",
-    "chance_percent": 60,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "farm_scavenger_drops",
-    "monster_id": "farm_scavenger",
-    "item_id": "cabbage",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "farm_scavenger_drops",
-    "monster_id": "farm_scavenger",
-    "item_id": "onion_seed",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "farm_scavenger_drops",
-    "monster_id": "farm_scavenger",
-    "item_id": "bones",
-    "chance_percent": 12,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "farm_scavenger_drops",
-    "monster_id": "farm_scavenger",
-    "item_id": "farm_scavenger_trophy",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "crop_bug_swarm_drops",
-    "monster_id": "crop_bug_swarm",
-    "item_id": "bug_shell",
-    "chance_percent": 60,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "crop_bug_swarm_drops",
-    "monster_id": "crop_bug_swarm",
-    "item_id": "bitterleaf_seed",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "crop_bug_swarm_drops",
-    "monster_id": "crop_bug_swarm",
-    "item_id": "greenmuck_seed",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "crop_bug_swarm_drops",
-    "monster_id": "crop_bug_swarm",
-    "item_id": "slime_glob",
-    "chance_percent": 12,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "crop_bug_swarm_drops",
-    "monster_id": "crop_bug_swarm",
-    "item_id": "crop_bug_swarm_claw",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "goblin_poacher_drops",
-    "monster_id": "goblin_poacher",
-    "item_id": "raw_trout",
-    "chance_percent": 60,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "goblin_poacher_drops",
-    "monster_id": "goblin_poacher",
-    "item_id": "oak_bow",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "goblin_poacher_drops",
-    "monster_id": "goblin_poacher",
-    "item_id": "iron_arrows",
-    "chance_percent": 25,
-    "qty_min": 5,
-    "qty_max": 27,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "goblin_poacher_drops",
-    "monster_id": "goblin_poacher",
-    "item_id": "coins",
-    "chance_percent": 12,
-    "qty_min": 27,
-    "qty_max": 108,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "goblin_poacher_drops",
-    "monster_id": "goblin_poacher",
-    "item_id": "goblin_poacher_mask",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "bridge_bandit_drops",
-    "monster_id": "bridge_bandit",
-    "item_id": "iron_nails",
-    "chance_percent": 60,
-    "qty_min": 5,
-    "qty_max": 23,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "bridge_bandit_drops",
-    "monster_id": "bridge_bandit",
-    "item_id": "oak_beam",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "bridge_bandit_drops",
-    "monster_id": "bridge_bandit",
-    "item_id": "coins",
-    "chance_percent": 25,
-    "qty_min": 23,
-    "qty_max": 92,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "bridge_bandit_drops",
-    "monster_id": "bridge_bandit",
-    "item_id": "river_opal",
-    "chance_percent": 12,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "bridge_bandit_drops",
-    "monster_id": "bridge_bandit",
-    "item_id": "bridge_bandit_banner",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "deadwood_spirit_drops",
-    "monster_id": "deadwood_spirit",
-    "item_id": "deadwood_logs",
-    "chance_percent": 60,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "deadwood_spirit_drops",
-    "monster_id": "deadwood_spirit",
-    "item_id": "bone_pearl",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "deadwood_spirit_drops",
-    "monster_id": "deadwood_spirit",
-    "item_id": "swamp_herb",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "deadwood_spirit_drops",
-    "monster_id": "deadwood_spirit",
-    "item_id": "goblin_charm",
-    "chance_percent": 12,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "deadwood_spirit_drops",
-    "monster_id": "deadwood_spirit",
-    "item_id": "deadwood_spirit_trophy",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "witchs_helper_drops",
-    "monster_id": "witchs_helper",
-    "item_id": "witchcap",
-    "chance_percent": 60,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "witchs_helper_drops",
-    "monster_id": "witchs_helper",
-    "item_id": "glowshroom",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "witchs_helper_drops",
-    "monster_id": "witchs_helper",
-    "item_id": "fungal_sage",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "witchs_helper_drops",
-    "monster_id": "witchs_helper",
-    "item_id": "mushroom_forest_ritual_token",
-    "chance_percent": 12,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "witchs_helper_drops",
-    "monster_id": "witchs_helper",
-    "item_id": "witchs_helper_mask",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "red_ear_scout_drops",
-    "monster_id": "red_ear_scout",
-    "item_id": "scout_map_scrap",
-    "chance_percent": 60,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "red_ear_scout_drops",
-    "monster_id": "red_ear_scout",
-    "item_id": "iron_dagger",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "red_ear_scout_drops",
-    "monster_id": "red_ear_scout",
-    "item_id": "cooked_pike",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "red_ear_scout_drops",
-    "monster_id": "red_ear_scout",
-    "item_id": "coins",
-    "chance_percent": 12,
-    "qty_min": 38,
-    "qty_max": 152,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "red_ear_scout_drops",
-    "monster_id": "red_ear_scout",
-    "item_id": "red_ear_scout_claw",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "red_ear_shaman_drops",
-    "monster_id": "red_ear_shaman",
-    "item_id": "shaman_totem",
-    "chance_percent": 60,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "red_ear_shaman_drops",
-    "monster_id": "red_ear_shaman",
-    "item_id": "swamp_herb",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "red_ear_shaman_drops",
-    "monster_id": "red_ear_shaman",
-    "item_id": "gold_bar",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "red_ear_shaman_drops",
-    "monster_id": "red_ear_shaman",
-    "item_id": "black_iron_bar",
-    "chance_percent": 12,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "red_ear_shaman_drops",
-    "monster_id": "red_ear_shaman",
-    "item_id": "red_ear_shaman_banner",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "ridge_wolf_drops",
-    "monster_id": "ridge_wolf",
-    "item_id": "wolf_hide",
-    "chance_percent": 60,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "ridge_wolf_drops",
-    "monster_id": "ridge_wolf",
-    "item_id": "troll_thistle",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "ridge_wolf_drops",
-    "monster_id": "ridge_wolf",
-    "item_id": "big_bones",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "ridge_wolf_drops",
-    "monster_id": "ridge_wolf",
-    "item_id": "troll_sapphire",
-    "chance_percent": 12,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "ridge_wolf_drops",
-    "monster_id": "ridge_wolf",
-    "item_id": "ridge_wolf_mask",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "bog_king_drops",
-    "monster_id": "bog_king",
-    "item_id": "horror_heart",
-    "chance_percent": 60,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "bog_king_drops",
-    "monster_id": "bog_king",
-    "item_id": "bog_crown",
-    "chance_percent": 40,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "common"
-  },
-  {
-    "drop_table_id": "bog_king_drops",
-    "monster_id": "bog_king",
-    "item_id": "black_iron_bar",
-    "chance_percent": 25,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "bog_king_drops",
-    "monster_id": "bog_king",
-    "item_id": "raw_grubshark",
-    "chance_percent": 12,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "uncommon"
-  },
-  {
-    "drop_table_id": "bog_king_drops",
-    "monster_id": "bog_king",
-    "item_id": "bog_king_trophy",
-    "chance_percent": 3,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  },
-  {
-    "drop_table_id": "bog_king_drops",
-    "monster_id": "bog_king",
-    "item_id": "bog_king_heart",
-    "chance_percent": 5,
-    "qty_min": 1,
-    "qty_max": 1,
-    "drop_role": "rare"
-  }
+ {
+  "drop_table_id": "training_rat_drops",
+  "monster_id": "training_rat",
+  "item_id": "rat_meat",
+  "chance_percent": 60,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "training_rat_drops",
+  "monster_id": "training_rat",
+  "item_id": "bones",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "training_rat_drops",
+  "monster_id": "training_rat",
+  "item_id": "torn_hide",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "training_rat_drops",
+  "monster_id": "training_rat",
+  "item_id": "rat_tooth_charm",
+  "chance_percent": 12,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "cave_bug_drops",
+  "monster_id": "cave_bug",
+  "item_id": "bug_shell",
+  "chance_percent": 60,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "cave_bug_drops",
+  "monster_id": "cave_bug",
+  "item_id": "bones",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "cave_bug_drops",
+  "monster_id": "cave_bug",
+  "item_id": "copper_ore",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "cave_bug_drops",
+  "monster_id": "cave_bug",
+  "item_id": "clay",
+  "chance_percent": 12,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "cave_bug_drops",
+  "monster_id": "cave_bug",
+  "item_id": "bug_eye_ring",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "mud_grub_drops",
+  "monster_id": "mud_grub",
+  "item_id": "grub_meat",
+  "chance_percent": 60,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "mud_grub_drops",
+  "monster_id": "mud_grub",
+  "item_id": "slime_glob",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "mud_grub_drops",
+  "monster_id": "mud_grub",
+  "item_id": "fishing_bait",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "mud_grub_drops",
+  "monster_id": "mud_grub",
+  "item_id": "raw_mudfish",
+  "chance_percent": 12,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "mud_grub_drops",
+  "monster_id": "mud_grub",
+  "item_id": "mud_grub_pet",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "goblin_trainee_drops",
+  "monster_id": "goblin_trainee",
+  "item_id": "coins",
+  "chance_percent": 60,
+  "qty_min": 5,
+  "qty_max": 20,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "goblin_trainee_drops",
+  "monster_id": "goblin_trainee",
+  "item_id": "bronze_dagger",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "goblin_trainee_drops",
+  "monster_id": "goblin_trainee",
+  "item_id": "cooked_shrimp",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "goblin_trainee_drops",
+  "monster_id": "goblin_trainee",
+  "item_id": "torn_cloth",
+  "chance_percent": 12,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "goblin_trainee_drops",
+  "monster_id": "goblin_trainee",
+  "item_id": "trainee_headband",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "giant_spider_drops",
+  "monster_id": "giant_spider",
+  "item_id": "spider_silk",
+  "chance_percent": 60,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "giant_spider_drops",
+  "monster_id": "giant_spider",
+  "item_id": "poison_gland",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "giant_spider_drops",
+  "monster_id": "giant_spider",
+  "item_id": "bones",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "giant_spider_drops",
+  "monster_id": "giant_spider",
+  "item_id": "coins",
+  "chance_percent": 12,
+  "qty_min": 8,
+  "qty_max": 32,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "giant_spider_drops",
+  "monster_id": "giant_spider",
+  "item_id": "spider_fang_dagger",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "forest_rat_drops",
+  "monster_id": "forest_rat",
+  "item_id": "rat_meat",
+  "chance_percent": 60,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "forest_rat_drops",
+  "monster_id": "forest_rat",
+  "item_id": "torn_hide",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "forest_rat_drops",
+  "monster_id": "forest_rat",
+  "item_id": "bones",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "forest_rat_drops",
+  "monster_id": "forest_rat",
+  "item_id": "oak_logs",
+  "chance_percent": 12,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "forest_rat_drops",
+  "monster_id": "forest_rat",
+  "item_id": "forest_rat_tail",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "river_bandit_drops",
+  "monster_id": "river_bandit",
+  "item_id": "coins",
+  "chance_percent": 60,
+  "qty_min": 12,
+  "qty_max": 48,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "river_bandit_drops",
+  "monster_id": "river_bandit",
+  "item_id": "raw_trout",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "river_bandit_drops",
+  "monster_id": "river_bandit",
+  "item_id": "fishing_bait",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "river_bandit_drops",
+  "monster_id": "river_bandit",
+  "item_id": "bronze_sword",
+  "chance_percent": 12,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "river_bandit_drops",
+  "monster_id": "river_bandit",
+  "item_id": "bandit_hook",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "mud_bug_drops",
+  "monster_id": "mud_bug",
+  "item_id": "bug_shell",
+  "chance_percent": 60,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "mud_bug_drops",
+  "monster_id": "mud_bug",
+  "item_id": "slime_glob",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "mud_bug_drops",
+  "monster_id": "mud_bug",
+  "item_id": "clay",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "mud_bug_drops",
+  "monster_id": "mud_bug",
+  "item_id": "raw_mudfish",
+  "chance_percent": 12,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "mud_bug_drops",
+  "monster_id": "mud_bug",
+  "item_id": "mud_shell_shield",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "crazed_fisher_gob_drops",
+  "monster_id": "crazed_fisher_gob",
+  "item_id": "raw_trout",
+  "chance_percent": 60,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "crazed_fisher_gob_drops",
+  "monster_id": "crazed_fisher_gob",
+  "item_id": "raw_pike",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "crazed_fisher_gob_drops",
+  "monster_id": "crazed_fisher_gob",
+  "item_id": "fishing_rod",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "crazed_fisher_gob_drops",
+  "monster_id": "crazed_fisher_gob",
+  "item_id": "coins",
+  "chance_percent": 12,
+  "qty_min": 15,
+  "qty_max": 60,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "crazed_fisher_gob_drops",
+  "monster_id": "crazed_fisher_gob",
+  "item_id": "fisher_gob_hat",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "oak_boar_drops",
+  "monster_id": "oak_boar",
+  "item_id": "boar_meat",
+  "chance_percent": 60,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "oak_boar_drops",
+  "monster_id": "oak_boar",
+  "item_id": "tough_hide",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "oak_boar_drops",
+  "monster_id": "oak_boar",
+  "item_id": "bones",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "oak_boar_drops",
+  "monster_id": "oak_boar",
+  "item_id": "oak_logs",
+  "chance_percent": 12,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "oak_boar_drops",
+  "monster_id": "oak_boar",
+  "item_id": "boar_tusk_spear_tip",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "cave_bat_drops",
+  "monster_id": "cave_bat",
+  "item_id": "bat_wing",
+  "chance_percent": 60,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "cave_bat_drops",
+  "monster_id": "cave_bat",
+  "item_id": "bones",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "cave_bat_drops",
+  "monster_id": "cave_bat",
+  "item_id": "iron_ore",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "cave_bat_drops",
+  "monster_id": "cave_bat",
+  "item_id": "coins",
+  "chance_percent": 12,
+  "qty_min": 20,
+  "qty_max": 80,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "cave_bat_drops",
+  "monster_id": "cave_bat",
+  "item_id": "echo_fang",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "iron_rock_crab_drops",
+  "monster_id": "iron_rock_crab",
+  "item_id": "iron_ore",
+  "chance_percent": 60,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "iron_rock_crab_drops",
+  "monster_id": "iron_rock_crab",
+  "item_id": "stone_chunk",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "iron_rock_crab_drops",
+  "monster_id": "iron_rock_crab",
+  "item_id": "crab_meat",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "iron_rock_crab_drops",
+  "monster_id": "iron_rock_crab",
+  "item_id": "coal_ore",
+  "chance_percent": 12,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "iron_rock_crab_drops",
+  "monster_id": "iron_rock_crab",
+  "item_id": "iron_crab_shell",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "moss_wolf_drops",
+  "monster_id": "moss_wolf",
+  "item_id": "wolf_meat",
+  "chance_percent": 60,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "moss_wolf_drops",
+  "monster_id": "moss_wolf",
+  "item_id": "wolf_hide",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "moss_wolf_drops",
+  "monster_id": "moss_wolf",
+  "item_id": "bones",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "moss_wolf_drops",
+  "monster_id": "moss_wolf",
+  "item_id": "oak_logs",
+  "chance_percent": 12,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "moss_wolf_drops",
+  "monster_id": "moss_wolf",
+  "item_id": "moss_wolf_pelt",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "rival_goblin_scout_drops",
+  "monster_id": "rival_goblin_scout",
+  "item_id": "coins",
+  "chance_percent": 60,
+  "qty_min": 28,
+  "qty_max": 112,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "rival_goblin_scout_drops",
+  "monster_id": "rival_goblin_scout",
+  "item_id": "iron_dagger",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "rival_goblin_scout_drops",
+  "monster_id": "rival_goblin_scout",
+  "item_id": "raw_pike",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "rival_goblin_scout_drops",
+  "monster_id": "rival_goblin_scout",
+  "item_id": "scout_map_scrap",
+  "chance_percent": 12,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "rival_goblin_scout_drops",
+  "monster_id": "rival_goblin_scout",
+  "item_id": "scout_hood",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "swamp_frog_drops",
+  "monster_id": "swamp_frog",
+  "item_id": "frog_legs",
+  "chance_percent": 60,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "swamp_frog_drops",
+  "monster_id": "swamp_frog",
+  "item_id": "slime_glob",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "swamp_frog_drops",
+  "monster_id": "swamp_frog",
+  "item_id": "poison_gland",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "swamp_frog_drops",
+  "monster_id": "swamp_frog",
+  "item_id": "swamp_herb",
+  "chance_percent": 12,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "swamp_frog_drops",
+  "monster_id": "swamp_frog",
+  "item_id": "frog_crown",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "bog_rat_drops",
+  "monster_id": "bog_rat",
+  "item_id": "rat_meat",
+  "chance_percent": 60,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "bog_rat_drops",
+  "monster_id": "bog_rat",
+  "item_id": "torn_hide",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "bog_rat_drops",
+  "monster_id": "bog_rat",
+  "item_id": "bones",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "bog_rat_drops",
+  "monster_id": "bog_rat",
+  "item_id": "deadwood_logs",
+  "chance_percent": 12,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "bog_rat_drops",
+  "monster_id": "bog_rat",
+  "item_id": "bog_rat_charm",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "fungal_goblin_drops",
+  "monster_id": "fungal_goblin",
+  "item_id": "redcap",
+  "chance_percent": 60,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "fungal_goblin_drops",
+  "monster_id": "fungal_goblin",
+  "item_id": "fungal_logs",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "fungal_goblin_drops",
+  "monster_id": "fungal_goblin",
+  "item_id": "coins",
+  "chance_percent": 25,
+  "qty_min": 34,
+  "qty_max": 136,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "fungal_goblin_drops",
+  "monster_id": "fungal_goblin",
+  "item_id": "bone_needle",
+  "chance_percent": 12,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "fungal_goblin_drops",
+  "monster_id": "fungal_goblin",
+  "item_id": "spore_mask",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "cave_goblin_miner_drops",
+  "monster_id": "cave_goblin_miner",
+  "item_id": "iron_ore",
+  "chance_percent": 60,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "cave_goblin_miner_drops",
+  "monster_id": "cave_goblin_miner",
+  "item_id": "coal_ore",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "cave_goblin_miner_drops",
+  "monster_id": "cave_goblin_miner",
+  "item_id": "pickaxe_head",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "cave_goblin_miner_drops",
+  "monster_id": "cave_goblin_miner",
+  "item_id": "coins",
+  "chance_percent": 12,
+  "qty_min": 36,
+  "qty_max": 144,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "cave_goblin_miner_drops",
+  "monster_id": "cave_goblin_miner",
+  "item_id": "miners_belt",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "bog_slime_drops",
+  "monster_id": "bog_slime",
+  "item_id": "slime_glob",
+  "chance_percent": 60,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "bog_slime_drops",
+  "monster_id": "bog_slime",
+  "item_id": "swamp_herb",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "bog_slime_drops",
+  "monster_id": "bog_slime",
+  "item_id": "raw_bog_eel",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "bog_slime_drops",
+  "monster_id": "bog_slime",
+  "item_id": "poison_gland",
+  "chance_percent": 12,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "bog_slime_drops",
+  "monster_id": "bog_slime",
+  "item_id": "slime_core",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "lake_snapper_drops",
+  "monster_id": "lake_snapper",
+  "item_id": "raw_pike",
+  "chance_percent": 60,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "lake_snapper_drops",
+  "monster_id": "lake_snapper",
+  "item_id": "raw_lake_carp",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "lake_snapper_drops",
+  "monster_id": "lake_snapper",
+  "item_id": "snapper_shell",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "lake_snapper_drops",
+  "monster_id": "lake_snapper",
+  "item_id": "water_herb",
+  "chance_percent": 12,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "lake_snapper_drops",
+  "monster_id": "lake_snapper",
+  "item_id": "snapper_tooth_necklace",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "rival_goblin_warrior_drops",
+  "monster_id": "rival_goblin_warrior",
+  "item_id": "coins",
+  "chance_percent": 60,
+  "qty_min": 42,
+  "qty_max": 168,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "rival_goblin_warrior_drops",
+  "monster_id": "rival_goblin_warrior",
+  "item_id": "iron_sword",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "rival_goblin_warrior_drops",
+  "monster_id": "rival_goblin_warrior",
+  "item_id": "steel_arrows",
+  "chance_percent": 25,
+  "qty_min": 5,
+  "qty_max": 42,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "rival_goblin_warrior_drops",
+  "monster_id": "rival_goblin_warrior",
+  "item_id": "cooked_pike",
+  "chance_percent": 12,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "rival_goblin_warrior_drops",
+  "monster_id": "rival_goblin_warrior",
+  "item_id": "rival_blade_fragment",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "rival_goblin_archer_drops",
+  "monster_id": "rival_goblin_archer",
+  "item_id": "iron_arrows",
+  "chance_percent": 60,
+  "qty_min": 5,
+  "qty_max": 44,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "rival_goblin_archer_drops",
+  "monster_id": "rival_goblin_archer",
+  "item_id": "oak_bow",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "rival_goblin_archer_drops",
+  "monster_id": "rival_goblin_archer",
+  "item_id": "bowstring",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "rival_goblin_archer_drops",
+  "monster_id": "rival_goblin_archer",
+  "item_id": "coins",
+  "chance_percent": 12,
+  "qty_min": 44,
+  "qty_max": 176,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "rival_goblin_archer_drops",
+  "monster_id": "rival_goblin_archer",
+  "item_id": "archer_wristguard",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "deep_cave_crawler_drops",
+  "monster_id": "deep_cave_crawler",
+  "item_id": "coal_ore",
+  "chance_percent": 60,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "deep_cave_crawler_drops",
+  "monster_id": "deep_cave_crawler",
+  "item_id": "gold_ore",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "deep_cave_crawler_drops",
+  "monster_id": "deep_cave_crawler",
+  "item_id": "raw_cavefish",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "deep_cave_crawler_drops",
+  "monster_id": "deep_cave_crawler",
+  "item_id": "chitin_plate",
+  "chance_percent": 12,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "deep_cave_crawler_drops",
+  "monster_id": "deep_cave_crawler",
+  "item_id": "crawler_claw",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "black_iron_crab_drops",
+  "monster_id": "black_iron_crab",
+  "item_id": "black_iron_ore",
+  "chance_percent": 60,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "black_iron_crab_drops",
+  "monster_id": "black_iron_crab",
+  "item_id": "coal_ore",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "black_iron_crab_drops",
+  "monster_id": "black_iron_crab",
+  "item_id": "crab_meat",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "black_iron_crab_drops",
+  "monster_id": "black_iron_crab",
+  "item_id": "heavy_shell",
+  "chance_percent": 12,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "black_iron_crab_drops",
+  "monster_id": "black_iron_crab",
+  "item_id": "black_crab_core",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "swamp_shaman_drops",
+  "monster_id": "swamp_shaman",
+  "item_id": "swamp_herb",
+  "chance_percent": 60,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "swamp_shaman_drops",
+  "monster_id": "swamp_shaman",
+  "item_id": "bone_amulet",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "swamp_shaman_drops",
+  "monster_id": "swamp_shaman",
+  "item_id": "gold_ore",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "swamp_shaman_drops",
+  "monster_id": "swamp_shaman",
+  "item_id": "coins",
+  "chance_percent": 12,
+  "qty_min": 52,
+  "qty_max": 208,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "swamp_shaman_drops",
+  "monster_id": "swamp_shaman",
+  "item_id": "shaman_totem",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "rival_goblin_brute_drops",
+  "monster_id": "rival_goblin_brute",
+  "item_id": "steel_bar",
+  "chance_percent": 60,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "rival_goblin_brute_drops",
+  "monster_id": "rival_goblin_brute",
+  "item_id": "black_iron_ore",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "rival_goblin_brute_drops",
+  "monster_id": "rival_goblin_brute",
+  "item_id": "cooked_lake_carp",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "rival_goblin_brute_drops",
+  "monster_id": "rival_goblin_brute",
+  "item_id": "coins",
+  "chance_percent": 12,
+  "qty_min": 55,
+  "qty_max": 220,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "rival_goblin_brute_drops",
+  "monster_id": "rival_goblin_brute",
+  "item_id": "brute_club_head",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "troll_whelp_drops",
+  "monster_id": "troll_whelp",
+  "item_id": "troll_meat",
+  "chance_percent": 60,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "troll_whelp_drops",
+  "monster_id": "troll_whelp",
+  "item_id": "big_bones",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "troll_whelp_drops",
+  "monster_id": "troll_whelp",
+  "item_id": "coal_ore",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "troll_whelp_drops",
+  "monster_id": "troll_whelp",
+  "item_id": "gold_ore",
+  "chance_percent": 12,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "troll_whelp_drops",
+  "monster_id": "troll_whelp",
+  "item_id": "troll_tooth",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "red_ear_captain_drops",
+  "monster_id": "red_ear_captain",
+  "item_id": "coins",
+  "chance_percent": 60,
+  "qty_min": 62,
+  "qty_max": 248,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "red_ear_captain_drops",
+  "monster_id": "red_ear_captain",
+  "item_id": "steel_spear",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "red_ear_captain_drops",
+  "monster_id": "red_ear_captain",
+  "item_id": "black_iron_bar",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "red_ear_captain_drops",
+  "monster_id": "red_ear_captain",
+  "item_id": "war_feast",
+  "chance_percent": 12,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "red_ear_captain_drops",
+  "monster_id": "red_ear_captain",
+  "item_id": "captains_banner",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "red_ear_captain_drops",
+  "monster_id": "red_ear_captain",
+  "item_id": "red_ear_spear_tip",
+  "chance_percent": 1,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "unique"
+ },
+ {
+  "drop_table_id": "cave_troll_drops",
+  "monster_id": "cave_troll",
+  "item_id": "big_bones",
+  "chance_percent": 60,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "cave_troll_drops",
+  "monster_id": "cave_troll",
+  "item_id": "coal_ore",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "cave_troll_drops",
+  "monster_id": "cave_troll",
+  "item_id": "gold_ore",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "cave_troll_drops",
+  "monster_id": "cave_troll",
+  "item_id": "troll_hide",
+  "chance_percent": 12,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "cave_troll_drops",
+  "monster_id": "cave_troll",
+  "item_id": "troll_club",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "cave_troll_drops",
+  "monster_id": "cave_troll",
+  "item_id": "mountain_key_fragment",
+  "chance_percent": 1,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "unique"
+ },
+ {
+  "drop_table_id": "grub_bog_horror_drops",
+  "monster_id": "grub_bog_horror",
+  "item_id": "slime_core",
+  "chance_percent": 60,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "grub_bog_horror_drops",
+  "monster_id": "grub_bog_horror",
+  "item_id": "swamp_herb",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "grub_bog_horror_drops",
+  "monster_id": "grub_bog_horror",
+  "item_id": "black_iron_ore",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "grub_bog_horror_drops",
+  "monster_id": "grub_bog_horror",
+  "item_id": "raw_grubshark",
+  "chance_percent": 12,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "grub_bog_horror_drops",
+  "monster_id": "grub_bog_horror",
+  "item_id": "bog_horror_hide",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "grub_bog_horror_drops",
+  "monster_id": "grub_bog_horror",
+  "item_id": "horror_heart",
+  "chance_percent": 1,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "unique"
+ },
+ {
+  "drop_table_id": "reed_snake_drops",
+  "monster_id": "reed_snake",
+  "item_id": "poison_gland",
+  "chance_percent": 60,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "reed_snake_drops",
+  "monster_id": "reed_snake",
+  "item_id": "river_opal",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "reed_snake_drops",
+  "monster_id": "reed_snake",
+  "item_id": "raw_river_eel",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "reed_snake_drops",
+  "monster_id": "reed_snake",
+  "item_id": "bones",
+  "chance_percent": 12,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "reed_snake_drops",
+  "monster_id": "reed_snake",
+  "item_id": "reed_snake_trophy",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "lost_lumber_gob_drops",
+  "monster_id": "lost_lumber_gob",
+  "item_id": "oak_logs",
+  "chance_percent": 60,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "lost_lumber_gob_drops",
+  "monster_id": "lost_lumber_gob",
+  "item_id": "normal_plank",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "lost_lumber_gob_drops",
+  "monster_id": "lost_lumber_gob",
+  "item_id": "coins",
+  "chance_percent": 25,
+  "qty_min": 19,
+  "qty_max": 76,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "lost_lumber_gob_drops",
+  "monster_id": "lost_lumber_gob",
+  "item_id": "crude_hatchet",
+  "chance_percent": 12,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "lost_lumber_gob_drops",
+  "monster_id": "lost_lumber_gob",
+  "item_id": "lost_lumber_gob_mask",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "quarry_imp_drops",
+  "monster_id": "quarry_imp",
+  "item_id": "copper_ore",
+  "chance_percent": 60,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "quarry_imp_drops",
+  "monster_id": "quarry_imp",
+  "item_id": "tin_ore",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "quarry_imp_drops",
+  "monster_id": "quarry_imp",
+  "item_id": "bronze_bar",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "quarry_imp_drops",
+  "monster_id": "quarry_imp",
+  "item_id": "bug_shell",
+  "chance_percent": 12,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "quarry_imp_drops",
+  "monster_id": "quarry_imp",
+  "item_id": "quarry_imp_trophy",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "lake_thief_drops",
+  "monster_id": "lake_thief",
+  "item_id": "raw_pike",
+  "chance_percent": 60,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "lake_thief_drops",
+  "monster_id": "lake_thief",
+  "item_id": "fishing_net",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "lake_thief_drops",
+  "monster_id": "lake_thief",
+  "item_id": "coins",
+  "chance_percent": 25,
+  "qty_min": 24,
+  "qty_max": 96,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "lake_thief_drops",
+  "monster_id": "lake_thief",
+  "item_id": "bandit_hook",
+  "chance_percent": 12,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "lake_thief_drops",
+  "monster_id": "lake_thief",
+  "item_id": "lake_thief_banner",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "moss_spider_drops",
+  "monster_id": "moss_spider",
+  "item_id": "spider_silk",
+  "chance_percent": 60,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "moss_spider_drops",
+  "monster_id": "moss_spider",
+  "item_id": "moss_agate",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "moss_spider_drops",
+  "monster_id": "moss_spider",
+  "item_id": "poison_gland",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "moss_spider_drops",
+  "monster_id": "moss_spider",
+  "item_id": "bones",
+  "chance_percent": 12,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "moss_spider_drops",
+  "monster_id": "moss_spider",
+  "item_id": "moss_spider_claw",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "ruin_wisp_drops",
+  "monster_id": "ruin_wisp",
+  "item_id": "moon_carrot",
+  "chance_percent": 60,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "ruin_wisp_drops",
+  "monster_id": "ruin_wisp",
+  "item_id": "goblin_jade",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "ruin_wisp_drops",
+  "monster_id": "ruin_wisp",
+  "item_id": "bone_amulet",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "ruin_wisp_drops",
+  "monster_id": "ruin_wisp",
+  "item_id": "old_forest_ruins_map_piece",
+  "chance_percent": 12,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "ruin_wisp_drops",
+  "monster_id": "ruin_wisp",
+  "item_id": "ruin_wisp_trophy",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "fungal_rat_drops",
+  "monster_id": "fungal_rat",
+  "item_id": "rat_meat",
+  "chance_percent": 60,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "fungal_rat_drops",
+  "monster_id": "fungal_rat",
+  "item_id": "redcap",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "fungal_rat_drops",
+  "monster_id": "fungal_rat",
+  "item_id": "glowshroom",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "fungal_rat_drops",
+  "monster_id": "fungal_rat",
+  "item_id": "spider_silk",
+  "chance_percent": 12,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "fungal_rat_drops",
+  "monster_id": "fungal_rat",
+  "item_id": "fungal_rat_mask",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "bog_mosquito_drops",
+  "monster_id": "bog_mosquito",
+  "item_id": "poison_gland",
+  "chance_percent": 60,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "bog_mosquito_drops",
+  "monster_id": "bog_mosquito",
+  "item_id": "swamp_herb",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "bog_mosquito_drops",
+  "monster_id": "bog_mosquito",
+  "item_id": "slime_glob",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "bog_mosquito_drops",
+  "monster_id": "bog_mosquito",
+  "item_id": "bog_rat_charm",
+  "chance_percent": 12,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "bog_mosquito_drops",
+  "monster_id": "bog_mosquito",
+  "item_id": "bog_mosquito_claw",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "mine_skulker_drops",
+  "monster_id": "mine_skulker",
+  "item_id": "iron_ore",
+  "chance_percent": 60,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "mine_skulker_drops",
+  "monster_id": "mine_skulker",
+  "item_id": "coal_ore",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "mine_skulker_drops",
+  "monster_id": "mine_skulker",
+  "item_id": "cave_ruby",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "mine_skulker_drops",
+  "monster_id": "mine_skulker",
+  "item_id": "miners_belt",
+  "chance_percent": 12,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "mine_skulker_drops",
+  "monster_id": "mine_skulker",
+  "item_id": "mine_skulker_trophy",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "oakwood_berserker_drops",
+  "monster_id": "oakwood_berserker",
+  "item_id": "steel_sword",
+  "chance_percent": 60,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "oakwood_berserker_drops",
+  "monster_id": "oakwood_berserker",
+  "item_id": "wolf_hide",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "oakwood_berserker_drops",
+  "monster_id": "oakwood_berserker",
+  "item_id": "moss_wolf_pelt",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "oakwood_berserker_drops",
+  "monster_id": "oakwood_berserker",
+  "item_id": "coins",
+  "chance_percent": 12,
+  "qty_min": 48,
+  "qty_max": 192,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "oakwood_berserker_drops",
+  "monster_id": "oakwood_berserker",
+  "item_id": "oakwood_berserker_banner",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "swamp_mireling_drops",
+  "monster_id": "swamp_mireling",
+  "item_id": "deadwood_logs",
+  "chance_percent": 60,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "swamp_mireling_drops",
+  "monster_id": "swamp_mireling",
+  "item_id": "swamp_herb",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "swamp_mireling_drops",
+  "monster_id": "swamp_mireling",
+  "item_id": "raw_bog_eel",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "swamp_mireling_drops",
+  "monster_id": "swamp_mireling",
+  "item_id": "slime_core",
+  "chance_percent": 12,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "swamp_mireling_drops",
+  "monster_id": "swamp_mireling",
+  "item_id": "swamp_mireling_mask",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "spore_crawler_drops",
+  "monster_id": "spore_crawler",
+  "item_id": "chitin_plate",
+  "chance_percent": 60,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "spore_crawler_drops",
+  "monster_id": "spore_crawler",
+  "item_id": "fungal_logs",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "spore_crawler_drops",
+  "monster_id": "spore_crawler",
+  "item_id": "blackcap_spore",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "spore_crawler_drops",
+  "monster_id": "spore_crawler",
+  "item_id": "crawler_claw",
+  "chance_percent": 12,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "spore_crawler_drops",
+  "monster_id": "spore_crawler",
+  "item_id": "spore_crawler_claw",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "rival_supplier_drops",
+  "monster_id": "rival_supplier",
+  "item_id": "iron_nails",
+  "chance_percent": 60,
+  "qty_min": 5,
+  "qty_max": 45,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "rival_supplier_drops",
+  "monster_id": "rival_supplier",
+  "item_id": "steel_bar",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "rival_supplier_drops",
+  "monster_id": "rival_supplier",
+  "item_id": "war_pumpkin",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "rival_supplier_drops",
+  "monster_id": "rival_supplier",
+  "item_id": "coins",
+  "chance_percent": 12,
+  "qty_min": 45,
+  "qty_max": 180,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "rival_supplier_drops",
+  "monster_id": "rival_supplier",
+  "item_id": "rival_supply_crate",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "rival_sharpshooter_drops",
+  "monster_id": "rival_sharpshooter",
+  "item_id": "steel_arrows",
+  "chance_percent": 60,
+  "qty_min": 5,
+  "qty_max": 57,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "rival_sharpshooter_drops",
+  "monster_id": "rival_sharpshooter",
+  "item_id": "willow_bow",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "rival_sharpshooter_drops",
+  "monster_id": "rival_sharpshooter",
+  "item_id": "archer_wristguard",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "rival_sharpshooter_drops",
+  "monster_id": "rival_sharpshooter",
+  "item_id": "coins",
+  "chance_percent": 12,
+  "qty_min": 57,
+  "qty_max": 228,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "rival_sharpshooter_drops",
+  "monster_id": "rival_sharpshooter",
+  "item_id": "rival_sharpshooter_mask",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "troll_miner_drops",
+  "monster_id": "troll_miner",
+  "item_id": "gold_ore",
+  "chance_percent": 60,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "troll_miner_drops",
+  "monster_id": "troll_miner",
+  "item_id": "deep_metal_ore",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "troll_miner_drops",
+  "monster_id": "troll_miner",
+  "item_id": "troll_tooth",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "troll_miner_drops",
+  "monster_id": "troll_miner",
+  "item_id": "big_bones",
+  "chance_percent": 12,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "troll_miner_drops",
+  "monster_id": "troll_miner",
+  "item_id": "troll_miner_trophy",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "meteor_sprite_drops",
+  "monster_id": "meteor_sprite",
+  "item_id": "meteor_ore",
+  "chance_percent": 60,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "meteor_sprite_drops",
+  "monster_id": "meteor_sprite",
+  "item_id": "meteor_bloom",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "meteor_sprite_drops",
+  "monster_id": "meteor_sprite",
+  "item_id": "meteor_diamond",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "meteor_sprite_drops",
+  "monster_id": "meteor_sprite",
+  "item_id": "mooncap",
+  "chance_percent": 12,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "meteor_sprite_drops",
+  "monster_id": "meteor_sprite",
+  "item_id": "meteor_sprite_banner",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "meteor_sprite_drops",
+  "monster_id": "meteor_sprite",
+  "item_id": "meteor_core",
+  "chance_percent": 5,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "old_guardian_drops",
+  "monster_id": "old_guardian",
+  "item_id": "goblin_jade",
+  "chance_percent": 60,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "old_guardian_drops",
+  "monster_id": "old_guardian",
+  "item_id": "silver_bar",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "old_guardian_drops",
+  "monster_id": "old_guardian",
+  "item_id": "old_forest_ruins_rusted_key",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "old_guardian_drops",
+  "monster_id": "old_guardian",
+  "item_id": "bone_amulet",
+  "chance_percent": 12,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "old_guardian_drops",
+  "monster_id": "old_guardian",
+  "item_id": "old_guardian_trophy",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "blackroot_stalker_drops",
+  "monster_id": "blackroot_stalker",
+  "item_id": "blackroot_logs",
+  "chance_percent": 60,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "blackroot_stalker_drops",
+  "monster_id": "blackroot_stalker",
+  "item_id": "blackcap_spore",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "blackroot_stalker_drops",
+  "monster_id": "blackroot_stalker",
+  "item_id": "poison_gland",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "blackroot_stalker_drops",
+  "monster_id": "blackroot_stalker",
+  "item_id": "blackroot_bow",
+  "chance_percent": 12,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "blackroot_stalker_drops",
+  "monster_id": "blackroot_stalker",
+  "item_id": "blackroot_stalker_mask",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "deep_metal_golem_drops",
+  "monster_id": "deep_metal_golem",
+  "item_id": "deep_metal_ore",
+  "chance_percent": 60,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "deep_metal_golem_drops",
+  "monster_id": "deep_metal_golem",
+  "item_id": "deep_metal_bar",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "deep_metal_golem_drops",
+  "monster_id": "deep_metal_golem",
+  "item_id": "gem",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "deep_metal_golem_drops",
+  "monster_id": "deep_metal_golem",
+  "item_id": "big_bones",
+  "chance_percent": 12,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "deep_metal_golem_drops",
+  "monster_id": "deep_metal_golem",
+  "item_id": "deep_metal_golem_claw",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "lake_island_guard_drops",
+  "monster_id": "lake_island_guard",
+  "item_id": "raw_lake_carp",
+  "chance_percent": 60,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "lake_island_guard_drops",
+  "monster_id": "lake_island_guard",
+  "item_id": "river_opal",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "lake_island_guard_drops",
+  "monster_id": "lake_island_guard",
+  "item_id": "snapper_shell",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "lake_island_guard_drops",
+  "monster_id": "lake_island_guard",
+  "item_id": "snapper_tooth_necklace",
+  "chance_percent": 12,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "lake_island_guard_drops",
+  "monster_id": "lake_island_guard",
+  "item_id": "lake_island_guard_banner",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "farm_scavenger_drops",
+  "monster_id": "farm_scavenger",
+  "item_id": "potato",
+  "chance_percent": 60,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "farm_scavenger_drops",
+  "monster_id": "farm_scavenger",
+  "item_id": "cabbage",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "farm_scavenger_drops",
+  "monster_id": "farm_scavenger",
+  "item_id": "onion_seed",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "farm_scavenger_drops",
+  "monster_id": "farm_scavenger",
+  "item_id": "bones",
+  "chance_percent": 12,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "farm_scavenger_drops",
+  "monster_id": "farm_scavenger",
+  "item_id": "farm_scavenger_trophy",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "crop_bug_swarm_drops",
+  "monster_id": "crop_bug_swarm",
+  "item_id": "bug_shell",
+  "chance_percent": 60,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "crop_bug_swarm_drops",
+  "monster_id": "crop_bug_swarm",
+  "item_id": "bitterleaf_seed",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "crop_bug_swarm_drops",
+  "monster_id": "crop_bug_swarm",
+  "item_id": "greenmuck_seed",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "crop_bug_swarm_drops",
+  "monster_id": "crop_bug_swarm",
+  "item_id": "slime_glob",
+  "chance_percent": 12,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "crop_bug_swarm_drops",
+  "monster_id": "crop_bug_swarm",
+  "item_id": "crop_bug_swarm_claw",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "goblin_poacher_drops",
+  "monster_id": "goblin_poacher",
+  "item_id": "raw_trout",
+  "chance_percent": 60,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "goblin_poacher_drops",
+  "monster_id": "goblin_poacher",
+  "item_id": "oak_bow",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "goblin_poacher_drops",
+  "monster_id": "goblin_poacher",
+  "item_id": "iron_arrows",
+  "chance_percent": 25,
+  "qty_min": 5,
+  "qty_max": 27,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "goblin_poacher_drops",
+  "monster_id": "goblin_poacher",
+  "item_id": "coins",
+  "chance_percent": 12,
+  "qty_min": 27,
+  "qty_max": 108,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "goblin_poacher_drops",
+  "monster_id": "goblin_poacher",
+  "item_id": "goblin_poacher_mask",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "bridge_bandit_drops",
+  "monster_id": "bridge_bandit",
+  "item_id": "iron_nails",
+  "chance_percent": 60,
+  "qty_min": 5,
+  "qty_max": 23,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "bridge_bandit_drops",
+  "monster_id": "bridge_bandit",
+  "item_id": "oak_beam",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "bridge_bandit_drops",
+  "monster_id": "bridge_bandit",
+  "item_id": "coins",
+  "chance_percent": 25,
+  "qty_min": 23,
+  "qty_max": 92,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "bridge_bandit_drops",
+  "monster_id": "bridge_bandit",
+  "item_id": "river_opal",
+  "chance_percent": 12,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "bridge_bandit_drops",
+  "monster_id": "bridge_bandit",
+  "item_id": "bridge_bandit_banner",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "deadwood_spirit_drops",
+  "monster_id": "deadwood_spirit",
+  "item_id": "deadwood_logs",
+  "chance_percent": 60,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "deadwood_spirit_drops",
+  "monster_id": "deadwood_spirit",
+  "item_id": "bone_pearl",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "deadwood_spirit_drops",
+  "monster_id": "deadwood_spirit",
+  "item_id": "swamp_herb",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "deadwood_spirit_drops",
+  "monster_id": "deadwood_spirit",
+  "item_id": "goblin_charm",
+  "chance_percent": 12,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "deadwood_spirit_drops",
+  "monster_id": "deadwood_spirit",
+  "item_id": "deadwood_spirit_trophy",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "witchs_helper_drops",
+  "monster_id": "witchs_helper",
+  "item_id": "witchcap",
+  "chance_percent": 60,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "witchs_helper_drops",
+  "monster_id": "witchs_helper",
+  "item_id": "glowshroom",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "witchs_helper_drops",
+  "monster_id": "witchs_helper",
+  "item_id": "fungal_sage",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "witchs_helper_drops",
+  "monster_id": "witchs_helper",
+  "item_id": "mushroom_forest_ritual_token",
+  "chance_percent": 12,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "witchs_helper_drops",
+  "monster_id": "witchs_helper",
+  "item_id": "witchs_helper_mask",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "red_ear_scout_drops",
+  "monster_id": "red_ear_scout",
+  "item_id": "scout_map_scrap",
+  "chance_percent": 60,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "red_ear_scout_drops",
+  "monster_id": "red_ear_scout",
+  "item_id": "iron_dagger",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "red_ear_scout_drops",
+  "monster_id": "red_ear_scout",
+  "item_id": "cooked_pike",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "red_ear_scout_drops",
+  "monster_id": "red_ear_scout",
+  "item_id": "coins",
+  "chance_percent": 12,
+  "qty_min": 38,
+  "qty_max": 152,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "red_ear_scout_drops",
+  "monster_id": "red_ear_scout",
+  "item_id": "red_ear_scout_claw",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "red_ear_shaman_drops",
+  "monster_id": "red_ear_shaman",
+  "item_id": "shaman_totem",
+  "chance_percent": 60,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "red_ear_shaman_drops",
+  "monster_id": "red_ear_shaman",
+  "item_id": "swamp_herb",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "red_ear_shaman_drops",
+  "monster_id": "red_ear_shaman",
+  "item_id": "gold_bar",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "red_ear_shaman_drops",
+  "monster_id": "red_ear_shaman",
+  "item_id": "black_iron_bar",
+  "chance_percent": 12,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "red_ear_shaman_drops",
+  "monster_id": "red_ear_shaman",
+  "item_id": "red_ear_shaman_banner",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "ridge_wolf_drops",
+  "monster_id": "ridge_wolf",
+  "item_id": "wolf_hide",
+  "chance_percent": 60,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "ridge_wolf_drops",
+  "monster_id": "ridge_wolf",
+  "item_id": "troll_thistle",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "ridge_wolf_drops",
+  "monster_id": "ridge_wolf",
+  "item_id": "big_bones",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "ridge_wolf_drops",
+  "monster_id": "ridge_wolf",
+  "item_id": "troll_sapphire",
+  "chance_percent": 12,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "ridge_wolf_drops",
+  "monster_id": "ridge_wolf",
+  "item_id": "ridge_wolf_mask",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "bog_king_drops",
+  "monster_id": "bog_king",
+  "item_id": "horror_heart",
+  "chance_percent": 60,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "bog_king_drops",
+  "monster_id": "bog_king",
+  "item_id": "bog_crown",
+  "chance_percent": 40,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "bog_king_drops",
+  "monster_id": "bog_king",
+  "item_id": "black_iron_bar",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "bog_king_drops",
+  "monster_id": "bog_king",
+  "item_id": "raw_grubshark",
+  "chance_percent": 12,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "bog_king_drops",
+  "monster_id": "bog_king",
+  "item_id": "bog_king_trophy",
+  "chance_percent": 3,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "bog_king_drops",
+  "monster_id": "bog_king",
+  "item_id": "bog_king_heart",
+  "chance_percent": 5,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "cave_bug_drops",
+  "monster_id": "cave_bug",
+  "item_id": "chitin_plate",
+  "chance_percent": 20,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "giant_spider_drops",
+  "monster_id": "giant_spider",
+  "item_id": "chitin_plate",
+  "chance_percent": 20,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "moss_spider_drops",
+  "monster_id": "moss_spider",
+  "item_id": "chitin_plate",
+  "chance_percent": 20,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "oak_boar_drops",
+  "monster_id": "oak_boar",
+  "item_id": "sinew",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 2,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "moss_wolf_drops",
+  "monster_id": "moss_wolf",
+  "item_id": "sinew",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 2,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "ridge_wolf_drops",
+  "monster_id": "ridge_wolf",
+  "item_id": "sinew",
+  "chance_percent": 25,
+  "qty_min": 1,
+  "qty_max": 2,
+  "drop_role": "common"
+ },
+ {
+  "drop_table_id": "troll_whelp_drops",
+  "monster_id": "troll_whelp",
+  "item_id": "troll_grease",
+  "chance_percent": 22,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "cave_troll_drops",
+  "monster_id": "cave_troll",
+  "item_id": "troll_grease",
+  "chance_percent": 22,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "troll_miner_drops",
+  "monster_id": "troll_miner",
+  "item_id": "troll_grease",
+  "chance_percent": 22,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "swamp_frog_drops",
+  "monster_id": "swamp_frog",
+  "item_id": "bog_gas_bladder",
+  "chance_percent": 20,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "bog_slime_drops",
+  "monster_id": "bog_slime",
+  "item_id": "bog_gas_bladder",
+  "chance_percent": 20,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "grub_bog_horror_drops",
+  "monster_id": "grub_bog_horror",
+  "item_id": "bog_gas_bladder",
+  "chance_percent": 20,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "bog_slime_drops",
+  "monster_id": "bog_slime",
+  "item_id": "oil_sac",
+  "chance_percent": 18,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "lake_snapper_drops",
+  "monster_id": "lake_snapper",
+  "item_id": "oil_sac",
+  "chance_percent": 18,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "bog_rat_drops",
+  "monster_id": "bog_rat",
+  "item_id": "oil_sac",
+  "chance_percent": 18,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "rival_goblin_warrior_drops",
+  "monster_id": "rival_goblin_warrior",
+  "item_id": "powder_gland",
+  "chance_percent": 16,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "rival_goblin_brute_drops",
+  "monster_id": "rival_goblin_brute",
+  "item_id": "powder_gland",
+  "chance_percent": 16,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "rival_supplier_drops",
+  "monster_id": "rival_supplier",
+  "item_id": "powder_gland",
+  "chance_percent": 16,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "uncommon"
+ },
+ {
+  "drop_table_id": "cave_bat_drops",
+  "monster_id": "cave_bat",
+  "item_id": "spark_gland",
+  "chance_percent": 14,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "deep_metal_golem_drops",
+  "monster_id": "deep_metal_golem",
+  "item_id": "spark_gland",
+  "chance_percent": 14,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "meteor_sprite_drops",
+  "monster_id": "meteor_sprite",
+  "item_id": "ember_heart",
+  "chance_percent": 5,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "deep_metal_golem_drops",
+  "monster_id": "deep_metal_golem",
+  "item_id": "ember_heart",
+  "chance_percent": 5,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ }
 ]
