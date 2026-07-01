@@ -432,21 +432,23 @@ function drawAvian(ctx, skin, p, facing, t) {
 // A legless serpent: a tapering chain of segments that undulates in a sine wave;
 // the head (front) lunges forward on a strike, tongue flicking.
 function drawSerpent(ctx, skin, p, facing, t) {
-  const dark = shade(skin, 0.75);
-  const SEGS = 8, baseY = 4, lunge = (p.strike || 0) * 3;
+  const SEGS = 9, baseY = 4, lunge = (p.strike || 0) * 3;
   let hx = 0, hy = baseY;
+  // long, thin, tapering body along a sine wave so it reads as a SNAKE, not a blob
   for (let i = 0; i < SEGS; i++) {
-    const lx = -9 + i * 2.5 + lunge;
-    const ly = baseY + Math.sin(t / 150 + i * 0.8) * 2.4;
-    const r = 1.4 + i * 0.28;                     // taper: thin tail -> thick neck
-    disc(ctx, lx, ly, r, i % 2 ? shade(skin, 0.9) : skin);
+    const lx = -12 + i * 3.0 + lunge;
+    const ly = baseY + Math.sin(t / 150 + i * 0.7) * 3.0;
+    const r = 1.0 + i * 0.24;                      // thin tail -> thick neck
+    disc(ctx, lx, ly, r, i % 2 ? shade(skin, 0.86) : skin);
     hx = lx; hy = ly;
   }
-  disc(ctx, hx + 1.5, hy, 3.1, skin);             // head at the front
-  if (facing !== 'N') disc(ctx, hx + 2.6, hy + 0.8, 0.6, 0x141414); // eye
-  if (Math.sin(t / 200) > 0.4) {                  // forked tongue flick
-    seg(ctx, hx + 4, hy, hx + 6.5, hy + 0.6, 0.5, 0xcf2b2b);
-    seg(ctx, hx + 4, hy, hx + 6.5, hy - 0.6, 0.5, 0xcf2b2b);
+  const headX = hx + 2.3;                          // head just ahead of the neck
+  disc(ctx, headX, hy, 2.9, skin);
+  poly(ctx, [[headX + 1, hy + 1.7], [headX + 3.6, hy], [headX + 1, hy - 1.7]], skin); // snout
+  if (facing !== 'N') disc(ctx, headX + 0.6, hy + 1.0, 0.55, 0x141414); // eye
+  if (Math.sin(t / 200) > 0.4) {                   // forked tongue flick
+    seg(ctx, headX + 3.6, hy, headX + 6, hy + 0.7, 0.5, 0xcf2b2b);
+    seg(ctx, headX + 3.6, hy, headX + 6, hy - 0.7, 0.5, 0xcf2b2b);
   }
 }
 
@@ -497,10 +499,10 @@ export function drawAvatar(g, cx, cy, state = {}) {
     const pulse = 0.5 + 0.5 * Math.sin(tt / 300);
     const [ax, ay] = ctx.P(0, 11);
     const a = (p.fade == null ? 1 : p.fade);
-    g.fillStyle(0xffca3a, (0.09 + 0.09 * pulse) * a);
-    g.fillCircle(ax, ay, (17 + pulse * 4) * ctx.unit());
-    g.fillStyle(0xff7a2a, (0.07 + 0.07 * pulse) * a);
-    g.fillCircle(ax, ay, (11 + pulse * 3) * ctx.unit());
+    const R = (18 + pulse * 4) * ctx.unit();
+    g.fillStyle(0xffca3a, (0.16 + 0.12 * pulse) * a); g.fillCircle(ax, ay, R);
+    g.fillStyle(0xff7a2a, (0.13 + 0.10 * pulse) * a); g.fillCircle(ax, ay, (11 + pulse * 3) * ctx.unit());
+    g.lineStyle(1.5 * ctx.unit(), 0xffe08a, (0.45 + 0.3 * pulse) * a); g.strokeCircle(ax, ay, R);
   }
 
   // ---- non-humanoid silhouettes short-circuit here -----------------------

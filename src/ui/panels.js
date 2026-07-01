@@ -261,7 +261,7 @@ function buildLayout() {
   els.tabButtons = {};
   // [economy lane] Exchange + Stations are opened from the WORLD (merchant /
   // anvil), not a persistent tab — the views still exist, they just get no button.
-  const NO_BUTTON = new Set(['ge', 'stations']);
+  const NO_BUTTON = new Set(['ge', 'stations', 'shop', 'bank']);
   for (const [id, label, icon] of tabs) {
     if (NO_BUTTON.has(id)) continue;
     const b = document.createElement('button');
@@ -285,8 +285,13 @@ function buildLayout() {
 }
 
 let activeTab = 'skills';
+let lastNormalTab = 'skills';
+// [economy lane] World-opened panels — reached by talking to an NPC / clicking a
+// station, no tab button, and auto-closed when the player walks away (main.js).
+const WORLD_PANELS = new Set(['ge', 'stations', 'shop', 'bank']);
 function switchTab(id) {
   activeTab = id;
+  if (!WORLD_PANELS.has(id)) lastNormalTab = id;
   hideTip();
   for (const key of Object.keys(els.views)) {
     els.views[key].style.display = key === id ? 'block' : 'none';
@@ -294,6 +299,11 @@ function switchTab(id) {
   }
   Game.refresh();
 }
+
+// [economy lane] The world (main.js) reads the active panel + can close a
+// world-opened panel (shop/bank/exchange/stations) when you leave the asset.
+export function activePanel() { return activeTab; }
+export function closeWorldPanels() { if (WORLD_PANELS.has(activeTab)) switchTab(lastNormalTab || 'inventory'); }
 
 // ---------- Top bar ----------
 export function renderTopBar() {

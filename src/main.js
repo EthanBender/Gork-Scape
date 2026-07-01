@@ -35,7 +35,7 @@ import { emptyBonuses, ITEMS } from './items/equipment.js';
 import { rollLoot } from './world/loot.js';
 import { randInt } from './engine/rng.js';
 import { placeTransports, boardTransport } from './systems/travel.js'; // [economy lane] fast travel (carts/portal)
-import { initPanels, showContextMenu, openExchange, openShop, openBank, openStation } from './ui/panels.js'; // open* panels [economy lane]
+import { initPanels, showContextMenu, openExchange, openShop, openBank, openStation, activePanel, closeWorldPanels } from './ui/panels.js'; // open* panels [economy lane]
 // [economy lane] — combat drops from the database drop tables. See COORDINATION.md.
 import { rollMonsterDrops } from './systems/drops.js';
 import { monsterIdForSpawn } from './data/worldContract.js';
@@ -48,7 +48,10 @@ import { activeFires, tickFires, fireAt, fireLifeRatio } from './systems/firemak
 // [economy lane] — Grand Exchange world state persists globally and drifts while
 // everyone is offline; restored + fast-forwarded on login. See geActions.js.
 import { loadAndAdvanceWorldMarket, saveWorldMarket } from './systems/geActions.js';
-import { initQuests, evaluate as tickQuests, onKill as questOnKill } from './systems/quests.js'; // [economy lane] quest engine
+import {
+  initQuests, evaluate as tickQuests, onKill as questOnKill,
+  onTalk as questOnTalk, onArrive as questOnArrive, questMarkers,
+} from './systems/quests.js'; // [economy lane] quest engine v2
 // [character-render lane] — the visible avatar. Pure rendering; reads state only.
 import { drawAvatar } from './render/avatar.js';
 import { gearHints, weaponStyleFor, bodyTypeFor } from './render/gear.js';
@@ -613,7 +616,7 @@ function onPointerDown(pointer) {
 
   if (pointer.rightButtonDown()) return rightClickMenu(pointer, tx, ty, npc, usableObj, ground, fire);
 
-  if (npc && npc.type === 'elder') return talkTo(npc);
+  if (npc && npc.type === 'elder') return startTalk(npc);
   if (npc && npc.type === 'guard') return startAttack(npc);
   if (usableObj && (usableObj.skill || usableObj.altar || usableObj.transport)) return startInteract(usableObj);
   if (usableObj && isCropPatch(usableObj)) return startInteract(usableObj); // plant/harvest
@@ -677,7 +680,7 @@ function rightClickMenu(pointer, tx, ty, npc, obj, ground, fire) {
 }
 
 function clearTargets(p) {
-  p.combatTarget = null; p.interactTarget = null; p.pickupTarget = null; p.travelTarget = null;
+  p.combatTarget = null; p.interactTarget = null; p.pickupTarget = null; p.travelTarget = null; p.talkTarget = null;
 }
 
 function walkTo(tx, ty) {
@@ -713,11 +716,23 @@ function startPickup(tx, ty, id = null) {
   p.path = findPath(Game.world, p.tileX, p.tileY, tx, ty, false);
 }
 
+// [economy lane] The world asset that opened the current side panel; the panel
+// auto-closes (main.js gameTick) once the player walks out of `range` of it.
+let panelAnchor = null; // { tab, x, y, range }
+
+// Walk to an elder, then open its panel on arrival (talk-to-open).
+function startTalk(npc) {
+  const p = Game.player;
+  clearTargets(p);
+  p.talkTarget = npc;
+  p.path = findPath(Game.world, p.tileX, p.tileY, npc.tileX, npc.tileY, true);
+}
+
 function talkTo(npc) {
   Game.log(`${npc.name}: "${npc.dialog}"`);
-  if (npc.id === 'exchange_merchant') openExchange(); // [economy lane] open the GE
-  if (npc.id && npc.id.startsWith('shopkeeper_')) openShop(npc.id.replace('shopkeeper_', '')); // [economy lane]
-  if (npc.id === 'banker') openBank(); // [economy lane] open the Bank
+  if (npc.id === 'exchange_merchant') { openExchange(); panelAnchor = { tab: 'ge', x: npc.tileX, y: npc.tileY, range: 3 }; }
+  else if (npc.id && npc.id.startsWith('shopkeeper_')) { openShop(npc.id.replace('shopkeeper_', '')); panelAnchor = { tab: 'shop', x: npc.tileX, y: npc.tileY, range: 3 }; }
+  else if (npc.id === 'banker') { openBank(); panelAnchor = { tab: 'bank', x: npc.tileX, y: npc.tileY, range: 3 }; }
 }
 
 // ---------------------------------------------------------------- tick logic
@@ -831,6 +846,18 @@ function gameTick(count, isLast = true) {
     // One item at a time: grab the targeted item (or the top of the pile).
     pickupOneAt(p.tileX, p.tileY, p.pickupTarget.id);
     p.pickupTarget = null;
+  }
+
+  // --- [economy lane] talk-to-open: reach an elder, then open its panel ---
+  if (p.talkTarget && !p.combatTarget) {
+    const n = p.talkTarget;
+    if (n.dead) p.talkTarget = null;
+    else if (p.path.length === 0 && manhattan(p.tileX, p.tileY, n.tileX, n.tileY) <= 1) { talkTo(n); p.talkTarget = null; }
+  }
+  // --- [economy lane] close a world panel when you walk away from its asset ---
+  if (panelAnchor) {
+    if (activePanel() !== panelAnchor.tab) panelAnchor = null; // user switched tabs manually
+    else if (manhattan(p.tileX, p.tileY, panelAnchor.x, panelAnchor.y) > panelAnchor.range) { closeWorldPanels(); panelAnchor = null; }
   }
 
   // --- skilling ---
@@ -1103,7 +1130,7 @@ function performSkill(o, count) {
   // is a "walk to the anvil" world interaction. Firemaking fires (o.fire) keep
   // their auto-cook path below.
   const STATION_OF = { 'Town Furnace': 'furnace', 'Town Anvil': 'anvil', 'Cooking Range': 'fire_or_range', 'Crafting Bench': 'crafting_bench', 'Sawmill': 'sawmill' };
-  if (!o.fire && STATION_OF[o.label]) { openStation(STATION_OF[o.label]); p.interactTarget = null; return; }
+  if (!o.fire && STATION_OF[o.label]) { openStation(STATION_OF[o.label]); panelAnchor = { tab: 'stations', x: o.x, y: o.y, range: 2 }; p.interactTarget = null; return; }
 
   // Structures: Smithing / Cooking / Crafting (legacy quick-craft + firemaking fires)
   switch (o.skill) {
