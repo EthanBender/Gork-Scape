@@ -39,8 +39,13 @@
   </div>
 </div>
 <script type="module">
-import { drawAvatar } from './src/render/avatar.js';
-import { gearHints, weaponStyleFor } from './src/render/gear.js';
+// Cache-busted dynamic imports: the browser aggressively caches ES modules by
+// URL, so a plain `import` would keep serving a stale avatar.js after edits (a
+// reload/server-restart doesn't bust it). The `?v=<now>` forces a fresh fetch
+// every load so this harness always reflects the current source.
+const _bust = '?v=' + Date.now();
+const { drawAvatar } = await import('./src/render/avatar.js' + _bust);
+const { gearHints, weaponStyleFor } = await import('./src/render/gear.js' + _bust);
 
 const PV = { facing:'S', anim:'attack', weapon:'Spear', body:'Hide', helm:null, shield:false, cape:false };
 

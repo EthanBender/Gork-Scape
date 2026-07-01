@@ -916,6 +916,12 @@ function gameTick(count, isLast = true) {
   // --- [economy lane] quests: re-check active objectives against live inventory
   // and skills (kills are tallied at the kill site). Cheap — a few active quests.
   tickQuests();
+  // Fire the arrival hook only when the player's tile actually changes, so `goto`
+  // objectives ("head north to the quarry") complete as you walk into the target.
+  if (p.tileX !== p._arriveX || p.tileY !== p._arriveY) {
+    p._arriveX = p.tileX; p._arriveY = p.tileY;
+    questOnArrive(regionAt(p.tileX, p.tileY), p.tileX, p.tileY);
+  }
 
   // --- NPC AI (only near the player) ---
   for (const n of Game.npcs) {
@@ -1695,6 +1701,22 @@ function drawMinimap() {
     if (!inMini(mx, my)) continue;
     g.fillStyle(n.type === 'elder' ? 0xc080ff : 0xff3030, 1); g.fillRect(mx - 1.5, my - 1.5, 3, 3);
   }
+  // [economy lane] quest markers — gold pip = a giver with a quest to START,
+  // green pip = your current objective. Off-view targets clamp to the minimap
+  // edge as a directional arrow so you always know which way to go.
+  const half = MINI_SIZE / 2;
+  for (const qm of resolveQuestMarkers()) {
+    const col = qm.kind === 'available' ? 0xffd23f : 0x7be04a;
+    const mx = toMiniX(qm.tx * TILE_SIZE + 16), my = toMiniY(qm.ty * TILE_SIZE + 16);
+    if (inMini(mx, my)) {
+      drawQuestPip(g, mx, my, col);
+    } else {
+      let dx = mx - cx, dy = my - cy;
+      const mag = Math.max(Math.abs(dx), Math.abs(dy)) || 1;
+      const k = (half - 5) / mag;
+      drawQuestArrow(g, cx + dx * k, cy + dy * k, Math.atan2(dy, dx), col);
+    }
+  }
   // player at center
   g.fillStyle(0xffffff, 1); g.fillRect(cx - 2, cy - 2, 4, 4);
   // frame
@@ -1702,6 +1724,42 @@ function drawMinimap() {
   g.lineStyle(1, 0xe0c050, 0.5); g.strokeRect(ox - 1, oy - 1, MINI_SIZE + 2, MINI_SIZE + 2);
 
   drawCompass(g);
+}
+
+// [economy lane] Resolve quest-marker descriptors to world tiles. `npc` markers
+// track wherever that NPC currently stands; otherwise use the descriptor's x/y.
+function resolveQuestMarkers() {
+  const out = [];
+  for (const m of questMarkers()) {
+    let tx = m.x, ty = m.y;
+    if (m.npc) {
+      const n = Game.npcs.find((e) => e.id === m.npc && !e.dead);
+      if (n) { tx = n.tileX; ty = n.tileY; }
+    }
+    if (tx === undefined || ty === undefined) continue;
+    out.push({ tx, ty, kind: m.kind, label: m.label });
+  }
+  return out;
+}
+
+// A diamond quest pip on the minimap (Phaser Graphics).
+function drawQuestPip(g, x, y, col) {
+  g.fillStyle(0x000000, 0.45); g.fillCircle(x, y + 0.5, 5);
+  const pts = [{ x, y: y - 4.5 }, { x: x + 4.5, y }, { x, y: y + 4.5 }, { x: x - 4.5, y }];
+  g.fillStyle(col, 1); g.fillPoints(pts, true);
+  g.lineStyle(1, 0x000000, 0.9); g.strokePoints(pts, true);
+}
+
+// An edge arrow pointing toward an off-view quest target.
+function drawQuestArrow(g, x, y, ang, col) {
+  const ax = Math.cos(ang), ay = Math.sin(ang), px = -ay, py = ax, s = 5;
+  const pts = [
+    { x: x + ax * s, y: y + ay * s },
+    { x: x - ax * s + px * s * 0.7, y: y - ay * s + py * s * 0.7 },
+    { x: x - ax * s - px * s * 0.7, y: y - ay * s - py * s * 0.7 },
+  ];
+  g.fillStyle(col, 1); g.fillPoints(pts, true);
+  g.lineStyle(1, 0x000000, 0.85); g.strokePoints(pts, true);
 }
 
 // Compass dial drawn on the minimap (HUD camera). The needle points where world-
@@ -1825,6 +1883,19 @@ function drawWorldMap(canvas) {
     if (n.dead || n.type === 'elder') continue;
     if (manhattan(n.tileX, n.tileY, p.tileX, p.tileY) > ACTIVATE + 4) continue;
     ctx.fillRect(n.tileX * sx - 1.5, n.tileY * sy - 1.5, 3, 3);
+  }
+  // [economy lane] quest markers — gold "!" = a giver to start a quest, green "!"
+  // = your current objective's location. Drawn on top so they read at a glance.
+  for (const qm of resolveQuestMarkers()) {
+    const x = qm.tx * sx, y = qm.ty * sy;
+    ctx.fillStyle = qm.kind === 'available' ? '#ffd23f' : '#7be04a';
+    ctx.strokeStyle = '#000'; ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(x, y - 7); ctx.lineTo(x + 6, y); ctx.lineTo(x, y + 7); ctx.lineTo(x - 6, y);
+    ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = '#241a00'; ctx.font = 'bold 9px monospace';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('!', x, y + 0.5);
   }
   // player marker (white ring)
   ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2;

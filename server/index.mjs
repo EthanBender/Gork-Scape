@@ -24,8 +24,7 @@
 // so none of the client's DOM/fetch chain is needed here.
 
 import http from 'node:http';
-import { readFile, writeFile, readFileSync } from 'node:fs';
-import { existsSync } from 'node:fs';
+import { readFile, readFileSync, writeFileSync, renameSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, normalize, extname } from 'node:path';
 
@@ -96,9 +95,16 @@ function driftStep() {
 // localStorage `world_market` snapshot.
 function saveState() {
   const data = { savedAt: Date.now(), seq: market.seq, guide: [...market.guide.entries()] };
-  writeFile(STATE_FILE, JSON.stringify(data), (err) => {
-    if (err) console.error('[world] save failed:', err.message);
-  });
+  // Atomic write: a process killed mid-write must never leave a half-written
+  // state file (that would wipe the world). Write a temp file, then rename —
+  // rename is atomic on the same filesystem, so readers always see a whole file.
+  try {
+    const tmp = STATE_FILE + '.tmp';
+    writeFileSync(tmp, JSON.stringify(data));
+    renameSync(tmp, STATE_FILE);
+  } catch (err) {
+    console.error('[world] save failed:', err.message);
+  }
 }
 
 function loadState() {

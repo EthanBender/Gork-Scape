@@ -306,6 +306,18 @@ Client-side until Phase 4; each phase keeps the player-freeze + world-continuity
   Rerouting would risk the legacy cook/smith branches; revisit with id migration.
 
 ## Change log
+- 2026-07-01 — Economy agent: **Shop + Bank tabs removed too; all world panels
+  now talk-to-open and auto-close on walk-away (owner-directed).** `NO_BUTTON` in
+  `panels.js` now covers `ge/stations/shop/bank` — tabbar down to **6** (Skills/
+  Quests/Inventory/Equipment/Combat/Alchemy). New behavior in `main.js`: clicking
+  an elder (shopkeeper/banker/merchant) now **walks to them** (`startTalk` →
+  `p.talkTarget`) and opens the panel only on arrival; a `panelAnchor` records the
+  asset tile+range, and `gameTick` **closes the panel (→ last normal tab) once you
+  walk out of range** (range 3 for NPCs, 2 for stations). New panels exports
+  `activePanel()`/`closeWorldPanels()`; `switchTab` tracks `lastNormalTab`.
+  Verified live on :5189 (had to clear `Game.playerFrozen` — the headless-tab
+  freeze — to exercise the tick): shop & bank both open on reach + close on
+  walk-away + stay open while near; 0 console errors.
 - 2026-07-01 — Economy/items lane: **starter money-makers near spawn + hubs +
   in-world fast-travel (carts/portal).** (A) Fast travel is now CLICKABLE WORLD
   OBJECTS, not a HUD button (owner-directed): `src/systems/travel.js` places cart /
