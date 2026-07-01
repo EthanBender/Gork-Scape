@@ -113,6 +113,17 @@ export function bodyTypeFor(name = '') {
   return { type, size, boss };
 }
 
+// Tile FOOTPRINT radius for a creature: 0 = one tile (the default), 1 = a 3×3
+// block, 2 = a 5×5 block. Big monsters occupy more than one tile so they read as
+// imposing world features you fight *across*, not same-size dots. Keyword-based
+// like bodyTypeFor; the economy lane can later add `render.footprint` to override.
+export function footprintFor(name = '') {
+  const n = name.toLowerCase();
+  if (/dragon|titan|colossus|behemoth|leviathan|world.?serpent/.test(n)) return 2; // 5×5 colossal
+  if (/king|boss|horror|golem|guardian|overlord|warlord|troll|ogre|\bgiant\b/.test(n)) return 1; // 3×3
+  return 0;
+}
+
 // ---- per-creature distinctive features -----------------------------------
 // Keyword-based visual flourishes that make each mob look UNIQUE within its
 // shared body-type silhouette (a spider vs a beetle, a wolf vs a rat). Returns a

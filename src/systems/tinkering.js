@@ -187,22 +187,29 @@ for (const [id, d] of Object.entries(MODS)) {
 export function modInfo(id) { return MODS[id] || null; }
 export const MOD_IDS = Object.keys(MODS);
 
-// Merge an equipped gadget's base effect with every installed mod's effectMod.
+// Fold one effectMod into an accumulating effect (mods & special ammo share this).
+function mergeEffectMod(eff, em) {
+  if (!em) return;
+  if (em.accuracyMult) eff.accuracyMult = (eff.accuracyMult || 1) * em.accuracyMult;
+  if (em.damageMult) eff.damageMult = (eff.damageMult || 1) * em.damageMult;
+  if (em.armorPierce) eff.armorPierce = Math.min(0.9, (eff.armorPierce || 0) + em.armorPierce);
+  if (em.splash) eff.splash = Math.min(1, (eff.splash || 0) + em.splash);
+  if (em.burn) eff.burn = (eff.burn || 0) + em.burn;
+  if (em.chain) eff.chain = (eff.chain || 0) + em.chain;
+  if (em.hits) eff.hits = (eff.hits || 1) + em.hits;
+  if (em.snare) eff.snare = true;
+}
+
+// Merge an equipped gadget's base effect with every installed mod's effectMod AND
+// the loaded special-ammo's effectMod — so ammo choice changes how a shot behaves.
 export function effectiveGadgetEffect(weapon) {
   if (!weapon || weapon.weaponType !== 'tinker') return null;
   const eff = { ...(weapon.effect || {}) };
   for (const id of (Game.gadgetMods || [])) {
-    const m = MODS[id]; if (!m) continue;
-    const em = m.effectMod;
-    if (em.accuracyMult) eff.accuracyMult = (eff.accuracyMult || 1) * em.accuracyMult;
-    if (em.damageMult) eff.damageMult = (eff.damageMult || 1) * em.damageMult;
-    if (em.armorPierce) eff.armorPierce = Math.min(0.9, (eff.armorPierce || 0) + em.armorPierce);
-    if (em.splash) eff.splash = Math.min(1, (eff.splash || 0) + em.splash);
-    if (em.burn) eff.burn = (eff.burn || 0) + em.burn;
-    if (em.chain) eff.chain = (eff.chain || 0) + em.chain;
-    if (em.hits) eff.hits = (eff.hits || 1) + em.hits;
-    if (em.snare) eff.snare = true;
+    const m = MODS[id]; if (m) mergeEffectMod(eff, m.effectMod);
   }
+  const ammo = Game.equipment && Game.equipment.ammo;
+  if (ammo && ammo.effectMod) mergeEffectMod(eff, ammo.effectMod);
   return eff;
 }
 
@@ -369,6 +376,29 @@ for (const fam of AMMO_FAMILIES) {
     else inputs = [{ id: 'blackpowder', qty: q }, { id: 'metal_casing', qty: 1 }, { id: 'fuse', qty: 1 }];
     recipe(`make_${id}`, { output: id, outQty: 5 + at.t, level: 1 + at.t * 8, xp: 10 + at.t * 12, unlock: ammoUnlock(fam.fam), inputs, makes: 'ammo' });
   }
+}
+
+// SPECIAL AMMO — carries an `effectMod` that merges into the shot (see
+// effectiveGadgetEffect), so which ammo you load changes how the gadget behaves.
+// [id, name, family, effectMod, str, level, unlock, recipeInputs]
+const SPECIAL_AMMO = [
+  ['incendiary_bomb', 'Incendiary Bomb',   'bomb', { burn: 2 },                     5, 24, 'tinkering_powder', [{ id: 'incendiary_gel', qty: 1 }, { id: 'metal_casing', qty: 1 }, { id: 'fuse', qty: 1 }]],
+  ['shrapnel_bomb',   'Shrapnel Bomb',      'bomb', { splash: 0.25 },                5, 28, 'tinkering_powder', [{ id: 'blackpowder', qty: 2 }, { id: 'scrap_metal', qty: 3 }, { id: 'fuse', qty: 1 }]],
+  ['acid_slug',       'Acid Slug',          'slug', { armorPierce: 0.25 },           4, 26, 'tinkering_cannons', [{ id: 'acid_vial', qty: 1 }, { id: 'metal_casing', qty: 1 }]],
+  ['explosive_slug',  'Explosive Slug',     'slug', { splash: 0.2 },                 5, 30, 'tinkering_cannons', [{ id: 'nitro_paste', qty: 1 }, { id: 'metal_casing', qty: 1 }]],
+  ['cryo_dart',       'Cryo Dart',          'dart', { snare: true },                 3, 22, 'tinkering',        [{ id: 'coolant', qty: 1 }, { any: 'log', qty: 1 }, { id: 'metal_casing', qty: 1 }]],
+  ['venom_dart',      'Venom Dart',         'dart', { burn: 2 },                     3, 24, 'tinkering',        [{ id: 'acid_vial', qty: 1 }, { any: 'log', qty: 1 }]],
+  ['napalm_canister', 'Napalm Canister',    'fuel', { burn: 3 },                     5, 30, 'tinkering',        [{ id: 'incendiary_gel', qty: 2 }, { id: 'pitch', qty: 1 }, { id: 'metal_casing', qty: 1 }]],
+  ['emp_cell',        'EMP Cell',           'cell', { chain: 1 },                    6, 60, 'tinkering_voltaic', [{ id: 'capacitor', qty: 1 }, { id: 'conductive_gel', qty: 1 }]],
+  ['overcharge_cell', 'Overcharge Cell',    'cell', { damageMult: 1.2 },             6, 62, 'tinkering_voltaic', [{ id: 'capacitor', qty: 1 }, { id: 'sparkstone', qty: 1 }]],
+  ['barbed_trap',     'Barbed Trap',        'trap', { snare: true, armorPierce: 0.15 }, 4, 26, 'tinkering',     [{ id: 'sinew', qty: 1 }, { id: 'scrap_metal', qty: 2 }, { id: 'coil_spring', qty: 1 }]],
+];
+for (const [id, name, fam, effectMod, str, level, unlock, inputs] of SPECIAL_AMMO) {
+  reg(id, {
+    name, slot: 'ammo', stackable: true, ammoFamily: fam, tinkerAmmo: true, effectMod,
+    color: 0xc07a3a, bonuses: bonusOf({ tinker_str: str }),
+  });
+  recipe(`make_${id}`, { output: id, outQty: 5, level, xp: 20 + level, unlock, inputs, makes: 'ammo' });
 }
 
 // ---------------------------------------------------------------- fabrication

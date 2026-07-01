@@ -15,7 +15,7 @@ import {
   exportSaveString, importSaveString,
 } from './save.js';
 
-export const IDLE_LOGOUT_MS = 5 * 60 * 1000;  // auto-logout after 5 min idle
+export const IDLE_LOGOUT_MS = 10 * 60 * 1000;  // auto-logout after 10 min idle
 const AUTOSAVE_MS = 20 * 1000;                 // periodic background save
 const IDLE_CHECK_MS = 15 * 1000;               // how often we test for idleness
 
@@ -93,7 +93,7 @@ function beginSession(name, { isNew }) {
 }
 
 function reasonText(reason, who) {
-  if (reason === 'idle') return `${who ? `${who} was` : 'You were'} logged out after 5 minutes of inactivity. Your progress was saved.`;
+  if (reason === 'idle') return `${who ? `${who} was` : 'You were'} logged out after ${IDLE_LOGOUT_MS / 60000} minutes of inactivity. Your progress was saved.`;
   return '';
 }
 

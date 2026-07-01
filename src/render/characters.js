@@ -11,7 +11,7 @@
 // the static registries; no sim mutation.
 
 import { Game } from '../engine/state.js';
-import { gearHints, weaponStyleFor, bodyTypeFor, creatureFeatures } from './gear.js';
+import { gearHints, weaponStyleFor, bodyTypeFor, creatureFeatures, footprintFor } from './gear.js';
 import { TILE_SIZE } from '../world/map.js';
 
 const tilePx = (t) => t * TILE_SIZE + TILE_SIZE / 2;
@@ -156,6 +156,12 @@ export function avatarStateFor(e, isPlayer, time, skillObj = null) {
   let skin = isPlayer ? 0x6fbf3f : (elder ? 0x6fbf3f : e.color); // green goblins; robe carries elder colour
   let sizeMul = body.size;
   if (e._variant) { skin = tintColor(skin, e._variant.tint); sizeMul *= e._variant.size; }
+  // Multi-tile monsters render large enough to span their footprint (a 3×3 boss
+  // is ~2.5 tiles). Cached fr matches main.js's targeting/collision footprint.
+  if (!isPlayer) {
+    if (e._fr == null) e._fr = footprintFor(e.name);
+    if (e._fr > 0) sizeMul = Math.max(sizeMul, (2 * e._fr + 1) * 0.78);
+  }
   return {
     facing: e._facing,
     anim: attacking ? 'attack' : hit ? 'hit' : moving ? 'walk' : 'idle',

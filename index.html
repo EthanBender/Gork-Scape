@@ -152,6 +152,14 @@
   .modal-sub { padding: 6px 12px; font-size: 11px; color: var(--muted);
     border-bottom: 1px solid var(--bevel-lo); }
   .modal-body { overflow-y: auto; padding: 8px; }
+  /* Bank modal: Bank | Inventory side-by-side */
+  .bank-panel { width: min(760px, 95vw); max-height: 88vh; }
+  .bank-slots { font-size: 12px; font-weight: 700; }
+  .bank-actions { display: flex; gap: 8px; padding: 8px 12px; border-bottom: 1px solid var(--bevel-lo); }
+  .bank-cols { display: flex; gap: 12px; padding: 12px; overflow-y: auto; }
+  .bank-col { flex: 1 1 0; min-width: 0; }
+  .bank-col-title { font-size: 11px; color: var(--muted); margin-bottom: 6px; text-align: center; }
+  .bank-cols .inv-grid { grid-template-columns: repeat(4, 1fr); }
   .skill-guide .sg-row { display: flex; align-items: center; gap: 8px; padding: 5px 8px;
     border-radius: 4px; font-size: 12px; }
   .skill-guide .sg-row + .sg-row { margin-top: 3px; }

@@ -928,91 +928,69 @@ function bankerInRange() {
   if (!p || !b) return null;
   return (Math.abs(p.tileX - b.tileX) + Math.abs(p.tileY - b.tileY)) <= BANK_RANGE ? b : null;
 }
-export function openBank() { switchTab('bank'); }
+// --- Bank: a full-screen modal with Bank | Inventory side-by-side -----------
+let bankOverlay = null;
+function buildBankOverlay() {
+  bankOverlay = document.createElement('div');
+  bankOverlay.className = 'modal-overlay'; bankOverlay.id = 'bank-overlay'; bankOverlay.hidden = true;
+  bankOverlay.onclick = (e) => { if (e.target === bankOverlay) closeBank(); };
+  const panel = document.createElement('div');
+  panel.className = 'modal-panel bank-panel';
+  panel.onclick = (e) => e.stopPropagation();
+  panel.innerHTML =
+    '<div class="modal-head"><span class="modal-title">🏦 Bank of Gorkholm <span class="bank-slots"></span></span>'
+    + '<button class="modal-close" title="Close">✕</button></div>'
+    + '<div class="bank-actions"><button class="ge-mini bank-depall">Deposit all</button>'
+    + '<button class="ge-mini bank-buy"></button></div>'
+    + '<div class="bank-cols">'
+    + '<div class="bank-col"><div class="bank-col-title">Bank — click withdraw 1 · right-click all</div><div class="inv-grid bank-store"></div></div>'
+    + '<div class="bank-col"><div class="bank-col-title">Inventory — click to deposit</div><div class="inv-grid bank-inv"></div></div>'
+    + '</div>';
+  panel.querySelector('.modal-close').onclick = closeBank;
+  panel.querySelector('.bank-depall').onclick = () => { bankDepositAll(); renderBank(); };
+  panel.querySelector('.bank-buy').onclick = () => { buyBankSpace(); renderBank(); };
+  bankOverlay.appendChild(panel);
+  document.body.appendChild(bankOverlay);
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && bankOverlay && !bankOverlay.hidden) closeBank(); });
+}
+function closeBank() { if (bankOverlay) bankOverlay.hidden = true; }
+export function openBank() { if (!bankOverlay) buildBankOverlay(); bankOverlay.hidden = false; renderBank(); }
 
 export function renderBank() {
-  const v = els.views.bank;
-  if (!v) return;
-  v.innerHTML = '';
-  worldHeader(v, '🏦', 'Bank');
-
-  if (!bankerInRange()) {
-    const gate = document.createElement('div');
-    gate.className = 'ge-gate';
-    gate.innerHTML = `<div class="ge-gate-title">🏦 Bank</div>`
-      + `<div class="ge-gate-body">Your bank is only reachable at the <b>Bank</b> in town.`
-      + ` Find the <b>Banker</b> and talk to them to deposit and withdraw.</div>`;
-    v.appendChild(gate);
-    return;
-  }
-
+  if (!bankOverlay || bankOverlay.hidden) return;
   const used = Game.bank.length, cap = Game.bankMax || 120;
-  const head = document.createElement('div');
-  head.className = 'ge-head';
-  head.innerHTML = `<span class="stat-title" style="margin:0">Bank of Gorkholm</span>`
-    + `<span class="ge-coins" style="color:${used >= cap ? '#c9556a' : 'var(--muted)'}">${used} / ${cap} slots</span>`;
-  const depAll = document.createElement('button');
-  depAll.className = 'ge-mini'; depAll.textContent = 'Deposit all';
-  depAll.onclick = () => { bankDepositAll(); renderBank(); };
-  head.appendChild(depAll);
-  v.appendChild(head);
-
-  // Expand-bank control: buy +chunk slots for escalating GP (a coin sink), or
-  // earn slots from quests via grantBankSpace().
+  const slots = bankOverlay.querySelector('.bank-slots');
+  slots.textContent = `${used} / ${cap} slots`;
+  slots.style.color = used >= cap ? '#c9556a' : 'var(--gold)';
   const cost = nextBankSpaceCost();
-  const upg = document.createElement('button');
-  upg.className = 'ge-mini'; upg.style.marginBottom = '8px';
-  upg.textContent = `Buy +${BANK_SPACE_CHUNK} slots — ${cost.toLocaleString()} gp`;
-  upg.onclick = () => { buyBankSpace(); renderBank(); };
-  v.appendChild(upg);
+  bankOverlay.querySelector('.bank-buy').textContent = `Buy +${BANK_SPACE_CHUNK} slots — ${cost.toLocaleString()} gp`;
 
-  // Stored items — left-click withdraw 1, right-click withdraw all.
-  const store = document.createElement('div');
-  store.className = 'inv-grid';
-  if (!Game.bank.length) store.innerHTML = '<div class="xptext">Your bank is empty. Deposit items below.</div>';
+  const store = bankOverlay.querySelector('.bank-store');
+  store.innerHTML = Game.bank.length ? '' : '<div class="xptext" style="grid-column:1/-1;padding:10px">Empty — deposit items from the right.</div>';
   for (const b of Game.bank) {
-    const def = GameData.item(b.id) || ITEMS[b.id] || {};
-    const name = def.display_name || (ITEMS[b.id] && ITEMS[b.id].name) || b.id;
-    const slot = document.createElement('div');
-    slot.className = 'inv-slot';
-    slot.title = `${name} ×${b.qty} — click withdraw 1, right-click withdraw all`;
-    const sq = document.createElement('div');
-    sq.className = 'item-sq';
-    sq.style.background = hex((ITEMS[b.id] && ITEMS[b.id].color) || 0x8a8a8a);
-    sq.textContent = String(name).split(' ').map((w) => w[0]).join('').slice(0, 2);
-    slot.appendChild(sq);
-    const q = document.createElement('span'); q.className = 'item-qty';
-    q.textContent = b.qty > 9999 ? Math.floor(b.qty / 1000) + 'k' : b.qty;
-    slot.appendChild(q);
-    slot.onclick = () => { bankWithdraw(b.id, 1); renderBank(); };
-    slot.oncontextmenu = (e) => { e.preventDefault(); bankWithdraw(b.id, b.qty); renderBank(); };
+    const def = GameData.item(b.id) || {};
+    const name = def.display_name || (itemView(b.id) || {}).name || b.id;
+    const slot = document.createElement('div'); slot.className = 'inv-slot';
+    bindTip(slot, b.id, name, 'Click withdraw 1 · right-click withdraw all');
+    const sq = document.createElement('div'); sq.className = 'item-sq'; sq.innerHTML = itemIconHTML(b.id); slot.appendChild(sq);
+    const q = document.createElement('span'); q.className = 'item-qty'; const qs = qtyStyle(b.qty); q.textContent = qs.text; q.style.color = qs.color; slot.appendChild(q);
+    slot.onclick = () => { hideTip(); bankWithdraw(b.id, 1); renderBank(); };
+    slot.oncontextmenu = (e) => { e.preventDefault(); hideTip(); bankWithdraw(b.id, b.qty); renderBank(); };
     store.appendChild(slot);
   }
-  v.appendChild(store);
 
-  // Inventory strip — click to deposit.
-  const t = document.createElement('div');
-  t.className = 'stat-title'; t.style.marginTop = '10px'; t.textContent = 'Inventory — click to deposit';
-  v.appendChild(t);
-  const inv = document.createElement('div');
-  inv.className = 'inv-grid';
+  const inv = bankOverlay.querySelector('.bank-inv'); inv.innerHTML = '';
   for (let i = 0; i < Game.inventory.length; i++) {
     const item = Game.inventory[i];
-    const slot = document.createElement('div');
-    slot.className = 'inv-slot';
+    const slot = document.createElement('div'); slot.className = 'inv-slot';
     if (item) {
-      slot.title = `${item.name || item.id} — click to deposit`;
-      const sq = document.createElement('div');
-      sq.className = 'item-sq';
-      sq.style.background = hex(item.color || 0x8a8a8a);
-      sq.textContent = String(item.name || item.id).split(' ').map((w) => w[0]).join('').slice(0, 2);
-      slot.appendChild(sq);
-      if (item.qty > 1) { const q = document.createElement('span'); q.className = 'item-qty'; q.textContent = item.qty; slot.appendChild(q); }
-      slot.onclick = () => { bankDeposit(i); renderBank(); };
+      bindTip(slot, item.id, item.name, 'Click to deposit');
+      const sq = document.createElement('div'); sq.className = 'item-sq'; sq.innerHTML = itemIconHTML(item.id); slot.appendChild(sq);
+      if (item.qty > 1) { const q = document.createElement('span'); q.className = 'item-qty'; const qs = qtyStyle(item.qty); q.textContent = qs.text; q.style.color = qs.color; slot.appendChild(q); }
+      slot.onclick = () => { hideTip(); bankDeposit(i); renderBank(); };
     }
     inv.appendChild(slot);
   }
-  v.appendChild(inv);
 }
 
 // ---------- Inventory ----------

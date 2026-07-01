@@ -62,7 +62,7 @@ import { playCutscene } from './systems/cutscene.js'; // [economy lane] cinemati
 import './data/questItems.js'; // [economy lane] register unique quest items into ITEMS
 // [character-render lane] — the visible avatar. Pure rendering; reads state only.
 import { drawAvatar } from './render/avatar.js';
-import { gearHints, weaponStyleFor, bodyTypeFor } from './render/gear.js';
+import { gearHints, weaponStyleFor, bodyTypeFor, footprintFor } from './render/gear.js';
 import { avatarStateFor, playerSkillTarget, drawSkillFx, AV_SCALE, AV_FEET, AV_TOP } from './render/characters.js';
 
 const tilePx = (t) => t * TILE_SIZE + TILE_SIZE / 2;
@@ -469,6 +469,7 @@ function create() {
 
   this.input.mouse.disableContextMenu();
   this.input.on('pointerdown', onPointerDown);
+  this.input.on('pointermove', onPointerMove);
   this.input.on('wheel', onWheel);
   this.input.keyboard.on('keydown', onCameraKey);
   wireWorldMap();
@@ -671,6 +672,18 @@ function pointerOnCompass(sx, sy) {
 }
 
 // ---------------------------------------------------------------- input
+// [economy lane] Hover tracking for on-demand labels: assets + mobs only show
+// their name when the cursor is over their tile (keeps the world uncluttered);
+// named AI-character NPCs keep a persistent nameplate. hoverTile is the world
+// tile under the cursor, resolved to an object/NPC in updateLabels().
+let hoverTile = null;
+function onPointerMove(pointer) {
+  if (pointerOnMinimap(pointer.x, pointer.y) || pointerOnCompass(pointer.x, pointer.y)) { hoverTile = null; return; }
+  const tx = Math.floor(pointer.worldX / TILE_SIZE);
+  const ty = Math.floor(pointer.worldY / TILE_SIZE);
+  hoverTile = (tx >= 0 && ty >= 0 && tx < WORLD_W && ty < WORLD_H) ? { tx, ty } : null;
+}
+
 function onPointerDown(pointer) {
   // Compass sits on top of the minimap corner — check it first: clicking it snaps
   // the camera back to north (nearest full turn, so it eases the short way).
@@ -857,6 +870,50 @@ function canAttackFrom(world, attacker, tx, ty, range) {
   if (manhattan(attacker.tileX, attacker.tileY, tx, ty) > range) return false;
   if (range <= 1) return true;
   return lineOfSight(world, attacker.tileX, attacker.tileY, tx, ty);
+}
+
+// ---- multi-tile monster footprints ---------------------------------------
+// A big monster occupies a (2*fr+1)² block centred on its (tileX,tileY) anchor.
+// These helpers let targeting, approach and combat treat the whole block as the
+// creature, so you fight it *across* its tiles instead of at one pixel.
+function npcFR(n) {
+  if (n._fr == null) n._fr = footprintFor(n.name || '');
+  return n._fr;
+}
+function inFootprint(n, x, y) {
+  const fr = npcFR(n);
+  return Math.abs(x - n.tileX) <= fr && Math.abs(y - n.tileY) <= fr;
+}
+// Manhattan distance from a point to the nearest footprint tile (0 if inside).
+function distToFootprint(x, y, n) {
+  const fr = npcFR(n);
+  return Math.max(0, Math.abs(x - n.tileX) - fr) + Math.max(0, Math.abs(y - n.tileY) - fr);
+}
+// The footprint tile closest to (fx,fy) — the point to path toward / shoot at.
+function nearestFootprintTile(n, fx, fy) {
+  const fr = npcFR(n);
+  return {
+    x: n.tileX + Math.max(-fr, Math.min(fr, fx - n.tileX)),
+    y: n.tileY + Math.max(-fr, Math.min(fr, fy - n.tileY)),
+  };
+}
+// Reach test against a (possibly multi-tile) monster from a point (px,py):
+// within weapon range of the footprint, and — for ranged — line-of-sight to the
+// nearest footprint tile. For a 1-tile mob this is exactly canAttackFrom.
+function reachFP(world, big, px, py, range) {
+  if (distToFootprint(px, py, big) > range) return false;
+  if (range <= 1) return true;
+  const nt = nearestFootprintTile(big, px, py);
+  return lineOfSight(world, px, py, nt.x, nt.y);
+}
+// Any big monster whose footprint covers (x,y) — used to block the player from
+// walking through it (checked against the near-player active set only).
+function mobFootprintAt(x, y, exclude) {
+  for (const n of Game.activeNpcs) {
+    if (n.dead || n === exclude || n.type === 'elder') continue;
+    if (npcFR(n) > 0 && inFootprint(n, x, y)) return n;
+  }
+  return null;
 }
 
 function stepAlongPath(ent) {
@@ -1950,6 +2007,16 @@ function declutterLabels(labels) {
   }
 }
 
+// [economy lane] Which NPCs get a floating label. Named AI characters (service /
+// quest NPCs, type 'elder') always show one; mobs (type 'guard') only when the
+// cursor is over them OR you're actively fighting them, so combat stays readable
+// without every enemy on screen wearing a nameplate.
+function npcLabelShown(n, p) {
+  if (n.type !== 'guard') return true;
+  const hov = hoverTile && n.tileX === hoverTile.tx && n.tileY === hoverTile.ty;
+  return hov || n === p.combatTarget || n.target === p;
+}
+
 function updateLabels() {
   const p = Game.player;
   // World-space labels ride the rotating main camera; spin them back so the text
@@ -1972,8 +2039,9 @@ function updateLabels() {
   for (const n of Game.activeNpcs) { if (!n.dead && manhattan(n.tileX, n.tileY, p.tileX, p.tileY) <= 18) nearNpcs.push(n); }
   nearNpcs.sort((a, b) => manhattan(a.tileX, a.tileY, p.tileX, p.tileY) - manhattan(b.tileX, b.tileY, p.tileX, p.tileY));
   if (nearNpcs.length > 50) nearNpcs.length = 50;
-  for (let i = 0; i < nearNpcs.length; i++) {
-    const n = nearNpcs[i];
+  const shownNpcs = nearNpcs.filter((n) => npcLabelShown(n, p));
+  for (let i = 0; i < shownNpcs.length; i++) {
+    const n = shownNpcs[i];
     let t = npcLabelPool[i];
     if (!t) {
       t = scene.add.text(0, 0, '', { fontFamily: 'monospace', fontSize: '11px', fontStyle: 'bold' }).setOrigin(0.5, 1).setDepth(40);
@@ -1983,15 +2051,13 @@ function updateLabels() {
     t.setText(npcLabelText(n)).setColor(n.type === 'elder' ? '#d8b0ff' : '#ffb0b0').setVisible(true);
     labelSet.push({ t, x: n.px, y: n.py + AV_FEET - AV_TOP - 2 - tileLiftXY(n.tileX, n.tileY), w: t.width, prio: (n === p.combatTarget || n.target === p) ? 1 : 0 });
   }
-  for (let i = nearNpcs.length; i < npcLabelPool.length; i++) npcLabelPool[i].setVisible(false);
+  for (let i = shownNpcs.length; i < npcLabelPool.length; i++) npcLabelPool[i].setVisible(false);
   declutterLabels(labelSet);
   for (const L of labelSet) L.t.setPosition(L.x, L.y).setRotation(rot);
   // Object labels: nearest labeled visible objects, pooled.
-  const v = viewRange();
-  const near = objectsInView(Game.world, v.x0, v.y0, v.x1, v.y1)
-    .filter((o) => o.label && manhattan(o.x, o.y, p.tileX, p.tileY) <= 12)
-    .sort((a, b) => manhattan(a.x, a.y, p.tileX, p.tileY) - manhattan(b.x, b.y, p.tileX, p.tileY))
-    .slice(0, 40);
+  // Assets: only the object under the cursor shows its label (no world clutter).
+  const hovO = hoverTile ? Game.world.objectAt.get(hoverTile.tx + ',' + hoverTile.ty) : null;
+  const near = (hovO && hovO.label && manhattan(hovO.x, hovO.y, p.tileX, p.tileY) <= 14) ? [hovO] : [];
   for (let i = 0; i < near.length; i++) {
     let t = objLabelPool[i];
     if (!t) {

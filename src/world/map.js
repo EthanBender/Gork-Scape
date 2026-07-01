@@ -794,6 +794,97 @@ export function generateWorld(seed = DEFAULT_SEED) {
     };
     const biomeOK = (e, b) => e.biome === 'any' || e.biome === b || (e.biome === 'forest' && b === 'grass') || (e.biome === 'grass' && b === 'forest');
     const tierOK = (e, t) => e.tier === 'any' || e.tier === t || (t === 'mid' && e.tier === 'low') || (t === 'high' && e.tier === 'mid');
+
+    // ===== multi-tile scene kit — each POI is an authored, blended mini-scene =====
+    const isGr = (x, y) => getT(x, y) === T.GRASS && !occupied.has(okey(x, y));
+    const clearFoot = (x0, y0, x1, y1) => {
+      if (!inB(x0 - 1, y0 - 1) || !inB(x1 + 1, y1 + 1)) return false;
+      let g = 0, n = 0;
+      for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) { n++; if (occupied.has(okey(x, y))) return false; if (getT(x, y) === T.GRASS) g++; }
+      return g / n >= 0.85;
+    };
+    // coarse road-presence grid so scenes can grow a little trail out to the main roads
+    const RG = 6, rgw = Math.ceil(WORLD_W / RG), rgh = Math.ceil(WORLD_H / RG);
+    const roadG = new Uint8Array(rgw * rgh);
+    for (let y = 0; y < WORLD_H; y += 2) for (let x = 0; x < WORLD_W; x += 2) { const t = terrain[idx(x, y)]; if (t === T.ROAD || t === T.BRIDGE) roadG[((y / RG) | 0) * rgw + ((x / RG) | 0)] = 1; }
+    const nearestRoad = (x, y, R) => { const cx = (x / RG) | 0, cy = (y / RG) | 0, rr = (R / RG) | 0; let best = null, bd = 1e9; for (let a = -rr; a <= rr; a++) for (let b = -rr; b <= rr; b++) { const nx = cx + a, ny = cy + b; if (nx < 0 || ny < 0 || nx >= rgw || ny >= rgh) continue; if (roadG[ny * rgw + nx]) { const d = a * a + b * b; if (d < bd) { bd = d; best = [nx * RG + 3, ny * RG + 3]; } } } return best; };
+    const spur = (fx, fy) => { const tgt = nearestRoad(fx, fy, 44); if (!tgt) return; let x = fx, y = fy, guard = 0; while (guard++ < 60) { if (!inB(x, y)) break; const t = getT(x, y); if (t === T.ROAD || t === T.BRIDGE) break; if (t === T.WATER || t === T.WALL || t === T.FLOOR) break; if (t === T.GRASS) setT(x, y, T.DIRT); if (Math.abs(x - tgt[0]) + Math.abs(y - tgt[1]) <= 1) break; if (Math.abs(tgt[0] - x) > Math.abs(tgt[1] - y)) x += Math.sign(tgt[0] - x); else y += Math.sign(tgt[1] - y); } };
+    const wmarker = (x, y, e, wildKind) => placeObj({ x, y, type: 'structure', label: e.name, color: e.color, skill: null, blocking: false, depleted: false, examine: e.blurb, loot: e.loot || null, wild: wildKind || e.kind });
+    const sScatter = (cx, cy, rad, n, color, size, shape, pred) => { for (let i = 0; i < n; i++) { const x = Math.round(cx + (rng() * 2 - 1) * rad), y = Math.round(cy + (rng() * 2 - 1) * rad); if (pred ? pred(x, y) : isGr(x, y)) decor(x, y, color, size, shape); } };
+    const garrison = (cx, cy, rad, base, n, name) => { for (let i = 0; i < n; i++) for (let t = 0; t < 12; t++) { const x = Math.round(cx + (rng() * 2 - 1) * rad), y = Math.round(cy + (rng() * 2 - 1) * rad); if (landish(x, y) && !occupied.has(okey(x, y))) { enemySpawns.push({ type: base, x, y, name }); occupied.add(okey(x, y)); break; } } };
+    const patch = (cx, cy, rad, to, pred) => { for (let y = cy - rad; y <= cy + rad; y++) for (let x = cx - rad; x <= cx + rad; x++) { if (!inB(x, y) || (x - cx) * (x - cx) + (y - cy) * (y - cy) > rad * rad) continue; if (pred ? pred(x, y) : getT(x, y) === T.GRASS) setT(x, y, to); } };
+
+    function sBuilding(cx, cy, e, ruined) {
+      const w = 2 + (rng() * 2 | 0), h = 2 + (rng() * 2 | 0), x0 = cx - w, y0 = cy - h, x1 = cx + w, y1 = cy + h;
+      if (!clearFoot(x0, y0, x1, y1)) { wmarker(cx, cy, e); return; }
+      for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
+        if (getT(x, y) !== T.GRASS) continue;
+        const border = x === x0 || x === x1 || y === y0 || y === y1;
+        if (border) { if (ruined && rng() < 0.4) decor(x, y, 0x8a7a60, 5, 'rect'); else setT(x, y, T.WALL); } // ruins lose ~40% of their walls to rubble
+        else setT(x, y, T.FLOOR);
+      }
+      // door faces the nearest road where the outside is walkable, so interiors always connect
+      const rd = nearestRoad(cx, cy, 44), dirs = [[0, 1], [1, 0], [0, -1], [-1, 0]];
+      if (rd) dirs.sort((A, B) => (Math.abs(cx + A[0] - rd[0]) + Math.abs(cy + A[1] - rd[1])) - (Math.abs(cx + B[0] - rd[0]) + Math.abs(cy + B[1] - rd[1])));
+      let door = null;
+      for (const [dx, dy] of dirs) { const bx = dx ? (dx > 0 ? x1 : x0) : cx, by = dy ? (dy > 0 ? y1 : y0) : cy, ox = bx + dx, oy = by + dy; if (inB(ox, oy)) { const ot = getT(ox, oy); if (ot === T.GRASS || ot === T.DIRT || ot === T.ROAD) { door = [bx, by, ox, oy, dx, dy]; break; } } }
+      if (door) { setT(door[0], door[1], T.FLOOR); if (getT(door[2], door[3]) === T.GRASS) setT(door[2], door[3], T.DIRT); spur(door[2] + door[4], door[3] + door[5]); }
+      else setT(cx, y1, T.FLOOR);
+      wmarker(cx, cy, e);                                                                       // the searchable hearth/chest, inside
+      sScatter(cx, cy, w - 1, 3, 0x6a5a3a, 3, 'rect', (x, y) => getT(x, y) === T.FLOOR && !occupied.has(okey(x, y))); // broken furniture
+      sScatter(cx, cy, w + 3, 7, 0x8a7a60, 4, 'rect', (x, y) => isGr(x, y));                    // rubble outside
+      sScatter(cx, cy, w + 4, 5, 0x3f6e2c, 4, 'circle', (x, y) => isGr(x, y));                  // weeds reclaiming it
+      if (ruined) garrison(cx, cy, w, 'cave_bug', 1 + (rng() * 2 | 0), e.name);                 // something nests in the ruin
+    }
+    function sCamp(cx, cy, e) {
+      patch(cx, cy, 2, T.DIRT);
+      decor(cx, cy, 0x5a3a1a, 6, 'circle');                                                     // firepit
+      for (let a = 0; a < 360; a += 60) { const x = Math.round(cx + 2 * Math.cos(a * Math.PI / 180)), y = Math.round(cy + 2 * Math.sin(a * Math.PI / 180)); if (isGr(x, y) || getT(x, y) === T.DIRT) decor(x, y, 0x6a6a6a, 3, 'rect'); }
+      const tx = cx + 4, ty = cy - 1;                                                           // a tent off to one side
+      if (clearFoot(tx - 1, ty - 1, tx + 1, ty + 1)) for (let y = ty - 1; y <= ty + 1; y++) for (let x = tx - 1; x <= tx + 1; x++) if (getT(x, y) === T.GRASS) setT(x, y, (x === tx - 1 || x === tx + 1 || y === ty - 1) ? T.WALL : T.FLOOR);
+      sScatter(cx, cy, 5, 4, 0x6a5a3a, 4, 'rect'); sScatter(cx, cy, 6, 3, 0x8a8a5a, 3, 'rect'); // crates & bedrolls
+      spur(cx, cy + 3); wmarker(cx, cy, e);
+      if (e.kind === 'fight') garrison(cx, cy, 3, e.base || 'bandit', e.n || 2, e.name);
+    }
+    function sShrine(cx, cy, e) {
+      patch(cx, cy, 2, T.FLOOR);                                                                // raised stone platform (FLOOR reads as elevated)
+      for (const [dx, dy] of [[-2, -2], [2, -2], [-2, 2], [2, 2]]) if (inB(cx + dx, cy + dy) && (getT(cx + dx, cy + dy) === T.FLOOR)) setT(cx + dx, cy + dy, T.WALL); // corner posts
+      sScatter(cx, cy, 3, 6, e.color, 4, 'circle', (x, y) => isGr(x, y)); sScatter(cx, cy, 4, 4, 0x3f6e2c, 4, 'circle');
+      spur(cx, cy + 3); wmarker(cx, cy, e);
+    }
+    function sMonument(cx, cy, e) {
+      const rad = 2 + (rng() * 2 | 0);                                                          // a ring of standing stones / headstones
+      for (let a = 0; a < 360; a += 45) { const x = Math.round(cx + rad * Math.cos(a * Math.PI / 180)), y = Math.round(cy + rad * Math.sin(a * Math.PI / 180)); if (getT(x, y) === T.GRASS) setT(x, y, T.WALL); }
+      sScatter(cx, cy, rad + 2, 5, 0x3f6e2c, 4, 'circle'); spur(cx, cy + rad + 1); wmarker(cx, cy, e);
+    }
+    function sNatural(cx, cy, e) {
+      const id = e.id;
+      if (/geyser|spring|pool|mirror/.test(id)) { patch(cx, cy, 2, T.WATER); patch(cx, cy, 3, T.SAND, (x, y) => getT(x, y) === T.GRASS); sScatter(cx, cy, 4, 6, 0xbfe0e0, 3, 'circle'); }
+      else if (/tar|quicksand|sink/.test(id)) { patch(cx, cy, 2, T.SWAMP); sScatter(cx, cy, 3, 8, 0x2a2a2a, 4, 'circle'); }
+      else if (/crystal|ember|sulfur|fossil|salt|meteor|balancing|boulder|petrified/.test(id)) { patch(cx, cy, 2, T.ROCK); sScatter(cx, cy, 3, 8, e.color, 4, 'rect', (x, y) => isGr(x, y) || getT(x, y) === T.ROCK); }
+      else sScatter(cx, cy, 3, 10, e.color, 4, 'circle', (x, y) => isGr(x, y));
+      sScatter(cx, cy, 5, 4, 0x3f6e2c, 4, 'circle'); wmarker(cx, cy, e, e.kind);
+    }
+    function sGrove(cx, cy, e) { sScatter(cx, cy, 3, 10, e.color, 4, 'circle', (x, y) => isGr(x, y)); sScatter(cx, cy, 4, 5, 0x3f6e2c, 3, 'circle'); wmarker(cx, cy, e); }
+    function sCache(cx, cy, e) { patch(cx, cy, 1, T.DIRT); decor(cx, cy, 0x6a5a3a, 6, 'rect'); sScatter(cx, cy, 3, 3, 0x8a7a60, 3, 'rect'); wmarker(cx, cy, e); }
+    function sDen(cx, cy, e) { patch(cx, cy, 1, T.DIRT); decor(cx, cy, 0x2a2018, 7, 'circle'); sScatter(cx, cy, 3, 4, 0x5a4a3a, 4, 'rect'); wmarker(cx, cy, e, 'explore'); garrison(cx, cy, 3, e.base || 'rat', e.n || 2, e.name); }
+
+    function buildScene(e, cx, cy) {
+      const id = e.id, k = e.kind;
+      if (k === 'oddity') return sNatural(cx, cy, e);
+      if (k === 'gather') return sGrove(cx, cy, e);
+      if (k === 'treasure') return sCache(cx, cy, e);
+      if (k === 'shrine') return sShrine(cx, cy, e);
+      if (k === 'fight') return /nest|den|warren|burrow|roost|sett|pit|hive|hollow/.test(id) ? sDen(cx, cy, e) : sCamp(cx, cy, e);
+      if (k === 'lore') return /journal|locket|message|banner|mural|cave_mark|totem/.test(id) ? wmarker(cx, cy, e) : sMonument(cx, cy, e);
+      // explore:
+      if (/statue|idol|obelisk|arch|sarcoph|coffin|milestone|signpost|graveyard|colossus|memorial/.test(id)) return sMonument(cx, cy, e);
+      if (/camp|tent|bedroll|cart|wagon|cookpot|firepit|snare|blind|deserted/.test(id)) return sCamp(cx, cy, e);
+      if (/well/.test(id)) return sCache(cx, cy, e);
+      const ruined = /ruin|collaps|derelict|charr|abandon|toppl|wreck|broken|sunk|weathered|old_|forgotten|hollow/.test(id);
+      return sBuilding(cx, cy, e, ruined);
+    }
+
     const S = 22;
     for (let gy0 = 60; gy0 < WORLD_H - 60; gy0 += S) for (let gx0 = 60; gx0 < WORLD_W - 60; gx0 += S) {
       const cx = Math.round(gx0 + (rng() * 2 - 1) * 7), cy = Math.round(gy0 + (rng() * 2 - 1) * 7);
@@ -804,12 +895,7 @@ export function generateWorld(seed = DEFAULT_SEED) {
       let e = null;
       for (let k = 0; k < 10; k++) { const c = WILDERNESS[(rng() * WILDERNESS.length) | 0]; if (biomeOK(c, biome) && tierOK(c, tier)) { e = c; break; } }
       if (!e) continue;
-      if (e.kind === 'fight' && e.base) {
-        const n = e.n || 1;
-        for (let m = 0; m < n; m++) { const ox = tx + (m ? (rng() * 3 - 1) | 0 : 0), oy = ty + (m ? (rng() * 3 - 1) | 0 : 0); if (landish(ox, oy) && !occupied.has(okey(ox, oy))) { enemySpawns.push({ type: e.base, x: ox, y: oy, name: e.name }); occupied.add(okey(ox, oy)); } }
-      } else {
-        placeObj({ x: tx, y: ty, type: 'structure', label: e.name, color: e.color, skill: null, blocking: false, depleted: false, examine: e.blurb, loot: e.loot || null, wild: e.kind });
-      }
+      buildScene(e, tx, ty);
       markP(tx, ty);
     }
   })();
