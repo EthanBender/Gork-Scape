@@ -345,6 +345,7 @@ function create() {
   // fresh one, re-running create(). Reset module-level pools that held now-
   // destroyed Phaser objects so we don't draw against stale handles.
   objLabelPool = [];
+  npcLabelPool = [];
   groundLabels = [];
   projectiles = [];
 
@@ -2316,6 +2317,7 @@ function stopGame() {
   Game.scene = null;
   // Drop handles to now-destroyed Phaser objects; create() rebuilds them.
   objLabelPool = [];
+  npcLabelPool = [];
   groundLabels = [];
   projectiles = [];
   playerLabel = null;
