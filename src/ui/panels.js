@@ -252,6 +252,12 @@ function buildLayout() {
   els.panel = document.getElementById('panel-content');
   els.chatlog = document.getElementById('chatlog');
 
+  // Idempotent rebuild: initPanels()/buildLayout() runs again on every re-login,
+  // so wipe the containers first — otherwise each logout→login stacks a fresh set
+  // of tab buttons + views onto the old ones (duplicated UI). See QA pass.
+  els.tabbar.innerHTML = '';
+  els.panel.innerHTML = '';
+
   const tabs = [
     ['skills', 'Skills', '📊'], ['quests', 'Quests', '📜'],
     ['inventory', 'Inventory', '🎒'],

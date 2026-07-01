@@ -141,6 +141,34 @@ export function creatureFeatures(name = '') {
     f.legPairs = 3; f.eyes = 'two'; f.eyeColor = 0xffb03a;
   }
 
+  // --- land beasts (quadruped rig) ---
+  else if (/wolf|dire|hound|\bdog\b|jackal|warg/.test(n)) {
+    f.build = 'canine'; f.ears = 'pointed'; f.tail = 'bushy'; f.snout = 'long';
+    f.fangs = true; f.eyeColor = 0xffcf3a;
+  } else if (/\brat\b|rodent|skulker|vermin|mouse/.test(n)) {
+    f.build = 'rodent'; f.ears = 'round'; f.tail = 'rope'; f.snout = 'pointed';
+    f.teeth = 'buck'; f.eyeColor = 0xd23a3a;
+  } else if (/boar|hog|\bpig\b|tusker|swine/.test(n)) {
+    f.build = 'bulky'; f.ears = 'small'; f.tail = 'curl'; f.snout = 'snout';
+    f.tusks = true; f.eyeColor = 0x141414;
+  } else if (/bear|ursine/.test(n)) {
+    f.build = 'bulky'; f.ears = 'small'; f.tail = 'stub'; f.snout = 'blunt';
+    f.fangs = true; f.eyeColor = 0x141414;
+  } else if (/frog|toad|newt/.test(n)) {
+    f.build = 'squat'; f.ears = 'none'; f.tail = 'none'; f.snout = 'wide';
+    f.eyesTop = true; f.eyeColor = 0xffd23a;
+  } else if (/lizard|gecko|salamander|skink|reptile/.test(n)) {
+    f.build = 'reptile'; f.ears = 'none'; f.tail = 'long'; f.snout = 'pointed';
+    f.eyeColor = 0xc0d23a;
+  }
+
+  // --- amorphous (blob rig): ghostly wisps vs gooey slimes ---
+  else if (/wisp|spirit|sprite|ghost|phantom|shade|soul|wraith|will-o/.test(n)) {
+    f.blob = 'wisp'; f.glow = 0x9fe8ff; f.core = 0xffffff; f.translucent = 0.6; f.eyeColor = 0x9fe8ff;
+  } else if (/slime|ooze|jelly|gel|pudding|mireling|mud/.test(n)) {
+    f.blob = 'slime'; f.core = 0xffffff; f.translucent = 0.82; f.drips = true;
+  }
+
   return f;
 }
 

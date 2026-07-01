@@ -353,35 +353,118 @@ function drawShield(ctx, sx, hint, back) {
 // Non-humanoid silhouettes. Each reads the same pose numbers (bob/legSwing/
 // strike/topple/fade handled by the ctx transform) and draws in local space.
 // ---------------------------------------------------------------------------
-function qLeg(ctx, x, sw, col) {
-  const footX = x + Math.sin(sw) * 3;
-  seg(ctx, x, 7, footX, 0, 2.2, col);
+// one leg: upper + lower with a knee bend; thickness varies by build
+function qLeg(ctx, x, sw, col, len = 7, thick = 2.2) {
+  const footX = x + Math.sin(sw) * 3, kneeX = x + Math.sin(sw) * 1.4;
+  seg(ctx, x, len, kneeX, len * 0.5, thick, col);
+  seg(ctx, kneeX, len * 0.5, footX, 0, thick * 0.85, col);
 }
-function drawQuadruped(ctx, skin, p, facing, t) {
-  const dark = shade(skin, 0.78), fore = shade(skin, 0.9);
+
+// Tail styles: each land-beast silhouette gets a recognisable tail.
+function qTail(ctx, style, x, y, col, ls) {
+  const w = Math.abs(ls) * 2;
+  if (style === 'bushy') {                                   // wolf: thick sweeping brush
+    seg(ctx, x + 1, y, x - 3, y + 3 + w, 3.4, col);
+    seg(ctx, x - 1, y + 1.5, x - 4.5, y + 6 + w, 2.2, shade(col, 0.85));
+  } else if (style === 'rope') {                             // rat: long thin naked tail
+    seg(ctx, x + 1, y, x - 4, y + 1 + w, 1.0, col);
+    seg(ctx, x - 4, y + 1 + w, x - 6.5, y - 2 + w, 0.8, col);
+  } else if (style === 'curl') {                             // boar: little curl
+    seg(ctx, x + 1, y + 1, x - 1.5, y + 3, 1.1, col);
+  } else if (style === 'stub') {
+    disc(ctx, x, y + 1, 1.6, col);
+  } else if (style === 'long') {                             // lizard: long tapering
+    for (let i = 0; i < 4; i++) disc(ctx, x - i * 2.4, y + i * 0.5 + w * 0.3, 2.0 - i * 0.42, col);
+  } else if (style !== 'none') {
+    seg(ctx, x + 1, y + 1, x - 3.5, y + 4 + w, 1.5, col);    // generic
+  }
+}
+
+// Head detailing keyed to features: snout shape, ears, eyes, tusks/fangs.
+function qHead(ctx, feat, hx, hy, skin, dark, ec, strike) {
+  const snout = feat.snout || 'long', ears = feat.ears || 'pointed';
+  // ears (behind the head disc)
+  if (ears === 'pointed') {
+    poly(ctx, [[hx - 1.5, hy + 2.5], [hx - 1, hy + 6.5], [hx + 1, hy + 3]], dark);
+    poly(ctx, [[hx + 1.5, hy + 2.8], [hx + 2.5, hy + 6.5], [hx + 3.2, hy + 3]], dark);
+  } else if (ears === 'round') {                             // rat: big round cups
+    disc(ctx, hx - 1, hy + 3.6, 2.1, dark); disc(ctx, hx + 2.6, hy + 3.6, 2.1, dark);
+    disc(ctx, hx - 1, hy + 3.6, 1.1, shade(skin, 1.2)); disc(ctx, hx + 2.6, hy + 3.6, 1.1, shade(skin, 1.2));
+  } else if (ears === 'small') {
+    disc(ctx, hx - 0.6, hy + 3.4, 1.2, dark); disc(ctx, hx + 2, hy + 3.4, 1.2, dark);
+  }
+  // head + snout
+  disc(ctx, hx, hy, 3.2, skin);
+  if (snout === 'long') {                                    // canine muzzle
+    seg(ctx, hx + 1.5, hy - 0.2, hx + 5.2, hy - 1.2, 2.4, skin);
+    disc(ctx, hx + 5.2, hy - 1.2, 1.1, dark);                // nose
+  } else if (snout === 'pointed') {                          // rodent point
+    poly(ctx, [[hx + 1, hy + 1.4], [hx + 5, hy - 0.3], [hx + 1, hy - 1.6]], skin);
+    disc(ctx, hx + 4.7, hy - 0.3, 0.7, 0xd98a8a);
+  } else if (snout === 'snout') {                            // boar disc-snout
+    disc(ctx, hx + 3.2, hy - 0.4, 1.9, skin);
+    disc(ctx, hx + 3.8, hy - 1.1, 0.45, dark); disc(ctx, hx + 3.8, hy + 0.3, 0.45, dark);
+  } else if (snout === 'blunt') {                            // bear
+    disc(ctx, hx + 2.8, hy - 0.6, 1.9, skin); disc(ctx, hx + 3.7, hy - 0.6, 0.8, dark);
+  } else if (snout === 'wide') {                             // frog wide mouth
+    seg(ctx, hx - 1, hy - 1.8, hx + 3.5, hy - 1.8, 1.4, dark, 0.85);
+  }
+  // eyes — frogs bulge on top, everyone else has a side eye
+  if (feat.eyesTop) {
+    disc(ctx, hx - 1.2, hy + 3, 1.5, skin); disc(ctx, hx + 1.4, hy + 3, 1.5, skin);
+    disc(ctx, hx - 1.2, hy + 3.2, 0.7, ec); disc(ctx, hx + 1.4, hy + 3.2, 0.7, ec);
+  } else {
+    disc(ctx, hx + 1, hy + 0.7, 0.9, ec); disc(ctx, hx + 1, hy + 0.7, 0.4, 0x0a0a0a);
+  }
+  // tusks (boar) / fangs (wolf, bear) / buck teeth (rat)
+  if (feat.tusks) {
+    poly(ctx, [[hx + 3.4, hy - 1.6], [hx + 4.8, hy - 4], [hx + 4, hy - 1.2]], 0xe8e0c0);
+    poly(ctx, [[hx + 2.2, hy - 1.6], [hx + 1.2, hy - 3.6], [hx + 1.7, hy - 1.2]], 0xe8e0c0);
+  }
+  if (feat.fangs && (snout === 'long' || snout === 'blunt')) {
+    const mx = hx + (snout === 'long' ? 4.6 : 3.4);
+    seg(ctx, mx, hy - 1.6, mx + 0.3, hy - 3.2, 0.7, 0xffffff);
+    if (strike > 0.4) seg(ctx, mx - 1, hy - 1.6, mx - 0.7, hy - 3.4, 0.7, 0xffffff);
+  }
+  if (feat.teeth === 'buck') {
+    seg(ctx, hx + 3.6, hy - 1, hx + 3.6, hy - 2.6, 0.8, 0xf0ead0);
+  }
+}
+
+function drawQuadruped(ctx, skin, p, facing, t, feat = {}) {
+  const dark = shade(skin, 0.76), fore = shade(skin, 0.9);
   const bY = 8, ls = p.legSwing || 0, strike = p.strike || 0;
+  const build = feat.build || 'canine';
+  const bodyLen = build === 'rodent' ? 6 : build === 'bulky' ? 8 : build === 'squat' ? 5.5 : 7;
+  const bodyW = build === 'bulky' ? 9.5 : build === 'squat' ? 8.5 : build === 'rodent' ? 6.5 : 7.5;
+  const legLen = build === 'squat' ? 5 : 7;
+  const legThick = build === 'bulky' ? 2.8 : build === 'rodent' ? 1.7 : 2.2;
+  const ec = feat.eyeColor || 0x141414;
+
   if (facing === 'E' || facing === 'W') {
-    seg(ctx, -8, bY + 1, -11.5, bY + 4 + Math.abs(ls) * 2, 1.4, dark);      // tail
-    qLeg(ctx, -6, -ls, dark); qLeg(ctx, -4.5, ls * 0.7, dark);              // back pair
-    qLeg(ctx, 4.5, ls, fore); qLeg(ctx, 6, -ls * 0.7, fore);               // front pair
-    seg(ctx, -7, bY, 7, bY, 7.5, skin);                                     // body
-    const hx = 9.5, hy = bY + 2 - strike * 2;                               // head dips on bite
-    disc(ctx, hx, hy, 3.3, skin);
-    poly(ctx, [[hx - 0.5, hy + 3], [hx + 1, hy + 6], [hx + 2, hy + 3]], dark); // ear
-    disc(ctx, hx + 2.6, hy - 0.5, 1.5, dark);                               // snout
-    disc(ctx, hx + 0.6, hy + 0.6, 0.7, 0x141414);                          // eye
+    qTail(ctx, feat.tail || 'plain', -bodyLen - 1, bY, dark, ls);
+    qLeg(ctx, -bodyLen + 1.5, -ls, dark, legLen, legThick);
+    qLeg(ctx, -bodyLen + 3, ls * 0.7, dark, legLen, legThick);
+    qLeg(ctx, bodyLen - 3, ls, fore, legLen, legThick);
+    qLeg(ctx, bodyLen - 1.5, -ls * 0.7, fore, legLen, legThick);
+    seg(ctx, -bodyLen, bY, bodyLen, bY, bodyW, skin);                       // barrel body
+    if (build === 'bulky') disc(ctx, -1.5, bY + bodyW * 0.42, bodyW * 0.5, skin); // shoulder hump
+    if (feat.build === 'squat') disc(ctx, 0, bY - 1, bodyW * 0.55, shade(skin, 1.12), 0.5); // frog belly
+    qHead(ctx, feat, bodyLen + 1.5, bY + 1.5 - strike * 2, skin, dark, ec, strike);
   } else {
     const back = facing === 'N';
-    qLeg(ctx, -4.5, ls, dark); qLeg(ctx, 4.5, -ls, dark);
-    qLeg(ctx, -2, -ls * 0.6, fore); qLeg(ctx, 2, ls * 0.6, fore);
-    seg(ctx, -5, bY, 5, bY, 8.5, skin);                                     // round body
+    qLeg(ctx, -bodyW * 0.5, ls, dark, legLen, legThick); qLeg(ctx, bodyW * 0.5, -ls, dark, legLen, legThick);
+    qLeg(ctx, -bodyW * 0.25, -ls * 0.6, fore, legLen, legThick); qLeg(ctx, bodyW * 0.25, ls * 0.6, fore, legLen, legThick);
+    seg(ctx, -bodyW * 0.6, bY, bodyW * 0.6, bY, bodyW + 1, skin);
     disc(ctx, 0, bY + 4.5, 3.6, skin);                                      // head / rump
     if (!back) {
-      disc(ctx, -1.5, bY + 5, 0.7, 0x141414); disc(ctx, 1.5, bY + 5, 0.7, 0x141414);
-      poly(ctx, [[-3, bY + 7], [-2, bY + 9.5], [-1, bY + 7]], dark);
-      poly(ctx, [[3, bY + 7], [2, bY + 9.5], [1, bY + 7]], dark);
+      // ears by style, facing the camera
+      if ((feat.ears || 'pointed') === 'round') { disc(ctx, -2.4, bY + 6.5, 1.8, dark); disc(ctx, 2.4, bY + 6.5, 1.8, dark); }
+      else if (feat.ears !== 'none' && feat.ears !== 'small') { poly(ctx, [[-3, bY + 7], [-2, bY + 10], [-1, bY + 7]], dark); poly(ctx, [[3, bY + 7], [2, bY + 10], [1, bY + 7]], dark); }
+      disc(ctx, -1.4, bY + 5, 0.8, ec); disc(ctx, 1.4, bY + 5, 0.8, ec);
+      if (feat.tusks) { poly(ctx, [[-1.5, bY + 3], [-2.5, bY + 1], [-0.8, bY + 3.2]], 0xe8e0c0); poly(ctx, [[1.5, bY + 3], [2.5, bY + 1], [0.8, bY + 3.2]], 0xe8e0c0); }
     } else {
-      seg(ctx, 0, bY + 3, 0, bY + 8 + Math.abs(ls) * 2, 1.4, dark);        // tail up
+      qTail(ctx, feat.tail === 'none' ? 'plain' : (feat.tail || 'plain'), 0, bY + 3, dark, ls);
     }
   }
 }
@@ -461,15 +544,45 @@ function ellipsePts(cx, cy, rx, ry, n, wob, t) {
   }
   return pts;
 }
-function drawBlob(ctx, skin, p, facing, t) {
-  const sq = 1 + Math.sin(t / 300) * 0.1 - (p.strike || 0) * 0.15;
+function drawBlob(ctx, skin, p, facing, t, feat = {}) {
+  const strike = p.strike || 0;
+  const ex = facing === 'E' ? 1.6 : facing === 'W' ? -1.6 : 0;
+
+  if (feat.blob === 'wisp') {
+    // A floating spirit: a soft glowing orb hovering above trailing tendrils,
+    // faintly translucent with a bright inner core. Reads as ghostly, not gooey.
+    const floatY = 9 + Math.sin(t / 400) * 1.2;
+    const glow = feat.glow || 0x9fe8ff;
+    disc(ctx, 0, floatY, 8, glow, 0.14);                    // outer halo
+    disc(ctx, 0, floatY, 5.5, glow, 0.18);
+    // wispy tendrils drifting below
+    for (let i = -1; i <= 1; i++) {
+      const wob = Math.sin(t / 260 + i) * 1.5;
+      seg(ctx, i * 2, floatY - 3, i * 2 + wob, floatY - 8, 1.4, skin, 0.5);
+    }
+    disc(ctx, 0, floatY, 4.2, skin, 0.6);                   // translucent body
+    disc(ctx, 0, floatY, 2.0, feat.core || 0xffffff, 0.85); // bright core
+    if (facing !== 'N') {
+      disc(ctx, ex - 1.6, floatY + 0.5, 0.8, glow); disc(ctx, ex + 1.6, floatY + 0.5, 0.8, glow);
+    }
+    return;
+  }
+
+  // Gooey slime: a squashing translucent dome with an inner nucleus, a wet sheen,
+  // and little drips at the base.
+  const sq = 1 + Math.sin(t / 300) * 0.12 - strike * 0.18;
   const rx = 8 / sq, ry = 7 * sq;
-  poly(ctx, ellipsePts(0, ry * 0.9, rx, ry * 0.9, 16, 0.06, t), skin, 0.92);
-  disc(ctx, -1.5, ry * 1.2, rx * 0.4, shade(skin, 1.18), 0.4);   // sheen
+  const alpha = feat.translucent || 0.9;
+  poly(ctx, ellipsePts(0, ry * 0.9, rx, ry * 0.9, 16, 0.07, t), skin, alpha);
+  if (feat.core) disc(ctx, ex * 0.5, ry * 0.8, rx * 0.35, feat.core, 0.6);  // nucleus
+  disc(ctx, -1.5, ry * 1.25, rx * 0.4, shade(skin, 1.3), 0.45);             // wet sheen
+  if (feat.drips !== false) {                                                // drips at base
+    disc(ctx, -rx * 0.6, 1.2 + Math.sin(t / 500) * 0.6, 1.1, skin, alpha);
+    disc(ctx, rx * 0.5, 1.0 + Math.sin(t / 500 + 2) * 0.6, 0.9, skin, alpha);
+  }
   if (facing !== 'N') {
-    const ex = facing === 'E' ? 1.6 : facing === 'W' ? -1.6 : 0;
-    disc(ctx, ex - 2.2, ry * 0.95, 1.1, 0xffffff); disc(ctx, ex + 2.2, ry * 0.95, 1.1, 0xffffff);
-    disc(ctx, ex - 2.2, ry * 0.95, 0.5, 0x111111); disc(ctx, ex + 2.2, ry * 0.95, 0.5, 0x111111);
+    disc(ctx, ex - 2.2, ry * 0.95, 1.2, 0xffffff); disc(ctx, ex + 2.2, ry * 0.95, 1.2, 0xffffff);
+    disc(ctx, ex - 2.2, ry * 0.95, 0.55, 0x111111); disc(ctx, ex + 2.2, ry * 0.95, 0.55, 0x111111);
   }
 }
 

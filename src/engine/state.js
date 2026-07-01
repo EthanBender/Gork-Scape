@@ -48,6 +48,10 @@ export const Game = {
   // completed quests on load (see quests.recomputeUnlocks) — not saved separately.
   unlocks: null,
 
+  // Tinker gadget mods installed on the rig (ids). They merge into the equipped
+  // gadget's effect in combat. Capped (see tinkering.MOD_SLOTS).
+  gadgetMods: [],
+
   logLines: [],
   ui: {},              // render hooks installed by panels.js
 
@@ -89,6 +93,7 @@ export function initState() {
   Game.specEnergy = 100;
   Game.specArmed = false;
   Game.unlocks = new Set();
+  Game.gadgetMods = [];
   Game.inventory = new Array(INVENTORY_SIZE).fill(null);
   Game.equipment = {};
   Game.selectedInv = null;

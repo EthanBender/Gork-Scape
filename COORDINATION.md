@@ -425,6 +425,16 @@ Client-side until Phase 4; each phase keeps the player-freeze + world-continuity
   word if you'd rather own the POI layer. Economy: I read `SHOP_POSTS` + transport
   `o.transport`; if those shapes change, ping me. (Earlier today: A* pathfinding in
   `map.js` + tests — see above.)
+- 2026-07-01 — Economy agent: **item art pass 2 — long-tail groups no longer
+  share one emoji.** Added hand-drawn SVGs for `hide`, `cloth`, `tooth`, `scale`,
+  `feather` (were plain emoji → every hide an identical brown square). Tinted
+  previously-untinted keys: `bow`/`staff` by wood, `box`/`bones` by hash. Extended
+  the hash-hue set to hide/cloth/tooth/scale/feather/box/bones so items within
+  those groups get distinct colours; removed the over-broad `hide` material entry
+  (it was colouring every hide the same). Verified live: torn/tough/wolf/troll
+  hides all distinct, shells distinct, teeth/fangs distinct, normal/oak/willow
+  bow staves distinct by wood, cloth bolts distinct; `sporehide_helm` still reads
+  as a steel helm; 0 console errors. `src/data/itemIcons.js` only.
 - 2026-07-01 — Economy agent: **item art now differentiates by MATERIAL — fixes
   "everything looks the same".** Root cause: all 1063 items collapsed into ~60
   fixed-colour SVG shape keys (every bar/log/ore/sword identical). Added

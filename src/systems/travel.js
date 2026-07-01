@@ -11,7 +11,7 @@
 // boardTransport(obj) from performSkill when the player reaches one.
 
 import { Game } from '../engine/state.js';
-import { isWalkable, regionAt, TILE_SIZE, WORLD_W, WORLD_H } from '../world/map.js';
+import { isWalkable, regionAt, TILE_SIZE, WORLD_W, WORLD_H, addWorldObject } from '../world/map.js';
 import { placeStarterActivities } from './spawnActivities.js';
 
 const tilePx = (t) => t * TILE_SIZE + TILE_SIZE / 2;
@@ -78,8 +78,9 @@ export function placeTransports(world) {
       label: `${k.label} → ${dest.name}`, color: k.color,
       blocking: false, depleted: false, respawnAt: 0,
     };
-    world.objects.push(obj);
-    world.objectAt.set(spot.x + ',' + spot.y, obj);
+    // Route through addWorldObject so it's chunk-indexed (drawObjects can SEE it),
+    // not just interactable — a plain push renders the portal/cart invisible.
+    addWorldObject(world, obj);
   }
 }
 

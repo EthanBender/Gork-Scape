@@ -970,6 +970,23 @@ export function regionAt(x, y) {
 }
 export function objectsInView(world, x0, y0, x1, y1) { const out = []; const c0x = (x0 / CHUNK) | 0, c1x = (x1 / CHUNK) | 0, c0y = (y0 / CHUNK) | 0, c1y = (y1 / CHUNK) | 0; for (let cy = c0y; cy <= c1y; cy++) for (let cx = c0x; cx <= c1x; cx++) { const arr = world.objectsByChunk.get(cy + ',' + cx); if (arr) for (const o of arr) out.push(o); } return out; }
 
+// Add an object to a LIVE world AFTER generateWorld(). The chunk index
+// (objectsByChunk) that drawObjects/objectsInView read is built once at world
+// gen, so anything pushed straight onto world.objects later is interactable but
+// INVISIBLE. Post-generation placers (fast-travel transports, spawn activities,
+// the altar) MUST route through this so the object is chunk-indexed (visible),
+// looked up (interactable) and collision-marked, all consistently.
+export function addWorldObject(world, o, interactive = true) {
+  world.objects.push(o);
+  if (interactive) world.objectAt.set(o.x + ',' + o.y, o);
+  const k = chunkKey(o.x, o.y);
+  let arr = world.objectsByChunk.get(k);
+  if (!arr) { arr = []; world.objectsByChunk.set(k, arr); }
+  arr.push(o);
+  if (o.blocking) world.collision[o.y * world.W + o.x] = 1;
+  return o;
+}
+
 // A* pathfinding over the tile grid. 8-directional (diagonals) with corner-cut
 // prevention, an octile heuristic (admissible for 8-dir, so paths are optimal),
 // and a node-expansion cap. If the goal can't be reached within the cap it

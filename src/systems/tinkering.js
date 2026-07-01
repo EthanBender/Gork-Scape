@@ -12,7 +12,7 @@
 // Cross-pollination is the point: no gadget can be built without touching several
 // other skills. Fabrication grants Tinkering XP; so does dealing gadget damage.
 
-import { Game, addItem, grantXp, countItem } from '../engine/state.js';
+import { Game, addItem, grantXp, countItem, removeOneById } from '../engine/state.js';
 import { ITEMS, emptyBonuses, STAT_KEYS } from '../items/equipment.js';
 import { hasUnlock } from './quests.js';
 
@@ -164,6 +164,68 @@ for (const [id, d] of Object.entries(TOOL_ITEMS)) {
   reg(id, { slot: null, stackable: false, value: d.value, tinkerTool: true, ...d });
 }
 export const OUT_TOOLS = TOOL_ITEMS;
+
+// ---- gadget mods / attachments ----
+// Installed into the rig (Game.gadgetMods, capped at MOD_SLOTS); each merges its
+// `effectMod` into whatever tinker gadget you wield (see effectiveGadgetEffect).
+export const MOD_SLOTS = 3;
+const MODS = {
+  mod_scope:        { name: 'Precision Scope',    value: 120, effectMod: { accuracyMult: 1.15 }, blurb: '+15% accuracy' },
+  mod_ap_core:      { name: 'AP Core',            value: 160, effectMod: { armorPierce: 0.25 },  blurb: '+25% armour pierce' },
+  mod_overclock:    { name: 'Overclock Chip',     value: 200, effectMod: { damageMult: 1.2 },    blurb: '+20% damage' },
+  mod_incendiary:   { name: 'Incendiary Rounds',  value: 140, effectMod: { burn: 2 },            blurb: 'adds a 2-tick burn' },
+  mod_blast_funnel: { name: 'Blast Funnel',       value: 150, effectMod: { splash: 0.2 },        blurb: '+20% splash' },
+  mod_shock_cap:    { name: 'Shock Capacitor',    value: 220, effectMod: { chain: 1 },           blurb: 'arcs to +1 target' },
+  mod_extended_mag: { name: 'Extended Magazine',  value: 130, effectMod: { hits: 1 },            blurb: '+1 hit per attack' },
+  mod_recoil_damper:{ name: 'Recoil Damper',      value: 110, effectMod: { accuracyMult: 1.1 },  blurb: '+10% accuracy' },
+  mod_snare_barbs:  { name: 'Snare Barbs',        value: 120, effectMod: { snare: true },        blurb: 'roots the target' },
+  mod_cryo_tip:     { name: 'Cryo Tip',           value: 170, effectMod: { armorPierce: 0.15, damageMult: 1.1 }, blurb: '+15% pierce, +10% dmg' },
+};
+for (const [id, d] of Object.entries(MODS)) {
+  reg(id, { slot: null, stackable: false, value: d.value, gadgetMod: true, ...d });
+}
+export function modInfo(id) { return MODS[id] || null; }
+export const MOD_IDS = Object.keys(MODS);
+
+// Merge an equipped gadget's base effect with every installed mod's effectMod.
+export function effectiveGadgetEffect(weapon) {
+  if (!weapon || weapon.weaponType !== 'tinker') return null;
+  const eff = { ...(weapon.effect || {}) };
+  for (const id of (Game.gadgetMods || [])) {
+    const m = MODS[id]; if (!m) continue;
+    const em = m.effectMod;
+    if (em.accuracyMult) eff.accuracyMult = (eff.accuracyMult || 1) * em.accuracyMult;
+    if (em.damageMult) eff.damageMult = (eff.damageMult || 1) * em.damageMult;
+    if (em.armorPierce) eff.armorPierce = Math.min(0.9, (eff.armorPierce || 0) + em.armorPierce);
+    if (em.splash) eff.splash = Math.min(1, (eff.splash || 0) + em.splash);
+    if (em.burn) eff.burn = (eff.burn || 0) + em.burn;
+    if (em.chain) eff.chain = (eff.chain || 0) + em.chain;
+    if (em.hits) eff.hits = (eff.hits || 1) + em.hits;
+    if (em.snare) eff.snare = true;
+  }
+  return eff;
+}
+
+// Install a mod from the inventory into a free rig slot (consumes the item).
+export function installMod(id) {
+  if (!MODS[id]) return false;
+  if ((Game.gadgetMods || []).length >= MOD_SLOTS) { Game.log(`Your rig is full (${MOD_SLOTS} mod slots). Remove one first.`); return false; }
+  if (Game.gadgetMods.includes(id)) { Game.log('That mod is already installed.'); return false; }
+  if (!countItem(id)) { Game.log(`You have no ${MODS[id].name} to install.`); return false; }
+  removeOneById(id);
+  Game.gadgetMods.push(id);
+  Game.log(`You install the ${MODS[id].name} onto your rig.`);
+  return true;
+}
+// Remove an installed mod back to the inventory.
+export function uninstallMod(id) {
+  const i = (Game.gadgetMods || []).indexOf(id);
+  if (i < 0) return false;
+  Game.gadgetMods.splice(i, 1);
+  addItem(id);
+  Game.log(`You remove the ${MODS[id].name} from your rig.`);
+  return true;
+}
 
 // Flexible material matcher: {any:'log'} matches any log id, etc. Keeps the recipe
 // web robust against the legacy-vs-canonical id split (logs, coal_ore, …).
