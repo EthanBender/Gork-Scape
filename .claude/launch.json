@@ -1,136 +1,89 @@
 {
   "version": "0.0.1",
+  "_comment": "Every config runs the FULL game server (node server/index.mjs) — it serves the client AND the /api the client now requires, so `preview` enters the world normally. Each preview gets its OWN scratch account/world store in /tmp (isolated per port) so no two previews, or a preview and the live server, ever clobber each other's data. To work against real/live data, don't run a server here — point at api.gorkscape.ca. See COORDINATION.md.",
   "configurations": [
     {
       "name": "goblin-empire",
-      "runtimeExecutable": "python3",
-      "runtimeArgs": [
-        "-m",
-        "http.server",
-        "5188"
-      ],
+      "runtimeExecutable": "/bin/sh",
+      "runtimeArgs": ["-c", "ACCOUNTS_FILE=/tmp/gork-dev-5188-accounts.json STATE_FILE=/tmp/gork-dev-5188-world.json exec node server/index.mjs 5188"],
       "port": 5188
     },
     {
       "name": "goblin-empire-econ",
-      "runtimeExecutable": "python3",
-      "runtimeArgs": [
-        ".claude/devserver_nocache.py",
-        "5189"
-      ],
+      "runtimeExecutable": "/bin/sh",
+      "runtimeArgs": ["-c", "ACCOUNTS_FILE=/tmp/gork-dev-5189-accounts.json STATE_FILE=/tmp/gork-dev-5189-world.json exec node server/index.mjs 5189"],
       "port": 5189
     },
     {
       "name": "goblin-empire-econ2",
-      "runtimeExecutable": "python3",
-      "runtimeArgs": [
-        "-m",
-        "http.server",
-        "5191"
-      ],
+      "runtimeExecutable": "/bin/sh",
+      "runtimeArgs": ["-c", "ACCOUNTS_FILE=/tmp/gork-dev-5191-accounts.json STATE_FILE=/tmp/gork-dev-5191-world.json exec node server/index.mjs 5191"],
       "port": 5191
     },
     {
       "name": "goblin-empire-avatar",
-      "runtimeExecutable": "python3",
-      "runtimeArgs": [
-        "-m",
-        "http.server",
-        "5190"
-      ],
+      "runtimeExecutable": "/bin/sh",
+      "runtimeArgs": ["-c", "ACCOUNTS_FILE=/tmp/gork-dev-5190-accounts.json STATE_FILE=/tmp/gork-dev-5190-world.json exec node server/index.mjs 5190"],
       "port": 5190
     },
     {
       "name": "goblin-empire-camera",
-      "runtimeExecutable": "python3",
-      "runtimeArgs": [
-        "-m",
-        "http.server",
-        "5192"
-      ],
+      "runtimeExecutable": "/bin/sh",
+      "runtimeArgs": ["-c", "ACCOUNTS_FILE=/tmp/gork-dev-5192-accounts.json STATE_FILE=/tmp/gork-dev-5192-world.json exec node server/index.mjs 5192"],
       "port": 5192
     },
     {
       "name": "goblin-empire-econ3",
-      "runtimeExecutable": "python3",
-      "runtimeArgs": [
-        "-m",
-        "http.server",
-        "5193"
-      ],
+      "runtimeExecutable": "/bin/sh",
+      "runtimeArgs": ["-c", "ACCOUNTS_FILE=/tmp/gork-dev-5193-accounts.json STATE_FILE=/tmp/gork-dev-5193-world.json exec node server/index.mjs 5193"],
       "port": 5193
     },
     {
       "name": "goblin-empire-nocache",
-      "runtimeExecutable": "python3",
-      "runtimeArgs": [
-        ".claude/devserver_nocache.py",
-        "5194"
-      ],
+      "runtimeExecutable": "/bin/sh",
+      "runtimeArgs": ["-c", "ACCOUNTS_FILE=/tmp/gork-dev-5194-accounts.json STATE_FILE=/tmp/gork-dev-5194-world.json exec node server/index.mjs 5194"],
       "port": 5194
     },
     {
       "name": "goblin-empire-session",
-      "runtimeExecutable": "python3",
-      "runtimeArgs": [
-        ".claude/devserver_nocache.py",
-        "5195"
-      ],
+      "runtimeExecutable": "/bin/sh",
+      "runtimeArgs": ["-c", "ACCOUNTS_FILE=/tmp/gork-dev-5195-accounts.json STATE_FILE=/tmp/gork-dev-5195-world.json exec node server/index.mjs 5195"],
       "port": 5195
     },
     {
       "name": "goblin-empire-econ4",
-      "runtimeExecutable": "python3",
-      "runtimeArgs": [
-        "-m",
-        "http.server",
-        "5194"
-      ],
-      "port": 5194
+      "runtimeExecutable": "/bin/sh",
+      "runtimeArgs": ["-c", "ACCOUNTS_FILE=/tmp/gork-dev-5196-accounts.json STATE_FILE=/tmp/gork-dev-5196-world.json exec node server/index.mjs 5196"],
+      "port": 5196
     },
     {
       "name": "goblin-empire-tinker",
-      "runtimeExecutable": "python3",
-      "runtimeArgs": [
-        ".claude/devserver_nocache.py",
-        "5197"
-      ],
+      "runtimeExecutable": "/bin/sh",
+      "runtimeArgs": ["-c", "ACCOUNTS_FILE=/tmp/gork-dev-5197-accounts.json STATE_FILE=/tmp/gork-dev-5197-world.json exec node server/index.mjs 5197"],
       "port": 5197
     },
     {
       "name": "goblin-empire-worldserver",
-      "runtimeExecutable": "node",
-      "runtimeArgs": [
-        "server/index.mjs",
-        "5198"
-      ],
+      "runtimeExecutable": "/bin/sh",
+      "runtimeArgs": ["-c", "ACCOUNTS_FILE=/tmp/gork-dev-5198-accounts.json STATE_FILE=/tmp/gork-dev-5198-world.json exec node server/index.mjs 5198"],
       "port": 5198
     },
     {
       "name": "goblin-empire-tinker2",
-      "runtimeExecutable": "python3",
-      "runtimeArgs": [
-        ".claude/devserver_nocache.py",
-        "5205"
-      ],
+      "runtimeExecutable": "/bin/sh",
+      "runtimeArgs": ["-c", "ACCOUNTS_FILE=/tmp/gork-dev-5205-accounts.json STATE_FILE=/tmp/gork-dev-5205-world.json exec node server/index.mjs 5205"],
       "port": 5205
     },
     {
       "name": "goblin-empire-authtest",
-      "runtimeExecutable": "node",
-      "runtimeArgs": [
-        "server/index.mjs",
-        "5206"
-      ],
+      "runtimeExecutable": "/bin/sh",
+      "runtimeArgs": ["-c", "ACCOUNTS_FILE=/tmp/gork-dev-5206-accounts.json STATE_FILE=/tmp/gork-dev-5206-world.json exec node server/index.mjs 5206"],
       "port": 5206
     },
     {
       "name": "goblin-empire-mptest",
       "runtimeExecutable": "/bin/sh",
-      "runtimeArgs": [
-        "-c",
-        "ACCOUNTS_FILE=/tmp/gork-mptest-accounts.json STATE_FILE=/tmp/gork-mptest-world.json exec node server/index.mjs 5207"
-      ],
+      "runtimeArgs": ["-c", "ACCOUNTS_FILE=/tmp/gork-dev-5207-accounts.json STATE_FILE=/tmp/gork-dev-5207-world.json exec node server/index.mjs 5207"],
       "port": 5207
     }
   ]

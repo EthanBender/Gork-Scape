@@ -2,7 +2,8 @@
 
 A browser-based 2D tile RPG in the spirit of Old School RuneScape, played as the
 goblin **Gork**. Built with **Phaser 3** (loaded from CDN) and vanilla ES
-modules — no build step, no backend.
+modules — no build step. A small zero-dependency Node server (`server/index.mjs`)
+provides accounts, live multiplayer, and the shared economy.
 
 The world is **1000 × 1000 tiles** (1,000,000 tiles, 16×16 chunks) with a walled
 goblin settlement at the centre (500,500) and progression rings outward: safe
@@ -11,15 +12,27 @@ and enemies get richer and deadlier the farther you roam.
 
 ## Running
 
-ES modules can't load from `file://`, so serve the folder over HTTP:
+The game now has a **backend** (accounts + login, live multiplayer presence,
+shared chat, and the always-on economy), so the client needs the server running —
+a plain static file server will just show the "server is resting" landing page.
+
+Run the zero-dependency Node server (Node built-ins only, no `npm install`):
 
 ```bash
 cd RGS
-python3 -m http.server 5188
-# then open http://localhost:5188
+node server/index.mjs          # serves the client AND the /api on port 5200
+# then open http://localhost:5200
 ```
 
-(Any static server works — `npx serve`, etc.)
+Create an account on the login screen and you're in. The server writes accounts to
+`server/accounts.json` and world state to `server/world-state.json` (both
+git-ignored; override the paths with the `ACCOUNTS_FILE` / `STATE_FILE` env vars for
+isolated test runs).
+
+**Live deployment** (client on Cloudflare Pages at `gorkscape.ca`, server via a
+Cloudflare Tunnel at `api.gorkscape.ca`) is documented in
+[DEPLOY_SERVER.md](DEPLOY_SERVER.md). Agents: see `COORDINATION.md` → *HOW IT GOES
+LIVE* before touching deploy or networking.
 
 ## Controls
 

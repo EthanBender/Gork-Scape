@@ -15,12 +15,13 @@ Last updated: 2026-07-01
 landing page and will NOT enter the world. That is BY DESIGN (there is no offline
 mode anymore).
 
-**To preview or test the game, run the Node server and open THAT:**
-```
-node server/index.mjs          # serves the client AND /api on http://localhost:5200
-```
-Open **http://localhost:5200** (launch config `goblin-empire-worldserver`). It serves
-the client and the API same-origin, so the client enters the world normally.
+**To preview/test: just `preview` ANY `goblin-empire*` launch config.** As of
+2026-07-01 every config in `.claude/launch.json` runs the full Node server (client +
+`/api` same-origin), so the client enters the world normally — no command to
+remember. Each preview gets its OWN isolated scratch account/world store in `/tmp`
+(per port), so your test accounts never touch the live store or another preview.
+Create a throwaway account on the login screen and play. (Manual equivalent, if you
+ever need it: `node server/index.mjs` → open http://localhost:5200.)
 
 Server calls route through `src/net/config.js` (`api()`), which targets
 `api.gorkscape.ca` in prod and same-origin in dev. No backend reachable → landing
