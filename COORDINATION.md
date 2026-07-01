@@ -99,8 +99,11 @@ target, `attackStyle`) — no new fields required on the world side.
 >   as `state.features`) and the `drawAvatar` creature dispatch (all creature draws
 >   now take a `feat` arg). **`avatar.js drawInsectoid` rewritten to be feature-driven
 >   + prettier** — the **Giant Spider** is the first upgraded mob (bulbous glossy
->   abdomen, red hourglass, bent legs, eye cluster, fangs). This is meant to continue
->   **one mob at a time**; other body-type draws accept `feat` but don't use it yet.
+>   abdomen, red hourglass, bent legs, eye cluster, fangs). **`drawQuadruped` (wolf/rat/
+>   boar/bear/frog/lizard via `qHead`/`qTail` helpers — distinct ears/snouts/tails/tusks/
+>   fangs) and `drawBlob` (slime dome+nucleus+drips vs floating glowing wisp) are now
+>   feature-driven too** — verified in-browser. Remaining: `drawAvian`, `drawSerpent`, and
+>   the humanoid rig (goblins/trolls/etc.) still accept `feat` but don't consume it yet.
 > - **Label de-overlap:** `main.js updateLabels` now collects visible head labels and
 >   `declutterLabels()` nudges colliding ones upward (player + combat target keep
 >   priority) — fixes name/level tags piling up in melee. All tagged `[labels]`.
