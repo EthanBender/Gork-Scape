@@ -472,8 +472,10 @@ export function generateWorld(seed = DEFAULT_SEED) {
       // into groves, with the odd giant toadstool towering over the rest.
       const h = hash2(x, y, Sr + 13);
       const col = [0xc44a6a, 0xd0603a, 0x9a6abf, 0xd0a040, 0xb0407a][(hash2(x, y, Sr + 17) * 5) | 0];
-      if (h < 0.05) decor(x, y, col, 11 + (hash2(x, y, Sr + 19) * 4 | 0), 'circle'); // giant toadstool
-      else decor(x, y, col, 3 + (h * 4 | 0), 'circle');                              // regular caps
+      if (h < 0.06 && getT(x, y) === T.GRASS) { // giant toadstool: a stem on this tile, a big cap overhanging its neighbours (drawn tree-style)
+        placeObj({ x, y, type: 'decor', shape: 'circle', mush: 'giant', color: col, size: 17 + (hash2(x, y, Sr + 19) * 7 | 0), blocking: true }, false);
+        occupied.add(okey(x, y));
+      } else decor(x, y, col, 3 + (h * 4 | 0), 'circle'); // regular caps
     }
     else if (r > 0.97) decor(x, y, 0x2f5d24, 6, 'circle');
   });

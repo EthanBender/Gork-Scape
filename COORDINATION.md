@@ -107,6 +107,16 @@ target, `attackStyle`) — no new fields required on the world side.
 > - **Label de-overlap:** `main.js updateLabels` now collects visible head labels and
 >   `declutterLabels()` nudges colliding ones upward (player + combat target keep
 >   priority) — fixes name/level tags piling up in melee. All tagged `[labels]`.
+> - **Multi-tile (footprint) monsters:** `gear.js footprintFor(name)` → 0/1/2 (1-tile /
+>   3×3 troll-ogre-golem-boss-horror / 5×5 dragon-titan). `characters.js` scales big mobs
+>   up to span their footprint. ⚠️ **Shared `main.js` combat/targeting/movement edits**
+>   (helpers `npcFR`/`inFootprint`/`distToFootprint`/`nearestFootprintTile`/`reachFP`/
+>   `mobFootprintAt`): click any footprint tile targets the mob; player + big-NPC attacks
+>   work from the footprint EDGE (`reachFP` ≡ old `canAttackFrom` for 1-tile mobs); a
+>   step-guard stops the player walking through a big mob. ⚠️ **world-gen:** big-monster
+>   PATHFINDING is still point-based (moving trolls can clip small gaps) — footprint-aware
+>   monster pathing is a follow-up in your lane. No bare `giant` keyword (Giant Spider/Rat
+>   stay 1-tile).
 
 ### 🤝 Shared — announce before editing
 | File | Rule |
