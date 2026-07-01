@@ -280,6 +280,17 @@ recipe('flywheel',       { output: 'flywheel',       outQty: 1, level: 26, xp: 3
 recipe('capacitor',      { output: 'capacitor',      outQty: 1, level: 52, xp: 80, unlock: 'tinkering_voltaic', inputs: [{ id: 'sparkstone', qty: 1 }, { id: 'conductive_gel', qty: 1 }, { id: 'metal_casing', qty: 1 }] });
 recipe('ignition_coil',  { output: 'ignition_coil',  outQty: 1, level: 44, xp: 62, inputs: [{ id: 'lodestone', qty: 1 }, { id: 'conductive_gel', qty: 1 }] });
 recipe('pressure_valve', { output: 'pressure_valve', outQty: 1, level: 36, xp: 50, inputs: [{ id: 'steel_bar', qty: 1 }, { id: 'coolant', qty: 1 }, { id: 'coil_spring', qty: 1 }] });
+// Gadget mods / attachments (install into the rig; unlocked with the tools stage).
+recipe('mod_scope',        { output: 'mod_scope',        outQty: 1, level: 30, xp: 70, unlock: 'tinkering_tools', makes: 'mod', inputs: [{ id: 'amber', qty: 1 }, { id: 'brass_cog', qty: 1 }, { id: 'firing_pin', qty: 1 }] });
+recipe('mod_ap_core',      { output: 'mod_ap_core',      outQty: 1, level: 40, xp: 90, unlock: 'tinkering_tools', makes: 'mod', inputs: [{ id: 'obsidian_shard', qty: 1 }, { id: 'firing_pin', qty: 1 }] });
+recipe('mod_overclock',    { output: 'mod_overclock',    outQty: 1, level: 55, xp: 130, unlock: 'tinkering_voltaic', makes: 'mod', inputs: [{ id: 'capacitor', qty: 1 }, { id: 'conductive_gel', qty: 1 }] });
+recipe('mod_incendiary',   { output: 'mod_incendiary',   outQty: 1, level: 28, xp: 60, unlock: 'tinkering_powder', makes: 'mod', inputs: [{ id: 'incendiary_gel', qty: 2 }, { id: 'firing_pin', qty: 1 }] });
+recipe('mod_blast_funnel', { output: 'mod_blast_funnel', outQty: 1, level: 32, xp: 66, unlock: 'tinkering_powder', makes: 'mod', inputs: [{ id: 'metal_casing', qty: 2 }, { id: 'flywheel', qty: 1 }] });
+recipe('mod_shock_cap',    { output: 'mod_shock_cap',    outQty: 1, level: 58, xp: 140, unlock: 'tinkering_voltaic', makes: 'mod', inputs: [{ id: 'capacitor', qty: 1 }, { id: 'sparkstone', qty: 1 }] });
+recipe('mod_extended_mag', { output: 'mod_extended_mag', outQty: 1, level: 26, xp: 56, unlock: 'tinkering_tools', makes: 'mod', inputs: [{ id: 'metal_casing', qty: 2 }, { id: 'coil_spring', qty: 1 }] });
+recipe('mod_recoil_damper',{ output: 'mod_recoil_damper',outQty: 1, level: 24, xp: 50, unlock: 'tinkering_tools', makes: 'mod', inputs: [{ id: 'coil_spring', qty: 2 }, { id: 'rubber_sap', qty: 2 }] });
+recipe('mod_snare_barbs',  { output: 'mod_snare_barbs',  outQty: 1, level: 30, xp: 60, unlock: 'tinkering_tools', makes: 'mod', inputs: [{ id: 'sinew', qty: 2 }, { id: 'scrap_metal', qty: 3 }] });
+recipe('mod_cryo_tip',     { output: 'mod_cryo_tip',     outQty: 1, level: 44, xp: 100, unlock: 'tinkering_voltaic', makes: 'mod', inputs: [{ id: 'coolant', qty: 2 }, { id: 'obsidian_shard', qty: 1 }] });
 recipe('metal_casing', { output: 'metal_casing', outQty: 2, level: 6,  xp: 14, inputs: [{ any: 'bar', qty: 1 }] });
 recipe('iron_barrel',  { output: 'iron_barrel',  outQty: 1, level: 15, xp: 30, inputs: [{ id: 'iron_bar', qty: 2 }] });
 recipe('coil_spring',  { output: 'coil_spring',  outQty: 2, level: 10, xp: 16, inputs: [{ any: 'bar', qty: 1 }, { id: 'scrap_metal', qty: 1 }] });
@@ -391,9 +402,9 @@ export function assemble(recipeId) {
 
 // Recipes grouped for the workbench UI: components, ammo, gadgets.
 export function recipeGroups() {
-  const groups = { Components: [], Ammo: [], Gadgets: [] };
+  const groups = { Gadgets: [], Ammo: [], Mods: [], Components: [] };
   for (const r of Object.values(RECIPES)) {
-    const g = r.makes === 'gadget' ? 'Gadgets' : r.makes === 'ammo' ? 'Ammo' : 'Components';
+    const g = r.makes === 'gadget' ? 'Gadgets' : r.makes === 'ammo' ? 'Ammo' : r.makes === 'mod' ? 'Mods' : 'Components';
     groups[g].push(r);
   }
   for (const k of Object.keys(groups)) groups[k].sort((a, b) => a.level - b.level);

@@ -11,7 +11,7 @@
 // built from RESOURCE_TYPES, so the existing gather + render + respawn systems
 // handle them with no other changes.
 
-import { isWalkable, TERRAIN_DEFS, WORLD_W, WORLD_H } from '../world/map.js';
+import { isWalkable, TERRAIN_DEFS, WORLD_W, WORLD_H, addWorldObject } from '../world/map.js';
 import { RESOURCE_TYPES } from '../world/worldData.js';
 
 function isWater(world, x, y) {
@@ -35,10 +35,8 @@ function placeNode(world, x, y, resKey) {
     deplete: d.deplete, respawn: d.respawn, blocking: d.blocking !== false,
     depleted: false, respawnAt: 0,
   };
-  world.objects.push(o);
-  world.objectAt.set(x + ',' + y, o);
-  if (o.blocking) world.collision[y * world.W + x] = 1;
-  return o;
+  // chunk-index it (else invisible) + objectAt + collision, all consistent.
+  return addWorldObject(world, o);
 }
 
 // Scatter `count` nodes of resKey in an annulus [min,max] around (cx,cy).
