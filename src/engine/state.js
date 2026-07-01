@@ -540,11 +540,12 @@ export function playerAttackRange() {
 }
 
 // ---- ammunition (ranged only) ----
-// Melee never needs ammo. A ranged weapon needs a non-empty stack in the `ammo`
-// slot; running dry stops the attack (see main.js tick).
+// Melee never needs ammo. Ranged and tinker gadgets need a non-empty `ammo` slot;
+// running dry stops the attack (see main.js tick). Tinker gadgets additionally
+// require the ammo's family to match the gadget (a Bombard needs Bombs, etc.).
 export function needsAmmo() {
   const w = Game.equipment.weapon;
-  return !!(w && w.weaponType === 'ranged');
+  return !!(w && (w.weaponType === 'ranged' || w.weaponType === 'tinker'));
 }
 
 export function ammoCount() {
@@ -553,8 +554,19 @@ export function ammoCount() {
   return a.qty === undefined ? 1 : a.qty;
 }
 
+// Does the equipped ammo fit the equipped weapon? Ranged takes any arrow-type
+// ammo; a tinker gadget requires its declared `ammo` family.
+export function ammoFits() {
+  const w = Game.equipment.weapon;
+  const a = Game.equipment.ammo;
+  if (!w || !a) return false;
+  if (w.weaponType === 'tinker' && w.ammo) return a.ammoFamily === w.ammo;
+  return true;
+}
+
 export function hasAmmoForRanged() {
-  return !needsAmmo() || ammoCount() > 0;
+  if (!needsAmmo()) return true;
+  return ammoCount() > 0 && ammoFits();
 }
 
 // Spend one unit of equipped ammo; clears the slot when the stack empties.

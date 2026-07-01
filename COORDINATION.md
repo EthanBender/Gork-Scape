@@ -264,6 +264,19 @@ Client-side until Phase 4; each phase keeps the player-freeze + world-continuity
   proxy (same `place/cancel/quote`); `save.js`/`session.js` shapes back onto the DB.
   Player still frozen while disconnected; world runs regardless. Combat/skilling move
   server-side (authoritative), clients send intents only.
+  - **STEP 2 LANDED (2026-07-01) — `server/index.mjs`:** a real, running,
+    **dependency-free** Node server (built-in `http`+SSE, no npm/build step) that runs
+    the authoritative economy loop 24/7 (GE guide drift + event bias) with **zero
+    clients connected**, persists guide prices to `server/world-state.json`
+    **atomically** (temp+rename; git-ignored), and **serves the client** (replaces the
+    python dev server). Reuses the PURE modules verbatim — `grandExchange.js` `Market`,
+    `worldClock.js`, `worldEvents.js` — and reads `items.json` off disk (no gameData.js
+    fetch chain). API: `/api/world`, `/api/quote?item=`, `POST /api/order` (the
+    client→server intent seam), `/api/stream` (SSE). Verified: clock+loop+prices advance
+    with no client; state survives restart. **Nothing in `src/` changed** — the client
+    still runs standalone; wiring it to the server is the next step via
+    `src/net/marketTransport.js` (add `NetworkMarketTransport`). Run: `node server/index.mjs`.
+    See `server/README.md` + `docs/MULTIPLAYER_ARCHITECTURE.md`.
 - **Phase 5 — accounts, presence, multiplayer.** Real auth (not just a name),
   see-other-players, server-validated actions, DB persistence, reconnection.
 - **Phase 6 — scale & ops.** Hosting/deploy, anti-cheat, interest management/sharding,

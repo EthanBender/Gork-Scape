@@ -233,6 +233,7 @@ export function initPanels() {
     renderBank,
     renderQuests,
     onQuestComplete,
+    showDialogue,
     onXp,
     postChat,
   };
@@ -304,6 +305,20 @@ function switchTab(id) {
 // world-opened panel (shop/bank/exchange/stations) when you leave the asset.
 export function activePanel() { return activeTab; }
 export function closeWorldPanels() { if (WORLD_PANELS.has(activeTab)) switchTab(lastNormalTab || 'inventory'); }
+
+// [economy lane] Shared header for world-opened panels (shop/bank/exchange/
+// station): names what you're interacting with + a ✕ to close by hand (walking
+// away also closes it — see main.js panelAnchor).
+function worldHeader(v, icon, title) {
+  const h = document.createElement('div');
+  h.className = 'wp-header';
+  const t = document.createElement('span');
+  t.className = 'wp-title'; t.textContent = `${icon} ${title}`;
+  const x = document.createElement('button');
+  x.className = 'wp-close'; x.title = 'Close'; x.textContent = '✕';
+  x.onclick = () => closeWorldPanels();
+  h.appendChild(t); h.appendChild(x); v.appendChild(h);
+}
 
 // ---------- Top bar ----------
 export function renderTopBar() {
@@ -424,29 +439,45 @@ function rewardSummary(r) {
 }
 function questCard(q, opts = {}) {
   const card = document.createElement('div');
-  card.className = 'quest-card' + (q.status === 'complete' ? ' quest-done' : '');
-  const steps = q.steps.map((s) => {
-    const pct = Math.round((s.have / s.need) * 100);
-    return `<div class="quest-step ${s.done ? 'qs-done' : ''}">
-        <span class="qs-check">${s.done ? '✔' : '○'}</span>
-        <span class="qs-text">${tipEsc(s.text)}</span>
-        <span class="qs-count">${s.have}/${s.need}</span>
-        <span class="qs-bar"><span class="qs-fill" style="width:${pct}%"></span></span>
-      </div>`;
-  }).join('');
+  card.className = 'quest-card'
+    + (q.status === 'complete' ? ' quest-done' : '')
+    + (q.status === 'active' ? ' quest-active' : '');
+  const giverName = q.giver && q.giver.name ? q.giver.name : '';
+
+  // Steps: past = done, the one you're on = current (with a live counter/bar),
+  // future = plain. Only counted objectives show N/need + a bar.
+  let stepsHtml = '';
+  if (opts.showSteps && q.steps.length) {
+    stepsHtml = '<div class="quest-steps">' + q.steps.map((s) => {
+      const cls = s.done ? 'qs-done' : (s.current ? 'qs-current' : 'qs-todo');
+      const check = s.done ? '✔' : (s.current ? '▸' : '○');
+      const counted = (s.type === 'kill' || s.type === 'obtain' || s.type === 'level') && s.need > 1;
+      const count = counted ? `<span class="qs-count">${s.have}/${s.need}</span>` : '';
+      const pct = s.need ? Math.round((s.have / s.need) * 100) : 0;
+      const bar = (s.current && counted) ? `<span class="qs-bar"><span class="qs-fill" style="width:${pct}%"></span></span>` : '';
+      return `<div class="quest-step ${cls}"><span class="qs-check">${check}</span>`
+        + `<span class="qs-text">${tipEsc(s.text)}</span>${count}${bar}</div>`;
+    }).join('') + '</div>';
+  }
+
+  // The current step's dialogue/direction — the "he tells you where to go" line.
+  const dir = (q.current && q.current.say)
+    ? `<div class="quest-directions">“${tipEsc(q.current.say)}”</div>` : '';
+  // Available quests are STARTED by finding the giver, not a button.
+  const startHint = (q.status === 'available' && giverName)
+    ? `<div class="quest-starthint">Speak to <b>${tipEsc(giverName)}</b> to begin — follow the ✦ marker on your map.</div>` : '';
+
   card.innerHTML = `
     <div class="quest-head">
       <span class="quest-name">${tipEsc(q.name)}</span>
       <span class="quest-badge q-${q.status}">${q.status === 'active' ? `${q.done}/${q.total}` : q.status}</span>
     </div>
-    <div class="quest-giver">${tipEsc(q.giver || '')}</div>
+    ${giverName ? `<div class="quest-giver">${tipEsc(giverName)}</div>` : ''}
     <div class="quest-summary">${tipEsc(q.summary || '')}</div>
-    ${opts.showSteps ? `<div class="quest-steps">${steps}</div>` : ''}
-    ${q.rewards ? `<div class="quest-reward">Reward: ${tipEsc(rewardSummary(q.rewards))}</div>` : ''}
-    ${opts.startable ? '<button class="quest-start">Accept quest</button>' : ''}`;
-  if (opts.startable) {
-    card.querySelector('.quest-start').onclick = () => { startQuest(q.id); renderQuests(); };
-  }
+    ${dir}
+    ${stepsHtml}
+    ${startHint}
+    ${q.rewards ? `<div class="quest-reward">Reward: ${tipEsc(rewardSummary(q.rewards))}</div>` : ''}`;
   return card;
 }
 export function renderQuests() {
@@ -478,7 +509,7 @@ export function renderQuests() {
     return;
   }
   section('In progress', board.active, { showSteps: true });
-  section('Available', board.available, { showSteps: true, startable: true });
+  section('Available — find the giver', board.available, { showSteps: false });
   section('Completed', board.complete, { showSteps: false });
   if (board.locked.length) {
     const h = document.createElement('div');
@@ -504,11 +535,29 @@ function onQuestComplete(q) {
 }
 export function openQuests() { switchTab('quests'); }
 
+// A speech box over the game view for quest-giver lines ("head east to the
+// yard..."). Registered as Game.ui.showDialogue; the quest engine calls it on
+// start / step-advance / turn-in. Click to dismiss, else auto-hides.
+let dialogueTimer = null;
+function showDialogue(speaker, lines) {
+  const host = document.getElementById('game-panel') || document.body;
+  let box = document.getElementById('dialogue-box');
+  if (!box) { box = document.createElement('div'); box.id = 'dialogue-box'; host.appendChild(box); }
+  box.innerHTML = `<div class="dlg-speaker">${tipEsc(speaker)}</div>`
+    + (lines || []).map((l) => `<div class="dlg-line">${tipEsc(l)}</div>`).join('')
+    + `<div class="dlg-dismiss">▸ click to dismiss</div>`;
+  box.hidden = false;
+  box.onclick = () => { box.hidden = true; };
+  if (dialogueTimer) clearTimeout(dialogueTimer);
+  dialogueTimer = setTimeout(() => { if (box) box.hidden = true; }, 9000);
+}
+
 // ---------- Stations (data-driven crafting) ----------
 let currentStation = 'furnace';
 // Friendly labels; the world's station tiles map to these DB station ids.
 const STATION_LABELS = {
   furnace: 'Furnace', anvil: 'Anvil', range: 'Cooking Range',
+  fire_or_range: 'Cooking Fire',
   fire: 'Campfire', crafting_bench: 'Crafting Bench', sawmill: 'Sawmill',
 };
 
@@ -517,19 +566,11 @@ export function renderStations() {
   if (!v) return;
   v.innerHTML = '';
 
-  // Station selector row.
-  const bar = document.createElement('div');
-  bar.className = 'station-bar';
+  // [economy lane] You're physically AT one station (opened by clicking it in
+  // the world), so no switcher — just this station's header + recipes.
   const stations = stationTypes();
   if (!stations.includes(currentStation)) currentStation = stations[0];
-  for (const st of stations) {
-    const b = document.createElement('button');
-    b.className = 'station-btn' + (st === currentStation ? ' active' : '');
-    b.textContent = STATION_LABELS[st] || st;
-    b.onclick = () => { currentStation = st; renderStations(); };
-    bar.appendChild(b);
-  }
-  v.appendChild(bar);
+  worldHeader(v, '🔨', STATION_LABELS[currentStation] || currentStation);
 
   const hint = document.createElement('div');
   hint.className = 'xptext';
@@ -598,6 +639,7 @@ export function renderGrandExchange() {
   const v = els.views.ge;
   if (!v) return;
   v.innerHTML = '';
+  worldHeader(v, '🏛️', 'Grand Exchange');
 
   // Gate: must be at the Grand Bazaar with the Exchange Merchant.
   if (!exchangeMerchantInRange()) {
@@ -771,6 +813,7 @@ export function renderShop() {
   const v = els.views.shop;
   if (!v) return;
   v.innerHTML = '';
+  worldHeader(v, '🏪', (GameData.shop(currentShop)[0] || {}).shop_name || 'Shop');
 
   if (!shopkeeperInRange(currentShop)) {
     const gate = document.createElement('div');
@@ -844,6 +887,7 @@ export function renderBank() {
   const v = els.views.bank;
   if (!v) return;
   v.innerHTML = '';
+  worldHeader(v, '🏦', 'Bank');
 
   if (!bankerInRange()) {
     const gate = document.createElement('div');
