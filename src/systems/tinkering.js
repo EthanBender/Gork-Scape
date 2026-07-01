@@ -158,7 +158,7 @@ recipe('char_log',   { output: 'charcoal',    outQty: 2, level: 1,  xp: 8,  inpu
 recipe('mill_scrap', { output: 'scrap_metal', outQty: 3, level: 3,  xp: 10, inputs: [{ any: 'bar', qty: 1 }] });                        // Mining/Smithing
 // Real gunpowder = saltpeter + sulfur + charcoal (mine the first two, char the
 // third). This ties blackpowder — the keystone consumable — to Mining + Firemaking.
-recipe('blackpowder',{ output: 'blackpowder', outQty: 3, level: 12, xp: 24, unlock: 'tinkering_powder', inputs: [{ id: 'saltpeter', qty: 1 }, { id: 'sulfur', qty: 1 }, { id: 'charcoal', qty: 1 }] });
+recipe('blackpowder',{ output: 'blackpowder', outQty: 3, level: 3, xp: 24, unlock: 'tinkering_powder', inputs: [{ id: 'saltpeter', qty: 1 }, { id: 'sulfur', qty: 1 }, { id: 'charcoal', qty: 1 }] });
 // Kit tools (unlock gathering) + powered out-tools (boost other skills).
 recipe('rusty_wrench',    { output: 'rusty_wrench',    outQty: 1, level: 1,  xp: 15, inputs: [{ any: 'bar', qty: 1 }, { id: 'scrap_metal', qty: 2 }] });
 recipe('gum_tap',         { output: 'gum_tap',         outQty: 1, level: 6,  xp: 20, inputs: [{ any: 'bar', qty: 1 }, { any: 'log', qty: 1 }] });

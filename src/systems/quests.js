@@ -387,25 +387,48 @@ export function questBoard() {
 
 // Marker descriptors for the map/minimap. `npc` (id) means "wherever that NPC is
 // right now"; else use x/y. main.js resolves npc -> live tile.
+// Markers for ONLY the tracked quest, so the map/minimap never clutter with every
+// quest at once. The player picks which quest to track in the journal; a sensible
+// default (first active, else first available) is auto-selected.
 export function questMarkers() {
   if (!Game.questState) return [];
-  const out = [];
-  for (const q of QUESTS) {
-    const st = Game.questState[q.id];
-    if (!st) continue;
-    if (st.status === 'available' && q.giver) {
-      out.push({ kind: 'available', npc: q.giver.npc || null,
-        x: q.giver.where?.x, y: q.giver.where?.y, label: q.name });
-    } else if (st.status === 'active') {
-      const step = q.steps[st.step];
-      if (!step) continue;
-      const m = { kind: 'active', label: step.text };
-      if (step.type === 'talk') m.npc = step.target;
-      if (step.where) { m.x = step.where.x; m.y = step.where.y; }
-      if (m.npc || (m.x !== undefined && m.y !== undefined)) out.push(m);
-    }
+  const id = Game.trackedQuest;
+  if (!id) return [];
+  const q = Q_BY_ID.get(id);
+  const st = Game.questState[id];
+  if (!q || !st) return [];
+  if (st.status === 'available' && q.giver) {
+    return [{ kind: 'available', npc: q.giver.npc || null,
+      x: q.giver.where?.x, y: q.giver.where?.y, label: q.name }];
   }
-  return out;
+  if (st.status === 'active') {
+    const step = q.steps[st.step];
+    if (!step) return [];
+    const m = { kind: 'active', label: step.text };
+    if (step.type === 'talk') m.npc = step.target;
+    if (step.where) { m.x = step.where.x; m.y = step.where.y; }
+    if (m.npc || (m.x !== undefined && m.y !== undefined)) return [m];
+  }
+  return [];
+}
+
+// ---- quest tracking (which quest the map follows) ---------------------------
+export function trackedQuestId() { return Game.trackedQuest || null; }
+// Toggle tracking a quest (click it again to stop tracking / hide its marker).
+export function trackQuest(id) {
+  if (!Game.questState) return;
+  Game.trackedQuest = (Game.trackedQuest === id) ? null : id;
+  syncUI();
+}
+// Keep a sensible default tracked when the current one goes away (completed etc.):
+// first active quest, else first available. Never overrides a still-valid choice.
+function autoTrack() {
+  if (!Game.questState) return;
+  const cur = Game.trackedQuest && Game.questState[Game.trackedQuest];
+  if (cur && (cur.status === 'active' || cur.status === 'available')) return;
+  const active = QUESTS.find((q) => Game.questState[q.id] && Game.questState[q.id].status === 'active');
+  const avail = QUESTS.find((q) => Game.questState[q.id] && Game.questState[q.id].status === 'available');
+  Game.trackedQuest = (active && active.id) || (avail && avail.id) || null;
 }
 
 // ---- persistence ------------------------------------------------------------

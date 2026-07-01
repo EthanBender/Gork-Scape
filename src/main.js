@@ -1936,6 +1936,42 @@ function syncGroundLabels() {
   }
 }
 
+// ---------------------------------------------------------------- minimap POIs
+// [char-render] Points of interest surfaced on the minimap so players can find
+// transport + shops. Transport objects are placed into world.objects by the
+// travel lane (o.transport); shops sit at static SHOP_POSTS tiles. Cached per
+// world (recomputed after a re-login rebuilds the world).
+let _poiCache = null, _poiCacheWorld = null;
+function collectPOIs() {
+  if (_poiCache && _poiCacheWorld === Game.world) return _poiCache;
+  const list = [];
+  for (const o of Game.world.objects) {
+    if (o.transport) list.push({ tx: o.x, ty: o.y, kind: o.kind }); // portal|cart|minecart
+  }
+  for (const xy of Object.values(SHOP_POSTS)) list.push({ tx: xy[0], ty: xy[1], kind: 'shop' });
+  _poiCache = list; _poiCacheWorld = Game.world;
+  return list;
+}
+function poiColor(kind) {
+  return kind === 'portal' ? 0xdd3355 : kind === 'minecart' ? 0xb8b8b8 : kind === 'shop' ? 0xffcf3f : 0xc08a4a;
+}
+// Small, legible icons (drawn on the minimap graphics `g` at screen px mx,my).
+function drawPOIIcon(g, mx, my, kind) {
+  g.fillStyle(0x000000, 0.55); g.fillCircle(mx, my, 4.6); // dark backing for contrast
+  if (kind === 'portal') {
+    g.lineStyle(1.4, 0xff6b7a, 0.95); g.strokeCircle(mx, my, 3.4);
+    g.fillStyle(0xaa2233, 1); g.fillCircle(mx, my, 2.1);
+  } else if (kind === 'cart' || kind === 'minecart') {
+    g.fillStyle(kind === 'minecart' ? 0xb8b8b8 : 0xc08a4a, 1);
+    g.fillRect(mx - 3.2, my - 2, 6.4, 3);                  // wagon body
+    g.fillStyle(0x141414, 1); g.fillCircle(mx - 1.9, my + 1.8, 1); g.fillCircle(mx + 1.9, my + 1.8, 1); // wheels
+  } else { // shop — a gold coin
+    g.fillStyle(0xffcf3f, 1); g.fillCircle(mx, my, 3.1);
+    g.lineStyle(1, 0x7a5a10, 1); g.strokeCircle(mx, my, 3.1);
+    g.fillStyle(0x7a5a10, 1); g.fillRect(mx - 0.5, my - 1.6, 1, 3.2); // coin slot / $ hint
+  }
+}
+
 // ---------------------------------------------------------------- local minimap
 // A zoomed view centered on the player — a bit wider than the screen view.
 function drawMinimap() {
