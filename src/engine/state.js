@@ -56,6 +56,7 @@ export const Game = {
   refresh() {
     const u = this.ui;
     u.renderSkills && u.renderSkills();
+    u.renderQuests && u.renderQuests();
     u.renderInventory && u.renderInventory();
     u.renderEquipment && u.renderEquipment();
     u.renderCombat && u.renderCombat();

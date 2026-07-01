@@ -27,6 +27,7 @@ import { checkHeist, heistView, resolveHeistVictory } from '../systems/treasuryH
 import { shopStock, buyFromShop, sellToShop } from '../systems/shops.js';
 import { lightFireAt } from '../systems/firemaking.js'; // [economy lane] Firemaking
 import { renderAlchemy } from '../systems/alchemy.js'; // [economy lane] Alchemy skill
+import { questBoard, startQuest } from '../systems/quests.js'; // [economy lane] quest journal
 
 // Tiny inline SVG sparkline of recent trade prices for the GE price chart.
 function sparkline(prices, w = 160, h = 34) {
@@ -207,6 +208,8 @@ export function initPanels() {
     renderGrandExchange,
     renderShop,
     renderBank,
+    renderQuests,
+    onQuestComplete,
     onXp,
   };
   switchTab('skills');
@@ -222,7 +225,8 @@ function buildLayout() {
   els.chatlog = document.getElementById('chatlog');
 
   const tabs = [
-    ['skills', 'Skills', '📊'], ['inventory', 'Inventory', '🎒'],
+    ['skills', 'Skills', '📊'], ['quests', 'Quests', '📜'],
+    ['inventory', 'Inventory', '🎒'],
     ['equipment', 'Equipment', '🛡️'], ['combat', 'Combat', '⚔️'],
     ['stations', 'Stations', '🔨'], ['alchemy', 'Alchemy', '⚗️'],
     ['ge', 'Exchange', '💰'],
@@ -317,6 +321,102 @@ export function renderSkills() {
   hp.textContent = `Hitpoints ${Game.hitpoints.level} · ${Game.hp}/${Game.maxHp} HP`;
   v.appendChild(hp);
 }
+
+// ---------- Quest Journal ----------
+// The player-facing goals view. Reads the quest engine's board (active /
+// available / complete) and renders each with live per-step progress bars and
+// its reward. Available quests get a Start button; the engine auto-completes and
+// pays out when objectives are met, so there's no "hand in" click to forget.
+const REWARD_ICON = { coins: '🪙' };
+function rewardSummary(r) {
+  if (!r) return '';
+  const bits = [];
+  if (r.coins) bits.push(`${r.coins} coins`);
+  if (Array.isArray(r.xp)) for (const x of r.xp) bits.push(`${x.amount} ${x.skill} xp`);
+  if (Array.isArray(r.items)) for (const it of r.items) bits.push(`${it.qty || 1}× ${it.id}`);
+  return bits.join(' · ');
+}
+function questCard(q, opts = {}) {
+  const card = document.createElement('div');
+  card.className = 'quest-card' + (q.status === 'complete' ? ' quest-done' : '');
+  const steps = q.steps.map((s) => {
+    const pct = Math.round((s.have / s.need) * 100);
+    return `<div class="quest-step ${s.done ? 'qs-done' : ''}">
+        <span class="qs-check">${s.done ? '✔' : '○'}</span>
+        <span class="qs-text">${tipEsc(s.text)}</span>
+        <span class="qs-count">${s.have}/${s.need}</span>
+        <span class="qs-bar"><span class="qs-fill" style="width:${pct}%"></span></span>
+      </div>`;
+  }).join('');
+  card.innerHTML = `
+    <div class="quest-head">
+      <span class="quest-name">${tipEsc(q.name)}</span>
+      <span class="quest-badge q-${q.status}">${q.status === 'active' ? `${q.done}/${q.total}` : q.status}</span>
+    </div>
+    <div class="quest-giver">${tipEsc(q.giver || '')}</div>
+    <div class="quest-summary">${tipEsc(q.summary || '')}</div>
+    ${opts.showSteps ? `<div class="quest-steps">${steps}</div>` : ''}
+    ${q.rewards ? `<div class="quest-reward">Reward: ${tipEsc(rewardSummary(q.rewards))}</div>` : ''}
+    ${opts.startable ? '<button class="quest-start">Accept quest</button>' : ''}`;
+  if (opts.startable) {
+    card.querySelector('.quest-start').onclick = () => { startQuest(q.id); renderQuests(); };
+  }
+  return card;
+}
+export function renderQuests() {
+  const v = els.views.quests;
+  if (!v) return;
+  v.innerHTML = '';
+  const board = questBoard();
+
+  const header = document.createElement('div');
+  header.className = 'quest-header';
+  header.innerHTML = `<span class="qh-title">📜 Quest Journal</span>`
+    + `<span class="qh-count">${board.completedCount}/${board.total} complete</span>`;
+  v.appendChild(header);
+
+  const section = (title, list, opts) => {
+    if (!list.length) return;
+    const h = document.createElement('div');
+    h.className = 'quest-section-label';
+    h.textContent = title;
+    v.appendChild(h);
+    for (const q of list) v.appendChild(questCard(q, opts));
+  };
+
+  if (!board.active.length && !board.available.length && !board.complete.length) {
+    const empty = document.createElement('div');
+    empty.className = 'quest-empty';
+    empty.textContent = 'No quests yet — talk to the goblins of the settlement.';
+    v.appendChild(empty);
+    return;
+  }
+  section('In progress', board.active, { showSteps: true });
+  section('Available', board.available, { showSteps: true, startable: true });
+  section('Completed', board.complete, { showSteps: false });
+  if (board.locked.length) {
+    const h = document.createElement('div');
+    h.className = 'quest-section-label';
+    h.textContent = `Locked (${board.locked.length})`;
+    v.appendChild(h);
+    const note = document.createElement('div');
+    note.className = 'quest-empty';
+    note.textContent = 'Complete earlier quests to unlock these.';
+    v.appendChild(note);
+  }
+}
+// Celebration banner when a quest completes (reuses the level-up flourish layer
+// + its markup/animation, so it matches the existing level-up moment).
+function onQuestComplete(q) {
+  const b = document.createElement('div');
+  b.className = 'levelup-banner quest-banner';
+  b.innerHTML = `<div class="lu-icon">📜</div>`
+    + `<div class="lu-text"><b>Quest Complete</b><span>${tipEsc(q.name)}</span></div>`;
+  fxLayer().appendChild(b);
+  setTimeout(() => { b.classList.add('out'); }, 2400);
+  setTimeout(() => b.remove(), 3000);
+}
+export function openQuests() { switchTab('quests'); }
 
 // ---------- Stations (data-driven crafting) ----------
 let currentStation = 'furnace';
@@ -638,6 +738,90 @@ if (typeof window !== 'undefined') {
   window.__ECON = { recipesForStation, craft, rollMonsterDrops, gather, resolveNode };
   window.__GEX = { market, buyOffer, sellOffer, cancelOffer, collectOffer, playerOffers, playerCoins, ensureLiquidity };
   window.__SHOP = { openShop, buyFromShop, sellToShop, shopStock };
+  window.__BANK = { openBank, bankDeposit, bankWithdraw, bankDepositAll };
+}
+
+// ---------- Bank (physical: usable only near the Banker) ----------
+const BANK_RANGE = 3;
+function bankerInRange() {
+  const p = Game.player;
+  const b = Game.npcs && Game.npcs.find((n) => n.id === 'banker');
+  if (!p || !b) return null;
+  return (Math.abs(p.tileX - b.tileX) + Math.abs(p.tileY - b.tileY)) <= BANK_RANGE ? b : null;
+}
+export function openBank() { switchTab('bank'); }
+
+export function renderBank() {
+  const v = els.views.bank;
+  if (!v) return;
+  v.innerHTML = '';
+
+  if (!bankerInRange()) {
+    const gate = document.createElement('div');
+    gate.className = 'ge-gate';
+    gate.innerHTML = `<div class="ge-gate-title">🏦 Bank</div>`
+      + `<div class="ge-gate-body">Your bank is only reachable at the <b>Bank</b> in town.`
+      + ` Find the <b>Banker</b> and talk to them to deposit and withdraw.</div>`;
+    v.appendChild(gate);
+    return;
+  }
+
+  const head = document.createElement('div');
+  head.className = 'ge-head';
+  head.innerHTML = `<span class="stat-title" style="margin:0">Bank of Gorkholm</span>`;
+  const depAll = document.createElement('button');
+  depAll.className = 'ge-mini'; depAll.textContent = 'Deposit all';
+  depAll.onclick = () => { bankDepositAll(); renderBank(); };
+  head.appendChild(depAll);
+  v.appendChild(head);
+
+  // Stored items — left-click withdraw 1, right-click withdraw all.
+  const store = document.createElement('div');
+  store.className = 'inv-grid';
+  if (!Game.bank.length) store.innerHTML = '<div class="xptext">Your bank is empty. Deposit items below.</div>';
+  for (const b of Game.bank) {
+    const def = GameData.item(b.id) || ITEMS[b.id] || {};
+    const name = def.display_name || (ITEMS[b.id] && ITEMS[b.id].name) || b.id;
+    const slot = document.createElement('div');
+    slot.className = 'inv-slot';
+    slot.title = `${name} ×${b.qty} — click withdraw 1, right-click withdraw all`;
+    const sq = document.createElement('div');
+    sq.className = 'item-sq';
+    sq.style.background = hex((ITEMS[b.id] && ITEMS[b.id].color) || 0x8a8a8a);
+    sq.textContent = String(name).split(' ').map((w) => w[0]).join('').slice(0, 2);
+    slot.appendChild(sq);
+    const q = document.createElement('span'); q.className = 'item-qty';
+    q.textContent = b.qty > 9999 ? Math.floor(b.qty / 1000) + 'k' : b.qty;
+    slot.appendChild(q);
+    slot.onclick = () => { bankWithdraw(b.id, 1); renderBank(); };
+    slot.oncontextmenu = (e) => { e.preventDefault(); bankWithdraw(b.id, b.qty); renderBank(); };
+    store.appendChild(slot);
+  }
+  v.appendChild(store);
+
+  // Inventory strip — click to deposit.
+  const t = document.createElement('div');
+  t.className = 'stat-title'; t.style.marginTop = '10px'; t.textContent = 'Inventory — click to deposit';
+  v.appendChild(t);
+  const inv = document.createElement('div');
+  inv.className = 'inv-grid';
+  for (let i = 0; i < Game.inventory.length; i++) {
+    const item = Game.inventory[i];
+    const slot = document.createElement('div');
+    slot.className = 'inv-slot';
+    if (item) {
+      slot.title = `${item.name || item.id} — click to deposit`;
+      const sq = document.createElement('div');
+      sq.className = 'item-sq';
+      sq.style.background = hex(item.color || 0x8a8a8a);
+      sq.textContent = String(item.name || item.id).split(' ').map((w) => w[0]).join('').slice(0, 2);
+      slot.appendChild(sq);
+      if (item.qty > 1) { const q = document.createElement('span'); q.className = 'item-qty'; q.textContent = item.qty; slot.appendChild(q); }
+      slot.onclick = () => { bankDeposit(i); renderBank(); };
+    }
+    inv.appendChild(slot);
+  }
+  v.appendChild(inv);
 }
 
 // ---------- Inventory ----------
@@ -955,6 +1139,9 @@ function specDesc(spec) {
 
 // Special-attack block: an energy bar + (if the weapon has one) an arm button.
 function renderSpec() {
+  try { return renderSpecInner(); } catch (err) { window.__specErr = String((err && err.stack) || err); return document.createElement('div'); }
+}
+function renderSpecInner() {
   const wrap = document.createElement('div');
   wrap.style.marginTop = '10px';
   const spec = weaponSpec();

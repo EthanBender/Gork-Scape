@@ -34,17 +34,19 @@ import { rollSkillSuccess } from './engine/skills.js';
 import { emptyBonuses, ITEMS } from './items/equipment.js';
 import { rollLoot } from './world/loot.js';
 import { randInt } from './engine/rng.js';
-import { initPanels, showContextMenu, openExchange, openShop } from './ui/panels.js'; // openExchange/openShop [economy lane]
+import { initPanels, showContextMenu, openExchange, openShop, openBank } from './ui/panels.js'; // openExchange/openShop/openBank [economy lane]
 // [economy lane] — combat drops from the database drop tables. See COORDINATION.md.
 import { rollMonsterDrops } from './systems/drops.js';
 import { monsterIdForSpawn } from './data/worldContract.js';
 import { shopkeeperSpawns, loadAndRestockShops, saveWorldShops, restockShops } from './systems/shops.js'; // [economy lane] shopkeeper NPCs + world-time restock
+import * as Farming from './systems/farming.js'; // [economy lane] crops grow on world time (offline too)
 // [economy lane] — Firemaking: temporary ground fires (lit from inventory in
 // panels.js) render here, expire on the global tick, and cook via performSkill.
 import { activeFires, tickFires, fireAt, fireLifeRatio } from './systems/firemaking.js';
 // [economy lane] — Grand Exchange world state persists globally and drifts while
 // everyone is offline; restored + fast-forwarded on login. See geActions.js.
 import { loadAndAdvanceWorldMarket, saveWorldMarket } from './systems/geActions.js';
+import { initQuests, evaluate as tickQuests, onKill as questOnKill } from './systems/quests.js'; // [economy lane] quest engine
 // [character-render lane] — the visible avatar. Pure rendering; reads state only.
 import { drawAvatar } from './render/avatar.js';
 import { gearHints, weaponStyleFor, bodyTypeFor } from './render/gear.js';
@@ -108,6 +110,17 @@ function buildWorld() {
     tileX: world.spawn.x + 2, tileY: world.spawn.y,
     color: 0xe8c65a, aggressive: false,
     dialog: 'Welcome to the Grand Exchange! Post your buy and sell offers here.',
+    levels: elderLevels, combatLevel: null, bonuses: emptyBonuses(),
+  }));
+
+  // [economy lane] Banker — gates the Bank panel. Placed near spawn provisionally
+  // (points north toward the Bank building world-gen placed at ~493,431); world-gen:
+  // relocate into the Bank building and keep id 'banker' so the proximity gate finds it.
+  Game.npcs.push(new NPC({
+    id: 'banker', name: 'Banker', type: 'elder',
+    tileX: world.spawn.x, tileY: world.spawn.y - 2,
+    color: 0xc9a24a, aggressive: false,
+    dialog: 'Welcome to the Bank of Gorkholm. Deposit and withdraw your goods here.',
     levels: elderLevels, combatLevel: null, bonuses: emptyBonuses(),
   }));
 
@@ -280,6 +293,7 @@ function create() {
   // bonuses, panels) and mirror the clock + live event into topbar readouts.
   Game.worldClock = WorldClock;
   Game.worldEvents = WorldEvents;
+  Game.farming = Farming; // crops grow on the world clock; interaction wiring TBD
   mountWorldClockHud();
   ticker.onTick((_c, isLast) => {
     if (!isLast) return;
@@ -293,12 +307,19 @@ function create() {
   // time the player was away. For a new character this is a no-op.
   applyPendingSave();
 
+  // [economy lane] Quest engine: build the quest slate (new character) or reconcile
+  // the restored one (returning character). Idempotent — never restarts a quest
+  // that's already active/complete; auto-starts the opening tutorial for newcomers.
+  initQuests();
+
   // [economy lane] Restore the shared Grand Exchange world state and fast-forward
   // it over the real time everyone was away — the market kept trading offline.
   restoreWorldMarket();
   // [economy lane] Restore + fast-forward NPC shop stock: shelves that ran low
   // refill over world-time whether or not anyone was online.
   restoreShopsOnLogin();
+  // [economy lane] Restore planted crops; they kept growing on the world clock.
+  restoreFarmsOnLogin();
   // [world-continuity] Tell the returning player what's happening in the world
   // right now and what's coming — events run on the world calendar regardless.
   announceWorldEvents();
@@ -401,6 +422,13 @@ function restoreWorldMarket() {
 function restoreShopsOnLogin() {
   const refilled = loadAndRestockShops();
   if (refilled >= 10) Game.log('The merchants have restocked their shelves while you were away.');
+}
+
+// [economy lane] Restore planted crops — they matured on the world clock while
+// you were gone (growth is a pure function of time). Note any that ripened.
+function restoreFarmsOnLogin() {
+  const ripe = Farming.loadWorldFarms();
+  if (ripe > 0) Game.log(`${ripe} of your crops ${ripe === 1 ? 'has' : 'have'} ripened and ${ripe === 1 ? 'is' : 'are'} ready to harvest.`);
 }
 
 // [world-continuity] Login summary of the world calendar: the live event (if any)
@@ -675,6 +703,7 @@ function talkTo(npc) {
   Game.log(`${npc.name}: "${npc.dialog}"`);
   if (npc.id === 'exchange_merchant') openExchange(); // [economy lane] open the GE
   if (npc.id && npc.id.startsWith('shopkeeper_')) openShop(npc.id.replace('shopkeeper_', '')); // [economy lane]
+  if (npc.id === 'banker') openBank(); // [economy lane] open the Bank
 }
 
 // ---------------------------------------------------------------- tick logic
@@ -837,6 +866,10 @@ function gameTick(count, isLast = true) {
     Game.log('Your fire burns out.');
     if (p.interactTarget && p.interactTarget.id === dead.id) p.interactTarget = null;
   }
+
+  // --- [economy lane] quests: re-check active objectives against live inventory
+  // and skills (kills are tallied at the kill site). Cheap — a few active quests.
+  tickQuests();
 
   // --- NPC AI (only near the player) ---
   for (const n of Game.npcs) {
@@ -1027,6 +1060,7 @@ function playerAttack(npc, count) {
     Game.log(`You have defeated the ${npc.name}!`);
     if (Game.player.combatTarget === npc) Game.player.combatTarget = null;
     dropLoot(npc, count);
+    questOnKill(npc.monsterId); // [economy lane] tally kills for active quests
   }
 }
 
@@ -1806,4 +1840,5 @@ function stopGame() {
 // save (autosave / tab-close / logout), so `savedAt` stays fresh for offline drift.
 registerSaver(saveWorldMarket);
 registerSaver(saveWorldShops);
+registerSaver(Farming.saveWorldFarms);
 initSession({ onStart: startGame, onStop: stopGame });
