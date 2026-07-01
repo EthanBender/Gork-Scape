@@ -1063,10 +1063,10 @@
    },
    {
     "type": "kill",
-    "target": "",
+    "target": "training_rat",
     "count": 3,
-    "text": "Defeat 3 foes with your gadget",
-    "say": "Equip the cannon and some slugs, then go make three enemies regret it."
+    "text": "Defeat 3 Training Rats with your gadget",
+    "say": "Equip the cannon + slugs and blast three Training Rats (east of spawn)."
    },
    {
     "type": "talk",
