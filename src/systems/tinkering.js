@@ -189,7 +189,7 @@ for (const cls of CLASSES) {
     inputs.push({ id: p >= 4 ? 'steam_piston' : 'trigger_assembly', qty: 1 });
     if (cls.id === 'tesla' || tier.id === 'voltaic') inputs.push({ id: 'voltaic_cell', qty: 1 });
     if (cls.id === 'bombard' || cls.id === 'bellows') inputs.push({ id: 'detonator', qty: 1 });
-    recipe(`make_${id}`, { output: id, outQty: 1, level: tier.level, xp: 60 + p * 40, inputs, makes: 'gadget' });
+    recipe(`make_${id}`, { output: id, outQty: 1, level: tier.level, xp: 60 + p * 40, unlock: gadgetUnlock(cls.id, p), inputs, makes: 'gadget' });
   }
 }
 
@@ -211,7 +211,7 @@ for (const fam of AMMO_FAMILIES) {
     else if (fam.fam === 'fuel') inputs = [{ id: 'machine_oil', qty: q }, { id: 'metal_casing', qty: 1 }];
     else if (fam.fam === 'cell') inputs = [{ id: 'voltaic_cell', qty: 1 }, { id: 'blackpowder', qty: q }];
     else inputs = [{ id: 'blackpowder', qty: q }, { id: 'metal_casing', qty: 1 }, { id: 'fuse', qty: 1 }];
-    recipe(`make_${id}`, { output: id, outQty: 5 + at.t, level: 1 + at.t * 8, xp: 10 + at.t * 12, inputs, makes: 'ammo' });
+    recipe(`make_${id}`, { output: id, outQty: 5 + at.t, level: 1 + at.t * 8, xp: 10 + at.t * 12, unlock: ammoUnlock(fam.fam), inputs, makes: 'ammo' });
   }
 }
 
