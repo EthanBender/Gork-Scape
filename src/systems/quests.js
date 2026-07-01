@@ -146,7 +146,11 @@ export function startQuest(id) {
     if (step0.say) intro.push(step0.say);
     intro.push(`Objective: ${directionOf(step0)}`);
   }
-  emitDialogue(q.giver?.name || q.name, intro);
+  // A cinematic intro cutscene (data) plays first; the giver's dialogue follows
+  // once it finishes or is skipped. No cutscene → dialogue immediately.
+  const speak = () => emitDialogue(q.giver?.name || q.name, intro);
+  if (q.introCutscene && Game.playCutscene) Game.playCutscene(q.introCutscene).then(speak);
+  else speak();
   syncUI();
   return true;
 }
@@ -220,7 +224,11 @@ function completeQuest(id, speaker) {
   if (r.unlock) bits.push(unlockLabel(r.unlock));
   if (shortcutOpened) bits.push('a new shortcut opens');
   if (bits.length) lines.push(`Reward: ${bits.join(', ')}.`);
-  emitDialogue(speaker || q.giver?.name || q.name, lines);
+  // An outro cutscene (data) plays the closing beat; the reward summary dialogue
+  // follows it. Rewards are already granted above — the cutscene is cosmetic.
+  const finishTalk = () => emitDialogue(speaker || q.giver?.name || q.name, lines);
+  if (q.outroCutscene && Game.playCutscene) Game.playCutscene(q.outroCutscene).then(finishTalk);
+  else finishTalk();
   Game.log(`✅ Quest complete: ${q.name}!`);
   if (Game.ui.onQuestComplete) Game.ui.onQuestComplete(q);
   refreshAvailability();

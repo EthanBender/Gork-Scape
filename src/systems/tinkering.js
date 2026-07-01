@@ -14,6 +14,7 @@
 
 import { Game, addItem, grantXp, countItem } from '../engine/state.js';
 import { ITEMS, emptyBonuses, STAT_KEYS } from '../items/equipment.js';
+import { hasUnlock } from './quests.js';
 
 const SKILL = 'Tinkering';
 
@@ -133,7 +134,7 @@ function spendMaterial(inp, qty) {
 // ---- foundational processing recipes (each pulls from another skill) ----
 recipe('char_log',   { output: 'charcoal',    outQty: 2, level: 1,  xp: 8,  inputs: [{ any: 'log', qty: 1 }] });                       // Woodcutting/Firemaking
 recipe('mill_scrap', { output: 'scrap_metal', outQty: 3, level: 3,  xp: 10, inputs: [{ any: 'bar', qty: 1 }] });                        // Mining/Smithing
-recipe('blackpowder',{ output: 'blackpowder', outQty: 3, level: 12, xp: 24, inputs: [{ id: 'charcoal', qty: 2 }, { any: 'coal', qty: 1 }] });
+recipe('blackpowder',{ output: 'blackpowder', outQty: 3, level: 12, xp: 24, unlock: 'tinkering_powder', inputs: [{ id: 'charcoal', qty: 2 }, { any: 'coal', qty: 1 }] });
 recipe('metal_casing', { output: 'metal_casing', outQty: 2, level: 6,  xp: 14, inputs: [{ any: 'bar', qty: 1 }] });
 recipe('iron_barrel',  { output: 'iron_barrel',  outQty: 1, level: 15, xp: 30, inputs: [{ id: 'iron_bar', qty: 2 }] });
 recipe('coil_spring',  { output: 'coil_spring',  outQty: 2, level: 10, xp: 16, inputs: [{ any: 'bar', qty: 1 }, { id: 'scrap_metal', qty: 1 }] });
@@ -144,8 +145,22 @@ recipe('leather_grip', { output: 'leather_grip', outQty: 1, level: 4,  xp: 8,  i
 recipe('fuse',         { output: 'fuse',         outQty: 4, level: 4,  xp: 6,  inputs: [{ any: 'log', qty: 1 }, { id: 'blackpowder', qty: 1 }] });
 recipe('machine_oil',  { output: 'machine_oil',  outQty: 2, level: 7,  xp: 10, inputs: [{ id: 'scrap_metal', qty: 1 }] });
 recipe('trigger_assembly', { output: 'trigger_assembly', outQty: 1, level: 20, xp: 34, inputs: [{ id: 'brass_cog', qty: 2 }, { id: 'coil_spring', qty: 1 }] });
-recipe('detonator',    { output: 'detonator',    outQty: 1, level: 28, xp: 40, inputs: [{ id: 'fuse', qty: 2 }, { id: 'blackpowder', qty: 2 }, { id: 'brass_cog', qty: 1 }] });
-recipe('voltaic_cell', { output: 'voltaic_cell', outQty: 1, level: 60, xp: 90, inputs: [{ id: 'meteor_bar', qty: 1 }, { id: 'coil_spring', qty: 2 }, { id: 'machine_oil', qty: 2 }] });
+recipe('detonator',    { output: 'detonator',    outQty: 1, level: 28, xp: 40, unlock: 'tinkering_powder', inputs: [{ id: 'fuse', qty: 2 }, { id: 'blackpowder', qty: 2 }, { id: 'brass_cog', qty: 1 }] });
+recipe('voltaic_cell', { output: 'voltaic_cell', outQty: 1, level: 60, xp: 90, unlock: 'tinkering_voltaic', inputs: [{ id: 'meteor_bar', qty: 1 }, { id: 'coil_spring', qty: 2 }, { id: 'machine_oil', qty: 2 }] });
+
+// Which quest-line unlock gates a gadget / ammo recipe (progression gating).
+function gadgetUnlock(clsId, tierIdx) {
+  if (tierIdx >= 6) return 'tinkering_voltaic';
+  if (clsId === 'cannon') return 'tinkering_cannons';
+  if (clsId === 'tesla') return 'tinkering_voltaic';
+  if (clsId === 'bombard' || clsId === 'bellows') return 'tinkering_powder';
+  return 'tinkering';
+}
+function ammoUnlock(fam) {
+  if (fam === 'cell') return 'tinkering_voltaic';
+  if (fam === 'bomb' || fam === 'slug') return 'tinkering_powder';
+  return 'tinkering';
+}
 
 // ---------------------------------------------------------------- gadgets
 // 6 classes × 7 tiers = 42 gadget weapons, generated with a recipe each.
@@ -204,6 +219,8 @@ for (const fam of AMMO_FAMILIES) {
 export function canAssemble(recipeId) {
   const r = RECIPES[recipeId];
   if (!r) return { ok: false, why: 'Unknown recipe.' };
+  const need = r.unlock || 'tinkering';
+  if (!hasUnlock(need)) return { ok: false, why: 'Locked — advance the Tinkerer quest line.' };
   if (Game.skills[SKILL] && Game.skills[SKILL].level < r.level) return { ok: false, why: `Needs ${SKILL} ${r.level}.` };
   for (const inp of r.inputs) {
     if (countMaterial(inp) < inp.qty) {

@@ -289,6 +289,24 @@ Client-side until Phase 4; each phase keeps the player-freeze + world-continuity
     next step. Verified in-browser (served by the node server): chip shows "🌐 Shared World",
     a server-side trade moved bronze_bar 18→24 and the client mirrored it on the next poll
     (`synced:true`), no console errors. Shared main.js edit: 1 import + 1 call, tagged `[economy lane]`.
+  - **STEP 3a (server-side order execution) LANDED (2026-07-01):** GE **orders now execute
+    on the server** against a shared market-maker. Server: `ensureServerLiquidity(itemId)`
+    posts a deep two-sided MM quote (±5% around guide) before matching; `POST /api/order`
+    returns `{filled, gross, fills, guide}` and **does not rest player orders** (fill-or-refund
+    for now — distributed resting-order settlement is the next sub-step). Client:
+    `serverLink.postOrder(...)`; **`geActions.buyOffer`/`sellOffer` gained an ONLINE path**
+    (guarded by `isOnline()`): escrow coins/items synchronously (UI's sync `{ok}` contract
+    holds via `{ok:true,pending:true}`), then `buyOnline`/`sellOnline` settle fills + refund
+    the remainder against the server's authoritative prices (async). ⚠️ **Offline path is
+    byte-for-byte the old local flow** (online branch is a guarded early return) — fully
+    fallback-safe. ⚠️ `geActions` shared file: guards at the top of buy/sell + two async
+    helpers, all tagged `[Phase 4]`; local escrow/settle/`ensureLiquidity`/MM code untouched.
+    Verified in-browser vs the node server: buy 10 bronze_bar @19 (spent 190, refund balanced),
+    sell 10 → 167 net (−3 tax→treasury), a below-market buy filled 0 and fully refunded; coins
+    reconciled to the exact spread+tax cost (100025→100002), no leaks, no console errors.
+    **Still local:** resting limit orders (players trade vs shared MM, not yet each other) +
+    player inventory/coins. Next: distributed resting orders (`/api/offers`,`/api/collect`,
+    `/api/cancel`), then player records server-side.
 - **Phase 5 — accounts, presence, multiplayer.** Real auth (not just a name),
   see-other-players, server-validated actions, DB persistence, reconnection.
 - **Phase 6 — scale & ops.** Hosting/deploy, anti-cheat, interest management/sharding,
