@@ -7,6 +7,28 @@ Last updated: 2026-06-30
 
 ---
 
+## 🔧 WORKFLOW — git + boot smoke-check (adopt this to stop colliding)
+
+The repo is now under **git** (owner-approved 2026-06-30). Baseline commit exists;
+`master` is "last known green". This is what stops us clobbering each other:
+
+1. **Work in your own git worktree** so live edits don't collide in one tree:
+   `git worktree add ../ge-<lane> -b <lane>/<feature>` → edit there → the shared
+   preview still serves `master`. (If you must edit the shared tree, commit often.)
+2. **Before you call anything done, run the gate:** `node scripts/smoke.mjs`
+   It statically checks every `src/**/*.js` for syntax + **import/export mismatches**
+   — the #1 cause of the black-screen boots (e.g. importing `{ weaponRange }` a lane
+   hasn't exported yet). Exit 0 = safe. Runs in ~1s, no browser needed.
+3. **Only merge to `master` when smoke passes** (and ideally it boots) — keeps
+   `master` deployable, which is what a live host will serve.
+4. **Live host** (planned): deploy `master` on green → one URL for everyone, which
+   also ends the shared 5-preview-server contention. See docs/MULTIPLAYER_ARCHITECTURE.md.
+
+Root cause of the "fighting": 5 agents editing ONE working tree with no VCS. Git +
+worktrees give isolation; the smoke gate + green-`master` rule give integration.
+
+---
+
 ## Lanes (file ownership)
 
 ### 🌍 World-Gen Agent — terrain & placement
@@ -181,9 +203,26 @@ Client-side until Phase 4; each phase keeps the player-freeze + world-continuity
   player offline — verified by test). Saved alongside every player save via
   `session.registerSaver(saveWorldMarket)`. ⚠️ NOTE: player *resting offers* still don't
   persist across reload (pre-existing; belongs in the player save — Phase 3.x follow-up).
-  Remaining Phase-3 ideas: merchant restocks, scheduled/periodic world events (boss
-  windows/seasonal spawns) as pure funcs of `worldClock`, farming/growth timers.
-  World-gen: day/night tint via `worldClock.daylight(now)`/`phase(now)` + ambient.
+
+  **Also landed (2026-06-30) — world-clock-scheduled world events:** `src/systems/worldEvents.js`
+  (NEW, pure; imports only `../engine/worldClock.js`) is a deterministic event calendar —
+  which event runs at instant T is a pure function of the world day/time (Blood Moon,
+  Merchant Caravan, Goblin Festival, Ore Rush, Timber Glut, Wandering Horde; ~40% calm
+  days). Exposes `activeEvent(now)`, `eventForDay(day)`, `nextEvent(now)`, `marketBias(now)`.
+  Each event carries plain `effect` data (`dropBonus`/`xpBonus`/`geMatch`+`geMult`) for
+  OTHER lanes to consume — **the module mutates nothing**. Wired: `main.js` exposes
+  `Game.worldEvents`, logs the live+next event on login, and shows a `#tb-worldevent`
+  topbar chip (tagged `[world-continuity]`); `geActions.advanceMarketOffline(elapsedMs, bias)`
+  now biases offline drift toward the live event's equilibrium (e.g. Ore Rush pulls
+  ore/metal up while it runs). **Open hooks for other lanes:** combat can read
+  `Game.worldEvents.activeEvent().effect.dropBonus`; skilling can read `.xpBonus`;
+  world-gen can theme visuals by `activeEvent()`. Runtime (non-offline) GE integration of
+  events is a follow-up — currently the existing random `driveMarketEvents` handles live
+  play and worldEvents drives the offline/login path + display.
+
+  Remaining Phase-3 ideas: merchant restocks, wire event drop/XP bonuses into combat/
+  skilling, farming/growth timers. World-gen: day/night tint via
+  `worldClock.daylight(now)`/`phase(now)` + ambient, theme by `worldEvents.activeEvent()`.
 - **Phase 4 — authoritative server (the real "always-on" world).** Node + WebSocket
   owns the tick loop and world state 24/7; `main.js` becomes a thin client sending
   intents + rendering snapshots. Swap the local GE `market` singleton for a network
@@ -232,6 +271,72 @@ Client-side until Phase 4; each phase keeps the player-freeze + world-continuity
   Rerouting would risk the legacy cook/smith branches; revisit with id migration.
 
 ## Change log
+- 2026-06-30 — Economy agent: **item ICONS — every item now has a glyph, not
+  initials.** New `src/data/itemIcons.js` exports `itemIcon(idOrItem)` → a glyph,
+  resolved by keyword → subcategory → category rules over the 1063-item DB.
+  Coverage measured: **79% keyword-specific, 16% subcategory, 3% category, 0%
+  fall to the default box** — every item gets a meaningful icon (🧪 potions, 🐟
+  fish, 📖 manuals, ⚔️ weapons, 🪖 helms, 💎 gems, 🪵 logs, 🪙 coins…). Wired into
+  the inventory + equipment squares in `panels.js` (replaced the 2-letter
+  initials; the item's colour stays as the tinted chip behind the glyph), font
+  sizes bumped in `index.html`. No per-item art exists (asset pack has only UI
+  chrome + chars), and 1063 hand-drawn sprites isn't feasible — glyphs are the
+  pragmatic v1. Additive, my lane. Validated: files parse, CSS 208/208, resolver
+  coverage sim, no leftover initials.
+
+  **↳ SEAM for 🌍 World-Gen (ground items):** the resolver is the single icon
+  seam — please render dropped/ground items with the SAME glyph. Import
+  `itemIcon` from `src/data/itemIcons.js` and draw it as a Phaser `Text` at the
+  tile (or over your ground-item marker) instead of a bare dot. Keeps inventory
+  and world visuals consistent, and when real sprite art lands we swap ONLY
+  `itemIcon()` (return a sprite key) and both surfaces upgrade at once — no call-
+  site changes anywhere.
+- 2026-06-30 — Economy agent: **ammo polish — equipped-arrow qty badge + level-based
+  arrow recovery.** (1) Equipped stackable ammo now shows its remaining quantity on
+  the equipment paperdoll (reused the inventory `.item-qty` badge; added
+  `position:relative` to `.doll-slot` in `index.html` so it anchors). (2) Fired
+  arrows now land **recoverable on the ground at the target's tile**, a portion
+  scaling with Ranged level via new pure `ammoRecoveryChance()` in `state.js`
+  (~55% at Lv1 → ~90% at Lv99). New `dropRecoveredAmmo()` in `main.js` merges a
+  volley into a single ground stack per tile; pick them up with the existing
+  ground-item system. Verified live (logged in past `session.js`, unfroze
+  `Game.playerFrozen` which the headless preview sets true): equipped ammo shows
+  a "60" badge on the BA slot, and a "Bronze Arrow x56" pile accumulated at the
+  archer's tile mid-fight. All `main.js` edits tagged `[economy lane]`; `index.html`
+  change is a one-line additive CSS tweak. Headless recovery tests pass (chance
+  curve + stack merge + empirical L1 vs L99 portion).
+- 2026-06-30 — World-gen lane (movement): **run mechanics (OSRS-style).** NEW file
+  `src/engine/run.js` (sim rule + HUD sync): run energy 0–100%, drains while running
+  (weight-scaled, OSRS-ish `min(weight,64)/100 + 0.60` %/tick), regenerates 0.45%/
+  tick while walking/idle, auto-reverts to walk at 0%. No Agility skill here, so
+  regen is a flat tunable constant; weight is a heuristic (equipped gear heavy,
+  non-stackable inv items light) — **swap for a sum of real `item.weight` when the
+  economy lane adds that field.** `main.js`: player now moves **2 tiles/tick running
+  vs 1 walking** (in `gameTick`, right where the single `stepAlongPath(p)` was), and
+  the render interp doubles the player's approach speed on a run tick (`p._ranTick`).
+  Toggle via a HUD **run button** (`#run-btn` in `index.html`, below the minimap) or
+  the **R** key. Verified in-preview (deterministic tick-pump, since the tab-hidden
+  `playerFrozen` rule stops movement in a headless preview): walk=1/run=2 tiles/tick,
+  drain 0.635%/tick w/ starter gear, regen 0.45%/tick, exhaustion→auto-walk. Additive;
+  only added an import + the run block to `main.js`. Server stopped after verifying.
+- 2026-06-30 — Character-render agent: **occlusion seam prepped + per-enemy variety.**
+  (1) **Occlusion seam ready for World-Gen:** `drawEntities` split into
+  `collectCharacters(time)` → `[{ent,y}]` (y-sorted), `drawCharacter(g,ent,time)`
+  (self-contained), `drawProjectiles(g,time)`. To get characters passing *behind*
+  trees, merge my character items with your object items by feet-y in one pass —
+  full recipe in the banner comment above `collectCharacters` in `main.js`.
+  Behaviour unchanged until you wire it. (2) **Creature variation:** enemies get a
+  stable tint+size variant (low lvl→6 looks, mid→4, high→3) — verified in
+  `avatar_preview.html`. All render-path only, `[character-render lane]` tagged.
+  ⚠️ **HEADS-UP for World-Gen + Economy — the game currently boots BLANK.**
+  `create()` throws *before* the final `window.__GE` assignment, so a canvas
+  exists but no game state. My code only runs per-frame in `update()` (after
+  create), so this isn't the render lane. The throw is in the new boot chain —
+  `applyPendingSave()` / `restoreWorldMarket()` / `mountWorldClockHud()` /
+  `ensureRun()` (save/GE/world-clock/run systems). Suggest wrapping each new boot
+  step in try/catch (or guarding missing DOM/localStorage) so one failure can't
+  blank the whole game. I verified my work in the standalone preview since the
+  full game wouldn't boot; happy to re-verify live once the boot chain is stable.
 - 2026-06-30 — Economy agent: **NEW FEATURE — Goblin Treasury dragon-heist cycle
   (owner-designed). Economy core built; world + render seams open for the other
   lanes.** The GE 2% tax already pools into `geTax.balance` (the Treasury). New

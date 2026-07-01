@@ -83,6 +83,12 @@ export function initState() {
 export function grantXp(skillName, amount) {
   const sk = (skillName === 'Hitpoints') ? Game.hitpoints : Game.skills[skillName];
   if (!sk) return;
+  // [world-continuity] A live world event (e.g. 🎉 Goblin Festival) can boost XP
+  // gain. Reads the runtime-exposed calendar defensively; no-op when calm or
+  // before the world clock is wired.
+  const ev = Game.worldEvents && Game.worldEvents.activeEvent && Game.worldEvents.activeEvent();
+  const xpMult = ev && ev.effect && ev.effect.xpBonus;
+  if (xpMult && xpMult > 1 && amount > 0) amount = Math.round(amount * xpMult);
   const before = sk.level;
   sk.xp += amount;
   sk.level = levelForXp(sk.xp);
@@ -130,9 +136,31 @@ export function addItem(id, qty = 1) {
   return true;
 }
 
+// Ground items despawn after this many ticks. At 600ms/tick that's ~120s.
+export const GROUND_DESPAWN_TICKS = 200;
+
 // Drop an item stack onto the ground at a tile.
-export function spawnGroundItem(id, qty, x, y, tick, despawn = 300) {
+export function spawnGroundItem(id, qty, x, y, tick, despawn = GROUND_DESPAWN_TICKS) {
   Game.groundItems.push({ id, qty, x, y, despawnAt: tick + despawn });
+}
+
+// Pick up ONE item stack from a tile (the most-recently-dropped that fits, or a
+// specific id if given). Returns true if something was taken. This is the
+// "one item at a time" pickup — the player repeats to grab more, or right-clicks
+// to target a specific item on a crowded tile.
+export function pickupOneAt(x, y, id = null) {
+  // Search newest-first so the top of the pile comes up first.
+  for (let i = Game.groundItems.length - 1; i >= 0; i--) {
+    const g = Game.groundItems[i];
+    if (g.x !== x || g.y !== y) continue;
+    if (id != null && g.id !== id) continue;
+    const def = ITEMS[g.id] || { name: g.id };
+    if (!addItem(g.id, g.qty)) return false; // inventory full (addItem logs it)
+    Game.groundItems.splice(i, 1);
+    Game.log(`You pick up ${g.qty > 1 ? g.qty + ' ' : ''}${def.name}.`);
+    return true;
+  }
+  return false;
 }
 
 // Pick up the ground stacks on a tile into the inventory. Items that don't fit

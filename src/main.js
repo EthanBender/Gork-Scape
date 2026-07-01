@@ -7,6 +7,7 @@ import { Ticker, TICK_MS } from './engine/tick.js';
 import { initSession, notifyGameReady, registerSaver } from './engine/session.js';
 import { applySave } from './engine/save.js';
 import * as WorldClock from './engine/worldClock.js';
+import * as WorldEvents from './systems/worldEvents.js';
 import {
   generateWorld, isWalkable, findPath, regionAt, objectsInView,
   TILE_SIZE, WORLD_W, WORLD_H, TERRAIN_DEFS, T,
@@ -20,7 +21,8 @@ const SHOW_RESOURCE_MARKERS = true;  // trees/ore/fishing specks from real data
 import { Player, NPC } from './world/entities.js';
 import {
   Game, initState, addItem, grantXp, countItem, removeOneById, removeAt,
-  playerProfile, totalBonuses, playerCombatLevel, spawnGroundItem, pickupGroundAt,
+  playerProfile, totalBonuses, playerCombatLevel, spawnGroundItem, pickupGroundAt, pickupOneAt,
+  GROUND_DESPAWN_TICKS,
   playerAttackRange, needsAmmo, hasAmmoForRanged, consumeAmmo, ammoRecoveryChance,
   drainPrayer, restorePrayer, isProtecting,
 } from './engine/state.js';
@@ -231,12 +233,14 @@ function create() {
   ticker.onTick(gameTick);
   Game.ticker = ticker;
 
-  // [world-continuity] The world clock is a pure function of wall-clock time, so
-  // day/night keeps turning whether or not anyone is online. Expose it for any
-  // lane (world-gen tinting, panels) and mirror it into a topbar readout.
+  // [world-continuity] The world clock + event calendar are pure functions of
+  // wall-clock time, so day/night and world events keep turning whether or not
+  // anyone is online. Expose them for any lane (world-gen tinting, combat drop/xp
+  // bonuses, panels) and mirror the clock + live event into topbar readouts.
   Game.worldClock = WorldClock;
+  Game.worldEvents = WorldEvents;
   mountWorldClockHud();
-  ticker.onTick((_c, isLast) => { if (isLast) updateWorldClockHud(); });
+  ticker.onTick((_c, isLast) => { if (isLast) { updateWorldClockHud(); updateWorldEventHud(); } });
 
   // Overlay the signed-in character's saved state (skills, inventory, position,
   // clock) onto the freshly-built world, then advance the sim clock by the real
@@ -246,6 +250,9 @@ function create() {
   // [economy lane] Restore the shared Grand Exchange world state and fast-forward
   // it over the real time everyone was away — the market kept trading offline.
   restoreWorldMarket();
+  // [world-continuity] Tell the returning player what's happening in the world
+  // right now and what's coming — events run on the world calendar regardless.
+  announceWorldEvents();
 
   ticker.start();
 
@@ -335,6 +342,16 @@ function restoreWorldMarket() {
   }
 }
 
+// [world-continuity] Login summary of the world calendar: the live event (if any)
+// and the next one coming up. Sets _lastEventId so the HUD updater doesn't re-log
+// the same event on its first tick.
+function announceWorldEvents() {
+  const ev = WorldEvents.activeEvent();
+  if (ev) { Game.log(`${ev.name} — ${ev.blurb}`); _lastEventId = ev.id; }
+  const nx = WorldEvents.nextEvent();
+  if (nx) Game.log(`Coming up: ${nx.event.name} in ${WorldEvents.humanGap(nx.inMs)}.`);
+}
+
 // [world-continuity] topbar readout of the world clock. Injected once; kept in
 // sync by a per-tick handler (updates on the last tick of a burst only).
 function mountWorldClockHud() {
@@ -351,6 +368,33 @@ function mountWorldClockHud() {
 function updateWorldClockHud() {
   const el = document.getElementById('tb-worldtime');
   if (el) el.textContent = WorldClock.label();
+}
+
+// [world-continuity] topbar readout of the live world event (hidden when calm).
+// The event that is showing is a pure function of the world clock, so it appears
+// on schedule whether or not the player was here when it began.
+let _lastEventId = null;
+function updateWorldEventHud() {
+  let el = document.getElementById('tb-worldevent');
+  if (!el) {
+    const bar = document.getElementById('topbar');
+    if (!bar) return;
+    el = document.createElement('span');
+    el.className = 'tb';
+    el.id = 'tb-worldevent';
+    el.style.color = 'var(--gold, #e8c65a)';
+    bar.insertBefore(el, document.getElementById('logout-btn'));
+  }
+  const ev = WorldEvents.activeEvent();
+  el.textContent = ev ? ev.name : '';
+  el.style.display = ev ? '' : 'none';
+  // Announce transitions in the chat log as they happen during play.
+  const id = ev ? ev.id : null;
+  if (id !== _lastEventId) {
+    if (ev) Game.log(`${ev.name} — ${ev.blurb}`);
+    else if (_lastEventId) Game.log('The lands fall quiet again.');
+    _lastEventId = id;
+  }
 }
 
 // Restore the pending save (if any) onto live state and fast-forward the sim
@@ -522,8 +566,8 @@ function rightClickMenu(pointer, tx, ty, npc, obj, ground, fire) {
     opts.push(['Examine ' + obj.label, () => Game.log(`${obj.label}.`)]);
   }
   for (const g of (ground || [])) {
-    const def = ITEMS[g.id];
-    opts.push([`Take ${def.name}${g.qty > 1 ? ' x' + g.qty : ''}`, () => startPickup(tx, ty)]);
+    const def = ITEMS[g.id] || { name: g.id };
+    opts.push([`Take ${def.name}${g.qty > 1 ? ' x' + g.qty : ''}`, () => startPickup(tx, ty, g.id)]);
   }
   opts.push(['Walk here', () => walkTo(tx, ty)]);
   showContextMenu(pointer.event.clientX, pointer.event.clientY, opts);
@@ -558,10 +602,11 @@ function startAttack(npc) {
   p.path = findPath(Game.world, p.tileX, p.tileY, npc.tileX, npc.tileY, true);
 }
 
-function startPickup(tx, ty) {
+function startPickup(tx, ty, id = null) {
   const p = Game.player;
   clearTargets(p);
-  p.pickupTarget = { x: tx, y: ty };
+  // id set -> grab that specific item on arrival; else grab one (top of pile).
+  p.pickupTarget = { x: tx, y: ty, id };
   p.path = findPath(Game.world, p.tileX, p.tileY, tx, ty, false);
 }
 
@@ -679,7 +724,8 @@ function gameTick(count, isLast = true) {
   p._ranTick = ran; // render interpolates 2× faster on a run tick (see update())
 
   if (p.pickupTarget && p.tileX === p.pickupTarget.x && p.tileY === p.pickupTarget.y) {
-    pickupGroundAt(p.tileX, p.tileY);
+    // One item at a time: grab the targeted item (or the top of the pile).
+    pickupOneAt(p.tileX, p.tileY, p.pickupTarget.id);
     p.pickupTarget = null;
   }
 
@@ -908,11 +954,33 @@ function dropLoot(npc, count) {
   // hardcoded loot table. Item ids are all resolvable (registry hydration).
   const drops = npc.monsterId ? rollMonsterDrops(npc.monsterId)
     : (npc.lootTable ? rollLoot(npc.lootTable) : []);
+  // [world-continuity] A live world event (🌑 Blood Moon / 👹 Wandering Horde)
+  // makes monsters drop more — scale stack sizes by the event's dropBonus.
+  const ev = Game.worldEvents && Game.worldEvents.activeEvent && Game.worldEvents.activeEvent();
+  const dropBonus = ev && ev.effect && ev.effect.dropBonus > 1 ? ev.effect.dropBonus : 1;
   for (const d of drops) {
-    spawnGroundItem(d.id, d.qty, npc.tileX, npc.tileY, count);
+    const qty = dropBonus > 1 ? scaleQty(d.qty, dropBonus) : d.qty;
+    spawnGroundItem(d.id, qty, npc.tileX, npc.tileY, count);
     const def = ITEMS[d.id] || { name: d.id };
-    Game.log(`The ${npc.name} drops ${d.qty > 1 ? d.qty + ' ' : ''}${def.name}.`);
+    Game.log(`The ${npc.name} drops ${qty > 1 ? qty + ' ' : ''}${def.name}.`);
   }
+}
+
+// Scale a drop quantity by a >1 multiplier with probabilistic rounding, so a
+// 1.25× bonus on a single item still yields the occasional extra (25% of kills)
+// rather than always rounding away.
+function scaleQty(qty, mult) {
+  const scaled = qty * mult;
+  const base = Math.floor(scaled);
+  return base + (Math.random() < scaled - base ? 1 : 0);
+}
+
+// Drop one recovered arrow at (x,y), merging into an existing stack on that tile
+// so a volley piles up as a single pickup rather than many one-arrow stacks.
+function dropRecoveredAmmo(id, x, y, count) {
+  const existing = Game.groundItems.find((g) => g.id === id && g.x === x && g.y === y);
+  if (existing) { existing.qty += 1; existing.despawnAt = count + GROUND_DESPAWN_TICKS; }
+  else spawnGroundItem(id, 1, x, y, count);
 }
 
 function npcAttack(n, count) {
