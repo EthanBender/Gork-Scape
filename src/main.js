@@ -150,12 +150,13 @@ function buildWorld() {
     levels: elderLevels, combatLevel: null, bonuses: emptyBonuses(),
   }));
 
-  // [economy lane] Banker — gates the Bank panel. Placed near spawn provisionally
-  // (points north toward the Bank building world-gen placed at ~493,431); world-gen:
-  // relocate into the Bank building and keep id 'banker' so the proximity gate finds it.
+  // [economy lane] Banker — gates the Bank panel. Now stationed AT the Bank counter
+  // inside the keep's west-wing vault (counter at 493,431; reachable via the N
+  // passage + the wing door world-gen cut at 497,427). Keep id 'banker' so the
+  // proximity gate finds it.
   Game.npcs.push(new NPC({
     id: 'banker', name: 'Banker', type: 'elder',
-    tileX: world.spawn.x, tileY: world.spawn.y - 2,
+    tileX: 493, tileY: 432,
     color: 0xc9a24a, aggressive: false,
     dialog: 'Welcome to the Bank of Gorkholm. Deposit and withdraw your goods here.',
     levels: elderLevels, combatLevel: null, bonuses: emptyBonuses(),

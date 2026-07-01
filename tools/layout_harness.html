@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Layout Harness — Goblin Empire UI shell</title>
+</head>
+<body>
+<div id="mount">loading real CSS…</div>
+<script>
+(async function () {
+  // Pull the REAL game <style> from index.html so this harness matches exactly.
+  const html = await (await fetch('/index.html?v=' + Date.now())).text();
+  const css = (html.match(/<style>([\s\S]*?)<\/style>/) || [])[1] || '';
+  const st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
+
+  const SKILLS = ['Woodcutting', 'Fishing', 'Mining', 'Farming', 'Cooking', 'Firemaking',
+    'Smithing', 'Crafting', 'Alchemy', 'Tinkering', 'Hitpoints', 'Attack', 'Strength',
+    'Defence', 'Ranged', 'Prayer'];
+  const cells = SKILLS.map((n, i) =>
+    `<div class="skill-cell"><span class="skill-icon" style="background:hsl(${i * 22},40%,45%)"></span>`
+    + `<span class="skill-name">${n}</span><span class="lvl">${(i % 20) + 1}</span>`
+    + `<div class="xpbar"><div class="xpfill" style="width:${(i * 13) % 100}%"></div></div></div>`).join('');
+  const tabs = ['📊 Skills', '📜 Quests', '🎒 Inventory', '🛡️ Equipment', '⚔️ Combat', '⚗️ Alchemy']
+    .map((t, i) => { const [ic, lb] = t.split(' ');
+      return `<button class="tab-btn${i === 0 ? ' active' : ''}"><span class="tab-icon">${ic}</span><span class="tab-label">${lb}</span></button>`; }).join('');
+  const chat = [['Zog the Bold', 'selling coal cheap at the GE'], ['Kex', 'wtb willow logs in bulk'],
+    ['Lady Vex', 'nice'], ['MudFoot', 'where do i find iron ore?'], ['Grok99', 'gz on 99']]
+    .map(([n, t]) => `<div class="chat-line chat-msg"><span class="chat-name" style="color:#8fbcff">${n}:</span> <span class="chat-text">${t}</span></div>`).join('');
+
+  document.getElementById('mount').outerHTML = `
+  <div id="app">
+    <div id="topbar">
+      <span id="tb-name">Gork</span>
+      <span class="tb"><b id="tb-combat">Combat Lv 3</b></span>
+      <span class="tb">📍 <span id="tb-location">Goblin Settlement</span></span>
+      <span class="tb tb-gp"><span class="gp-coin">●</span> <b id="tb-gp">25</b> gp</span>
+      <span class="tb" id="tb-tick">Tick 424</span>
+      <span class="tb" id="tb-fps">59 fps · 412 npc</span>
+    </div>
+    <div id="main">
+      <div id="game-panel">
+        <div id="game-canvas" style="background:linear-gradient(160deg,#33501f,#22331a)"></div>
+        <button id="map-btn">🗺</button>
+        <button id="run-btn"><span id="run-ico">🚶</span><span id="run-pct">100%</span><span id="run-bar"><span id="run-fill"></span></span></button>
+      </div>
+      <div id="side-panel">
+        <div id="tabbar">${tabs}</div>
+        <div id="panel-content"><div class="skills-grid">${cells}</div></div>
+      </div>
+    </div>
+    <div id="chatlog">${chat}</div>
+    <div id="chat-input-bar"><input id="chat-input" type="text" placeholder="Press Enter to chat…"></div>
+  </div>`;
+})();
+</script>
+</body>
+</html>
