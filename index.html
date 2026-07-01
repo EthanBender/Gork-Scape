@@ -499,11 +499,18 @@
     transition: transform .08s, color .1s, background .1s; }
   #map-btn:hover { color: #1a1710; background: linear-gradient(180deg, #f2d774, var(--gold-dk)); }
   #map-btn:active { transform: translateY(1px); }
-  #cam-hint { position: absolute; top: 240px; right: 12px; width: 168px; z-index: 6;
-    box-sizing: border-box; padding: 5px 7px; background: rgba(20,18,14,.62);
-    border: 1px solid var(--border); border-radius: 4px; color: #b9b096;
-    font-size: 10px; line-height: 1.5; pointer-events: none; }
-  #cam-hint b { color: var(--gold); font-weight: 700; }
+  #cam-hint { position: absolute; top: 190px; right: 112px; z-index: 6;
+    width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; font-size: 18px; font-weight: 700; color: var(--muted); cursor: help;
+    background: linear-gradient(180deg, var(--panel-hi), var(--panel2));
+    border: 1px solid var(--border); box-shadow: var(--raise), 0 2px 6px rgba(0,0,0,.4); }
+  #cam-hint:hover { color: var(--gold); }
+  #cam-hint .ch-pop { position: absolute; top: 48px; right: 0; width: 184px; padding: 7px 9px;
+    background: rgba(20,18,14,.94); border: 1px solid var(--border); border-radius: 5px;
+    color: #b9b096; font-size: 10px; font-weight: 400; line-height: 1.5; text-align: left;
+    box-shadow: 0 5px 14px rgba(0,0,0,.5); display: none; z-index: 10; }
+  #cam-hint:hover .ch-pop { display: block; }
+  #cam-hint .ch-pop b { color: var(--gold); font-weight: 700; }
   /* Run toggle + energy bar */
   #run-btn { position: absolute; top: 190px; right: 62px; z-index: 6; --run-pct: 100; --ring: var(--gold);
     width: 42px; height: 42px; padding: 0; border: none; border-radius: 50%;
@@ -618,9 +625,12 @@
     <div id="game-panel">
       <div id="game-canvas"></div>
       <button id="map-btn" title="World map (M)">🗺</button>
-      <div id="cam-hint">
-        🖱 <b>click minimap</b> to travel<br>
-        <b>scroll</b> / <b>↑ ↓</b> zoom · <b>← →</b> rotate · <b>0</b> reset
+      <div id="cam-hint" title="Controls">
+        <span class="ch-ico">?</span>
+        <div class="ch-pop">
+          🖱 <b>click minimap</b> to travel<br>
+          <b>scroll</b> / <b>↑ ↓</b> zoom · <b>← →</b> rotate · <b>0</b> reset
+        </div>
       </div>
       <button id="run-btn" title="Toggle run / walk (R)">
         <span id="run-ico">🚶</span><span id="run-pct">100%</span>

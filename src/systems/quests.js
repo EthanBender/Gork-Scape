@@ -99,6 +99,7 @@ export function initQuests() {
   for (const q of QUESTS) {
     if (!Game.questState[q.id]) Game.questState[q.id] = { status: 'locked', step: 0, prog: 0 };
   }
+  recomputeUnlocks(); // re-derive feature unlocks from completed quests (post-load)
   refreshAvailability();
   evaluate(true);
 }
