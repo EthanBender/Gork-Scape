@@ -162,7 +162,7 @@ recipe('blackpowder',{ output: 'blackpowder', outQty: 3, level: 12, xp: 24, unlo
 // Kit tools (unlock gathering) + powered out-tools (boost other skills).
 recipe('rusty_wrench',    { output: 'rusty_wrench',    outQty: 1, level: 1,  xp: 15, inputs: [{ any: 'bar', qty: 1 }, { id: 'scrap_metal', qty: 2 }] });
 recipe('gum_tap',         { output: 'gum_tap',         outQty: 1, level: 6,  xp: 20, inputs: [{ any: 'bar', qty: 1 }, { any: 'log', qty: 1 }] });
-recipe('chem_kit',        { output: 'chem_kit',        outQty: 1, level: 18, xp: 45, inputs: [{ id: 'metal_casing', qty: 2 }, { id: 'sulfur', qty: 2 }] });
+recipe('chem_kit',        { output: 'chem_kit',        outQty: 1, level: 18, xp: 45, inputs: [{ id: 'metal_casing', qty: 2 }, { id: 'brass_cog', qty: 1 }, { id: 'machine_oil', qty: 1 }] });
 recipe('heat_tongs',      { output: 'heat_tongs',      outQty: 1, level: 30, xp: 55, inputs: [{ id: 'steel_bar', qty: 1 }, { id: 'leather_grip', qty: 1 }] });
 recipe('prospector_lens', { output: 'prospector_lens', outQty: 1, level: 35, xp: 130, unlock: 'tinkering_tools', inputs: [{ id: 'sparkstone', qty: 1 }, { id: 'brass_cog', qty: 2 }, { any: 'bar', qty: 2 }] });
 recipe('clockwork_hatchet', { output: 'clockwork_hatchet', outQty: 1, level: 40, xp: 160, unlock: 'tinkering_tools', inputs: [{ id: 'steam_piston', qty: 1 }, { id: 'coil_spring', qty: 2 }, { any: 'log', qty: 3 }] });

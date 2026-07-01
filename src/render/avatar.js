@@ -184,6 +184,18 @@ function weaponAngle(style, strike) {
   }
 }
 
+// Resting hold angle by weapon kind (local radians; +up, 0 = forward). At idle/walk
+// a weapon should sit naturally, not jut straight out along the arm: poles stand
+// UPRIGHT (tip up); blades/hafts hang LOWERED at the side. Ranged/fist → null
+// (bows are drawn separately; fists have nothing to orient).
+function weaponRestAngle(kind) {
+  switch (kind) {
+    case 'spear': case 'staff': return 1.45;   // upright pole
+    case 'bow': case 'cbow': case 'fist': return null;
+    default: return -1.15;                      // sword/dagger/axe/pick/mace/club: lowered
+  }
+}
+
 // arm/tool angle while skilling (chop & mine reuse the overhead swing).
 function skillAngle(type, strike, t) {
   if (type === 'fish') return -0.35 + Math.sin(t / 700) * 0.06;  // rod held forward-down
@@ -492,11 +504,12 @@ export function drawAvatar(g, cx, cy, state = {}) {
   const swing = state.anim === 'attack' ? weaponAngle(wStyle, p.strike)
     : skilling ? skillAngle(state.skillType, p.strike, state.t || 0)
     : (p.armSwing || 0) * 0.4 - 0.2;
-  // Pole weapons (spear/halberd) look wrong jutting straight out at rest — carry
-  // a held spear UPRIGHT (near-vertical, tip up) while the arm keeps `swing`.
-  // Mid-attack/skilling keep the real swing so the stab still reads.
-  const spearUpright = state.anim !== 'attack' && !skilling && drawWeap && drawWeap.kind === 'spear';
-  const weapAng = spearUpright ? 1.45 : swing;
+  // At rest (idle/walk) a weapon should sit naturally instead of jutting straight
+  // out along the arm: poles upright, blades/hafts lowered. The arm keeps `swing`;
+  // only the weapon draw uses `weapAng`. Mid-attack/skilling keep the real swing.
+  const held = state.anim !== 'attack' && !skilling && drawWeap;
+  const rest = held ? weaponRestAngle(drawWeap.kind) : null;
+  const weapAng = rest != null ? rest : swing;
 
   // ---- boss aura (all body types): a pulsing glow behind the rig ----------
   if (state.boss) {

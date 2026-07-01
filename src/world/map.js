@@ -780,7 +780,10 @@ export function generateWorld(seed = DEFAULT_SEED) {
     const G = 8, gw = Math.ceil(WORLD_W / G), gh = Math.ceil(WORLD_H / G);
     const pres = new Uint8Array(gw * gh);
     const markP = (x, y) => { pres[((y / G) | 0) * gw + ((x / G) | 0)] = 1; };
-    for (const o of objects) if (o.type === 'resource' || o.type === 'structure') markP(o.x, o.y);
+    // Only real ENCOUNTERS count as "already covered" — mobs and POI structures.
+    // Resource nodes (trees/ore/fish) don't; a forest is still an empty walk for
+    // someone after something to explore or fight, so we fill through it too.
+    for (const o of objects) if (o.type === 'structure') markP(o.x, o.y);
     for (const s of enemySpawns) markP(s.x, s.y);
     const nearContent = (x, y) => { const gx = (x / G) | 0, gy = (y / G) | 0; for (let a = -1; a <= 1; a++) for (let b = -1; b <= 1; b++) { const nx = gx + a, ny = gy + b; if (nx >= 0 && ny >= 0 && nx < gw && ny < gh && pres[ny * gw + nx]) return true; } return false; };
     const tierOf = {}; for (const a of REGION_ANCHORS) { const m = parseInt(String(a.level), 10) || 1; tierOf[a.name] = m >= 45 ? 'high' : m >= 20 ? 'mid' : 'low'; }

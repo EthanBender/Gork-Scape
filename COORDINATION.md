@@ -307,6 +307,24 @@ Client-side until Phase 4; each phase keeps the player-freeze + world-continuity
     **Still local:** resting limit orders (players trade vs shared MM, not yet each other) +
     player inventory/coins. Next: distributed resting orders (`/api/offers`,`/api/collect`,
     `/api/cancel`), then player records server-side.
+  - **STEP 3b (distributed resting orders) LANDED (2026-07-01) — real player-to-player
+    matching.** Players' unfilled limit orders now REST in the shared server book and cross
+    each other. Server: `POST /api/order` no longer cancels the remainder — it registers it
+    (a `placedOrders`/`traderOrders` registry retains the order OBJECT so owed stays
+    collectable even after the engine splices a fully-filled order from the book); new
+    `GET /api/offers?trader=`, `POST /api/collect`, `POST /api/cancel` (all ownership-guarded).
+    Client: `serverLink.getOffers/collectOrder/cancelOrder`; `geActions` keeps a `serverOffers`
+    cache (polled every 4s + after each op) so the sync `playerOffers()` renders server orders;
+    `buyOnline`/`sellOnline` now rest the remainder (buy refunds only immediate savings — the
+    resting escrow is held; sell keeps unsold resting); `collectOnline`/`cancelOnline` settle
+    owed + refund. Escrow accounting is exact because **trades execute at the resting order's
+    price** (resting buy fills at its own limit = escrow, so collect = items only; cancel
+    refunds `remaining*limit`). Verified in-browser: Alice rested a sell @18 undercutting the
+    MM, "Bob" bought and filled it (`counterTrader:"Alice"`), Alice collected 177 (180 −3 tax),
+    offer cleared → net −10 bars/+177 coins; a resting buy cancelled refunded its exact 75-coin
+    escrow (round-trip net 0). No leaks, no console errors. All `geActions` edits tagged `[Phase 4]`,
+    offline path untouched. ⚠️ Resting orders are IN-MEMORY on the server (lost on restart;
+    guides persist) — fixed when escrow/player records move server-side (next).
 - **Phase 5 — accounts, presence, multiplayer.** Real auth (not just a name),
   see-other-players, server-validated actions, DB persistence, reconnection.
 - **Phase 6 — scale & ops.** Hosting/deploy, anti-cheat, interest management/sharding,

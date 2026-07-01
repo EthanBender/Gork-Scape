@@ -34,7 +34,7 @@ import { styleOfWeapon, PROTECT_FACTOR } from './engine/prayer.js';
 // generated item catalogue into ITEMS and exposes the gadget combat effects.
 import { isTinkerWeapon, tinkerEffect } from './systems/tinkering.js';
 import { initTinkerHud, openWorkbench } from './systems/tinkeringUI.js';
-import { gather as gatherNode } from './systems/gathering.js'; // [economy lane] data-driven world-node gathering
+import { gather as gatherNode, rollGatherByproduct } from './systems/gathering.js'; // [economy lane] data-driven world-node gathering + byproducts
 import { rollSkillSuccess } from './engine/skills.js';
 import { emptyBonuses, ITEMS } from './items/equipment.js';
 import { rollLoot } from './world/loot.js';
@@ -45,7 +45,7 @@ import { initPanels, showContextMenu, openExchange, openShop, openBank, openStat
 import { rollMonsterDrops } from './systems/drops.js';
 import { monsterIdForSpawn } from './data/worldContract.js';
 import { GameData } from './data/gameData.js'; // [economy lane] crop-patch node lookups for farming
-import { shopkeeperSpawns, loadAndRestockShops, saveWorldShops, restockShops } from './systems/shops.js'; // [economy lane] shopkeeper NPCs + world-time restock
+import { shopkeeperSpawns, loadAndRestockShops, saveWorldShops, restockShops, SHOP_POSTS } from './systems/shops.js'; // [economy lane] shopkeeper NPCs + world-time restock ([char-render] SHOP_POSTS for minimap POIs)
 import * as Farming from './systems/farming.js'; // [economy lane] crops grow on world time (offline too)
 import { connectServerLink } from './net/serverLink.js'; // [economy lane] shared-world GE price feed (Phase 4)
 // [economy lane] — Firemaking: temporary ground fires (lit from inventory in
@@ -1311,6 +1311,7 @@ function performSkill(o, count) {
       if (!addItem(o.drop)) { p.interactTarget = null; return; }
       grantXp(o.skill, o.xp);
       Game.log(`You get ${ITEMS[o.drop].name}. (+${o.xp} ${o.skill} xp)`);
+      rollGatherByproduct(o.skill); // [economy lane] Tinkering cross-pollination byproduct
       if (o.deplete && Math.random() < o.deplete) {
         o.depleted = true; o.respawnAt = count + o.respawn; p.interactTarget = null;
         Game.log(`The ${o.label.toLowerCase()} is exhausted for now.`);
