@@ -1,0 +1,767 @@
+{
+  "design_rule": "Every skill must feed another skill, consume another skill's output, improve combat, unlock travel, or support quests.",
+  "skills": {
+    "woodcutting": {
+      "purpose": [
+        "Provides logs for cooking fires, bows, arrows, tool handles, planks, bridges, town upgrades, shrine fuel, and shortcuts.",
+        "Feeds crafting, smithing, cooking, ranged, quests, and world traversal."
+      ],
+      "level_unlocks": [
+        {
+          "level": 1,
+          "unlock": "normal_tree",
+          "outputs": [
+            "normal_logs"
+          ],
+          "uses": [
+            "fires",
+            "arrow_shafts",
+            "basic_handles"
+          ]
+        },
+        {
+          "level": 5,
+          "unlock": "dead_branches",
+          "outputs": [
+            "kindling"
+          ],
+          "uses": [
+            "quick_fires",
+            "weak_arrows"
+          ]
+        },
+        {
+          "level": 10,
+          "unlock": "oak_tree",
+          "outputs": [
+            "oak_logs"
+          ],
+          "uses": [
+            "oak_bows",
+            "planks",
+            "stronger_handles"
+          ]
+        },
+        {
+          "level": 15,
+          "unlock": "crude_planks",
+          "outputs": [
+            "crude_planks"
+          ],
+          "uses": [
+            "bridges",
+            "fences",
+            "town_repairs"
+          ]
+        },
+        {
+          "level": 20,
+          "unlock": "willow_tree",
+          "outputs": [
+            "willow_logs"
+          ],
+          "uses": [
+            "willow_bows",
+            "fishing_rods",
+            "fast_firemaking"
+          ]
+        },
+        {
+          "level": 25,
+          "unlock": "deadwood_tree",
+          "outputs": [
+            "deadwood_logs"
+          ],
+          "uses": [
+            "swamp_charms",
+            "shrine_fuel",
+            "poison_arrows"
+          ]
+        },
+        {
+          "level": 30,
+          "unlock": "dense_oak",
+          "outputs": [
+            "dense_oak_logs"
+          ],
+          "uses": [
+            "strong_planks",
+            "shields"
+          ]
+        },
+        {
+          "level": 40,
+          "unlock": "fungal_tree",
+          "outputs": [
+            "fungal_logs"
+          ],
+          "uses": [
+            "mushroom_crafting",
+            "charms"
+          ]
+        },
+        {
+          "level": 50,
+          "unlock": "blackroot_tree",
+          "outputs": [
+            "blackroot_logs"
+          ],
+          "uses": [
+            "poison_bows",
+            "dark_crafting"
+          ]
+        },
+        {
+          "level": 60,
+          "unlock": "ironbark_tree",
+          "outputs": [
+            "ironbark_logs"
+          ],
+          "uses": [
+            "strong_shields",
+            "high_tier_handles"
+          ]
+        },
+        {
+          "level": 70,
+          "unlock": "elder_rotwood",
+          "outputs": [
+            "elder_rotwood_logs"
+          ],
+          "uses": [
+            "boss_keys",
+            "rare_bows",
+            "clan_banners"
+          ]
+        }
+      ]
+    },
+    "fishing": {
+      "purpose": [
+        "Provides raw fish for cooking, combat food, travel supplies, quest hand-ins, and special region-prep meals.",
+        "Feeds cooking, combat, exploration, economy, and quests."
+      ],
+      "level_unlocks": [
+        {
+          "level": 1,
+          "unlock": "shrimp",
+          "tool": "small_net",
+          "output": "raw_shrimp",
+          "cooked": "cooked_shrimp"
+        },
+        {
+          "level": 5,
+          "unlock": "mudfish",
+          "tool": "small_net",
+          "output": "raw_mudfish",
+          "cooked": "cooked_mudfish"
+        },
+        {
+          "level": 10,
+          "unlock": "trout",
+          "tool": "fishing_rod_and_bait",
+          "output": "raw_trout",
+          "cooked": "cooked_trout"
+        },
+        {
+          "level": 15,
+          "unlock": "river_eel",
+          "tool": "fishing_rod_and_bait",
+          "output": "raw_river_eel",
+          "cooked": "eel_skewer"
+        },
+        {
+          "level": 20,
+          "unlock": "pike",
+          "tool": "harpoon",
+          "output": "raw_pike",
+          "cooked": "grilled_pike"
+        },
+        {
+          "level": 30,
+          "unlock": "bog_eel",
+          "tool": "fishing_cage",
+          "output": "raw_bog_eel",
+          "cooked": "bog_eel_stew"
+        },
+        {
+          "level": 40,
+          "unlock": "lake_carp",
+          "tool": "net",
+          "output": "raw_carp",
+          "cooked": "carp_fillet"
+        },
+        {
+          "level": 50,
+          "unlock": "cavefish",
+          "tool": "cave_rod",
+          "output": "raw_cavefish",
+          "cooked": "cavefish_roast"
+        },
+        {
+          "level": 60,
+          "unlock": "armoured_catfish",
+          "tool": "harpoon",
+          "output": "raw_armoured_catfish",
+          "cooked": "catfish_steak"
+        },
+        {
+          "level": 70,
+          "unlock": "grubshark",
+          "tool": "heavy_harpoon",
+          "output": "raw_grubshark",
+          "cooked": "grubshark_feast"
+        }
+      ]
+    },
+    "mining": {
+      "purpose": [
+        "Provides ores and stones for smithing, tools, weapons, armour, arrowheads, nails, jewelry, station upgrades, and quests.",
+        "Feeds smithing, crafting, ranged, exploration, economy, and town repair loops."
+      ],
+      "level_unlocks": [
+        {
+          "level": 1,
+          "unlock": "copper_ore",
+          "uses": [
+            "bronze_bars"
+          ]
+        },
+        {
+          "level": 1,
+          "unlock": "tin_ore",
+          "uses": [
+            "bronze_bars"
+          ]
+        },
+        {
+          "level": 10,
+          "unlock": "clay",
+          "uses": [
+            "bowls",
+            "molds",
+            "quest_repairs"
+          ]
+        },
+        {
+          "level": 15,
+          "unlock": "iron_ore",
+          "uses": [
+            "iron_bars",
+            "iron_tools",
+            "iron_weapons"
+          ]
+        },
+        {
+          "level": 25,
+          "unlock": "coal",
+          "uses": [
+            "steel_bars",
+            "high_heat_smithing"
+          ]
+        },
+        {
+          "level": 30,
+          "unlock": "silver_ore",
+          "uses": [
+            "jewelry",
+            "charms"
+          ]
+        },
+        {
+          "level": 40,
+          "unlock": "gold_ore",
+          "uses": [
+            "jewelry",
+            "coins",
+            "shrine_offerings"
+          ]
+        },
+        {
+          "level": 50,
+          "unlock": "black_iron_ore",
+          "uses": [
+            "goblin_clan_gear"
+          ]
+        },
+        {
+          "level": 60,
+          "unlock": "gem_rock",
+          "uses": [
+            "rings",
+            "amulets",
+            "rare_crafting"
+          ]
+        },
+        {
+          "level": 70,
+          "unlock": "deep_ore",
+          "uses": [
+            "boss_tier_gear"
+          ]
+        },
+        {
+          "level": 80,
+          "unlock": "meteor_shard",
+          "uses": [
+            "legendary_gear"
+          ]
+        }
+      ]
+    },
+    "cooking": {
+      "purpose": [
+        "Converts fish, meat, crops, and herbs into healing food, buff food, travel rations, poison resistance meals, and quest meals.",
+        "Feeds combat, exploration, boss prep, and travel."
+      ],
+      "level_unlocks": [
+        {
+          "level": 1,
+          "unlock": "cooked_shrimp",
+          "effect": {
+            "heal": 3
+          }
+        },
+        {
+          "level": 5,
+          "unlock": "roasted_rat_meat",
+          "effect": {
+            "heal": 4
+          }
+        },
+        {
+          "level": 10,
+          "unlock": "cooked_trout",
+          "effect": {
+            "heal": 7
+          }
+        },
+        {
+          "level": 15,
+          "unlock": "skewers",
+          "effect": {
+            "heal": 8,
+            "recipe_family": "fish_meat_mushroom_combos"
+          }
+        },
+        {
+          "level": 20,
+          "unlock": "grilled_pike",
+          "effect": {
+            "heal": 12
+          }
+        },
+        {
+          "level": 25,
+          "unlock": "stews",
+          "effect": {
+            "heal": 12,
+            "supports_multi_ingredient_food": true
+          }
+        },
+        {
+          "level": 30,
+          "unlock": "bog_eel_stew",
+          "effect": {
+            "heal": 10,
+            "poison_resistance_seconds": 180
+          }
+        },
+        {
+          "level": 40,
+          "unlock": "hearty_goblin_stew",
+          "effect": {
+            "heal": 15,
+            "hp_regen_seconds": 30
+          }
+        },
+        {
+          "level": 50,
+          "unlock": "cavefish_roast",
+          "effect": {
+            "heal": 16
+          }
+        },
+        {
+          "level": 60,
+          "unlock": "catfish_steak",
+          "effect": {
+            "heal": 20
+          }
+        },
+        {
+          "level": 70,
+          "unlock": "war_feast",
+          "effect": {
+            "heal": 22,
+            "strength_buff_seconds": 180
+          }
+        }
+      ]
+    },
+    "smithing": {
+      "purpose": [
+        "Turns ores into bars, tools, weapons, armour, nails, arrowheads, quest repairs, and station upgrades.",
+        "Consumes mining and woodcutting outputs; feeds combat, ranged, gathering speed, building, and shortcuts."
+      ],
+      "level_unlocks": [
+        {
+          "level": 1,
+          "unlock": "bronze_bar"
+        },
+        {
+          "level": 3,
+          "unlock": "bronze_dagger"
+        },
+        {
+          "level": 5,
+          "unlock": "bronze_hatchet"
+        },
+        {
+          "level": 5,
+          "unlock": "bronze_pickaxe"
+        },
+        {
+          "level": 8,
+          "unlock": "bronze_arrowheads"
+        },
+        {
+          "level": 10,
+          "unlock": "bronze_spear"
+        },
+        {
+          "level": 15,
+          "unlock": "iron_bar"
+        },
+        {
+          "level": 18,
+          "unlock": "iron_sword"
+        },
+        {
+          "level": 20,
+          "unlock": "iron_shield"
+        },
+        {
+          "level": 25,
+          "unlock": "iron_nails"
+        },
+        {
+          "level": 30,
+          "unlock": "steel_bar"
+        },
+        {
+          "level": 35,
+          "unlock": "steel_hatchet"
+        },
+        {
+          "level": 35,
+          "unlock": "steel_pickaxe"
+        },
+        {
+          "level": 40,
+          "unlock": "steel_spear"
+        },
+        {
+          "level": 50,
+          "unlock": "black_iron_bar"
+        },
+        {
+          "level": 60,
+          "unlock": "gold_trinkets"
+        },
+        {
+          "level": 70,
+          "unlock": "deep_metal_gear"
+        }
+      ]
+    },
+    "crafting": {
+      "purpose": [
+        "Combines logs, hides, bones, gems, clay, bars, fish parts, mushrooms, and swamp materials into gear and utility items.",
+        "Connects gathering, combat drops, jewelry, inventory upgrades, bows, charms, and region gates."
+      ],
+      "level_unlocks": [
+        {
+          "level": 1,
+          "unlock": "bone_needle"
+        },
+        {
+          "level": 3,
+          "unlock": "clay_bowl"
+        },
+        {
+          "level": 5,
+          "unlock": "leather_gloves"
+        },
+        {
+          "level": 8,
+          "unlock": "bowstring"
+        },
+        {
+          "level": 10,
+          "unlock": "crude_bow"
+        },
+        {
+          "level": 15,
+          "unlock": "leather_body"
+        },
+        {
+          "level": 20,
+          "unlock": "amulet_cord"
+        },
+        {
+          "level": 25,
+          "unlock": "goblin_charm"
+        },
+        {
+          "level": 30,
+          "unlock": "reinforced_bag"
+        },
+        {
+          "level": 35,
+          "unlock": "poison_arrow_tips"
+        },
+        {
+          "level": 40,
+          "unlock": "bone_amulet"
+        },
+        {
+          "level": 50,
+          "unlock": "gem_ring"
+        },
+        {
+          "level": 60,
+          "unlock": "blackroot_bow"
+        },
+        {
+          "level": 70,
+          "unlock": "clan_banner"
+        }
+      ]
+    },
+    "attack": {
+      "purpose": [
+        "Controls melee weapon accuracy and weapon tier access."
+      ],
+      "level_unlocks": [
+        {
+          "level": 1,
+          "unlock": "crude_dagger"
+        },
+        {
+          "level": 5,
+          "unlock": "bronze_dagger"
+        },
+        {
+          "level": 10,
+          "unlock": "bronze_spear"
+        },
+        {
+          "level": 15,
+          "unlock": "iron_sword"
+        },
+        {
+          "level": 25,
+          "unlock": "iron_spear"
+        },
+        {
+          "level": 35,
+          "unlock": "steel_sword"
+        },
+        {
+          "level": 45,
+          "unlock": "steel_spear"
+        },
+        {
+          "level": 55,
+          "unlock": "black_iron_blade"
+        },
+        {
+          "level": 65,
+          "unlock": "war_spear"
+        },
+        {
+          "level": 75,
+          "unlock": "boss_weapons"
+        }
+      ]
+    },
+    "strength": {
+      "purpose": [
+        "Controls melee damage and unlocks stronger attack effects."
+      ],
+      "level_unlocks": [
+        {
+          "level": 1,
+          "unlock": "basic_damage"
+        },
+        {
+          "level": 10,
+          "unlock": "power_attack"
+        },
+        {
+          "level": 20,
+          "unlock": "heavy_swing"
+        },
+        {
+          "level": 30,
+          "unlock": "shield_break_chance"
+        },
+        {
+          "level": 40,
+          "unlock": "cleave_attack"
+        },
+        {
+          "level": 50,
+          "unlock": "knockback"
+        },
+        {
+          "level": 60,
+          "unlock": "war_rage"
+        },
+        {
+          "level": 70,
+          "unlock": "execution_strike"
+        }
+      ]
+    },
+    "defence": {
+      "purpose": [
+        "Controls armour access and damage reduction."
+      ],
+      "level_unlocks": [
+        {
+          "level": 1,
+          "unlock": "cloth_and_hide"
+        },
+        {
+          "level": 5,
+          "unlock": "leather_gloves"
+        },
+        {
+          "level": 10,
+          "unlock": "leather_body"
+        },
+        {
+          "level": 15,
+          "unlock": "bronze_shield"
+        },
+        {
+          "level": 20,
+          "unlock": "iron_shield"
+        },
+        {
+          "level": 30,
+          "unlock": "iron_armour"
+        },
+        {
+          "level": 40,
+          "unlock": "steel_shield"
+        },
+        {
+          "level": 50,
+          "unlock": "black_iron_armour"
+        },
+        {
+          "level": 60,
+          "unlock": "bog_resistant_armour"
+        },
+        {
+          "level": 70,
+          "unlock": "clan_war_armour"
+        }
+      ]
+    },
+    "ranged": {
+      "purpose": [
+        "Uses bows, arrows, poison, hides, and monster materials.",
+        "Forces interaction with woodcutting, mining, smithing, crafting, and monster drops."
+      ],
+      "level_unlocks": [
+        {
+          "level": 1,
+          "unlock": "throwing_stones"
+        },
+        {
+          "level": 5,
+          "unlock": "crude_bow"
+        },
+        {
+          "level": 10,
+          "unlock": "bronze_arrows"
+        },
+        {
+          "level": 15,
+          "unlock": "oak_bow"
+        },
+        {
+          "level": 20,
+          "unlock": "iron_arrows"
+        },
+        {
+          "level": 30,
+          "unlock": "willow_bow"
+        },
+        {
+          "level": 35,
+          "unlock": "poison_arrows"
+        },
+        {
+          "level": 45,
+          "unlock": "steel_arrows"
+        },
+        {
+          "level": 55,
+          "unlock": "blackroot_bow"
+        },
+        {
+          "level": 65,
+          "unlock": "barbed_arrows"
+        },
+        {
+          "level": 75,
+          "unlock": "boss_ranged_weapons"
+        }
+      ]
+    },
+    "hitpoints": {
+      "purpose": [
+        "Survival stat that gates dangerous exploration and boss access through practical risk, not hard walls."
+      ],
+      "level_unlocks": [
+        {
+          "level": 10,
+          "unlock": "starting_hp"
+        },
+        {
+          "level": 20,
+          "unlock": "riverland_survivability"
+        },
+        {
+          "level": 30,
+          "unlock": "cave_survivability"
+        },
+        {
+          "level": 40,
+          "unlock": "swamp_survivability"
+        },
+        {
+          "level": 50,
+          "unlock": "rival_goblin_survivability"
+        },
+        {
+          "level": 60,
+          "unlock": "first_boss_attempt_viable"
+        },
+        {
+          "level": 70,
+          "unlock": "troll_ridge_viable"
+        },
+        {
+          "level": 80,
+          "unlock": "deep_zone_viable"
+        }
+      ]
+    }
+  }
+}

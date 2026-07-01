@@ -1,0 +1,58 @@
+[
+  [
+    "Bronze Starter Loop",
+    "Mining + Smithing + Combat",
+    "Mine copper/tin -> smelt bronze -> smith spear -> fight rats/cave bugs",
+    "copper_ore, tin_ore, bronze_bar, bronze_spear",
+    "Unlocks safe combat and first cave confidence"
+  ],
+  [
+    "First Food Loop",
+    "Fishing + Cooking + Combat",
+    "Catch shrimp/trout -> cook -> fight longer -> collect monster materials",
+    "raw_fish, cooked_food, rat_meat, bones",
+    "Food becomes combat fuel"
+  ],
+  [
+    "Bow Loop",
+    "Woodcutting + Crafting + Smithing + Ranged",
+    "Chop logs -> kill spiders for silk -> craft bowstring/bow -> smith arrows -> use ranged",
+    "logs, spider_silk, bars, arrows",
+    "Prevents ranged from being siloed"
+  ],
+  [
+    "Bridge Repair Loop",
+    "Woodcutting + Mining + Smithing + Quest",
+    "Chop oak -> mine iron -> smith nails -> repair west bridge",
+    "oak_logs, iron_bar, iron_nails",
+    "Unlocks Willow Riverlands shortcut"
+  ],
+  [
+    "Swamp Prep Loop",
+    "Fishing + Cooking + Woodcutting + Crafting",
+    "Catch bog eel -> gather swamp herb/deadwood -> cook stew -> craft charm",
+    "bog_eel, swamp_herb, deadwood_logs, goblin_charm",
+    "Turns swamp into multi-skill gate"
+  ],
+  [
+    "Rival Camp Loop",
+    "Mining + Smithing + Cooking + Combat",
+    "Make steel/black gear -> cook war food -> fight rival goblins -> craft uniques",
+    "steel_bar, black_iron_bar, war_feast, rival drops",
+    "First major combat economy loop"
+  ],
+  [
+    "Mining Expedition Loop",
+    "Fishing + Cooking + Mining + Defence",
+    "Cook cavefish -> wear shield/armour -> mine coal/gold deeper -> return via cart",
+    "cavefish_roast, armour, coal, gold",
+    "Remote skilling requires prep"
+  ],
+  [
+    "Jewelry Utility Loop",
+    "Mining + Crafting + Combat",
+    "Mine gold/gems -> craft ring/amulet -> improve gathering/combat -> farm rarer drops",
+    "gold_bar, uncut_gem, gem_ring, bone_amulet",
+    "Makes crafting provide utility"
+  ]
+]

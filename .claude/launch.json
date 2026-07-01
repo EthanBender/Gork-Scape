@@ -1,0 +1,93 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "goblin-empire",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "5188"
+      ],
+      "port": 5188
+    },
+    {
+      "name": "goblin-empire-econ",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "5189"
+      ],
+      "port": 5189
+    },
+    {
+      "name": "goblin-empire-econ2",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "5191"
+      ],
+      "port": 5191
+    },
+    {
+      "name": "goblin-empire-avatar",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "5190"
+      ],
+      "port": 5190
+    },
+    {
+      "name": "goblin-empire-camera",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "5192"
+      ],
+      "port": 5192
+    },
+    {
+      "name": "goblin-empire-econ3",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "5193"
+      ],
+      "port": 5193
+    },
+    {
+      "name": "goblin-empire-nocache",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        ".claude/devserver_nocache.py",
+        "5194"
+      ],
+      "port": 5194
+    },
+    {
+      "name": "goblin-empire-session",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        ".claude/devserver_nocache.py",
+        "5195"
+      ],
+      "port": 5195
+    },
+    {
+      "name": "goblin-empire-econ4",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "5194"
+      ],
+      "port": 5194
+    }
+  ]
+}

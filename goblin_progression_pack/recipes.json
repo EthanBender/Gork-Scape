@@ -1,0 +1,331 @@
+{
+  "recipes": [
+    {
+      "id": "bronze_bar",
+      "station": "furnace",
+      "skill": "smithing",
+      "level": 1,
+      "inputs": {
+        "copper_ore": 1,
+        "tin_ore": 1
+      },
+      "outputs": {
+        "bronze_bar": 1
+      }
+    },
+    {
+      "id": "iron_bar",
+      "station": "furnace",
+      "skill": "smithing",
+      "level": 15,
+      "inputs": {
+        "iron_ore": 1
+      },
+      "outputs": {
+        "iron_bar": 1
+      }
+    },
+    {
+      "id": "steel_bar",
+      "station": "furnace",
+      "skill": "smithing",
+      "level": 30,
+      "inputs": {
+        "iron_ore": 1,
+        "coal": 2
+      },
+      "outputs": {
+        "steel_bar": 1
+      }
+    },
+    {
+      "id": "black_iron_bar",
+      "station": "furnace",
+      "skill": "smithing",
+      "level": 50,
+      "inputs": {
+        "black_iron_ore": 1,
+        "coal": 2
+      },
+      "outputs": {
+        "black_iron_bar": 1
+      }
+    },
+    {
+      "id": "bronze_hatchet",
+      "station": "anvil",
+      "skill": "smithing",
+      "level": 5,
+      "inputs": {
+        "bronze_bar": 1,
+        "normal_logs": 1
+      },
+      "outputs": {
+        "bronze_hatchet": 1
+      }
+    },
+    {
+      "id": "bronze_pickaxe",
+      "station": "anvil",
+      "skill": "smithing",
+      "level": 5,
+      "inputs": {
+        "bronze_bar": 1,
+        "normal_logs": 1
+      },
+      "outputs": {
+        "bronze_pickaxe": 1
+      }
+    },
+    {
+      "id": "bronze_arrowheads",
+      "station": "anvil",
+      "skill": "smithing",
+      "level": 8,
+      "inputs": {
+        "bronze_bar": 1
+      },
+      "outputs": {
+        "bronze_arrows": 15
+      }
+    },
+    {
+      "id": "bronze_spear",
+      "station": "anvil",
+      "skill": "smithing",
+      "level": 10,
+      "inputs": {
+        "bronze_bar": 1,
+        "normal_logs": 1
+      },
+      "outputs": {
+        "bronze_spear": 1
+      }
+    },
+    {
+      "id": "iron_sword",
+      "station": "anvil",
+      "skill": "smithing",
+      "level": 18,
+      "inputs": {
+        "iron_bar": 2
+      },
+      "outputs": {
+        "iron_sword": 1
+      }
+    },
+    {
+      "id": "iron_shield",
+      "station": "anvil",
+      "skill": "smithing",
+      "level": 20,
+      "inputs": {
+        "iron_bar": 2,
+        "oak_logs": 1
+      },
+      "outputs": {
+        "iron_shield": 1
+      }
+    },
+    {
+      "id": "iron_nails",
+      "station": "anvil",
+      "skill": "smithing",
+      "level": 25,
+      "inputs": {
+        "iron_bar": 1
+      },
+      "outputs": {
+        "iron_nails": 20
+      }
+    },
+    {
+      "id": "oak_bow",
+      "station": "crafting_bench",
+      "skill": "crafting",
+      "level": 15,
+      "inputs": {
+        "oak_logs": 1,
+        "bowstring": 1
+      },
+      "outputs": {
+        "oak_bow": 1
+      }
+    },
+    {
+      "id": "willow_bow",
+      "station": "crafting_bench",
+      "skill": "crafting",
+      "level": 30,
+      "inputs": {
+        "willow_logs": 1,
+        "bowstring": 1
+      },
+      "outputs": {
+        "willow_bow": 1
+      }
+    },
+    {
+      "id": "blackroot_bow",
+      "station": "crafting_bench",
+      "skill": "crafting",
+      "level": 60,
+      "inputs": {
+        "blackroot_logs": 1,
+        "bowstring": 1,
+        "poison_gland": 2
+      },
+      "outputs": {
+        "blackroot_bow": 1
+      }
+    },
+    {
+      "id": "bowstring",
+      "station": "crafting_bench",
+      "skill": "crafting",
+      "level": 8,
+      "inputs": {
+        "spider_silk": 2
+      },
+      "outputs": {
+        "bowstring": 1
+      }
+    },
+    {
+      "id": "clay_bowl",
+      "station": "crafting_bench",
+      "skill": "crafting",
+      "level": 3,
+      "inputs": {
+        "clay": 1
+      },
+      "outputs": {
+        "clay_bowl": 1
+      }
+    },
+    {
+      "id": "goblin_charm",
+      "station": "crafting_bench",
+      "skill": "crafting",
+      "level": 25,
+      "inputs": {
+        "bones": 2,
+        "swamp_herb": 1,
+        "deadwood_logs": 1
+      },
+      "outputs": {
+        "goblin_charm": 1
+      }
+    },
+    {
+      "id": "reinforced_bag",
+      "station": "crafting_bench",
+      "skill": "crafting",
+      "level": 30,
+      "inputs": {
+        "tough_hide": 2,
+        "iron_bar": 1,
+        "spider_silk": 2
+      },
+      "outputs": {
+        "reinforced_bag": 1
+      }
+    },
+    {
+      "id": "bone_amulet",
+      "station": "crafting_bench",
+      "skill": "crafting",
+      "level": 40,
+      "inputs": {
+        "bones": 5,
+        "amulet_cord": 1
+      },
+      "outputs": {
+        "bone_amulet": 1
+      }
+    },
+    {
+      "id": "gem_ring",
+      "station": "crafting_bench",
+      "skill": "crafting",
+      "level": 50,
+      "inputs": {
+        "gold_bar": 1,
+        "gem": 1
+      },
+      "outputs": {
+        "gem_ring": 1
+      }
+    },
+    {
+      "id": "cooked_shrimp",
+      "station": "fire_or_range",
+      "skill": "cooking",
+      "level": 1,
+      "inputs": {
+        "raw_shrimp": 1
+      },
+      "outputs": {
+        "cooked_shrimp": 1
+      },
+      "burn_chance": 0.3
+    },
+    {
+      "id": "cooked_trout",
+      "station": "fire_or_range",
+      "skill": "cooking",
+      "level": 10,
+      "inputs": {
+        "raw_trout": 1
+      },
+      "outputs": {
+        "cooked_trout": 1
+      },
+      "burn_chance": 0.24
+    },
+    {
+      "id": "grilled_pike",
+      "station": "fire_or_range",
+      "skill": "cooking",
+      "level": 20,
+      "inputs": {
+        "raw_pike": 1
+      },
+      "outputs": {
+        "grilled_pike": 1
+      },
+      "burn_chance": 0.18
+    },
+    {
+      "id": "bog_eel_stew",
+      "station": "range",
+      "skill": "cooking",
+      "level": 30,
+      "inputs": {
+        "raw_bog_eel": 1,
+        "swamp_herb": 1,
+        "clay_bowl": 1
+      },
+      "outputs": {
+        "bog_eel_stew": 1
+      },
+      "burn_chance": 0.12
+    },
+    {
+      "id": "war_feast",
+      "station": "range",
+      "skill": "cooking",
+      "level": 70,
+      "inputs": {
+        "raw_pike": 1,
+        "boar_meat": 1,
+        "swamp_herb": 1,
+        "potato": 1
+      },
+      "outputs": {
+        "war_feast": 1
+      },
+      "burn_chance": 0.05
+    }
+  ]
+}

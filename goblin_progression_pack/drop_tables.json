@@ -1,0 +1,830 @@
+{
+  "drop_tables": {
+    "training_rat_drops": {
+      "monster_id": "training_rat",
+      "rolls": 1,
+      "drops": [
+        {
+          "item_id": "rat_meat",
+          "chance_percent": 55
+        },
+        {
+          "item_id": "bones",
+          "chance_percent": 35
+        },
+        {
+          "item_id": "coins_1_3",
+          "chance_percent": 20
+        },
+        {
+          "item_id": "torn_hide",
+          "chance_percent": 10
+        },
+        {
+          "item_id": "rat_tooth_charm",
+          "chance_percent": 1
+        }
+      ],
+      "note": "Chances are independent-style weights for first implementation. Tuning can later convert them to weighted roll buckets."
+    },
+    "cave_bug_drops": {
+      "monster_id": "cave_bug",
+      "rolls": 1,
+      "drops": [
+        {
+          "item_id": "bug_shell",
+          "chance_percent": 45
+        },
+        {
+          "item_id": "bones",
+          "chance_percent": 30
+        },
+        {
+          "item_id": "copper_ore",
+          "chance_percent": 20
+        },
+        {
+          "item_id": "clay",
+          "chance_percent": 15
+        },
+        {
+          "item_id": "bug_eye_ring",
+          "chance_percent": 1
+        }
+      ],
+      "note": "Chances are independent-style weights for first implementation. Tuning can later convert them to weighted roll buckets."
+    },
+    "mud_grub_drops": {
+      "monster_id": "mud_grub",
+      "rolls": 1,
+      "drops": [
+        {
+          "item_id": "grub_meat",
+          "chance_percent": 50
+        },
+        {
+          "item_id": "slime_glob",
+          "chance_percent": 30
+        },
+        {
+          "item_id": "fishing_bait",
+          "chance_percent": 25
+        },
+        {
+          "item_id": "raw_mudfish",
+          "chance_percent": 10
+        },
+        {
+          "item_id": "mud_grub_pet",
+          "chance_percent": 0.5
+        }
+      ],
+      "note": "Chances are independent-style weights for first implementation. Tuning can later convert them to weighted roll buckets."
+    },
+    "goblin_trainee_drops": {
+      "monster_id": "goblin_trainee",
+      "rolls": 1,
+      "drops": [
+        {
+          "item_id": "coins_3_8",
+          "chance_percent": 45
+        },
+        {
+          "item_id": "bronze_dagger",
+          "chance_percent": 10
+        },
+        {
+          "item_id": "cooked_shrimp",
+          "chance_percent": 20
+        },
+        {
+          "item_id": "torn_cloth",
+          "chance_percent": 25
+        },
+        {
+          "item_id": "trainee_headband",
+          "chance_percent": 2
+        }
+      ],
+      "note": "Chances are independent-style weights for first implementation. Tuning can later convert them to weighted roll buckets."
+    },
+    "giant_spider_drops": {
+      "monster_id": "giant_spider",
+      "rolls": 1,
+      "drops": [
+        {
+          "item_id": "spider_silk",
+          "chance_percent": 45
+        },
+        {
+          "item_id": "poison_gland",
+          "chance_percent": 15
+        },
+        {
+          "item_id": "bones",
+          "chance_percent": 25
+        },
+        {
+          "item_id": "coins_5_12",
+          "chance_percent": 20
+        },
+        {
+          "item_id": "spider_fang_dagger",
+          "chance_percent": 1
+        }
+      ],
+      "note": "Chances are independent-style weights for first implementation. Tuning can later convert them to weighted roll buckets."
+    },
+    "forest_rat_drops": {
+      "monster_id": "forest_rat",
+      "rolls": 1,
+      "drops": [
+        {
+          "item_id": "rat_meat",
+          "chance_percent": 45
+        },
+        {
+          "item_id": "hide_scrap",
+          "chance_percent": 35
+        },
+        {
+          "item_id": "bones",
+          "chance_percent": 30
+        },
+        {
+          "item_id": "oak_logs",
+          "chance_percent": 10
+        },
+        {
+          "item_id": "forest_rat_tail",
+          "chance_percent": 3
+        }
+      ],
+      "note": "Chances are independent-style weights for first implementation. Tuning can later convert them to weighted roll buckets."
+    },
+    "river_bandit_drops": {
+      "monster_id": "river_bandit",
+      "rolls": 1,
+      "drops": [
+        {
+          "item_id": "coins_10_30",
+          "chance_percent": 60
+        },
+        {
+          "item_id": "raw_trout",
+          "chance_percent": 20
+        },
+        {
+          "item_id": "fishing_bait",
+          "chance_percent": 25
+        },
+        {
+          "item_id": "bronze_sword",
+          "chance_percent": 8
+        },
+        {
+          "item_id": "bandit_hook",
+          "chance_percent": 2
+        }
+      ],
+      "note": "Chances are independent-style weights for first implementation. Tuning can later convert them to weighted roll buckets."
+    },
+    "mud_bug_drops": {
+      "monster_id": "mud_bug",
+      "rolls": 1,
+      "drops": [
+        {
+          "item_id": "bug_shell",
+          "chance_percent": 40
+        },
+        {
+          "item_id": "mud_slime",
+          "chance_percent": 35
+        },
+        {
+          "item_id": "clay",
+          "chance_percent": 25
+        },
+        {
+          "item_id": "raw_mudfish",
+          "chance_percent": 15
+        },
+        {
+          "item_id": "mud_shell_shield",
+          "chance_percent": 1
+        }
+      ],
+      "note": "Chances are independent-style weights for first implementation. Tuning can later convert them to weighted roll buckets."
+    },
+    "crazed_fisher_gob_drops": {
+      "monster_id": "crazed_fisher_gob",
+      "rolls": 1,
+      "drops": [
+        {
+          "item_id": "raw_trout",
+          "chance_percent": 35
+        },
+        {
+          "item_id": "raw_pike",
+          "chance_percent": 15
+        },
+        {
+          "item_id": "fishing_rod",
+          "chance_percent": 10
+        },
+        {
+          "item_id": "coins_15_40",
+          "chance_percent": 45
+        },
+        {
+          "item_id": "fisher_gob_hat",
+          "chance_percent": 2
+        }
+      ],
+      "note": "Chances are independent-style weights for first implementation. Tuning can later convert them to weighted roll buckets."
+    },
+    "oak_boar_drops": {
+      "monster_id": "oak_boar",
+      "rolls": 1,
+      "drops": [
+        {
+          "item_id": "boar_meat",
+          "chance_percent": 55
+        },
+        {
+          "item_id": "tough_hide",
+          "chance_percent": 35
+        },
+        {
+          "item_id": "bones",
+          "chance_percent": 30
+        },
+        {
+          "item_id": "oak_logs",
+          "chance_percent": 15
+        },
+        {
+          "item_id": "boar_tusk_spear_tip",
+          "chance_percent": 2
+        }
+      ],
+      "note": "Chances are independent-style weights for first implementation. Tuning can later convert them to weighted roll buckets."
+    },
+    "cave_bat_drops": {
+      "monster_id": "cave_bat",
+      "rolls": 1,
+      "drops": [
+        {
+          "item_id": "bat_wing",
+          "chance_percent": 45
+        },
+        {
+          "item_id": "bones",
+          "chance_percent": 30
+        },
+        {
+          "item_id": "iron_ore",
+          "chance_percent": 15
+        },
+        {
+          "item_id": "coins_10_25",
+          "chance_percent": 25
+        },
+        {
+          "item_id": "echo_fang",
+          "chance_percent": 1.5
+        }
+      ],
+      "note": "Chances are independent-style weights for first implementation. Tuning can later convert them to weighted roll buckets."
+    },
+    "iron_rock_crab_drops": {
+      "monster_id": "iron_rock_crab",
+      "rolls": 1,
+      "drops": [
+        {
+          "item_id": "iron_ore",
+          "chance_percent": 45
+        },
+        {
+          "item_id": "stone_chunk",
+          "chance_percent": 35
+        },
+        {
+          "item_id": "crab_meat",
+          "chance_percent": 25
+        },
+        {
+          "item_id": "coal",
+          "chance_percent": 8
+        },
+        {
+          "item_id": "iron_crab_shell",
+          "chance_percent": 1
+        }
+      ],
+      "note": "Chances are independent-style weights for first implementation. Tuning can later convert them to weighted roll buckets."
+    },
+    "moss_wolf_drops": {
+      "monster_id": "moss_wolf",
+      "rolls": 1,
+      "drops": [
+        {
+          "item_id": "wolf_meat",
+          "chance_percent": 40
+        },
+        {
+          "item_id": "wolf_hide",
+          "chance_percent": 40
+        },
+        {
+          "item_id": "bones",
+          "chance_percent": 30
+        },
+        {
+          "item_id": "oak_logs",
+          "chance_percent": 12
+        },
+        {
+          "item_id": "moss_wolf_pelt",
+          "chance_percent": 2
+        }
+      ],
+      "note": "Chances are independent-style weights for first implementation. Tuning can later convert them to weighted roll buckets."
+    },
+    "rival_goblin_scout_drops": {
+      "monster_id": "rival_goblin_scout",
+      "rolls": 1,
+      "drops": [
+        {
+          "item_id": "coins_20_60",
+          "chance_percent": 55
+        },
+        {
+          "item_id": "iron_dagger",
+          "chance_percent": 12
+        },
+        {
+          "item_id": "raw_pike",
+          "chance_percent": 15
+        },
+        {
+          "item_id": "scout_map_scrap",
+          "chance_percent": 20
+        },
+        {
+          "item_id": "scout_hood",
+          "chance_percent": 2
+        }
+      ],
+      "note": "Chances are independent-style weights for first implementation. Tuning can later convert them to weighted roll buckets."
+    },
+    "swamp_frog_drops": {
+      "monster_id": "swamp_frog",
+      "rolls": 1,
+      "drops": [
+        {
+          "item_id": "frog_legs",
+          "chance_percent": 50
+        },
+        {
+          "item_id": "slime_glob",
+          "chance_percent": 35
+        },
+        {
+          "item_id": "poison_gland",
+          "chance_percent": 20
+        },
+        {
+          "item_id": "swamp_herb",
+          "chance_percent": 15
+        },
+        {
+          "item_id": "frog_crown",
+          "chance_percent": 0.5
+        }
+      ],
+      "note": "Chances are independent-style weights for first implementation. Tuning can later convert them to weighted roll buckets."
+    },
+    "bog_rat_drops": {
+      "monster_id": "bog_rat",
+      "rolls": 1,
+      "drops": [
+        {
+          "item_id": "rat_meat",
+          "chance_percent": 30
+        },
+        {
+          "item_id": "diseased_hide",
+          "chance_percent": 35
+        },
+        {
+          "item_id": "bones",
+          "chance_percent": 25
+        },
+        {
+          "item_id": "deadwood_logs",
+          "chance_percent": 15
+        },
+        {
+          "item_id": "bog_rat_charm",
+          "chance_percent": 2
+        }
+      ],
+      "note": "Chances are independent-style weights for first implementation. Tuning can later convert them to weighted roll buckets."
+    },
+    "fungal_goblin_drops": {
+      "monster_id": "fungal_goblin",
+      "rolls": 1,
+      "drops": [
+        {
+          "item_id": "strange_mushroom",
+          "chance_percent": 45
+        },
+        {
+          "item_id": "fungal_logs",
+          "chance_percent": 20
+        },
+        {
+          "item_id": "coins_20_50",
+          "chance_percent": 35
+        },
+        {
+          "item_id": "bone_needle",
+          "chance_percent": 12
+        },
+        {
+          "item_id": "spore_mask",
+          "chance_percent": 2
+        }
+      ],
+      "note": "Chances are independent-style weights for first implementation. Tuning can later convert them to weighted roll buckets."
+    },
+    "cave_goblin_miner_drops": {
+      "monster_id": "cave_goblin_miner",
+      "rolls": 1,
+      "drops": [
+        {
+          "item_id": "iron_ore",
+          "chance_percent": 30
+        },
+        {
+          "item_id": "coal",
+          "chance_percent": 20
+        },
+        {
+          "item_id": "pickaxe_head",
+          "chance_percent": 10
+        },
+        {
+          "item_id": "coins_30_80",
+          "chance_percent": 50
+        },
+        {
+          "item_id": "miners_belt",
+          "chance_percent": 2
+        }
+      ],
+      "note": "Chances are independent-style weights for first implementation. Tuning can later convert them to weighted roll buckets."
+    },
+    "bog_slime_drops": {
+      "monster_id": "bog_slime",
+      "rolls": 1,
+      "drops": [
+        {
+          "item_id": "slime_glob",
+          "chance_percent": 60
+        },
+        {
+          "item_id": "swamp_herb",
+          "chance_percent": 20
+        },
+        {
+          "item_id": "raw_bog_eel",
+          "chance_percent": 10
+        },
+        {
+          "item_id": "poison_gland",
+          "chance_percent": 15
+        },
+        {
+          "item_id": "slime_core",
+          "chance_percent": 1.5
+        }
+      ],
+      "note": "Chances are independent-style weights for first implementation. Tuning can later convert them to weighted roll buckets."
+    },
+    "lake_snapper_drops": {
+      "monster_id": "lake_snapper",
+      "rolls": 1,
+      "drops": [
+        {
+          "item_id": "raw_pike",
+          "chance_percent": 35
+        },
+        {
+          "item_id": "raw_carp",
+          "chance_percent": 25
+        },
+        {
+          "item_id": "snapper_shell",
+          "chance_percent": 30
+        },
+        {
+          "item_id": "water_herb",
+          "chance_percent": 15
+        },
+        {
+          "item_id": "snapper_tooth_necklace",
+          "chance_percent": 1
+        }
+      ],
+      "note": "Chances are independent-style weights for first implementation. Tuning can later convert them to weighted roll buckets."
+    },
+    "rival_goblin_warrior_drops": {
+      "monster_id": "rival_goblin_warrior",
+      "rolls": 1,
+      "drops": [
+        {
+          "item_id": "coins_40_120",
+          "chance_percent": 55
+        },
+        {
+          "item_id": "iron_sword",
+          "chance_percent": 10
+        },
+        {
+          "item_id": "steel_arrowheads",
+          "chance_percent": 12
+        },
+        {
+          "item_id": "cooked_pike",
+          "chance_percent": 20
+        },
+        {
+          "item_id": "rival_blade_fragment",
+          "chance_percent": 3
+        }
+      ],
+      "note": "Chances are independent-style weights for first implementation. Tuning can later convert them to weighted roll buckets."
+    },
+    "rival_goblin_archer_drops": {
+      "monster_id": "rival_goblin_archer",
+      "rolls": 1,
+      "drops": [
+        {
+          "item_id": "iron_arrows",
+          "chance_percent": 45
+        },
+        {
+          "item_id": "oak_bow",
+          "chance_percent": 10
+        },
+        {
+          "item_id": "bowstring",
+          "chance_percent": 20
+        },
+        {
+          "item_id": "coins_40_100",
+          "chance_percent": 45
+        },
+        {
+          "item_id": "archer_wristguard",
+          "chance_percent": 2
+        }
+      ],
+      "note": "Chances are independent-style weights for first implementation. Tuning can later convert them to weighted roll buckets."
+    },
+    "deep_cave_crawler_drops": {
+      "monster_id": "deep_cave_crawler",
+      "rolls": 1,
+      "drops": [
+        {
+          "item_id": "coal",
+          "chance_percent": 30
+        },
+        {
+          "item_id": "gold_ore",
+          "chance_percent": 15
+        },
+        {
+          "item_id": "raw_cavefish",
+          "chance_percent": 10
+        },
+        {
+          "item_id": "chitin_plate",
+          "chance_percent": 25
+        },
+        {
+          "item_id": "crawler_claw",
+          "chance_percent": 2
+        }
+      ],
+      "note": "Chances are independent-style weights for first implementation. Tuning can later convert them to weighted roll buckets."
+    },
+    "black_iron_crab_drops": {
+      "monster_id": "black_iron_crab",
+      "rolls": 1,
+      "drops": [
+        {
+          "item_id": "black_iron_ore",
+          "chance_percent": 35
+        },
+        {
+          "item_id": "coal",
+          "chance_percent": 25
+        },
+        {
+          "item_id": "crab_meat",
+          "chance_percent": 25
+        },
+        {
+          "item_id": "heavy_shell",
+          "chance_percent": 20
+        },
+        {
+          "item_id": "black_crab_core",
+          "chance_percent": 1.5
+        }
+      ],
+      "note": "Chances are independent-style weights for first implementation. Tuning can later convert them to weighted roll buckets."
+    },
+    "swamp_shaman_drops": {
+      "monster_id": "swamp_shaman",
+      "rolls": 1,
+      "drops": [
+        {
+          "item_id": "swamp_herb",
+          "chance_percent": 35
+        },
+        {
+          "item_id": "bone_amulet",
+          "chance_percent": 8
+        },
+        {
+          "item_id": "gold_ore",
+          "chance_percent": 10
+        },
+        {
+          "item_id": "coins_60_150",
+          "chance_percent": 50
+        },
+        {
+          "item_id": "shaman_totem",
+          "chance_percent": 2
+        }
+      ],
+      "note": "Chances are independent-style weights for first implementation. Tuning can later convert them to weighted roll buckets."
+    },
+    "rival_goblin_brute_drops": {
+      "monster_id": "rival_goblin_brute",
+      "rolls": 1,
+      "drops": [
+        {
+          "item_id": "steel_bar",
+          "chance_percent": 20
+        },
+        {
+          "item_id": "black_iron_ore",
+          "chance_percent": 15
+        },
+        {
+          "item_id": "cooked_carp",
+          "chance_percent": 20
+        },
+        {
+          "item_id": "coins_80_200",
+          "chance_percent": 55
+        },
+        {
+          "item_id": "brute_club_head",
+          "chance_percent": 2
+        }
+      ],
+      "note": "Chances are independent-style weights for first implementation. Tuning can later convert them to weighted roll buckets."
+    },
+    "troll_whelp_drops": {
+      "monster_id": "troll_whelp",
+      "rolls": 1,
+      "drops": [
+        {
+          "item_id": "troll_meat",
+          "chance_percent": 40
+        },
+        {
+          "item_id": "big_bones",
+          "chance_percent": 35
+        },
+        {
+          "item_id": "coal",
+          "chance_percent": 25
+        },
+        {
+          "item_id": "gold_ore",
+          "chance_percent": 12
+        },
+        {
+          "item_id": "troll_tooth",
+          "chance_percent": 2
+        }
+      ],
+      "note": "Chances are independent-style weights for first implementation. Tuning can later convert them to weighted roll buckets."
+    },
+    "red_ear_captain_drops": {
+      "monster_id": "red_ear_captain",
+      "rolls": 1,
+      "drops": [
+        {
+          "item_id": "coins_150_400",
+          "chance_percent": 70
+        },
+        {
+          "item_id": "steel_spear",
+          "chance_percent": 12
+        },
+        {
+          "item_id": "black_iron_bar",
+          "chance_percent": 8
+        },
+        {
+          "item_id": "war_feast",
+          "chance_percent": 10
+        },
+        {
+          "item_id": "captains_banner",
+          "chance_percent": 3
+        },
+        {
+          "item_id": "red_ear_spear_tip",
+          "chance_percent": 1
+        }
+      ],
+      "note": "Chances are independent-style weights for first implementation. Tuning can later convert them to weighted roll buckets."
+    },
+    "cave_troll_drops": {
+      "monster_id": "cave_troll",
+      "rolls": 1,
+      "drops": [
+        {
+          "item_id": "big_bones",
+          "chance_percent": 55
+        },
+        {
+          "item_id": "coal",
+          "chance_percent": 30
+        },
+        {
+          "item_id": "gold_ore",
+          "chance_percent": 20
+        },
+        {
+          "item_id": "troll_hide",
+          "chance_percent": 25
+        },
+        {
+          "item_id": "troll_club",
+          "chance_percent": 2
+        },
+        {
+          "item_id": "mountain_key_fragment",
+          "chance_percent": 1
+        }
+      ],
+      "note": "Chances are independent-style weights for first implementation. Tuning can later convert them to weighted roll buckets."
+    },
+    "grub_bog_horror_drops": {
+      "monster_id": "grub_bog_horror",
+      "rolls": 1,
+      "drops": [
+        {
+          "item_id": "slime_core",
+          "chance_percent": 45
+        },
+        {
+          "item_id": "swamp_herb_bundle",
+          "chance_percent": 35
+        },
+        {
+          "item_id": "black_iron_ore",
+          "chance_percent": 20
+        },
+        {
+          "item_id": "raw_grubshark",
+          "chance_percent": 15
+        },
+        {
+          "item_id": "bog_horror_hide",
+          "chance_percent": 8
+        },
+        {
+          "item_id": "horror_heart",
+          "chance_percent": 2
+        },
+        {
+          "item_id": "bog_crown",
+          "chance_percent": 0.5
+        }
+      ],
+      "note": "Chances are independent-style weights for first implementation. Tuning can later convert them to weighted roll buckets."
+    }
+  }
+}

@@ -1,0 +1,1850 @@
+{
+  "schema_note": "Consumables should be stackable only if explicitly marked. Equipment has skill requirements. Materials should feed recipes, quests, station repairs, or upgrades.",
+  "items": {
+    "normal_logs": {
+      "id": "normal_logs",
+      "name": "Normal Logs",
+      "category": "material",
+      "sources": [
+        "normal_tree",
+        "monster_drop"
+      ],
+      "uses": [
+        "fires",
+        "arrow_shafts",
+        "basic_handles",
+        "quest_repairs"
+      ],
+      "stackable": true
+    },
+    "oak_logs": {
+      "id": "oak_logs",
+      "name": "Oak Logs",
+      "category": "material",
+      "sources": [
+        "oak_tree",
+        "monster_drop"
+      ],
+      "uses": [
+        "oak_bows",
+        "planks",
+        "tool_handles",
+        "bridge_repairs"
+      ],
+      "stackable": true
+    },
+    "willow_logs": {
+      "id": "willow_logs",
+      "name": "Willow Logs",
+      "category": "material",
+      "sources": [
+        "willow_tree"
+      ],
+      "uses": [
+        "willow_bows",
+        "fishing_rods",
+        "fast_firemaking"
+      ],
+      "stackable": true
+    },
+    "deadwood_logs": {
+      "id": "deadwood_logs",
+      "name": "Deadwood Logs",
+      "category": "material",
+      "sources": [
+        "deadwood_tree",
+        "monster_drop"
+      ],
+      "uses": [
+        "swamp_charms",
+        "shrine_fuel",
+        "poison_arrows"
+      ],
+      "stackable": true
+    },
+    "fungal_logs": {
+      "id": "fungal_logs",
+      "name": "Fungal Logs",
+      "category": "material",
+      "sources": [
+        "fungal_tree",
+        "monster_drop"
+      ],
+      "uses": [
+        "mushroom_crafting",
+        "charms"
+      ],
+      "stackable": true
+    },
+    "blackroot_logs": {
+      "id": "blackroot_logs",
+      "name": "Blackroot Logs",
+      "category": "material",
+      "sources": [
+        "blackroot_tree"
+      ],
+      "uses": [
+        "blackroot_bow",
+        "poison_bows"
+      ],
+      "stackable": true
+    },
+    "ironbark_logs": {
+      "id": "ironbark_logs",
+      "name": "Ironbark Logs",
+      "category": "material",
+      "sources": [
+        "ironbark_tree"
+      ],
+      "uses": [
+        "strong_shields",
+        "high_tier_handles"
+      ],
+      "stackable": true
+    },
+    "elder_rotwood_logs": {
+      "id": "elder_rotwood_logs",
+      "name": "Elder Rotwood Logs",
+      "category": "material",
+      "sources": [
+        "elder_rotwood_tree"
+      ],
+      "uses": [
+        "boss_keys",
+        "rare_bows",
+        "clan_banners"
+      ],
+      "stackable": true
+    },
+    "copper_ore": {
+      "id": "copper_ore",
+      "name": "Copper Ore",
+      "category": "material",
+      "sources": [
+        "copper_rock",
+        "monster_drop"
+      ],
+      "uses": [
+        "bronze_bar"
+      ],
+      "stackable": true
+    },
+    "tin_ore": {
+      "id": "tin_ore",
+      "name": "Tin Ore",
+      "category": "material",
+      "sources": [
+        "tin_rock"
+      ],
+      "uses": [
+        "bronze_bar"
+      ],
+      "stackable": true
+    },
+    "clay": {
+      "id": "clay",
+      "name": "Clay",
+      "category": "material",
+      "sources": [
+        "clay_rock",
+        "monster_drop"
+      ],
+      "uses": [
+        "clay_bowl",
+        "molds",
+        "quest_repairs"
+      ],
+      "stackable": true
+    },
+    "iron_ore": {
+      "id": "iron_ore",
+      "name": "Iron Ore",
+      "category": "material",
+      "sources": [
+        "iron_rock",
+        "monster_drop"
+      ],
+      "uses": [
+        "iron_bar"
+      ],
+      "stackable": true
+    },
+    "coal": {
+      "id": "coal",
+      "name": "Coal",
+      "category": "material",
+      "sources": [
+        "coal_rock",
+        "monster_drop"
+      ],
+      "uses": [
+        "steel_bar",
+        "black_iron_bar"
+      ],
+      "stackable": true
+    },
+    "silver_ore": {
+      "id": "silver_ore",
+      "name": "Silver Ore",
+      "category": "material",
+      "sources": [
+        "silver_rock"
+      ],
+      "uses": [
+        "silver_jewelry",
+        "charms"
+      ],
+      "stackable": true
+    },
+    "gold_ore": {
+      "id": "gold_ore",
+      "name": "Gold Ore",
+      "category": "material",
+      "sources": [
+        "gold_rock",
+        "monster_drop"
+      ],
+      "uses": [
+        "gold_bar",
+        "jewelry",
+        "shrine_offerings"
+      ],
+      "stackable": true
+    },
+    "black_iron_ore": {
+      "id": "black_iron_ore",
+      "name": "Black Iron Ore",
+      "category": "material",
+      "sources": [
+        "black_iron_rock",
+        "monster_drop"
+      ],
+      "uses": [
+        "black_iron_bar"
+      ],
+      "stackable": true
+    },
+    "gem": {
+      "id": "gem",
+      "name": "Gem",
+      "category": "material",
+      "sources": [
+        "gem_rock",
+        "monster_drop"
+      ],
+      "uses": [
+        "gem_ring",
+        "amulets"
+      ],
+      "stackable": true
+    },
+    "meteor_shard": {
+      "id": "meteor_shard",
+      "name": "Meteor Shard",
+      "category": "material",
+      "sources": [
+        "meteor_rock"
+      ],
+      "uses": [
+        "legendary_gear"
+      ],
+      "stackable": true
+    },
+    "bones": {
+      "id": "bones",
+      "name": "Bones",
+      "category": "material",
+      "sources": [
+        "monster_drop"
+      ],
+      "uses": [
+        "bone_needle",
+        "bone_amulet",
+        "prayer",
+        "quests"
+      ],
+      "stackable": true
+    },
+    "big_bones": {
+      "id": "big_bones",
+      "name": "Big Bones",
+      "category": "material",
+      "sources": [
+        "monster_drop"
+      ],
+      "uses": [
+        "prayer",
+        "large_bone_crafting"
+      ],
+      "stackable": true
+    },
+    "hide_scrap": {
+      "id": "hide_scrap",
+      "name": "Hide Scrap",
+      "category": "material",
+      "sources": [
+        "monster_drop"
+      ],
+      "uses": [
+        "basic_leather"
+      ],
+      "stackable": true
+    },
+    "tough_hide": {
+      "id": "tough_hide",
+      "name": "Tough Hide",
+      "category": "material",
+      "sources": [
+        "monster_drop"
+      ],
+      "uses": [
+        "leather_body",
+        "reinforced_bag"
+      ],
+      "stackable": true
+    },
+    "wolf_hide": {
+      "id": "wolf_hide",
+      "name": "Wolf Hide",
+      "category": "material",
+      "sources": [
+        "monster_drop"
+      ],
+      "uses": [
+        "ranger_armour"
+      ],
+      "stackable": true
+    },
+    "troll_hide": {
+      "id": "troll_hide",
+      "name": "Troll Hide",
+      "category": "material",
+      "sources": [
+        "monster_drop"
+      ],
+      "uses": [
+        "heavy_armour"
+      ],
+      "stackable": true
+    },
+    "spider_silk": {
+      "id": "spider_silk",
+      "name": "Spider Silk",
+      "category": "material",
+      "sources": [
+        "monster_drop"
+      ],
+      "uses": [
+        "bowstring",
+        "thread"
+      ],
+      "stackable": true
+    },
+    "poison_gland": {
+      "id": "poison_gland",
+      "name": "Poison Gland",
+      "category": "material",
+      "sources": [
+        "monster_drop"
+      ],
+      "uses": [
+        "poison_arrows",
+        "potions"
+      ],
+      "stackable": true
+    },
+    "slime_glob": {
+      "id": "slime_glob",
+      "name": "Slime Glob",
+      "category": "material",
+      "sources": [
+        "monster_drop"
+      ],
+      "uses": [
+        "potions",
+        "charms"
+      ],
+      "stackable": true
+    },
+    "swamp_herb": {
+      "id": "swamp_herb",
+      "name": "Swamp Herb",
+      "category": "material",
+      "sources": [
+        "farming",
+        "monster_drop"
+      ],
+      "uses": [
+        "bog_eel_stew",
+        "swamp_charm",
+        "potions"
+      ],
+      "stackable": true
+    },
+    "strange_mushroom": {
+      "id": "strange_mushroom",
+      "name": "Strange Mushroom",
+      "category": "material",
+      "sources": [
+        "mushroom_forest",
+        "monster_drop"
+      ],
+      "uses": [
+        "mushroom_soup",
+        "potions",
+        "witch_quests"
+      ],
+      "stackable": true
+    },
+    "bug_shell": {
+      "id": "bug_shell",
+      "name": "Bug Shell",
+      "category": "material",
+      "sources": [
+        "monster_drop"
+      ],
+      "uses": [
+        "shell_armour",
+        "mud_shell_shield"
+      ],
+      "stackable": true
+    },
+    "chitin_plate": {
+      "id": "chitin_plate",
+      "name": "Chitin Plate",
+      "category": "material",
+      "sources": [
+        "monster_drop"
+      ],
+      "uses": [
+        "chitin_armour"
+      ],
+      "stackable": true
+    },
+    "bronze_bar": {
+      "id": "bronze_bar",
+      "name": "Bronze Bar",
+      "category": "bar",
+      "materials": {
+        "copper_ore": 1,
+        "tin_ore": 1
+      },
+      "skill_requirements": {
+        "smithing": 1
+      },
+      "uses": [
+        "bronze_tools",
+        "bronze_weapons",
+        "bronze_arrowheads"
+      ],
+      "stackable": true
+    },
+    "iron_bar": {
+      "id": "iron_bar",
+      "name": "Iron Bar",
+      "category": "bar",
+      "materials": {
+        "iron_ore": 1
+      },
+      "skill_requirements": {
+        "smithing": 15
+      },
+      "uses": [
+        "iron_tools",
+        "iron_weapons",
+        "iron_shield",
+        "iron_nails"
+      ],
+      "stackable": true
+    },
+    "steel_bar": {
+      "id": "steel_bar",
+      "name": "Steel Bar",
+      "category": "bar",
+      "materials": {
+        "iron_ore": 1,
+        "coal": 2
+      },
+      "skill_requirements": {
+        "smithing": 30
+      },
+      "uses": [
+        "steel_tools",
+        "steel_weapons",
+        "steel_arrowheads"
+      ],
+      "stackable": true
+    },
+    "black_iron_bar": {
+      "id": "black_iron_bar",
+      "name": "Black Iron Bar",
+      "category": "bar",
+      "materials": {
+        "black_iron_ore": 1,
+        "coal": 2
+      },
+      "skill_requirements": {
+        "smithing": 50
+      },
+      "uses": [
+        "black_iron_gear"
+      ],
+      "stackable": true
+    },
+    "gold_bar": {
+      "id": "gold_bar",
+      "name": "Gold Bar",
+      "category": "bar",
+      "materials": {
+        "gold_ore": 1
+      },
+      "skill_requirements": {
+        "smithing": 40
+      },
+      "uses": [
+        "jewelry",
+        "trinkets",
+        "shrine_offerings"
+      ],
+      "stackable": true
+    },
+    "crude_hatchet": {
+      "id": "crude_hatchet",
+      "name": "Crude Hatchet",
+      "category": "tool",
+      "skill_requirements": {
+        "woodcutting": 1
+      },
+      "equip_slot": "tool",
+      "stackable": false
+    },
+    "bronze_hatchet": {
+      "id": "bronze_hatchet",
+      "name": "Bronze Hatchet",
+      "category": "tool",
+      "skill_requirements": {
+        "woodcutting": 5
+      },
+      "equip_slot": "tool",
+      "stackable": false
+    },
+    "iron_hatchet": {
+      "id": "iron_hatchet",
+      "name": "Iron Hatchet",
+      "category": "tool",
+      "skill_requirements": {
+        "woodcutting": 15
+      },
+      "equip_slot": "tool",
+      "stackable": false
+    },
+    "steel_hatchet": {
+      "id": "steel_hatchet",
+      "name": "Steel Hatchet",
+      "category": "tool",
+      "skill_requirements": {
+        "woodcutting": 35
+      },
+      "equip_slot": "tool",
+      "stackable": false
+    },
+    "black_iron_hatchet": {
+      "id": "black_iron_hatchet",
+      "name": "Black Iron Hatchet",
+      "category": "tool",
+      "skill_requirements": {
+        "woodcutting": 50
+      },
+      "equip_slot": "tool",
+      "stackable": false
+    },
+    "crude_pickaxe": {
+      "id": "crude_pickaxe",
+      "name": "Crude Pickaxe",
+      "category": "tool",
+      "skill_requirements": {
+        "mining": 1
+      },
+      "equip_slot": "tool",
+      "stackable": false
+    },
+    "bronze_pickaxe": {
+      "id": "bronze_pickaxe",
+      "name": "Bronze Pickaxe",
+      "category": "tool",
+      "skill_requirements": {
+        "mining": 5
+      },
+      "equip_slot": "tool",
+      "stackable": false
+    },
+    "iron_pickaxe": {
+      "id": "iron_pickaxe",
+      "name": "Iron Pickaxe",
+      "category": "tool",
+      "skill_requirements": {
+        "mining": 15
+      },
+      "equip_slot": "tool",
+      "stackable": false
+    },
+    "steel_pickaxe": {
+      "id": "steel_pickaxe",
+      "name": "Steel Pickaxe",
+      "category": "tool",
+      "skill_requirements": {
+        "mining": 35
+      },
+      "equip_slot": "tool",
+      "stackable": false
+    },
+    "black_iron_pickaxe": {
+      "id": "black_iron_pickaxe",
+      "name": "Black Iron Pickaxe",
+      "category": "tool",
+      "skill_requirements": {
+        "mining": 50
+      },
+      "equip_slot": "tool",
+      "stackable": false
+    },
+    "small_net": {
+      "id": "small_net",
+      "name": "Small Net",
+      "category": "tool",
+      "skill_requirements": {
+        "fishing": 1
+      },
+      "equip_slot": "tool",
+      "stackable": false
+    },
+    "fishing_rod": {
+      "id": "fishing_rod",
+      "name": "Fishing Rod",
+      "category": "tool",
+      "skill_requirements": {
+        "fishing": 10
+      },
+      "equip_slot": "tool",
+      "stackable": false
+    },
+    "harpoon": {
+      "id": "harpoon",
+      "name": "Harpoon",
+      "category": "tool",
+      "skill_requirements": {
+        "fishing": 20
+      },
+      "equip_slot": "tool",
+      "stackable": false
+    },
+    "fishing_cage": {
+      "id": "fishing_cage",
+      "name": "Fishing Cage",
+      "category": "tool",
+      "skill_requirements": {
+        "fishing": 30
+      },
+      "equip_slot": "tool",
+      "stackable": false
+    },
+    "heavy_harpoon": {
+      "id": "heavy_harpoon",
+      "name": "Heavy Harpoon",
+      "category": "tool",
+      "skill_requirements": {
+        "fishing": 70
+      },
+      "equip_slot": "tool",
+      "stackable": false
+    },
+    "cooked_shrimp": {
+      "id": "cooked_shrimp",
+      "name": "Cooked Shrimp",
+      "category": "food",
+      "heal": 3,
+      "effects": {},
+      "skill_requirements": {
+        "cooking": 1
+      },
+      "stackable": false
+    },
+    "cooked_mudfish": {
+      "id": "cooked_mudfish",
+      "name": "Cooked Mudfish",
+      "category": "food",
+      "heal": 5,
+      "effects": {},
+      "skill_requirements": {
+        "cooking": 5
+      },
+      "stackable": false
+    },
+    "cooked_trout": {
+      "id": "cooked_trout",
+      "name": "Cooked Trout",
+      "category": "food",
+      "heal": 7,
+      "effects": {},
+      "skill_requirements": {
+        "cooking": 10
+      },
+      "stackable": false
+    },
+    "eel_skewer": {
+      "id": "eel_skewer",
+      "name": "Eel Skewer",
+      "category": "food",
+      "heal": 9,
+      "effects": {},
+      "skill_requirements": {
+        "cooking": 15
+      },
+      "stackable": false
+    },
+    "grilled_pike": {
+      "id": "grilled_pike",
+      "name": "Grilled Pike",
+      "category": "food",
+      "heal": 12,
+      "effects": {},
+      "skill_requirements": {
+        "cooking": 20
+      },
+      "stackable": false
+    },
+    "bog_eel_stew": {
+      "id": "bog_eel_stew",
+      "name": "Bog Eel Stew",
+      "category": "food",
+      "heal": 10,
+      "effects": {
+        "poison_resistance_seconds": 180
+      },
+      "skill_requirements": {
+        "cooking": 30
+      },
+      "stackable": false
+    },
+    "carp_fillet": {
+      "id": "carp_fillet",
+      "name": "Carp Fillet",
+      "category": "food",
+      "heal": 14,
+      "effects": {},
+      "skill_requirements": {
+        "cooking": 40
+      },
+      "stackable": false
+    },
+    "cavefish_roast": {
+      "id": "cavefish_roast",
+      "name": "Cavefish Roast",
+      "category": "food",
+      "heal": 16,
+      "effects": {},
+      "skill_requirements": {
+        "cooking": 50
+      },
+      "stackable": false
+    },
+    "catfish_steak": {
+      "id": "catfish_steak",
+      "name": "Catfish Steak",
+      "category": "food",
+      "heal": 20,
+      "effects": {},
+      "skill_requirements": {
+        "cooking": 60
+      },
+      "stackable": false
+    },
+    "grubshark_feast": {
+      "id": "grubshark_feast",
+      "name": "Grubshark Feast",
+      "category": "food",
+      "heal": 25,
+      "effects": {
+        "strength_buff_seconds": 180
+      },
+      "skill_requirements": {
+        "cooking": 70
+      },
+      "stackable": false
+    },
+    "war_feast": {
+      "id": "war_feast",
+      "name": "War Feast",
+      "category": "food",
+      "heal": 22,
+      "effects": {
+        "strength_buff_seconds": 180
+      },
+      "skill_requirements": {
+        "cooking": 70
+      },
+      "stackable": false
+    },
+    "raw_shrimp": {
+      "id": "raw_shrimp",
+      "name": "Raw Shrimp",
+      "category": "raw_food",
+      "cooks_into": "cooked_shrimp",
+      "stackable": true
+    },
+    "raw_mudfish": {
+      "id": "raw_mudfish",
+      "name": "Raw Mudfish",
+      "category": "raw_food",
+      "cooks_into": "cooked_mudfish",
+      "stackable": true
+    },
+    "raw_trout": {
+      "id": "raw_trout",
+      "name": "Raw Trout",
+      "category": "raw_food",
+      "cooks_into": "cooked_trout",
+      "stackable": true
+    },
+    "raw_river_eel": {
+      "id": "raw_river_eel",
+      "name": "Raw River Eel",
+      "category": "raw_food",
+      "cooks_into": "eel_skewer",
+      "stackable": true
+    },
+    "raw_pike": {
+      "id": "raw_pike",
+      "name": "Raw Pike",
+      "category": "raw_food",
+      "cooks_into": "grilled_pike",
+      "stackable": true
+    },
+    "raw_bog_eel": {
+      "id": "raw_bog_eel",
+      "name": "Raw Bog Eel",
+      "category": "raw_food",
+      "cooks_into": "bog_eel_stew",
+      "stackable": true
+    },
+    "raw_carp": {
+      "id": "raw_carp",
+      "name": "Raw Carp",
+      "category": "raw_food",
+      "cooks_into": "carp_fillet",
+      "stackable": true
+    },
+    "raw_cavefish": {
+      "id": "raw_cavefish",
+      "name": "Raw Cavefish",
+      "category": "raw_food",
+      "cooks_into": "cavefish_roast",
+      "stackable": true
+    },
+    "raw_armoured_catfish": {
+      "id": "raw_armoured_catfish",
+      "name": "Raw Armoured Catfish",
+      "category": "raw_food",
+      "cooks_into": "catfish_steak",
+      "stackable": true
+    },
+    "raw_grubshark": {
+      "id": "raw_grubshark",
+      "name": "Raw Grubshark",
+      "category": "raw_food",
+      "cooks_into": "grubshark_feast",
+      "stackable": true
+    },
+    "crude_dagger": {
+      "id": "crude_dagger",
+      "name": "Crude Dagger",
+      "category": "weapon",
+      "equip_slot": "main_hand",
+      "skill_requirements": {
+        "attack": 1
+      },
+      "stats": {
+        "stab": 2
+      },
+      "stackable": false
+    },
+    "bronze_dagger": {
+      "id": "bronze_dagger",
+      "name": "Bronze Dagger",
+      "category": "weapon",
+      "equip_slot": "main_hand",
+      "skill_requirements": {
+        "attack": 5
+      },
+      "stats": {
+        "stab": 5
+      },
+      "stackable": false
+    },
+    "bronze_spear": {
+      "id": "bronze_spear",
+      "name": "Bronze Spear",
+      "category": "weapon",
+      "equip_slot": "main_hand",
+      "skill_requirements": {
+        "attack": 10
+      },
+      "stats": {
+        "stab": 8,
+        "reach": 1
+      },
+      "stackable": false
+    },
+    "iron_sword": {
+      "id": "iron_sword",
+      "name": "Iron Sword",
+      "category": "weapon",
+      "equip_slot": "main_hand",
+      "skill_requirements": {
+        "attack": 15
+      },
+      "stats": {
+        "slash": 12
+      },
+      "stackable": false
+    },
+    "iron_spear": {
+      "id": "iron_spear",
+      "name": "Iron Spear",
+      "category": "weapon",
+      "equip_slot": "main_hand",
+      "skill_requirements": {
+        "attack": 25
+      },
+      "stats": {
+        "stab": 16,
+        "reach": 1
+      },
+      "stackable": false
+    },
+    "steel_sword": {
+      "id": "steel_sword",
+      "name": "Steel Sword",
+      "category": "weapon",
+      "equip_slot": "main_hand",
+      "skill_requirements": {
+        "attack": 35
+      },
+      "stats": {
+        "slash": 23
+      },
+      "stackable": false
+    },
+    "steel_spear": {
+      "id": "steel_spear",
+      "name": "Steel Spear",
+      "category": "weapon",
+      "equip_slot": "main_hand",
+      "skill_requirements": {
+        "attack": 45
+      },
+      "stats": {
+        "stab": 28,
+        "reach": 1
+      },
+      "stackable": false
+    },
+    "black_iron_blade": {
+      "id": "black_iron_blade",
+      "name": "Black Iron Blade",
+      "category": "weapon",
+      "equip_slot": "main_hand",
+      "skill_requirements": {
+        "attack": 55
+      },
+      "stats": {
+        "slash": 38
+      },
+      "stackable": false
+    },
+    "red_ear_spear": {
+      "id": "red_ear_spear",
+      "name": "Red-Ear Spear",
+      "category": "weapon",
+      "equip_slot": "main_hand",
+      "skill_requirements": {
+        "attack": 60
+      },
+      "stats": {
+        "stab": 42,
+        "reach": 1,
+        "unique": true
+      },
+      "stackable": false
+    },
+    "troll_club": {
+      "id": "troll_club",
+      "name": "Troll Club",
+      "category": "weapon",
+      "equip_slot": "main_hand",
+      "skill_requirements": {
+        "attack": 50,
+        "strength": 50
+      },
+      "stats": {
+        "crush": 40,
+        "slow": true
+      },
+      "stackable": false
+    },
+    "crude_bow": {
+      "id": "crude_bow",
+      "name": "Crude Bow",
+      "category": "weapon",
+      "equip_slot": "main_hand",
+      "skill_requirements": {
+        "ranged": 5
+      },
+      "stats": {
+        "ranged": 5
+      },
+      "stackable": false
+    },
+    "oak_bow": {
+      "id": "oak_bow",
+      "name": "Oak Bow",
+      "category": "weapon",
+      "equip_slot": "main_hand",
+      "skill_requirements": {
+        "ranged": 15
+      },
+      "stats": {
+        "ranged": 12
+      },
+      "stackable": false
+    },
+    "willow_bow": {
+      "id": "willow_bow",
+      "name": "Willow Bow",
+      "category": "weapon",
+      "equip_slot": "main_hand",
+      "skill_requirements": {
+        "ranged": 30
+      },
+      "stats": {
+        "ranged": 22
+      },
+      "stackable": false
+    },
+    "blackroot_bow": {
+      "id": "blackroot_bow",
+      "name": "Blackroot Bow",
+      "category": "weapon",
+      "equip_slot": "main_hand",
+      "skill_requirements": {
+        "ranged": 55
+      },
+      "stats": {
+        "ranged": 38,
+        "poison_bonus": true
+      },
+      "stackable": false
+    },
+    "leather_gloves": {
+      "id": "leather_gloves",
+      "name": "Leather Gloves",
+      "category": "armour",
+      "equip_slot": "hands",
+      "skill_requirements": {
+        "defence": 5
+      },
+      "stats": {
+        "defence": 2,
+        "ranged": 1
+      },
+      "stackable": false
+    },
+    "leather_body": {
+      "id": "leather_body",
+      "name": "Leather Body",
+      "category": "armour",
+      "equip_slot": "body",
+      "skill_requirements": {
+        "defence": 10
+      },
+      "stats": {
+        "defence": 5,
+        "ranged": 2
+      },
+      "stackable": false
+    },
+    "bronze_shield": {
+      "id": "bronze_shield",
+      "name": "Bronze Shield",
+      "category": "armour",
+      "equip_slot": "shield",
+      "skill_requirements": {
+        "defence": 15
+      },
+      "stats": {
+        "defence": 8
+      },
+      "stackable": false
+    },
+    "iron_shield": {
+      "id": "iron_shield",
+      "name": "Iron Shield",
+      "category": "armour",
+      "equip_slot": "shield",
+      "skill_requirements": {
+        "defence": 20
+      },
+      "stats": {
+        "defence": 13
+      },
+      "stackable": false
+    },
+    "steel_shield": {
+      "id": "steel_shield",
+      "name": "Steel Shield",
+      "category": "armour",
+      "equip_slot": "shield",
+      "skill_requirements": {
+        "defence": 40
+      },
+      "stats": {
+        "defence": 24
+      },
+      "stackable": false
+    },
+    "black_iron_armour": {
+      "id": "black_iron_armour",
+      "name": "Black Iron Armour",
+      "category": "armour",
+      "equip_slot": "body",
+      "skill_requirements": {
+        "defence": 50
+      },
+      "stats": {
+        "defence": 35
+      },
+      "stackable": false
+    },
+    "bog_horror_hide": {
+      "id": "bog_horror_hide",
+      "name": "Bog Horror Hide",
+      "category": "material",
+      "equip_slot": null,
+      "skill_requirements": {},
+      "stats": {
+        "poison_resistance": true
+      },
+      "stackable": false
+    },
+    "bog_horror_armour": {
+      "id": "bog_horror_armour",
+      "name": "Bog Horror Armour",
+      "category": "armour",
+      "equip_slot": "body",
+      "skill_requirements": {
+        "defence": 60,
+        "crafting": 60
+      },
+      "stats": {
+        "defence": 38,
+        "poison_resistance": true
+      },
+      "stackable": false
+    },
+    "bone_amulet": {
+      "id": "bone_amulet",
+      "name": "Bone Amulet",
+      "category": "jewelry",
+      "equip_slot": "neck",
+      "skill_requirements": {
+        "crafting": 40
+      },
+      "stats": {
+        "prayer": 3
+      },
+      "stackable": false
+    },
+    "goblin_charm": {
+      "id": "goblin_charm",
+      "name": "Goblin Charm",
+      "category": "jewelry",
+      "equip_slot": "neck",
+      "skill_requirements": {
+        "crafting": 25
+      },
+      "stats": {
+        "swamp_resistance": true
+      },
+      "stackable": false
+    },
+    "gem_ring": {
+      "id": "gem_ring",
+      "name": "Gem Ring",
+      "category": "jewelry",
+      "equip_slot": "ring",
+      "skill_requirements": {
+        "crafting": 50
+      },
+      "stats": {
+        "gathering_luck": 1
+      },
+      "stackable": false
+    },
+    "bronze_arrows": {
+      "id": "bronze_arrows",
+      "name": "Bronze Arrows",
+      "category": "ammo",
+      "skill_requirements": {
+        "ranged": 10
+      },
+      "stats": {
+        "ranged_damage": 3
+      },
+      "stackable": true
+    },
+    "iron_arrows": {
+      "id": "iron_arrows",
+      "name": "Iron Arrows",
+      "category": "ammo",
+      "skill_requirements": {
+        "ranged": 20
+      },
+      "stats": {
+        "ranged_damage": 7
+      },
+      "stackable": true
+    },
+    "poison_arrows": {
+      "id": "poison_arrows",
+      "name": "Poison Arrows",
+      "category": "ammo",
+      "skill_requirements": {
+        "ranged": 35
+      },
+      "stats": {
+        "ranged_damage": 7
+      },
+      "stackable": true
+    },
+    "steel_arrows": {
+      "id": "steel_arrows",
+      "name": "Steel Arrows",
+      "category": "ammo",
+      "skill_requirements": {
+        "ranged": 45
+      },
+      "stats": {
+        "ranged_damage": 12
+      },
+      "stackable": true
+    },
+    "barbed_arrows": {
+      "id": "barbed_arrows",
+      "name": "Barbed Arrows",
+      "category": "ammo",
+      "skill_requirements": {
+        "ranged": 65
+      },
+      "stats": {
+        "ranged_damage": 18
+      },
+      "stackable": true
+    },
+    "rat_tooth_charm": {
+      "id": "rat_tooth_charm",
+      "name": "Rat Tooth Charm",
+      "category": "unique",
+      "uses": [
+        "beginner_necklace",
+        "quest"
+      ],
+      "stackable": false
+    },
+    "bug_eye_ring": {
+      "id": "bug_eye_ring",
+      "name": "Bug-Eye Ring",
+      "category": "unique",
+      "uses": [
+        "mining_accuracy_charm"
+      ],
+      "stackable": false
+    },
+    "mud_grub_pet": {
+      "id": "mud_grub_pet",
+      "name": "Mud Grub Pet",
+      "category": "unique",
+      "uses": [
+        "cosmetic_pet"
+      ],
+      "stackable": false
+    },
+    "trainee_headband": {
+      "id": "trainee_headband",
+      "name": "Trainee Headband",
+      "category": "unique",
+      "uses": [
+        "cosmetic"
+      ],
+      "stackable": false
+    },
+    "spider_fang_dagger": {
+      "id": "spider_fang_dagger",
+      "name": "Spider Fang Dagger",
+      "category": "unique",
+      "uses": [
+        "poison_starter_weapon"
+      ],
+      "stackable": false
+    },
+    "forest_rat_tail": {
+      "id": "forest_rat_tail",
+      "name": "Forest Rat Tail",
+      "category": "unique",
+      "uses": [
+        "quest",
+        "crafting"
+      ],
+      "stackable": false
+    },
+    "bandit_hook": {
+      "id": "bandit_hook",
+      "name": "Bandit Hook",
+      "category": "unique",
+      "uses": [
+        "fishing_accessory"
+      ],
+      "stackable": false
+    },
+    "mud_shell_shield": {
+      "id": "mud_shell_shield",
+      "name": "Mud Shell Shield",
+      "category": "unique",
+      "uses": [
+        "defence",
+        "swamp_theme_gear"
+      ],
+      "stackable": false
+    },
+    "fisher_gob_hat": {
+      "id": "fisher_gob_hat",
+      "name": "Fisher-Gob Hat",
+      "category": "unique",
+      "uses": [
+        "fishing_cosmetic",
+        "minor_fishing_bonus"
+      ],
+      "stackable": false
+    },
+    "boar_tusk_spear_tip": {
+      "id": "boar_tusk_spear_tip",
+      "name": "Boar Tusk Spear Tip",
+      "category": "unique",
+      "uses": [
+        "spear_upgrade"
+      ],
+      "stackable": false
+    },
+    "echo_fang": {
+      "id": "echo_fang",
+      "name": "Echo Fang",
+      "category": "unique",
+      "uses": [
+        "amulet_ingredient"
+      ],
+      "stackable": false
+    },
+    "iron_crab_shell": {
+      "id": "iron_crab_shell",
+      "name": "Iron Crab Shell",
+      "category": "unique",
+      "uses": [
+        "shield_crafting"
+      ],
+      "stackable": false
+    },
+    "moss_wolf_pelt": {
+      "id": "moss_wolf_pelt",
+      "name": "Moss Wolf Pelt",
+      "category": "unique",
+      "uses": [
+        "ranger_armour_crafting"
+      ],
+      "stackable": false
+    },
+    "scout_map_scrap": {
+      "id": "scout_map_scrap",
+      "name": "Scout Map Scrap",
+      "category": "unique",
+      "uses": [
+        "quest_progression"
+      ],
+      "stackable": false
+    },
+    "scout_hood": {
+      "id": "scout_hood",
+      "name": "Scout Hood",
+      "category": "unique",
+      "uses": [
+        "ranged_gear"
+      ],
+      "stackable": false
+    },
+    "frog_crown": {
+      "id": "frog_crown",
+      "name": "Frog Crown",
+      "category": "unique",
+      "uses": [
+        "rare_cosmetic"
+      ],
+      "stackable": false
+    },
+    "bog_rat_charm": {
+      "id": "bog_rat_charm",
+      "name": "Bog Rat Charm",
+      "category": "unique",
+      "uses": [
+        "poison_resistance"
+      ],
+      "stackable": false
+    },
+    "spore_mask": {
+      "id": "spore_mask",
+      "name": "Spore Mask",
+      "category": "unique",
+      "uses": [
+        "mushroom_swamp_gear"
+      ],
+      "stackable": false
+    },
+    "miners_belt": {
+      "id": "miners_belt",
+      "name": "Miner's Belt",
+      "category": "unique",
+      "uses": [
+        "mining_carry_bonus"
+      ],
+      "stackable": false
+    },
+    "slime_core": {
+      "id": "slime_core",
+      "name": "Slime Core",
+      "category": "unique",
+      "uses": [
+        "high_crafting",
+        "charms"
+      ],
+      "stackable": false
+    },
+    "snapper_tooth_necklace": {
+      "id": "snapper_tooth_necklace",
+      "name": "Snapper Tooth Necklace",
+      "category": "unique",
+      "uses": [
+        "fishing_combat_trinket"
+      ],
+      "stackable": false
+    },
+    "rival_blade_fragment": {
+      "id": "rival_blade_fragment",
+      "name": "Rival Blade Fragment",
+      "category": "unique",
+      "uses": [
+        "unique_weapon_craft"
+      ],
+      "stackable": false
+    },
+    "archer_wristguard": {
+      "id": "archer_wristguard",
+      "name": "Archer Wristguard",
+      "category": "unique",
+      "uses": [
+        "ranged_accuracy"
+      ],
+      "stackable": false
+    },
+    "crawler_claw": {
+      "id": "crawler_claw",
+      "name": "Crawler Claw",
+      "category": "unique",
+      "uses": [
+        "weapon_crafting"
+      ],
+      "stackable": false
+    },
+    "black_crab_core": {
+      "id": "black_crab_core",
+      "name": "Black Crab Core",
+      "category": "unique",
+      "uses": [
+        "shield_unique"
+      ],
+      "stackable": false
+    },
+    "shaman_totem": {
+      "id": "shaman_totem",
+      "name": "Shaman Totem",
+      "category": "unique",
+      "uses": [
+        "prayer_shrine_unique"
+      ],
+      "stackable": false
+    },
+    "brute_club_head": {
+      "id": "brute_club_head",
+      "name": "Brute Club Head",
+      "category": "unique",
+      "uses": [
+        "strength_weapon_craft"
+      ],
+      "stackable": false
+    },
+    "troll_tooth": {
+      "id": "troll_tooth",
+      "name": "Troll Tooth",
+      "category": "unique",
+      "uses": [
+        "amulet_craft"
+      ],
+      "stackable": false
+    },
+    "captains_banner": {
+      "id": "captains_banner",
+      "name": "Captain's Banner",
+      "category": "unique",
+      "uses": [
+        "quest_unique"
+      ],
+      "stackable": false
+    },
+    "red_ear_spear_tip": {
+      "id": "red_ear_spear_tip",
+      "name": "Red-Ear Spear Tip",
+      "category": "unique",
+      "uses": [
+        "unique_spear_craft"
+      ],
+      "stackable": false
+    },
+    "mountain_key_fragment": {
+      "id": "mountain_key_fragment",
+      "name": "Mountain Key Fragment",
+      "category": "unique",
+      "uses": [
+        "area_unlock"
+      ],
+      "stackable": false
+    },
+    "horror_heart": {
+      "id": "horror_heart",
+      "name": "Horror Heart",
+      "category": "unique",
+      "uses": [
+        "boss_crafting_unique"
+      ],
+      "stackable": false
+    },
+    "bog_crown": {
+      "id": "bog_crown",
+      "name": "Bog Crown",
+      "category": "unique",
+      "uses": [
+        "rare_cosmetic"
+      ],
+      "stackable": false
+    },
+    "bowstring": {
+      "id": "bowstring",
+      "name": "Bowstring",
+      "category": "material",
+      "stackable": true,
+      "uses": [
+        "recipe_input"
+      ]
+    },
+    "amulet_cord": {
+      "id": "amulet_cord",
+      "name": "Amulet Cord",
+      "category": "material",
+      "stackable": true,
+      "uses": [
+        "recipe_input"
+      ]
+    },
+    "iron_nails": {
+      "id": "iron_nails",
+      "name": "Iron Nails",
+      "category": "material",
+      "stackable": true,
+      "uses": [
+        "recipe_input"
+      ]
+    },
+    "reinforced_bag": {
+      "id": "reinforced_bag",
+      "name": "Reinforced Bag",
+      "category": "utility",
+      "stackable": true,
+      "uses": [
+        "recipe_input"
+      ]
+    },
+    "boar_meat": {
+      "id": "boar_meat",
+      "name": "Boar Meat",
+      "category": "raw_food",
+      "stackable": true,
+      "uses": [
+        "recipe_input"
+      ]
+    },
+    "potato": {
+      "id": "potato",
+      "name": "Potato",
+      "category": "crop",
+      "stackable": true,
+      "uses": [
+        "recipe_input"
+      ]
+    },
+    "rat_meat": {
+      "id": "rat_meat",
+      "name": "Rat Meat",
+      "category": "drop_material_or_unique",
+      "stackable": true,
+      "uses": [
+        "drop_source",
+        "future_recipe_or_quest"
+      ]
+    },
+    "torn_hide": {
+      "id": "torn_hide",
+      "name": "Torn Hide",
+      "category": "drop_material_or_unique",
+      "stackable": true,
+      "uses": [
+        "drop_source",
+        "future_recipe_or_quest"
+      ]
+    },
+    "grub_meat": {
+      "id": "grub_meat",
+      "name": "Grub Meat",
+      "category": "drop_material_or_unique",
+      "stackable": true,
+      "uses": [
+        "drop_source",
+        "future_recipe_or_quest"
+      ]
+    },
+    "fishing_bait": {
+      "id": "fishing_bait",
+      "name": "Fishing Bait",
+      "category": "drop_material_or_unique",
+      "stackable": true,
+      "uses": [
+        "drop_source",
+        "future_recipe_or_quest"
+      ]
+    },
+    "torn_cloth": {
+      "id": "torn_cloth",
+      "name": "Torn Cloth",
+      "category": "drop_material_or_unique",
+      "stackable": true,
+      "uses": [
+        "drop_source",
+        "future_recipe_or_quest"
+      ]
+    },
+    "bronze_sword": {
+      "id": "bronze_sword",
+      "name": "Bronze Sword",
+      "category": "drop_material_or_unique",
+      "stackable": true,
+      "uses": [
+        "drop_source",
+        "future_recipe_or_quest"
+      ]
+    },
+    "mud_slime": {
+      "id": "mud_slime",
+      "name": "Mud Slime",
+      "category": "drop_material_or_unique",
+      "stackable": true,
+      "uses": [
+        "drop_source",
+        "future_recipe_or_quest"
+      ]
+    },
+    "bat_wing": {
+      "id": "bat_wing",
+      "name": "Bat Wing",
+      "category": "drop_material_or_unique",
+      "stackable": true,
+      "uses": [
+        "drop_source",
+        "future_recipe_or_quest"
+      ]
+    },
+    "stone_chunk": {
+      "id": "stone_chunk",
+      "name": "Stone Chunk",
+      "category": "drop_material_or_unique",
+      "stackable": true,
+      "uses": [
+        "drop_source",
+        "future_recipe_or_quest"
+      ]
+    },
+    "crab_meat": {
+      "id": "crab_meat",
+      "name": "Crab Meat",
+      "category": "drop_material_or_unique",
+      "stackable": true,
+      "uses": [
+        "drop_source",
+        "future_recipe_or_quest"
+      ]
+    },
+    "wolf_meat": {
+      "id": "wolf_meat",
+      "name": "Wolf Meat",
+      "category": "drop_material_or_unique",
+      "stackable": true,
+      "uses": [
+        "drop_source",
+        "future_recipe_or_quest"
+      ]
+    },
+    "iron_dagger": {
+      "id": "iron_dagger",
+      "name": "Iron Dagger",
+      "category": "drop_material_or_unique",
+      "stackable": true,
+      "uses": [
+        "drop_source",
+        "future_recipe_or_quest"
+      ]
+    },
+    "frog_legs": {
+      "id": "frog_legs",
+      "name": "Frog Legs",
+      "category": "drop_material_or_unique",
+      "stackable": true,
+      "uses": [
+        "drop_source",
+        "future_recipe_or_quest"
+      ]
+    },
+    "diseased_hide": {
+      "id": "diseased_hide",
+      "name": "Diseased Hide",
+      "category": "drop_material_or_unique",
+      "stackable": true,
+      "uses": [
+        "drop_source",
+        "future_recipe_or_quest"
+      ]
+    },
+    "bone_needle": {
+      "id": "bone_needle",
+      "name": "Bone Needle",
+      "category": "drop_material_or_unique",
+      "stackable": true,
+      "uses": [
+        "drop_source",
+        "future_recipe_or_quest"
+      ]
+    },
+    "pickaxe_head": {
+      "id": "pickaxe_head",
+      "name": "Pickaxe Head",
+      "category": "drop_material_or_unique",
+      "stackable": true,
+      "uses": [
+        "drop_source",
+        "future_recipe_or_quest"
+      ]
+    },
+    "snapper_shell": {
+      "id": "snapper_shell",
+      "name": "Snapper Shell",
+      "category": "drop_material_or_unique",
+      "stackable": true,
+      "uses": [
+        "drop_source",
+        "future_recipe_or_quest"
+      ]
+    },
+    "water_herb": {
+      "id": "water_herb",
+      "name": "Water Herb",
+      "category": "drop_material_or_unique",
+      "stackable": true,
+      "uses": [
+        "drop_source",
+        "future_recipe_or_quest"
+      ]
+    },
+    "steel_arrowheads": {
+      "id": "steel_arrowheads",
+      "name": "Steel Arrowheads",
+      "category": "drop_material_or_unique",
+      "stackable": true,
+      "uses": [
+        "drop_source",
+        "future_recipe_or_quest"
+      ]
+    },
+    "cooked_pike": {
+      "id": "cooked_pike",
+      "name": "Cooked Pike",
+      "category": "drop_material_or_unique",
+      "stackable": true,
+      "uses": [
+        "drop_source",
+        "future_recipe_or_quest"
+      ]
+    },
+    "heavy_shell": {
+      "id": "heavy_shell",
+      "name": "Heavy Shell",
+      "category": "drop_material_or_unique",
+      "stackable": true,
+      "uses": [
+        "drop_source",
+        "future_recipe_or_quest"
+      ]
+    },
+    "cooked_carp": {
+      "id": "cooked_carp",
+      "name": "Cooked Carp",
+      "category": "drop_material_or_unique",
+      "stackable": true,
+      "uses": [
+        "drop_source",
+        "future_recipe_or_quest"
+      ]
+    },
+    "troll_meat": {
+      "id": "troll_meat",
+      "name": "Troll Meat",
+      "category": "drop_material_or_unique",
+      "stackable": true,
+      "uses": [
+        "drop_source",
+        "future_recipe_or_quest"
+      ]
+    },
+    "swamp_herb_bundle": {
+      "id": "swamp_herb_bundle",
+      "name": "Swamp Herb Bundle",
+      "category": "drop_material_or_unique",
+      "stackable": true,
+      "uses": [
+        "drop_source",
+        "future_recipe_or_quest"
+      ]
+    }
+  }
+}

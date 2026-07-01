@@ -1,0 +1,721 @@
+// src/world/map.js
+// ONE authored Goblin Empire world, reverse-engineered from the approved image
+// pack. Region centers/bounds, road polylines, landmark coordinates and the
+// resource distribution come straight from worldData (which mirrors the JSON
+// pack). Generation only paints terrain TEXTURE inside authored shapes; every
+// location is hand-built with real tiles + objects. Do not regenerate layout.
+
+import {
+  WORLD_W, WORLD_H, CHUNK, DEFAULT_SEED, T, TERRAIN_DEFS, REGION_ANCHORS,
+  RESOURCE_TYPES, ENEMY_TYPES, ROADS, LANDMARKS, MOB_MAP,
+} from './worldData.js';
+// The design database (items/monsters/nodes). Loaded via resilient top-level
+// await; empty in Node so world-gen falls back to the hand-authored baseline.
+import { GameData } from '../data/gameData.js';
+
+export const TILE_SIZE = 32;
+export { WORLD_W, WORLD_H, CHUNK, TERRAIN_DEFS, T };
+export const REGIONS = REGION_ANCHORS;
+
+const idx = (x, y) => y * WORLD_W + x;
+const inB = (x, y) => x >= 0 && y >= 0 && x < WORLD_W && y < WORLD_H;
+const chunkKey = (x, y) => ((y / CHUNK) | 0) + ',' + ((x / CHUNK) | 0);
+const prettify = (s) => s.split('_').map((w) => w[0].toUpperCase() + w.slice(1)).join(' ');
+
+function makeRng(seed) { let s = seed >>> 0; return () => { s = (s + 0x6d2b79f5) | 0; let t = Math.imul(s ^ (s >>> 15), 1 | s); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+function hash2(ix, iy, seed) { let h = (Math.imul(ix, 374761393) + Math.imul(iy, 668265263)) ^ seed; h = Math.imul(h ^ (h >>> 13), 1274126177); return ((h ^ (h >>> 16)) >>> 0) / 4294967296; }
+const fade = (t) => t * t * (3 - 2 * t);
+function vnoise(x, y, seed) { const x0 = Math.floor(x), y0 = Math.floor(y), fx = fade(x - x0), fy = fade(y - y0); const a = hash2(x0, y0, seed), b = hash2(x0 + 1, y0, seed), c = hash2(x0, y0 + 1, seed), d = hash2(x0 + 1, y0 + 1, seed); const ab = a + (b - a) * fx; return ab + ((c + (d - c) * fx) - ab) * fy; }
+
+// ===================================================================
+// AUTHORED TERRAIN (matches the image within each region's bounds).
+// ===================================================================
+const LAKE = [[622, 430], [665, 378], [735, 362], [808, 382], [858, 432], [874, 498], [856, 562], [806, 606], [735, 624], [668, 608], [628, 548], [615, 486]];
+const LAKE_ISLAND = { x: 745, y: 520, r: 12 };
+const RIVERS = [
+  { pts: [[432, 130], [400, 240], [362, 330], [332, 435], [308, 520], [284, 610], [262, 690], [236, 770], [208, 850]], w: 3 }, // Willow (through Chopper's + Riverlands)
+  { pts: [[615, 150], [640, 250], [664, 340], [694, 405]], w: 3 },  // north inlet -> Grublake
+  { pts: [[735, 560], [705, 640], [685, 710], [725, 775]], w: 2 },  // lake drainage -> Bog (roads.json waterline)
+];
+const HIGHLANDS = [
+  { poly: [[700, 0], [992, 0], [992, 172], [830, 168], [740, 120], [700, 58]], density: 0.72 }, // Troll Ridge
+  { poly: [[440, 0], [712, 0], [712, 92], [560, 106], [440, 58]], density: 0.55 },               // north mountain band
+  { poly: [[500, 70], [736, 70], [736, 288], [560, 292], [500, 182]], density: 0.42 },           // Northern Mine Hills
+];
+const BOG = [[600, 632], [770, 624], [806, 700], [790, 800], [700, 842], [610, 806], [595, 700]];
+const FORESTS = [
+  { poly: [[252, 298], [428, 296], [430, 452], [262, 454], [250, 360]], kinds: ['tree', 'tree', 'tree', 'tree_oak'], density: 0.15, mushroom: false }, // Chopper's Hollow
+  { poly: [[702, 212], [978, 214], [980, 472], [720, 474], [702, 340]], kinds: ['tree_oak', 'tree_oak', 'tree'], density: 0.16, mushroom: false },      // Eastern Oakwoods
+  { poly: [[118, 702], [388, 700], [390, 942], [130, 944], [116, 820]], kinds: ['tree_dead', 'tree', 'tree_dead'], density: 0.14, mushroom: true },      // Mushroom Forest
+  { poly: [[92, 42], [388, 42], [390, 258], [110, 260], [92, 150]], kinds: ['tree', 'tree', 'tree_oak'], density: 0.12, mushroom: false },                // Old Forest Ruins
+];
+
+// ===================================================================
+export function generateWorld(seed = DEFAULT_SEED) {
+  seed = (seed >>> 0) || DEFAULT_SEED;
+  const rng = makeRng(seed);
+  const Sr = seed ^ 0x51ed, Sg = seed ^ 0x2a3b;
+
+  const terrain = new Uint8Array(WORLD_W * WORLD_H);
+  const objects = [];
+  const objectAt = new Map();
+  const occupied = new Set();
+  const enemySpawns = [];
+  const friendlies = [];   // non-combat NPCs (tutors, prospectors, farmers…)
+  const dbLoaded = ((GameData && GameData.monsters) || []).length > 0; // when true, DB is the sole monster source; baseline region-mobs are dropped
+  const okey = (x, y) => x + ',' + y;
+  const setT = (x, y, t) => { if (inB(x, y)) terrain[idx(x, y)] = t; };
+  const getT = (x, y) => (inB(x, y) ? terrain[idx(x, y)] : T.ROCK);
+
+  // geometry helpers
+  const pip = (px, py, poly) => { let c = false; for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) { const xi = poly[i][0], yi = poly[i][1], xj = poly[j][0], yj = poly[j][1]; if (((yi > py) !== (yj > py)) && (px < (xj - xi) * (py - yi) / (yj - yi) + xi)) c = !c; } return c; };
+  const pbox = (poly) => { let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9; for (const [x, y] of poly) { x0 = Math.min(x0, x); y0 = Math.min(y0, y); x1 = Math.max(x1, x); y1 = Math.max(y1, y); } return [Math.max(0, x0 | 0), Math.max(0, y0 | 0), Math.min(WORLD_W - 1, Math.ceil(x1)), Math.min(WORLD_H - 1, Math.ceil(y1))]; };
+  const fillPoly = (poly, fn) => { const [x0, y0, x1, y1] = pbox(poly); for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) if (pip(x + 0.5, y + 0.5, poly)) fn(x, y); };
+  function catmull(p, t) { const i = Math.min(Math.floor(t), p.length - 2), f = t - i; const p0 = p[Math.max(0, i - 1)], p1 = p[i], p2 = p[i + 1], p3 = p[Math.min(p.length - 1, i + 2)]; const f2 = f * f, f3 = f2 * f; const cx = 0.5 * (2 * p1[0] + (-p0[0] + p2[0]) * f + (2 * p0[0] - 5 * p1[0] + 4 * p2[0] - p3[0]) * f2 + (-p0[0] + 3 * p1[0] - 3 * p2[0] + p3[0]) * f3); const cy = 0.5 * (2 * p1[1] + (-p0[1] + p2[1]) * f + (2 * p0[1] - 5 * p1[1] + 4 * p2[1] - p3[1]) * f2 + (-p0[1] + 3 * p1[1] - 3 * p2[1] + p3[1]) * f3); return [cx, cy]; }
+  const disc = (cx, cy, r, fn) => { const r2 = r * r; for (let y = Math.floor(cy - r); y <= cy + r; y++) for (let x = Math.floor(cx - r); x <= cx + r; x++) { const dx = x - cx, dy = y - cy; if (inB(x, y) && dx * dx + dy * dy <= r2) fn(x, y); } };
+  const alongPath = (pts, fn, step = 0.03) => { for (let t = 0; t < pts.length - 1; t += step) { const [x, y] = catmull(pts, t); fn(x, y); } };
+
+  // object helpers
+  const placeObj = (o, interactive = true) => { objects.push(o); if (interactive) { objectAt.set(okey(o.x, o.y), o); occupied.add(okey(o.x, o.y)); } return o; };
+  const structure = (x, y, label, color, skill = null, blocking = true) => { if (!inB(x, y) || occupied.has(okey(x, y))) return null; return placeObj({ x, y, type: 'structure', label, color, skill, blocking, depleted: false }); };
+  const decor = (x, y, color, size, shape) => { if (!inB(x, y) || occupied.has(okey(x, y))) return; placeObj({ x, y, type: 'decor', color, size, shape, blocking: false }, false); };
+  const isGrass = (x, y) => getT(x, y) === T.GRASS;
+  const landish = (x, y) => { const t = getT(x, y); return t === T.GRASS || t === T.DIRT || t === T.SAND || t === T.SWAMP || t === T.FLOOR; };
+  const openGround = (x, y) => isGrass(x, y) && !occupied.has(okey(x, y));
+  const nearRock = (x, y, rad) => { for (let dy = -rad; dy <= rad; dy++) for (let dx = -rad; dx <= rad; dx++) if (getT(x + dx, y + dy) === T.ROCK) return true; return false; };
+  const nearWater = (x, y, rad) => { for (let dy = -rad; dy <= rad; dy++) for (let dx = -rad; dx <= rad; dx++) if (getT(x + dx, y + dy) === T.WATER) return true; return false; };
+  const waterShore = (x, y) => getT(x, y) === T.WATER && [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => { const t = getT(x + dx, y + dy); return t === T.SAND || t === T.GRASS || t === T.DIRT || t === T.SWAMP || t === T.BRIDGE; });
+  const resObj = (x, y, k) => { const d = RESOURCE_TYPES[k]; return placeObj({ x, y, type: 'resource', resKey: k, skill: d.skill, level: d.level, tool: d.tool, drop: d.drop, xp: d.xp, low: d.low, high: d.high, label: d.label, color: d.color, deplete: d.deplete, respawn: d.respawn, blocking: d.blocking !== false, depleted: false, respawnAt: 0 }); };
+
+  // A walkable building (RuneScape overworld style): FLOOR interior, WALL
+  // perimeter, a 1-tile door you walk through, and the station/counter object
+  // inside. No roof, no interior instance — you just walk in.
+  function building(cx, cy, hw, hh, label, color, skill = null, door = 'S') {
+    for (let y = cy - hh; y <= cy + hh; y++) for (let x = cx - hw; x <= cx + hw; x++) setT(x, y, T.FLOOR);
+    for (let x = cx - hw - 1; x <= cx + hw + 1; x++) { setT(x, cy - hh - 1, T.WALL); setT(x, cy + hh + 1, T.WALL); }
+    for (let y = cy - hh - 1; y <= cy + hh + 1; y++) { setT(cx - hw - 1, y, T.WALL); setT(cx + hw + 1, y, T.WALL); }
+    if (door === 'S') setT(cx, cy + hh + 1, T.FLOOR);
+    else if (door === 'N') setT(cx, cy - hh - 1, T.FLOOR);
+    else if (door === 'E') setT(cx + hw + 1, cy, T.FLOOR);
+    else setT(cx - hw - 1, cy, T.FLOOR);
+    if (label) structure(cx, cy, label, color, skill); // counter/station inside, click to use
+  }
+
+  // Distance from a point to the nearest edge of a polygon (for feathered,
+  // no-hard-stop region blending).
+  function segDist(px, py, ax, ay, bx, by) { const vx = bx - ax, vy = by - ay, wx = px - ax, wy = py - ay; const c1 = vx * wx + vy * wy; if (c1 <= 0) return Math.hypot(px - ax, py - ay); const c2 = vx * vx + vy * vy; if (c2 <= c1) return Math.hypot(px - bx, py - by); const t = c1 / c2; return Math.hypot(px - (ax + t * vx), py - (ay + t * vy)); }
+  function edgeDist(px, py, poly) { let m = Infinity; for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) m = Math.min(m, segDist(px, py, poly[i][0], poly[i][1], poly[j][0], poly[j][1])); return m; }
+  // Iterate a polygon expanded by `feather`, calling fn(x, y, depth) where
+  // depth is +dist inside the polygon and -dist just outside it. Lets fills ramp
+  // density from the interior to zero a bit past the edge, so nothing stops hard.
+  function polyFeather(poly, feather, fn) { const [x0, y0, x1, y1] = pbox(poly); for (let y = y0 - feather; y <= y1 + feather; y++) for (let x = x0 - feather; x <= x1 + feather; x++) { if (!inB(x, y)) continue; const inside = pip(x + 0.5, y + 0.5, poly); const d = edgeDist(x + 0.5, y + 0.5, poly); if (!inside && d > feather) continue; fn(x, y, inside ? d : -d); } }
+  const ramp = (depth, at, span) => Math.max(0, Math.min(1, (depth + at) / span));
+
+  // ---- PASS 1: base grass + border ----
+  terrain.fill(T.GRASS);
+  for (let x = 0; x < WORLD_W; x++) for (const y of [0, 1, 2, WORLD_H - 3, WORLD_H - 2, WORLD_H - 1]) terrain[idx(x, y)] = T.ROCK;
+  for (let y = 0; y < WORLD_H; y++) for (const x of [0, 1, 2, WORLD_W - 3, WORLD_W - 2, WORLD_W - 1]) terrain[idx(x, y)] = T.ROCK;
+
+  // ---- PASS 2: highlands (rock texture + passes), feathered at the edges ----
+  for (const h of HIGHLANDS) polyFeather(h.poly, 18, (x, y, depth) => {
+    const factor = ramp(depth, 12, 26); // rock density fades toward/just past the edge
+    const n = vnoise(x / 6, y / 6, Sr) * 0.6 + vnoise(x / 22, y / 22, Sr) * 0.4;
+    if (n < h.density * factor) setT(x, y, T.ROCK);
+    else if (getT(x, y) === T.GRASS && depth > -12 && depth < 8 && vnoise(x / 4, y / 4, Sr + 2) > 0.72) decor(x, y, 0x6a6a6a, 6, 'rect'); // scattered boulders in the transition band
+  });
+
+  // ---- PASS 2b: lake + rivers + bog ----
+  fillPoly(LAKE, (x, y) => setT(x, y, T.WATER));
+  disc(LAKE_ISLAND.x, LAKE_ISLAND.y, LAKE_ISLAND.r, (x, y) => setT(x, y, T.GRASS));
+  // beach ring
+  for (const [lx, ly] of LAKE) disc(lx, ly, 3, (x, y) => { if (getT(x, y) === T.GRASS && [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => getT(x + dx, y + dy) === T.WATER)) setT(x, y, T.SAND); });
+  for (const r of RIVERS) alongPath(r.pts, (cx, cy) => disc(cx, cy, r.w + 0.6 * vnoise(cx, cy, Sr), (x, y) => { if (getT(x, y) !== T.ROCK) setT(x, y, T.WATER); }));
+  polyFeather(BOG, 16, (x, y, depth) => {
+    const t = getT(x, y); if (t === T.WATER || t === T.ROCK) return;
+    const factor = ramp(depth, 10, 24);
+    if (depth > 8) setT(x, y, vnoise(x / 9, y / 9, Sg) < 0.36 ? T.WATER : T.SWAMP); // solid bog interior
+    else if (factor > 0 && hash2(x, y, Sg + 5) < factor) { setT(x, y, T.SWAMP); if (vnoise(x / 5, y / 5, Sg + 2) > 0.82) decor(x, y, 0x6fae7a, 4, 'rect'); } // dithered swamp/grass fringe with reeds
+  });
+
+  // ---- PASS 3: Goblin Settlement (built at 500,455, region bounds 450-555,405-510) ----
+  const TB = { x0: 450, y0: 405, x1: 555, y1: 510, cx: 500, cy: 455 };
+  (function buildTown() {
+    const { x0, y0, x1, y1, cx, cy } = TB;
+    for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) setT(x, y, T.GRASS);
+    for (let y = cy - 2; y <= cy + 2; y++) for (let x = x0 + 1; x <= x1 - 1; x++) setT(x, y, T.ROAD); // E-W avenue
+    for (let x = cx - 2; x <= cx + 2; x++) for (let y = y0 + 1; y <= y1 - 1; y++) setT(x, y, T.ROAD); // N-S avenue
+    disc(cx, cy, 7, (x, y) => setT(x, y, T.FLOOR)); // main square
+    for (let x = x0; x <= x1; x++) { setT(x, y0, T.WALL); setT(x, y1, T.WALL); }
+    for (let y = y0; y <= y1; y++) { setT(x0, y, T.WALL); setT(x1, y, T.WALL); }
+    for (const g of [-2, -1, 0, 1, 2]) { setT(cx + g, y0, T.ROAD); setT(cx + g, y1, T.ROAD); setT(x0, cy + g, T.ROAD); setT(x1, cy + g, T.ROAD); }
+    TB.gates = { N: [cx, y0 - 1], S: [cx, y1 + 1], W: [x0 - 1, cy], E: [x1 + 1, cy] };
+    // Walkable buildings (walls + door + floor; stations at ~landmark coords).
+    building(484, 447, 2, 1, 'Bank', 0xc9a24a, null, 'S');
+    building(472, 441, 2, 1, 'General Store', 0x9a7a4a, null, 'S');
+    building(492, 428, 2, 1, 'Chief Hall', 0x7a5a8a, null, 'S');
+    building(480, 434, 1, 1, 'Quest Board', 0x8a6a3a, null, 'S');
+    building(468, 460, 2, 1, 'Inn', 0x8a6a4a, null, 'E');
+    building(516, 441, 2, 1, 'Weapon Shop', 0x9a5a4a, null, 'S');
+    building(530, 447, 2, 1, 'Armour Shop', 0x6a7a9a, null, 'S');
+    building(516, 467, 2, 1, 'Town Furnace', 0x7a3a2a, 'Smithing', 'N');
+    building(528, 467, 2, 1, 'Town Anvil', 0x3a3a3a, 'Smithing', 'N');
+    building(486, 469, 2, 1, 'Cooking Range', 0xd2691e, 'Cooking', 'N');
+    building(472, 477, 2, 1, 'Crafting Bench', 0x8b5a2b, 'Crafting', 'N');
+    building(486, 486, 2, 1, 'Fishing Shack', 0x4f8fae, null, 'N');
+    building(532, 461, 2, 1, 'Farming Shed', 0x6a8a3a, null, 'W');
+    building(534, 477, 1, 1, 'Prayer Idol', 0xc0b070, null, 'N');
+    for (const [x, y, d] of [[460, 432, 'S'], [540, 432, 'S'], [460, 484, 'N'], [540, 486, 'N'], [466, 471, 'W'], [536, 486, 'N']]) building(x, y, 1, 1, 'Goblin House', 0x6a5240, null, d);
+    // open market stalls (single props) around the square
+    for (const [x, y] of [[494, 448], [506, 448], [494, 463], [506, 463]]) structure(x, y, 'Market Stall', 0xbf9a5a);
+    // training yard around (515,485)
+    const tx = 515, ty = 487;
+    for (let y = ty - 6; y <= ty + 6; y++) for (let x = tx - 7; x <= tx + 7; x++) { if (!inB(x, y)) continue; if (x === tx - 7 || x === tx + 7 || y === ty - 6 || y === ty + 6) { if (!(x === tx && y === ty - 6)) setT(x, y, T.WALL); } else if (getT(x, y) === T.GRASS) setT(x, y, T.DIRT); }
+    structure(tx - 3, ty, 'Combat Dummy', 0x9a7a4a); structure(tx + 3, ty, 'Combat Dummy', 0x9a7a4a); structure(tx, ty + 3, 'Combat Dummy', 0x9a7a4a);
+    enemySpawns.push({ type: 'rat', x: tx, y: ty - 3, name: 'Training Rat', _keep: true }, { type: 'rat', x: tx + 4, y: ty + 3, name: 'Training Rat', _keep: true });
+  })();
+  const spawn = { x: 500, y: 462 };
+
+  // ---- PASS 4: roads (exact polylines from roads.json) ----
+  const carveRoad = (pts, w) => alongPath(pts, (cx, cy) => disc(cx, cy, w, (x, y) => { const t = getT(x, y); if (t === T.WATER) setT(x, y, T.BRIDGE); else if (t === T.WALL || t === T.FLOOR || t === T.ROAD || t === T.BRIDGE) return; else setT(x, y, T.ROAD); }));
+  // A dirt footpath/trail. Crossing WATER lays a BRIDGE (plank/log over the
+  // water, never dirt-in-the-river); leaves existing roads/buildings intact.
+  const trail = (pts, hw = 0) => alongPath(pts, (cx, cy) => { for (let dy = -hw; dy <= hw; dy++) for (let dx = -hw; dx <= hw; dx++) { const x = Math.round(cx + dx), y = Math.round(cy + dy); const t = getT(x, y); if (t === T.WATER) setT(x, y, T.BRIDGE); else if (t === T.GRASS || t === T.SWAMP || t === T.SAND) setT(x, y, T.DIRT); } });
+  for (const r of ROADS) carveRoad(r.pts, r.w * 0.55);
+
+  // ---- PASS 3b: build named locations at pack coords ----
+  const ground = (cx, cy, rad, t) => disc(cx, cy, rad, (x, y) => { if (getT(x, y) !== T.WATER && getT(x, y) !== T.WALL) setT(x, y, t); });
+  const snapLand = (x, y, rad = 60) => { if (landish(x, y)) return [x, y]; for (let r = 1; r <= rad; r++) for (let a = 0; a < 360; a += 15) { const nx = Math.round(x + r * Math.cos(a * Math.PI / 180)), ny = Math.round(y + r * Math.sin(a * Math.PI / 180)); if (landish(nx, ny)) return [nx, ny]; } return [x, y]; };
+  const tents = (cx, cy, n, color) => { for (let i = 0; i < n; i++) { const a = (i / n) * Math.PI * 2; structure(Math.round(cx + 4 * Math.cos(a)), Math.round(cy + 4 * Math.sin(a)), 'Tent', color); } };
+  const fenceRing = (cx, cy, rad) => { for (let a = 0; a < 360; a += 5) { const x = Math.round(cx + rad * Math.cos(a * Math.PI / 180)), y = Math.round(cy + rad * Math.sin(a * Math.PI / 180)); if (getT(x, y) !== T.WATER) setT(x, y, T.WALL); } };
+
+  // ===== Grubpit Quarry — detailed starter mining bowl + cave-bug loop =====
+  (function grubpitLocal() {
+    const qx = 455, qy = 285, R = 25;
+    const keepRoad = (x, y) => getT(x, y) === T.ROAD || getT(x, y) === T.BRIDGE;
+    // worked dirt bowl (preserve the cart road that runs through it)
+    disc(qx, qy, R, (x, y) => { if (!keepRoad(x, y) && getT(x, y) !== T.WATER) setT(x, y, T.DIRT); });
+    // irregular rock-cliff rim; the road punches ramp gaps through it
+    for (let y = qy - R - 4; y <= qy + R + 4; y++) for (let x = qx - R - 4; x <= qx + R + 4; x++) { if (!inB(x, y)) continue; const d = Math.hypot(x - qx, y - qy); const wob = (vnoise(x / 5, y / 5, Sr) - 0.5) * 4; if (d >= R - 1 + wob && d <= R + 3 + wob && !keepRoad(x, y)) setT(x, y, T.ROCK); }
+    // broken inner terrace — a mid tier for the quarry-bowl look
+    for (let y = qy - 16; y <= qy + 16; y++) for (let x = qx - 16; x <= qx + 16; x++) { if (!inB(x, y)) continue; const d = Math.hypot(x - qx, y - qy); const wob = (vnoise(x / 6, y / 6, Sr + 1) - 0.5) * 3; if (d >= 12 + wob && d <= 13.5 + wob && !keepRoad(x, y) && vnoise(x / 4, y / 4, Sr + 3) > 0.35) setT(x, y, T.ROCK); }
+    // ore veins along the walls: copper + tin common, iron teaser deep
+    const vein = (radius, k, count) => { let placed = 0, tries = 0; while (placed < count && tries < count * 60) { tries++; const a = rng() * Math.PI * 2, rr = radius - rng() * 2.4; const x = Math.round(qx + rr * Math.cos(a)), y = Math.round(qy + rr * Math.sin(a)); if (getT(x, y) === T.DIRT && !occupied.has(okey(x, y)) && ![[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => keepRoad(x + dx, y + dy))) { resObj(x, y, k); placed++; } } };
+    vein(R - 2, 'rock_copper', 12); vein(R - 2, 'rock_tin', 12); vein(13, 'rock_copper', 4); vein(13, 'rock_tin', 4); vein(9, 'rock_iron', 3);
+    // clay piles + rubble on the pit floor (flavour)
+    for (let i = 0; i < 6; i++) { const a = rng() * Math.PI * 2, rr = rng() * 10; const x = Math.round(qx + rr * Math.cos(a)), y = Math.round(qy + rr * Math.sin(a)); if (getT(x, y) === T.DIRT && !occupied.has(okey(x, y))) decor(x, y, 0xa89878, 5, 'rect'); }
+    for (let i = 0; i < 16; i++) { const a = rng() * Math.PI * 2, rr = rng() * R; const x = Math.round(qx + rr * Math.cos(a)), y = Math.round(qy + rr * Math.sin(a)); if (getT(x, y) === T.DIRT && !occupied.has(okey(x, y))) decor(x, y, 0x7a7a7a, 4, 'rect'); }
+    // rim structures
+    building(qx - 20, qy + 6, 2, 1, 'Mine Hut', 0x6a5a3a, null, 'E');
+    structure(qx - 16, qy + 3, 'Deposit Box', 0x9a8a4a); structure(qx - 18, qy + 9, 'Pickaxe Rack', 0x7a6a5a);
+    structure(qx - 6, qy + 15, 'Ore Cart', 0x6a5a4a); structure(qx + 4, qy + 15, 'Ore Cart', 0x6a5a4a);
+    structure(qx + 16, qy - 3, 'Rock Pile', 0x8a8a8a); structure(qx - 3, qy - 15, 'Rock Pile', 0x8a8a8a);
+    // cart track spur running south from the pit toward the road
+    for (let i = 0; i < 20; i++) { const y = qy + R + i; if (getT(qx, y) === T.GRASS) setT(qx, y, T.DIRT); if (getT(qx - 1, y) === T.GRASS) setT(qx - 1, y, T.DIRT); }
+    // cave mouth on the north rim (label only — no interior)
+    const cavX = qx, cavY = qy - R - 1; setT(cavX, cavY, T.DIRT);
+    structure(cavX, cavY, 'Grubpit Cave', 0x141414); structure(qx - 3, qy - R + 2, 'Ladder Down', 0x5a4a3a);
+    // friendly tutor
+    friendlies.push({ name: 'Goblin Prospector', x: qx - 18, y: qy + 7, color: 0x8a7a4a, dialog: 'New here? Chip the copper and tin from the walls. The iron sits deeper in — you will need Mining 15 for it.' });
+    // enemies: cave bugs by the cave mouth, cave bats around the pit
+    for (let i = 0; i < 5; i++) { const a = rng() * Math.PI * 2, rr = 5 + rng() * 9; const x = Math.round(cavX + rr * Math.cos(a)), y = Math.round(cavY + 8 + rr * 0.6 * Math.sin(a)); if (landish(x, y) && !occupied.has(okey(x, y))) enemySpawns.push({ type: 'cave_bug', x, y, name: 'Cave Bug' }); }
+    for (let i = 0; i < 4; i++) { const a = rng() * Math.PI * 2, rr = 6 + rng() * (R - 8); const x = Math.round(qx + rr * Math.cos(a)), y = Math.round(qy + rr * Math.sin(a)); if (landish(x, y) && !occupied.has(okey(x, y))) enemySpawns.push({ type: 'cave_bug', x, y, name: 'Cave Bat' }); }
+  })();
+  // Northern Mine Hills camp (610,190) + deep mine (640,170) + mine cart (590,250)
+  { const [x, y] = snapLand(610, 205, 80); ground(x, y, 10, T.DIRT); tents(x + 5, y, 4, 0x7a6a4a); building(x - 4, y, 2, 1, 'Miners Lodge', 0x6a5a3a, null, 'S'); structure(x + 6, y + 3, 'Deposit Box', 0x9a8a4a); structure(x - 7, y - 3, 'Ore Cart', 0x6a5a4a); structure(x + 4, y - 5, 'Coal Heap', 0x2a2a2a); for (let i = -6; i <= 6; i++) if (getT(x + i, y + 6) === T.GRASS || getT(x + i, y + 6) === T.DIRT) setT(x + i, y + 6, T.DIRT); friendlies.push({ name: 'Foreman Grint', x: x - 2, y: y + 1, color: 0x6a5a3a, dialog: 'Iron at 15, coal at 30, gold at 40 — all richer than the Grubpit. Cave goblins and rock crabs infest the deeper seams.' }); }
+  { const [x, y] = snapLand(640, 170, 40); structure(x, y, 'Deep Mine Entrance', 0x222222); }
+  { const [x, y] = snapLand(590, 250, 40); structure(x, y, 'Mine Cart Route', 0xc0a040); }
+  // ===== Grublake Dock — fishing hub on the lake's west shore (96 chunk) =====
+  // Stitches: piers extend into the REAL lake water; the Eastern Lake Road
+  // reaches the shore here; a boat (locked) serves the Lake Island.
+  (function grublakeDock() {
+    // find the west shore at y~440 (land tile whose east neighbour is lake water)
+    let sy = 440, sx = 624;
+    for (let x = 600; x < 690; x++) { if (getT(x, sy) !== T.WATER && getT(x + 1, sy) === T.WATER) { sx = x; break; } }
+    // shore plaza (land only)
+    disc(sx - 3, sy, 8, (x, y) => { if (getT(x, y) === T.GRASS || getT(x, y) === T.SAND) setT(x, y, T.DIRT); });
+    // three plank piers reaching east into the water
+    const pier = (py, len) => { let end = sx; for (let i = 1; i <= len; i++) { const x = sx + i; const t = getT(x, py); if (t === T.WATER || t === T.SAND || t === T.DIRT || t === T.GRASS) { setT(x, py, T.BRIDGE); end = x; } } return end; };
+    const p1 = pier(sy - 4, 11), p2 = pier(sy, 14), p3 = pier(sy + 4, 11);
+    // fishing spots: shrimp in the shallows, trout mid-water, pike off the pier ends
+    const fspot = (x, y, k) => { if (getT(x, y) === T.WATER && !occupied.has(okey(x, y))) resObj(x, y, k); };
+    for (const [dx, dy] of [[2, -6], [2, 6], [3, -2], [3, 2]]) fspot(sx + dx, sy + dy, 'fish_shrimp');
+    for (const [dx, dy] of [[7, -6], [7, 6], [6, 2]]) fspot(sx + dx, sy + dy, 'fish_trout');
+    fspot(p1 + 1, sy - 4, 'fish_pike'); fspot(p2 + 1, sy, 'fish_pike'); fspot(p3 + 1, sy + 4, 'fish_pike'); fspot(p2 + 2, sy - 1, 'fish_pike');
+    // structures on the shore
+    building(sx - 4, sy - 2, 2, 1, 'Fishing Shack', 0x4f8fae, null, 'W');
+    structure(sx - 2, sy + 4, 'Bait Shack', 0x7a5a3a); structure(sx - 5, sy + 1, 'Fish-Drying Rack', 0x9a8a6a); structure(sx - 3, sy - 5, 'Crates', 0x8a6a3a);
+    structure(p2, sy, 'Boat to Lake Island (locked)', 0xc0a040);
+    decor(sx + 3, sy - 5, 0x6a5a3a, 5, 'rect'); decor(sx + 3, sy + 5, 0x6a5a3a, 5, 'rect'); // moored boats
+    for (let i = 0; i < 14; i++) { const x = sx + 1 + Math.floor(rng() * 3), y = sy - 8 + Math.floor(rng() * 16); if (getT(x, y) === T.WATER && [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([ax, ay]) => landish(x + ax, y + ay)) && !occupied.has(okey(x, y))) decor(x, y, 0x6fae7a, 4, 'rect'); } // reeds
+    trail([[sx - 9, sy], [sx - 3, sy]], 0); // shore path to the road
+    friendlies.push({ name: 'Bait-Seller Gribble', x: sx - 4, y: sy + 3, color: 0x5a7a6a, dialog: 'Net shrimp by the bank, rod the trout, harpoon pike off the pier ends — Fishing 20 for those. Boat to the island is out of order.' });
+    // enemies: crazed fisher goblins on the bank, lake snappers in the shallows
+    for (let i = 0; i < 3; i++) { const x = sx - 6 + Math.floor(rng() * 9), y = sy - 9 + Math.floor(rng() * 18); if (landish(x, y) && !occupied.has(okey(x, y))) { enemySpawns.push({ type: 'bandit', x, y, name: 'Crazed Fisher Gob' }); occupied.add(okey(x, y)); } }
+    for (let i = 0; i < 2; i++) { const x = sx - 5 + Math.floor(rng() * 8), y = sy + 6 + Math.floor(rng() * 6); if (landish(x, y) && !occupied.has(okey(x, y))) { enemySpawns.push({ type: 'mud_bug', x, y, name: 'Lake Snapper' }); occupied.add(okey(x, y)); } }
+  })();
+  // Lake island POI (745,520)
+  { structure(745, 520, 'Lake Island', 0x6a8f3a); }
+  // Hunter camp (Eastern Oakwoods 820,330)
+  { const [x, y] = snapLand(820, 330, 70); ground(x, y, 8, T.DIRT); tents(x + 6, y, 3, 0x6a5a3a); building(x, y, 2, 1, 'Hunter Lodge', 0x8a6a3a, null, 'S'); structure(x + 3, y + 4, 'Fire Pit', 0xd2691e); structure(x - 4, y - 3, 'Weapon Rack', 0x7a6a5a); structure(x + 4, y - 3, 'Skinning Rack', 0x9a8a6a); structure(x - 4, y + 4, 'Snare Trap', 0x6a5a3a); friendlies.push({ name: 'Huntsman Bracken', x: x - 2, y: y + 1, color: 0x6a5a3a, dialog: 'Oaks all around — level 10 to fell them. Boars and moss wolves roam east, and rival scouts push in from the far woods.' }); }
+  // ===== Mushroom Forest — fungal grove + witch hut (160 chunk) =====
+  (function mushroomLocal() {
+    const [x, y] = snapLand(250, 800, 70);
+    disc(x, y, 8, (px, py) => { if (getT(px, py) === T.GRASS) setT(px, py, T.DIRT); }); // witch clearing
+    building(x, y, 2, 1, 'Witch-Goblin Hut', 0x8a6fbf, null, 'S');
+    structure(x + 5, y, 'Potion Station', 0x6abf9a); structure(x - 4, y + 3, 'Strange Garden', 0x9a6abf);
+    structure(x + 5, y - 5, 'Hidden Cave', 0x222222); structure(x - 5, y - 4, 'Mushroom Ring', 0xc060c0);
+    // big fungal mushroom clusters + fungal/dead trees around the grove
+    for (let i = 0; i < 60; i++) { const px = 150 + Math.floor(rng() * 210), py = 720 + Math.floor(rng() * 200); if (getT(px, py) === T.GRASS && !occupied.has(okey(px, py))) { const r = rng(); if (r < 0.5) decor(px, py, [0xc44a6a, 0xd08040, 0x9a6abf][(rng() * 3) | 0], 5, 'circle'); else if (r < 0.62) resObj(px, py, 'tree_dead'); } }
+    friendlies.push({ name: 'Witch-Goblin Vex', x: x - 2, y: y + 1, color: 0x8a6fbf, dialog: 'Strange spores, stranger brews. Fungal logs burn odd colours. The ring will carry you home, once you earn its favour.' });
+    const put = (type, name, n) => { for (let i = 0; i < n; i++) { for (let t = 0; t < 40; t++) { const px = 150 + Math.floor(rng() * 210), py = 720 + Math.floor(rng() * 200); if (landish(px, py) && getT(px, py) !== T.DIRT && !occupied.has(okey(px, py))) { enemySpawns.push({ type, x: px, y: py, name }); occupied.add(okey(px, py)); break; } } } };
+    put('cave_goblin', 'Fungal Goblin', 4); put('spider', 'Deep Cave Crawler', 3);
+  })();
+  // ===== Bog of Grub — hostile boardwalk swamp (160 chunk) =====
+  // Stitches: the Southern Bog Road causeways through; boardwalks are the only
+  // safe footing over the slime pools. Feels hard to cross by design.
+  (function bogLocal() {
+    const cx = 685, cy = 710;
+    const board = (pts) => alongPath(pts, (ax, ay) => { const x = Math.round(ax), y = Math.round(ay); const t = getT(x, y); if (t === T.WATER || t === T.SWAMP) setT(x, y, T.BRIDGE); else if (t === T.GRASS) setT(x, y, T.DIRT); });
+    const [sx, sy] = snapLand(725, 770, 60);
+    disc(sx, sy, 5, (x, y) => { if (getT(x, y) === T.SWAMP || getT(x, y) === T.GRASS) setT(x, y, T.DIRT); });
+    building(sx, sy, 2, 1, 'Herbalist Hut', 0x5a7a4a, null, 'S');
+    structure(sx + 5, sy - 2, 'Swamp Shrine', 0x6ac0c0); structure(sx - 4, sy + 3, 'Deadwood Altar', 0x4a4030);
+    // boardwalk network (broken planks over slime pools)
+    board([[sx - 12, sy], [sx - 4, sy]]);
+    board([[cx - 10, cy - 24], [cx, cy], [cx + 14, cy + 18], [sx - 8, sy - 6]]);
+    board([[cx - 34, cy + 12], [cx, cy + 12], [cx + 34, cy + 12]]);
+    // slime tufts + swamp-herb clumps on the mud
+    for (let i = 0; i < 16; i++) { const x = cx - 72 + Math.floor(rng() * 150), y = cy - 82 + Math.floor(rng() * 168); if (getT(x, y) === T.SWAMP && !occupied.has(okey(x, y)) && rng() < 0.5) decor(x, y, rng() < 0.5 ? 0x6abf6a : 0x4a8a4a, 5, 'circle'); }
+    friendlies.push({ name: 'Herbalist Mogg', x: sx - 2, y: sy + 1, color: 0x5a7a4a, dialog: 'Deadwood from the drowned trees, herbs from the mud, eels from the black water. Stay on the planks — the bog bites back.' });
+    const put = (type, name, n) => { for (let i = 0; i < n; i++) { for (let t = 0; t < 40; t++) { const x = cx - 80 + Math.floor(rng() * 170), y = cy - 88 + Math.floor(rng() * 176); if (landish(x, y) && getT(x, y) !== T.DIRT && !occupied.has(okey(x, y))) { enemySpawns.push({ type, x, y, name }); occupied.add(okey(x, y)); break; } } } };
+    put('slime', 'Bog Slime', 4); put('slime', 'Swamp Frog', 3); put('rat', 'Bog Rat', 3); put('cave_goblin', 'Swamp Shaman', 2);
+  })();
+  // ===== Rival Goblin Territory — fortified hostile camp (160 chunk) =====
+  // Stitches: the Southern Bog Road arrives at the main gate (north).
+  (function rivalLocal() {
+    const [x, y] = snapLand(850, 825, 70);
+    ground(x, y, 23, T.DIRT); fenceRing(x, y, 23);
+    for (const g of [[0, -23], [-17, 17], [17, 17]]) { setT(x + g[0], y + g[1], T.ROAD); setT(x + g[0] + 1, y + g[1], T.ROAD); } // gates
+    for (const [dx, dy] of [[-17, -17], [17, -17], [-17, 17], [17, 17]]) structure(x + dx, y + dy, 'Watchtower', 0x5a4a3a);
+    // inner ring road (patrol path)
+    for (let a = 0; a < 360; a += 3) { const px = Math.round(x + 15 * Math.cos(a * Math.PI / 180)), py = Math.round(y + 15 * Math.sin(a * Math.PI / 180)); if (getT(px, py) === T.DIRT) setT(px, py, T.ROAD); }
+    tents(x - 8, y - 5, 5, 0x7a3a3a); tents(x + 8, y + 6, 4, 0x7a3a3a); tents(x - 9, y + 7, 3, 0x7a3a3a);
+    structure(x + 6, y - 9, 'Fire Pit', 0xd2691e); structure(x - 9, y + 6, 'Storage Crates', 0x8a6a3a); structure(x + 9, y - 3, 'Storage Crates', 0x8a6a3a);
+    structure(x - 6, y - 10, 'Weapon Rack', 0x7a6a5a); structure(x + 3, y + 10, 'Weapon Rack', 0x7a6a5a); structure(x, y + 14, 'War Banner', 0xb03030);
+    // boss arena (north-interior) + the Captured Anvil
+    ground(x, y - 13, 6, T.DIRT); structure(x, y - 13, 'Boss Arena', 0x6a2a2a);
+    structure(840, 810, 'Captured Anvil', 0x3a3a3a, 'Smithing');
+    // garrison + boss
+    const put = (type, name, n, cx2, cy2, r) => { for (let i = 0; i < n; i++) { for (let t = 0; t < 40; t++) { const px = cx2 - r + Math.floor(rng() * r * 2), py = cy2 - r + Math.floor(rng() * r * 2); if (landish(px, py) && getT(px, py) !== T.WALL && !occupied.has(okey(px, py))) { enemySpawns.push({ type, x: px, y: py, name }); occupied.add(okey(px, py)); break; } } } };
+    put('rival_warrior', 'Rival Goblin Warrior', 4, x, y, 18); put('rival_scout', 'Rival Goblin Archer', 3, x, y, 18); put('rival_warrior', 'Rival Goblin Brute', 2, x, y, 16);
+    enemySpawns.push({ type: 'rival_warrior', x, y: y - 13, name: 'Red-Ear Captain' }); occupied.add(okey(x, y - 13));
+  })();
+  // Troll gate (800,120) — dangerous, no friendlies; a fallen adventurer's cache
+  { const [x, y] = snapLand(800, 120, 70); structure(x, y, 'Troll Ridge Gate', 0xe0c050); structure(x + 4, y + 3, 'Frozen Cave', 0x223344); structure(x - 4, y + 3, 'Mountain Pass', 0x9a9a9a); structure(x + 2, y + 5, 'Warning Sign', 0xb03030); structure(x - 5, y - 2, "Adventurer's Pack", 0xc9a24a); }
+  // Old ruins chapel (245,150) — overgrown stone + hidden chests
+  { const [x, y] = snapLand(245, 150, 70); for (let i = 0; i < 30; i++) { const rx = x + Math.round((rng() - rng()) * 26), ry = y + Math.round((rng() - rng()) * 26); if (getT(rx, ry) === T.GRASS) setT(rx, ry, T.WALL); } structure(x, y, 'Old Ruin Chapel', 0x8a8a7a); structure(x + 6, y - 4, 'Old Chest', 0xc9a24a); structure(x - 7, y + 5, 'Hidden Chest', 0xc9a24a); structure(x + 8, y + 6, 'Broken Statue', 0x8a8a7a); friendlies.push({ name: 'Explorer Nix', x: x - 2, y: y + 2, color: 0x7a6a5a, dialog: 'Old goblin stones, older than the settlement. Spiders and moss wolves nest in the walls — and fungal goblins wandered up from the south.' }); }
+  // ===== Chopper's Hollow — woodcutting camp + forest (128 chunk) =====
+  // Stitches: the West Woodcutters Road already enters from town on the east; a
+  // footpath runs south to a log bridge over the Willow river (into Riverlands).
+  (function choppersLocal() {
+    const cx = 335, cy = 372, R = 10;
+    disc(cx, cy, R, (x, y) => { if (getT(x, y) === T.GRASS) setT(x, y, T.DIRT); }); // clearing (trees don't grow on dirt)
+    building(cx - 5, cy - 3, 2, 1, 'Woodcutting Hut', 0x6a5a3a, null, 'S');
+    structure(cx + 5, cy - 3, 'Saw Pit', 0x7a6a4a); structure(cx + 6, cy + 2, 'Log Pile', 0x8a6a3a); structure(cx - 6, cy + 4, 'Log Pile', 0x8a6a3a);
+    structure(cx + 2, cy + 5, 'Campfire', 0xd2691e);
+    for (let i = 0; i < 12; i++) { const a = rng() * Math.PI * 2, rr = R - 1 + rng() * 6; const x = Math.round(cx + rr * Math.cos(a)), y = Math.round(cy + rr * Math.sin(a)); if (getT(x, y) === T.GRASS && !occupied.has(okey(x, y))) decor(x, y, 0x5a4530, 5, 'rect'); } // stumps
+    // training oak grove NW of camp (denser than the ambient forest)
+    for (let i = 0; i < 28; i++) { const x = cx - 34 + Math.floor(rng() * 24), y = cy - 26 + Math.floor(rng() * 30); if (getT(x, y) === T.GRASS && !occupied.has(okey(x, y))) resObj(x, y, 'tree_oak'); }
+    // footpath south to a log bridge over the Willow river (stitch to Riverlands)
+    trail([[cx, cy + R], [cx - 1, cy + 30], [cx - 3, cy + 64]], 0);
+    friendlies.push({ name: 'Woodcutter Splinter', x: cx - 3, y: cy + 2, color: 0x6a5a3a, dialog: 'Start on the normal trees; oaks want level 10. Burn the logs on the campfire, or cook your fish back in town.' });
+    // enemies from the region mob list (placed off the camp, in the woods)
+    const put = (type, name, n) => { for (let i = 0; i < n; i++) { for (let t = 0; t < 40; t++) { const x = 258 + Math.floor(rng() * 168), y = 302 + Math.floor(rng() * 146); if (landish(x, y) && getT(x, y) !== T.DIRT && !occupied.has(okey(x, y)) && Math.hypot(x - cx, y - cy) > 14) { enemySpawns.push({ type, x, y, name }); occupied.add(okey(x, y)); break; } } } };
+    put('rat', 'Forest Rat', 3); put('spider', 'Giant Spider', 3); put('cave_bug', 'Goblin Trainee', 3);
+  })();
+  // ===== Willow Riverlands — willow banks + fishing (160 chunk) =====
+  // Stitches: the Willow river flows through; docks reach the real channel; a
+  // footbridge fords it; willows lean over the banks.
+  (function willowLocal() {
+    const cx = 285, cy = 610;
+    let cxW = cx; for (let x = cx - 30; x <= cx + 30; x++) { if (getT(x, cy) === T.WATER) { cxW = x; break; } } // river column
+    let bW = cxW; while (getT(bW - 1, cy) === T.WATER) bW--; bW--; // west bank (land)
+    let bE = cxW; while (getT(bE + 1, cy) === T.WATER) bE++; bE++; // east bank (land)
+    disc(bW - 3, cy, 6, (x, y) => { if (getT(x, y) === T.GRASS) setT(x, y, T.DIRT); }); // west landing
+    disc(bE + 3, cy, 6, (x, y) => { if (getT(x, y) === T.GRASS) setT(x, y, T.DIRT); }); // east landing
+    for (let i = 1; i <= 4; i++) { if (getT(bW + i, cy - 3) === T.WATER) setT(bW + i, cy - 3, T.BRIDGE); } // west dock
+    for (let i = 1; i <= 4; i++) { if (getT(bE - i, cy + 3) === T.WATER) setT(bE - i, cy + 3, T.BRIDGE); } // east dock
+    building(bW - 4, cy - 1, 2, 1, 'Fishing Shack', 0x4f8fae, null, 'W');
+    building(bE + 4, cy + 1, 2, 1, 'Riverside Hut', 0x6a7a5a, null, 'E');
+    structure(bW - 2, cy + 3, 'Bait Barrel', 0x7a5a3a); structure(bE + 2, cy - 3, 'Net Rack', 0x8a7a5a);
+    // willows leaning over both banks
+    for (let i = 0; i < 44; i++) { const x = cx - 55 + Math.floor(rng() * 110), y = cy - 75 + Math.floor(rng() * 150); if (getT(x, y) === T.GRASS && !occupied.has(okey(x, y)) && nearWater(x, y, 3)) resObj(x, y, 'tree_willow'); }
+    // trout in the deep channel, mudfish (shrimp) in the shallows
+    let ft = 0; for (let y = cy - 60; y <= cy + 60 && ft < 12; y++) { if (getT(cxW, y) === T.WATER && !occupied.has(okey(cxW, y)) && rng() < 0.28) { resObj(cxW, y, rng() < 0.6 ? 'fish_trout' : 'fish_shrimp'); ft++; } }
+    // a footbridge/ford across the river
+    trail([[bW - 7, cy - 9], [bW, cy - 9], [cxW, cy - 9], [bE, cy - 9], [bE + 7, cy - 9]], 0);
+    // reeds + mud flats along the banks
+    for (let i = 0; i < 22; i++) { const x = cx - 55 + Math.floor(rng() * 110), y = cy - 70 + Math.floor(rng() * 140); if (getT(x, y) === T.WATER && [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([ax, ay]) => landish(x + ax, y + ay)) && !occupied.has(okey(x, y))) decor(x, y, 0x6fae7a, 4, 'rect'); }
+    friendlies.push({ name: 'River-Warden Sog', x: bW - 2, y: cy + 1, color: 0x5a7a6a, dialog: 'Willows grow best by the water — level 20 to cut them. Rod the trout in the deep channel, and mind the bandits in the reeds.' });
+    const put = (type, name, n) => { for (let i = 0; i < n; i++) { for (let t = 0; t < 40; t++) { const x = cx - 80 + Math.floor(rng() * 160), y = cy - 90 + Math.floor(rng() * 180); if (landish(x, y) && getT(x, y) !== T.DIRT && !occupied.has(okey(x, y))) { enemySpawns.push({ type, x, y, name }); occupied.add(okey(x, y)); break; } } } };
+    put('mud_bug', 'Mud Grub', 3); put('mud_bug', 'Mud Bug', 2); put('bandit', 'River Bandit', 3);
+  })();
+  // ===== Main Farmlands — farm village (farming/cooking/herb loop) =====
+  (function farmlandsLocal() {
+    const fx = 510, x0 = 470, y0 = 601, x1 = 560, y1 = 691, midY = 646;
+    const gateT = (x, y) => (getT(x, y) === T.ROAD || getT(x, y) === T.BRIDGE) ? T.DIRT : T.WALL; // fence yields to roads = gates
+    for (let x = x0; x <= x1; x++) { setT(x, y0, gateT(x, y0)); setT(x, y1, gateT(x, y1)); }
+    for (let y = y0; y <= y1; y++) { setT(x0, y, gateT(x0, y)); setT(x1, y, gateT(x1, y)); }
+    for (const g of [-1, 0, 1]) { setT(fx + g, y0, T.DIRT); setT(fx + g, y1, T.DIRT); } // pedestrian N/S gates
+    for (let y = y0; y <= y1; y++) { setT(fx, y, T.DIRT); setT(fx - 1, y, T.DIRT); }
+    for (let x = x0; x <= x1; x++) { setT(x, midY, T.DIRT); setT(x, midY - 1, T.DIRT); }
+    const CROP = { potato: 0x8a9a4a, cabbage: 0x3a9a3a, onion: 0xb0bd86, herb: 0x2f8a4a };
+    function plot(px, py, hw, hh, crop, label) {
+      for (let y = py - hh - 1; y <= py + hh + 1; y++) { setT(px - hw - 1, y, T.WALL); setT(px + hw + 1, y, T.WALL); }
+      for (let x = px - hw - 1; x <= px + hw + 1; x++) { setT(x, py - hh - 1, T.WALL); setT(x, py + hh + 1, T.WALL); }
+      setT(px, py + hh + 1, T.DIRT); // gate
+      for (let y = py - hh; y <= py + hh; y++) for (let x = px - hw; x <= px + hw; x++) setT(x, y, ((y - (py - hh)) % 2 === 0) ? T.FIELD : T.DIRT);
+      for (let y = py - hh; y <= py + hh; y += 2) for (let x = px - hw + 1; x <= px + hw - 1; x += 2) if (getT(x, y) === T.FIELD && !occupied.has(okey(x, y))) decor(x, y, CROP[crop], 4, 'circle');
+      decor(px, py - 1, 0xc9a24a, 6, 'rect'); // scarecrow post
+      structure(px - hw + 1, py - hh + 1, label, 0x9a7a4a); // field marker
+    }
+    plot(487, 618, 8, 6, 'potato', 'Potato Field'); plot(533, 618, 8, 6, 'cabbage', 'Cabbage Field');
+    plot(487, 674, 8, 6, 'onion', 'Onion Field'); plot(533, 674, 8, 6, 'herb', 'Herb Patch');
+    // irrigation: a well-fed dug channel (contained, gently curved), with plank
+    // bridges laid wherever a dirt path crosses the WATER (bridge over water).
+    structure(fx + 6, 634, 'Well', 0x6a7a8a);
+    const chan = (x, y) => { const t = getT(x, y); if (t === T.WALL || t === T.FIELD || t === T.FLOOR || t === T.ROAD) return; setT(x, y, T.WATER); };
+    for (let y = 635; y <= 656; y++) chan(fx + 6, y);                                 // feeder from the well
+    for (let x = 478; x <= 552; x++) chan(x, 656 + Math.round(Math.sin(x * 0.25)));   // gently curved cross-channel
+    disc(479, 656, 1, (x, y) => chan(x, y));                                          // soak at the west end
+    for (const px of [fx - 1, fx]) for (let y = 653; y <= 659; y++) if (getT(px, y) === T.WATER) setT(px, y, T.BRIDGE); // central path plank over the channel
+    for (const py of [midY - 1, midY]) for (let x = fx + 4; x <= fx + 8; x++) if (getT(x, py) === T.WATER) setT(x, py, T.BRIDGE); // mid path plank over the feeder
+    building(538, 605, 2, 1, 'Farmhouse', 0x8a6a4a, null, 'S');
+    building(482, 605, 2, 1, 'Tool Shed', 0x7a6a4a, null, 'S');
+    building(534, 686, 3, 1, 'Barn', 0x8a5a3a, null, 'N');
+    structure(498, 638, 'Compost Bin', 0x5a4a2a); structure(522, 654, 'Compost Bin', 0x5a4a2a);
+    structure(504, 636, 'Produce Cart', 0x9a7a4a); structure(516, 654, 'Water Trough', 0x6a7a8a);
+    for (const [hx, hy] of [[476, 688], [520, 604], [500, 688]]) decor(hx, hy, 0xc9b26a, 6, 'rect'); // hay bales
+    friendlies.push({ name: 'Farmer Grubfinger', x: 538, y: 608, color: 0x8a6a4a, dialog: 'Potatoes and cabbage up top, onions and herbs below. Take your catch to the town range to cook it up.' });
+    friendlies.push({ name: 'Goblin Farmhand', x: 494, y: 648, color: 0x7a7a4a, dialog: 'Rats keep raiding the rows, and mud bugs crawl up from the ditch. Bash a few for me?' });
+    for (let i = 0; i < 4; i++) { const x = x0 + 4 + Math.floor(rng() * (x1 - x0 - 8)), y = y0 + 4 + Math.floor(rng() * (y1 - y0 - 8)); if (landish(x, y) && !occupied.has(okey(x, y))) enemySpawns.push({ type: 'rat', x, y, name: rng() < 0.5 ? 'Field Rat' : 'Forest Rat' }); }
+    for (let i = 0; i < 3; i++) { const x = x0 + 3 + Math.floor(rng() * (x1 - x0 - 6)), y = 659 + Math.floor(rng() * 3); if (landish(x, y) && !occupied.has(okey(x, y))) enemySpawns.push({ type: 'mud_bug', x, y, name: 'Mud Bug' }); }
+  })();
+
+  // ---- forests (dense trees + clearings), tree density feathered at edges ----
+  const clearing = (x, y) => vnoise(x / 30, y / 30, Sg + 4) > 0.66;
+  for (const f of FORESTS) polyFeather(f.poly, 18, (x, y, depth) => {
+    if (getT(x, y) !== T.GRASS || occupied.has(okey(x, y)) || clearing(x, y)) return;
+    const p = f.density * ramp(depth, 12, 26); // full inside -> sparse fringe -> none ~12 past the edge
+    const r = hash2(x, y, Sr + 7);
+    if (r < p) resObj(x, y, f.kinds[(hash2(x, y, Sr + 11) * f.kinds.length) | 0]);
+    else if (r < p + 0.02) decor(x, y, 0x4a3a28, 5, 'rect');
+    else if (f.mushroom && r > 0.94 && depth > -4) decor(x, y, 0xc44a6a, 4, 'circle');
+    else if (r > 0.97) decor(x, y, 0x2f5d24, 6, 'circle');
+  });
+
+  // ---- PASS 5: resource distribution (teaser / training / specialist) ----
+  function scatter(cx, cy, rad, k, count, suit) { const d = RESOURCE_TYPES[k]; let placed = 0, tries = 0; while (placed < count && tries < count * 90) { tries++; const x = Math.round(cx + (rng() - rng()) * rad), y = Math.round(cy + (rng() - rng()) * rad); if (occupied.has(okey(x, y))) continue; if (d.blocking === false) { if (!waterShore(x, y)) continue; } else if (!suit(x, y)) continue; resObj(x, y, k); placed++; } }
+  // teasers near town
+  scatter(475, 435, 22, 'tree_oak', 4, openGround);
+  scatter(500, 540, 55, 'tree', 20, openGround);
+  scatter(430, 500, 60, 'tree', 14, openGround);
+  scatter(360, 450, 40, 'tree_willow', 2, (x, y) => openGround(x, y) && nearWater(x, y, 3));      // willow teaser near river
+  scatter(360, 460, 60, 'fish_shrimp', 3, null);                                                  // shrimp near town water (river)
+  scatter(340, 470, 70, 'fish_trout', 2, null);
+  // (Grubpit Quarry ore is placed by its detailed local build above.)
+  // Northern Mine Hills (iron/coal/gold specialist)
+  scatter(610, 190, 110, 'rock_iron', 16, (x, y) => openGround(x, y) && nearRock(x, y, 5)); scatter(620, 180, 115, 'rock_coal', 16, (x, y) => openGround(x, y) && nearRock(x, y, 5)); scatter(630, 160, 120, 'rock_gold', 10, (x, y) => openGround(x, y) && nearRock(x, y, 5));
+  // Troll Ridge (coal/gold specialist)
+  scatter(835, 80, 130, 'rock_coal', 10, (x, y) => openGround(x, y) && nearRock(x, y, 6)); scatter(835, 80, 130, 'rock_gold', 10, (x, y) => openGround(x, y) && nearRock(x, y, 6));
+  // Grublake (pike + willow shoreline) and Willow Riverlands (willow/trout specialist)
+  scatter(735, 495, 135, 'fish_pike', 9, null); scatter(700, 470, 120, 'fish_trout', 5, null); scatter(720, 500, 130, 'tree_willow', 8, (x, y) => openGround(x, y) && nearWater(x, y, 3));
+  scatter(285, 610, 120, 'tree_willow', 16, (x, y) => openGround(x, y) && nearWater(x, y, 3)); scatter(285, 610, 120, 'fish_trout', 8, null); scatter(285, 620, 120, 'fish_shrimp', 5, null);
+  // Bog of Grub (deadwood + eel) and Mushroom Forest (dead trees via forest)
+  scatter(685, 710, 110, 'tree_dead', 14, (x, y) => getT(x, y) === T.SWAMP && !occupied.has(okey(x, y))); scatter(685, 710, 110, 'fish_eel', 8, null);
+
+  // ---- PASS 6: monsters (from region mob lists, mapped to stat blocks) ----
+  function spawnNear(cx, cy, rad, base, count, name) { let placed = 0, tries = 0; while (placed < count && tries < count * 70) { tries++; const x = Math.round(cx + (rng() - rng()) * rad), y = Math.round(cy + (rng() - rng()) * rad); if (!landish(x, y) || occupied.has(okey(x, y))) continue; enemySpawns.push({ type: base, x, y, name }); placed++; } }
+  const authoredRegions = new Set(['grubpit', 'farmlands', 'choppers', 'grublake', 'willow', 'bog', 'mushroom', 'rival']); // enemies placed by detailed local builds
+  for (const a of REGION_ANCHORS) {
+    if (!a.mobs || !a.mobs.length || authoredRegions.has(a.id)) continue;
+    for (const mob of a.mobs) {
+      const base = MOB_MAP[mob] || 'rat';
+      const count = mob === 'red_ear_captain' ? 1 : (a.id === 'rival' || a.id === 'troll') ? 4 : 3;
+      spawnNear(a.x, a.y, a.r * 0.8, base, count, prettify(mob));
+    }
+  }
+
+  // ---- landmarks not built above: place remaining POI markers ----
+  const built = new Set(objects.map((o) => o.label));
+  for (const lm of LANDMARKS) { if (built.has(lm.name)) continue; const skill = (lm.kind === 'furnace' || lm.kind === 'anvil') ? 'Smithing' : null; structure(lm.x, lm.y, lm.name, lm.kind === 'shortcut' || lm.kind === 'gate' ? 0xe0c050 : 0xcfc0a0, skill); }
+  // West Bridge (repairable) at (340,435): break the willow-river crossing
+  (function westBridge() { let bx = -1, by = -1; for (let r = 0; r < 60 && bx < 0; r++) for (let a = 0; a < 360; a += 12) { const x = Math.round(340 + r * Math.cos(a * Math.PI / 180)), y = Math.round(435 + r * Math.sin(a * Math.PI / 180)); if (getT(x, y) === T.WATER) { bx = x; by = y; break; } } if (bx < 0) return; let west = bx, east = bx; while (getT(west - 1, by) === T.WATER) west--; while (getT(east + 1, by) === T.WATER) east++; for (let x = west; x <= east; x++) setT(x, by, T.BRIDGE); const mid = (west + east) >> 1; setT(mid, by, T.WATER); structure(mid, by - 1, 'Repairable West Bridge', 0x7a5a3a); })();
+
+  // ---- ambient decor to fill space along routes/regions ----
+  const ambient = (cx, cy, rad, n) => { for (let i = 0; i < n; i++) { const x = Math.round(cx + (rng() - rng()) * rad), y = Math.round(cy + (rng() - rng()) * rad); if (!isGrass(x, y) || occupied.has(okey(x, y))) continue; const r = rng(); if (r < 0.5) decor(x, y, 0x3f6e2c, 5, 'circle'); else if (r < 0.8) decor(x, y, [0xe6d24a, 0xd66a8a, 0xc0c0e0][(rng() * 3) | 0], 3, 'circle'); else decor(x, y, 0x6a6a6a, 6, 'rect'); } };
+  for (const r of ROADS) alongPath(r.pts, (x, y) => { if (rng() < 0.22) ambient(x, y, 5, 2); }, 0.25);
+  for (const a of REGION_ANCHORS) ambient(a.x, a.y, a.r * 0.9, Math.round(a.r * 1.5));
+
+  // ---- POLISH PASS 1: fill empty grass chunks with context-aware micro-detail ----
+  // In-place, additive: no chunk of open grass is left plain. Detail is
+  // clustered (not noise) and reads its surroundings — reeds near water, stones
+  // near mountains, mud near swamp, weeds near farms, debris near ruins.
+  const chunksDetailed = (function fillEmptyGrass() {
+    const CS = 64;
+    const objCount = new Map();
+    for (const o of objects) { const k = ((o.y / CS) | 0) + ',' + ((o.x / CS) | 0); objCount.set(k, (objCount.get(k) || 0) + 1); }
+    const cols = Math.ceil(WORLD_W / CS), rows = Math.ceil(WORLD_H / CS);
+    let detailed = 0;
+    const put = (x, y, color, size, shape) => { if (getT(x, y) === T.GRASS && !occupied.has(okey(x, y))) decor(x, y, color, size, shape); };
+    for (let ry = 0; ry < rows; ry++) for (let rx = 0; rx < cols; rx++) {
+      const x0 = rx * CS, y0 = ry * CS, x1 = Math.min(WORLD_W, x0 + CS), y1 = Math.min(WORLD_H, y0 + CS);
+      let grass = 0, total = 0, water = 0, rock = 0, swamp = 0, field = 0, wall = 0;
+      for (let y = y0; y < y1; y += 2) for (let x = x0; x < x1; x += 2) { total++; const t = terrain[idx(x, y)]; if (t === T.GRASS) grass++; else if (t === T.WATER) water++; else if (t === T.ROCK) rock++; else if (t === T.SWAMP) swamp++; else if (t === T.FIELD) field++; else if (t === T.WALL) wall++; }
+      const gf = grass / total, objs = objCount.get(ry + ',' + rx) || 0;
+      if (gf < 0.72 || objs > 45) continue; // only open, sparse grass chunks
+      detailed++;
+      const detailAt = (x, y) => { const r = rng(); if (r < 0.42) put(x, y, 0x3f6e2c, 3, 'circle'); else if (r < 0.60) put(x, y, 0x557a34, 4, 'circle'); else if (r < 0.80) put(x, y, [0xe6d24a, 0xd66a8a, 0xc0c0e0][rng() * 3 | 0], 2, 'circle'); else put(x, y, 0x7a766a, 3, 'rect'); };
+      // clustered thickets (tufts / bushes / flowers / stones)
+      const clusters = 14 + (rng() * 10 | 0);
+      for (let c = 0; c < clusters; c++) {
+        const ccx = x0 + (rng() * (x1 - x0) | 0), ccy = y0 + (rng() * (y1 - y0) | 0);
+        if (getT(ccx, ccy) !== T.GRASS) continue;
+        for (let i = 0, n = 4 + (rng() * 6 | 0); i < n; i++) detailAt(ccx + Math.round((rng() - rng()) * 4), ccy + Math.round((rng() - rng()) * 4));
+      }
+      // light uniform sprinkle between clusters so nowhere is bare
+      for (let i = 0, n = 30 + (rng() * 22 | 0); i < n; i++) detailAt(x0 + (rng() * (x1 - x0) | 0), y0 + (rng() * (y1 - y0) | 0));
+      // isolated trees / saplings (also break the flat green on the world map)
+      for (let i = 0, tn = 4 + (rng() * 6 | 0); i < tn; i++) { const x = x0 + (rng() * (x1 - x0) | 0), y = y0 + (rng() * (y1 - y0) | 0); if (getT(x, y) === T.GRASS && !occupied.has(okey(x, y))) resObj(x, y, 'tree'); }
+      // context-aware fringe detail
+      const scatter2 = (color, size, shape, n, pred) => { for (let i = 0; i < n; i++) { const x = x0 + (rng() * (x1 - x0) | 0), y = y0 + (rng() * (y1 - y0) | 0); if (pred(x, y) && !occupied.has(okey(x, y))) decor(x, y, color, size, shape); } };
+      if (water > 3) scatter2(0x6fae7a, 3, 'rect', 10, (x, y) => getT(x, y) === T.WATER && [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([a, b]) => getT(x + a, y + b) === T.GRASS)); // reeds
+      if (rock > 3) scatter2(0x6a6a6a, 4, 'rect', 12, (x, y) => getT(x, y) === T.GRASS);  // scattered stones near mountains
+      if (swamp > 3) scatter2(0x5a6a3a, 3, 'circle', 10, (x, y) => getT(x, y) === T.GRASS); // wet tufts near swamp
+      if (field > 2) scatter2(0x8a8a3a, 3, 'circle', 8, (x, y) => getT(x, y) === T.GRASS);  // weeds near farms
+      if (wall > 2) scatter2(0x8a8a7a, 3, 'rect', 8, (x, y) => getT(x, y) === T.GRASS);     // ruin debris
+      // occasional worn footpath scuff
+      if (rng() < 0.35) { const sxp = x0 + (rng() * (x1 - x0) | 0), syp = y0 + (rng() * (y1 - y0) | 0), len = 6 + (rng() * 12 | 0), ang = rng() * Math.PI * 2; for (let i = 0; i < len; i++) { const x = Math.round(sxp + Math.cos(ang) * i), y = Math.round(syp + Math.sin(ang) * i); if (getT(x, y) === T.GRASS) { setT(x, y, T.DIRT); if (rng() < 0.3 && getT(x + 1, y) === T.GRASS) setT(x + 1, y, T.DIRT); } } }
+    }
+    return detailed;
+  })();
+
+  // ---- POLISH PASS 2: feather biome edges into transition bands ----
+  // In-place, additive: soften every hard biome border with a gradient of
+  // intermediate detail so nothing looks like a pasted polygon.
+  (function featherBiomeEdges() {
+    // Forest fringes: sparse scattered trees + bushes fading OUT from each wood
+    // (dense forest -> scattered trees -> bushes -> grass).
+    for (const f of FORESTS) polyFeather(f.poly, 26, (x, y, depth) => {
+      if (depth > 3 || getT(x, y) !== T.GRASS || occupied.has(okey(x, y))) return;
+      const outside = -depth; // 0 at the tree-line .. 26 tiles out
+      const p = 0.07 * Math.max(0, 1 - outside / 24);
+      const r = hash2(x, y, Sr + 21);
+      if (r < p) resObj(x, y, f.kinds[(hash2(x, y, Sr + 23) * f.kinds.length) | 0]);
+      else if (r < p + 0.05) decor(x, y, 0x557a34, 4, 'circle');
+      else if (r < p + 0.09) decor(x, y, 0x3f6e2c, 3, 'circle');
+    });
+    // Terrain edges (rock / water / swamp): spray a distance-graded band into
+    // the adjacent grass. rock -> rocky hills -> stones -> rough grass; water ->
+    // reeds/shore; swamp -> mud -> wet grass.
+    const BAND = 5;
+    for (let y = 3; y < WORLD_H - 3; y++) for (let x = 3; x < WORLD_W - 3; x++) {
+      const t = terrain[idx(x, y)];
+      if (t !== T.ROCK && t !== T.WATER && t !== T.SWAMP) continue;
+      if (!([[1, 0], [-1, 0], [0, 1], [0, -1]].some(([a, b]) => getT(x + a, y + b) === T.GRASS))) continue; // edge only
+      if (t === T.WATER && rng() < 0.14 && !occupied.has(okey(x, y))) decor(x, y, 0x6fae7a, 3, 'rect'); // reeds on the waterline
+      for (let s = 0; s < 3; s++) {
+        const d = 1 + (rng() * BAND | 0), ang = rng() * Math.PI * 2;
+        const gx = Math.round(x + Math.cos(ang) * d), gy = Math.round(y + Math.sin(ang) * d);
+        if (getT(gx, gy) !== T.GRASS || occupied.has(okey(gx, gy))) continue;
+        if (rng() > 1 - d / (BAND + 1)) continue; // density falls off with distance from the edge
+        if (t === T.ROCK) { if (rng() < 0.18) setT(gx, gy, T.ROCK); else decor(gx, gy, 0x6a6a6a, 4, 'rect'); } // rocky hills + stones
+        else if (t === T.WATER) decor(gx, gy, 0x6fae7a, 4, 'rect');                                            // reeds on the shore
+        else decor(gx, gy, rng() < 0.5 ? 0x5a6a3a : 0x6a5a3a, 3, 'circle');                                    // mud / wet grass
+      }
+    }
+  })();
+
+  // ---- POLISH PASS 3: break geometric silhouettes ----
+  // In-place edge sculpting so nothing reads as a circle / polygon / blob.
+  // Cores are preserved; only edges are carved and satellites added.
+  (function breakGeometry() {
+    const soft = (x, y) => { const c = getT(x, y); return c === T.GRASS || c === T.SAND || c === T.WATER || c === T.SWAMP; };
+    // --- Grublake: peninsulas + coves + satellite ponds (kills the round look) ---
+    const lc = { x: 735, y: 495 };
+    const peninsula = (ang, startR, len, width) => { for (let d = 0; d < len; d++) { const r = startR - d; const jx = Math.round(lc.x + Math.cos(ang) * r + (vnoise(d * 0.4, ang * 9, Sr) - 0.5) * 4); const jy = Math.round(lc.y + Math.sin(ang) * r + (vnoise(d * 0.4 + 50, ang * 9, Sr) - 0.5) * 4); disc(jx, jy, Math.max(0, width * (1 - d / len)), (x, y) => { if (getT(x, y) === T.WATER) setT(x, y, d < len - 4 ? T.SAND : T.GRASS); }); } };
+    peninsula(0.4, 90, 26, 2.4); peninsula(2.2, 84, 22, 2.2); peninsula(3.7, 92, 30, 2.6); peninsula(5.1, 80, 20, 2.0);
+    const cove = (ang, startR, len, width) => { for (let d = 0; d < len; d++) { const r = startR + d; disc(Math.round(lc.x + Math.cos(ang) * r), Math.round(lc.y + Math.sin(ang) * r), width * (1 - d / len) + 0.6, (x, y) => { if (getT(x, y) === T.GRASS || getT(x, y) === T.SAND) setT(x, y, T.WATER); }); } };
+    cove(1.2, 90, 9, 3); cove(4.3, 92, 10, 3); cove(5.7, 86, 8, 2.6);
+    for (const [px, py] of [[792, 600], [640, 612], [815, 430]]) { disc(px, py, 3 + (rng() * 2 | 0), (x, y) => { if (soft(x, y) && getT(x, y) !== T.SWAMP) setT(x, y, T.WATER); }); disc(px, py, 5, (x, y) => { if (getT(x, y) === T.GRASS && [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([a, b]) => getT(x + a, y + b) === T.WATER)) decor(x, y, 0x6fae7a, 4, 'rect'); }); }
+    // --- Mountains: satellite outcrops (foothills) + carved passes ---
+    for (const h of HIGHLANDS) polyFeather(h.poly, 30, (x, y, depth) => { if (depth > -4 || getT(x, y) !== T.GRASS) return; const outside = -depth; if (hash2(x, y, Sr + 31) < 0.05 * Math.max(0, 1 - outside / 28)) disc(x, y, 1 + (hash2(x, y, Sr + 33) * 2 | 0), (px, py) => { if (getT(px, py) === T.GRASS) setT(px, py, T.ROCK); }); });
+    const pass = (pts) => alongPath(pts, (cx, cy) => disc(cx, cy, 1.4, (x, y) => { if (getT(x, y) === T.ROCK) setT(x, y, T.DIRT); }));
+    pass([[860, 30], [882, 90], [902, 150]]); pass([[560, 150], [605, 120], [652, 98]]);
+    // --- Bog: fingers + satellite pools out of the basin ---
+    polyFeather(BOG, 22, (x, y, depth) => { if (depth > -2 || getT(x, y) !== T.GRASS) return; const outside = -depth; if (hash2(x, y, Sg + 9) < 0.06 * Math.max(0, 1 - outside / 20)) setT(x, y, T.SWAMP); });
+    for (const [px, py] of [[600, 640], [905, 760], [720, 628]]) disc(px, py, 4, (x, y) => { if (getT(x, y) === T.GRASS) setT(x, y, hash2(x, y, Sg + 12) < 0.4 ? T.WATER : T.SWAMP); });
+    // --- Forests: small satellite copses so each wood isn't one blob ---
+    for (const f of FORESTS) { const [x0, y0, x1, y1] = pbox(f.poly); for (let c = 0; c < 5; c++) { const cxp = x0 - 20 + (rng() * (x1 - x0 + 40) | 0), cyp = y0 - 20 + (rng() * (y1 - y0 + 40) | 0); if (pip(cxp + 0.5, cyp + 0.5, f.poly)) continue; disc(cxp, cyp, 3 + (rng() * 3 | 0), (x, y) => { if (getT(x, y) === T.GRASS && !occupied.has(okey(x, y)) && hash2(x, y, Sr + 41) < 0.45) resObj(x, y, f.kinds[(hash2(x, y, Sr + 43) * f.kinds.length) | 0]); }); } }
+  })();
+
+  // ---- POLISH PASS 4: wayside landmarks, teasers & enemy pockets (connect the in-between) ----
+  (function waysideLandmarks() {
+    const placeNear = (x, y, label, color) => { for (let r = 1; r <= 6; r++) for (let a = 0; a < 360; a += 45) { const nx = Math.round(x + r * Math.cos(a * Math.PI / 180)), ny = Math.round(y + r * Math.sin(a * Math.PI / 180)); if (getT(nx, ny) === T.GRASS && !occupied.has(okey(nx, ny))) return structure(nx, ny, label, color); } return null; };
+    // signposts beside the main road forks
+    for (const [x, y, label] of [
+      [495, 400, 'Signpost: Quarry and Mines'], [563, 451, 'Signpost: Grublake'], [515, 514, 'Signpost: Farmlands and Bog'],
+      [446, 451, 'Signpost: Choppers Hollow'], [340, 378, 'Signpost: Willow and Mushroom'], [602, 684, 'Signpost: Bog of Grub'],
+      [668, 290, 'Signpost: Troll Ridge'], [772, 414, 'Signpost: Eastern Oakwoods'],
+    ]) placeNear(x, y, label, 0x9a7a3a);
+    // wayside micro-landmarks (environmental storytelling in the in-between wild)
+    for (const [x, y, label, color] of [
+      [430, 360, 'Abandoned Campfire', 0xd2691e], [560, 360, 'Old Cairn', 0x8a8a7a], [598, 458, 'Broken Cart', 0x6a5a4a],
+      [432, 542, 'Ruined Fence', 0x5a4a30], [560, 545, 'Old Well', 0x6a7a8a], [655, 605, 'Watch Post', 0x7a6a4a],
+      [300, 470, 'Hunters Blind', 0x6a5a3a], [255, 720, 'Old Shrine', 0x8a8a7a], [905, 560, 'Abandoned Crates', 0x8a6a3a],
+      [880, 300, 'Broken Wagon', 0x6a5a4a], [520, 762, 'Stone Marker', 0x8a8a7a], [700, 860, 'Skull Totem', 0xb03030],
+      [380, 225, 'Fallen Pillar', 0x8a8a7a], [155, 400, 'Lonely Grave', 0x7a7a7a], [560, 195, 'Prospectors Tent', 0x7a6a4a],
+    ]) placeNear(x, y, label, color);
+    // old-road fragments (weathered, disconnected)
+    const frag = (pts) => alongPath(pts, (cx, cy) => { const x = Math.round(cx), y = Math.round(cy); if (getT(x, y) === T.GRASS && rng() < 0.8) setT(x, y, T.DIRT); });
+    frag([[470, 350], [500, 340], [540, 345]]); frag([[382, 560], [352, 590], [322, 612]]); frag([[720, 520], [760, 560], [790, 610]]); frag([[560, 720], [590, 740], [612, 770]]);
+    // resource teasers between regions (low density, not optimal training)
+    const teaser = (x, y, k) => { for (let r = 0; r <= 6; r++) for (let a = 0; a < 360; a += 60) { const nx = Math.round(x + r * Math.cos(a * Math.PI / 180)), ny = Math.round(y + r * Math.sin(a * Math.PI / 180)); if (getT(nx, ny) === T.GRASS && !occupied.has(okey(nx, ny))) { resObj(nx, ny, k); return; } } };
+    for (const [x, y] of [[430, 420], [560, 412], [620, 472], [470, 540], [560, 562], [702, 560], [300, 500], [820, 470], [640, 360]]) teaser(x, y, 'tree');
+    teaser(600, 342, 'rock_copper'); teaser(560, 532, 'rock_tin'); teaser(520, 205, 'rock_iron');
+    // a teaser watering hole just outside town (near-town shrimp)
+    disc(566, 532, 3, (x, y) => { if (getT(x, y) === T.GRASS) setT(x, y, T.WATER); });
+    disc(566, 532, 4, (x, y) => { if (getT(x, y) === T.GRASS && [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([a, b]) => getT(x + a, y + b) === T.WATER)) decor(x, y, 0x6fae7a, 3, 'rect'); });
+    for (const [dx, dy] of [[3, 0], [-3, 1], [0, 3]]) { const x = 566 + dx, y = 532 + dy; if (getT(x, y) === T.WATER && !occupied.has(okey(x, y))) resObj(x, y, 'fish_shrimp'); }
+    // small enemy pockets in the wilderness
+    const pocket = (x, y, type, name) => { for (let r = 0; r <= 8; r++) for (let a = 0; a < 360; a += 60) { const nx = Math.round(x + r * Math.cos(a * Math.PI / 180)), ny = Math.round(y + r * Math.sin(a * Math.PI / 180)); if (landish(nx, ny) && getT(nx, ny) !== T.DIRT && !occupied.has(okey(nx, ny))) { enemySpawns.push({ type, x: nx, y: ny, name, _keep: true }); occupied.add(okey(nx, ny)); return; } } };
+    pocket(440, 385, 'rat', 'Wild Rat'); pocket(600, 400, 'spider', 'Roadside Spider'); pocket(542, 560, 'rat', 'Field Rat'); pocket(720, 585, 'mud_bug', 'Marsh Bug'); pocket(320, 305, 'spider', 'Forest Spider'); pocket(800, 500, 'wolf', 'Stray Wolf');
+  })();
+
+  // ---- POLISH PASS 5: road & path refinement ----
+  // In-place: widen approaches near towns/camps, add worn shoulders + cart-ruts,
+  // and add connecting forks/trails (water crossings become bridges via trail()).
+  (function refineRoads() {
+    const HUBS = [[502, 457], [455, 285], [624, 440], [510, 645], [610, 205], [850, 825], [820, 330], [725, 770], [285, 610], [250, 800], [335, 372]];
+    const nearHub = (x, y) => HUBS.some(([hx, hy]) => Math.hypot(x - hx, y - hy) < 24);
+    for (const road of ROADS) alongPath(road.pts, (cx, cy) => {
+      const x = Math.round(cx), y = Math.round(cy);
+      if (nearHub(x, y)) for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const nx = x + dx, ny = y + dy; if (getT(nx, ny) === T.GRASS) setT(nx, ny, T.ROAD); } // widen approach
+      for (let s = 0; s < 2; s++) { const ang = rng() * Math.PI * 2, d = 2 + (rng() * 2 | 0); const gx = Math.round(x + Math.cos(ang) * d), gy = Math.round(y + Math.sin(ang) * d); if (getT(gx, gy) !== T.GRASS || occupied.has(okey(gx, gy))) continue; const r = rng(); if (r < 0.25) setT(gx, gy, T.DIRT); else if (r < 0.6) decor(gx, gy, 0x7a6a4a, 3, 'rect'); else decor(gx, gy, 0x8a8a7a, 2, 'rect'); } // worn shoulders / ruts / pebbles
+    }, 0.06);
+    trail([[500, 420], [530, 400], [558, 362]], 0);   // fork to the Old Cairn wilds
+    trail([[560, 470], [560, 512], [560, 544]], 0);   // fork to the Old Well
+    trail([[300, 470], [292, 540], [288, 600]], 0);   // riverbank trail: Choppers -> Willow
+    trail([[705, 600], [740, 630], [760, 668]], 0);   // lakeside path toward the bog road
+  })();
+
+  // ---- POPULATE FROM DATABASE: the full monster roster, placed by region ----
+  // Intentional, not random: every DB monster is dropped into the region it is
+  // tagged for, with stats derived from its combat level and its monster_id
+  // carried through for the drop-table lane. Node/degraded boot: DB is empty so
+  // the hand-authored baseline stands.
+  (function populateMonstersFromDb() {
+    const dbMon = (GameData && GameData.monsters) || [];
+    if (!dbMon.length) return; // Node/degraded: hand-authored baseline stands
+    // DB is authoritative: drop baseline region-mobs, keep only the tagged
+    // keepers (training yard + wilderness pockets) so nothing is doubled up.
+    const kept = enemySpawns.filter((s) => s._keep);
+    enemySpawns.length = 0; enemySpawns.push(...kept);
+    // spacing grid seeded with the keepers so DB mobs don't stack on them
+    const mobAt = new Set(kept.map((s) => s.x + ',' + s.y));
+    const spaced = (x, y) => { for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) if (mobAt.has((x + dx) + ',' + (y + dy))) return false; return true; };
+    const REGMAP = { grubpit_quarry: 'grubpit', choppers_hollow: 'choppers', willow_riverlands: 'willow', main_farmlands: 'farmlands', grublake: 'grublake', eastern_oakwoods: 'oakwoods', northern_mine_hills: 'minehills', bog_of_grub: 'bog', mushroom_forest: 'mushroom', rival_goblin_territory: 'rival', old_forest_ruins: 'ruins', troll_ridge: 'troll', deep_mines: 'minehills' };
+    const REGCOLOR = { grubpit: 0x6a5a7a, choppers: 0x3a3a3a, willow: 0x5a6a4a, farmlands: 0x8a7a5a, grublake: 0x4a7a8a, oakwoods: 0x5a4a2a, minehills: 0x6a6a6a, bog: 0x5a7a4a, mushroom: 0x8a5a7a, rival: 0xb03030, ruins: 0x7a7a8a, troll: 0x6a7a8a };
+    let placed = 0;
+    for (const m of dbMon) {
+      const anchorId = REGMAP[m.region]; if (!anchorId) continue; // skip 'spawn'/meta (town stays safe)
+      const a = REGION_ANCHORS.find((x) => x.id === anchorId); if (!a) continue;
+      const cl = m.combat_level || 5, L = Math.max(1, Math.round(cl / 1.14));
+      // register a stat block keyed by monster_id so combatLevel(levels) ≈ its DB level
+      ENEMY_TYPES[m.monster_id] = ENEMY_TYPES[m.monster_id] || {
+        name: m.display_name, color: REGCOLOR[anchorId] || 0x7a6a5a,
+        hp: Math.max(3, Math.round(L * 1.15)), att: L, str: L, def: Math.max(1, Math.round(L * 0.8)),
+        speed: 3, loot: cl < 15 ? 'rat' : cl < 45 ? 'goblin_guard' : 'rival',
+      };
+      // bosses are lone; everything else comes as a pair — keeps starter regions
+      // uncrowded and lets density track a region's roster size, not fixed counts.
+      const count = cl >= 55 ? 1 : 2;
+      for (let i = 0; i < count; i++) for (let t = 0; t < 60; t++) {
+        const x = Math.round(a.x + (rng() - rng()) * a.r * 0.85), y = Math.round(a.y + (rng() - rng()) * a.r * 0.85);
+        if (landish(x, y) && getT(x, y) !== T.DIRT && !occupied.has(okey(x, y)) && spaced(x, y)) { enemySpawns.push({ type: m.monster_id, x, y, name: m.display_name, monsterId: m.monster_id }); occupied.add(okey(x, y)); mobAt.add(x + ',' + y); placed++; break; }
+      }
+    }
+    return placed;
+  })();
+
+  // ---- POPULATE FROM DATABASE: signature resource nodes as visible markers ----
+  // The designed higher-tier / exotic nodes (Moonwillow, Silver, gem veins,
+  // Sturgeon, Glowshroom, herb & crop patches) placed by region as LABELED,
+  // level-tagged markers so every region reads resource-rich. Non-gatherable for
+  // now (they carry node_id for the economy lane to wire once its item/farming
+  // systems land); the baseline copper/oak/trout etc. remain the gatherables.
+  (function populateNodesFromDb() {
+    const dbNodes = (GameData && GameData.worldNodes) || [];
+    if (!dbNodes.length) return;
+    const REGMAP = { spawn_teaser: 'settlement', grubpit_quarry: 'grubpit', choppers_hollow: 'choppers', willow_riverlands: 'willow', main_farmlands: 'farmlands', grublake: 'grublake', eastern_oakwoods: 'oakwoods', northern_mine_hills: 'minehills', bog_of_grub: 'bog', mushroom_forest: 'mushroom', rival_goblin_territory: 'rival', old_forest_ruins: 'ruins', troll_ridge: 'troll', deep_mines: 'minehills' };
+    const BASELINE = new Set(['normal_tree', 'oak_tree', 'willow_tree', 'deadwood_tree', 'copper_rock', 'tin_rock', 'iron_rock', 'coal_rock', 'gold_rock', 'shrimp_fishing_spot', 'trout_fishing_spot', 'pike_fishing_spot', 'bog_eel_fishing_spot']);
+    const colorFor = (n) => { const s = n.related_skill; if (s === 'woodcutting') return 0x2f6b25; if (s === 'mining') return /gem|opal|agate|jade|pearl|amber|ruby|sapphire|diamond/i.test(n.node_id) ? 0x5ad0d0 : 0x8a7a5a; if (s === 'fishing') return 0x4fa3c7; if (s === 'farming') return /herb|sage|thistle|bloom|leaf|muck|cap|shroom|morel|spore|witch|glow/i.test(n.node_id) ? 0x4a8a4a : 0x8a9a4a; return 0x9a8a5a; };
+    const seen = new Set();
+    for (const n of dbNodes) {
+      if (BASELINE.has(n.node_id)) continue;
+      const blocking = n.related_skill === 'woodcutting' || n.related_skill === 'mining';
+      const label = `${n.display_name} (Lv ${n.level_requirement})`;
+      for (const dbReg of String(n.region).split(';')) {
+        const anchorId = REGMAP[dbReg]; if (!anchorId) continue;
+        const a = REGION_ANCHORS.find((x) => x.id === anchorId); if (!a) continue;
+        if (seen.has(n.node_id + anchorId)) continue; seen.add(n.node_id + anchorId);
+        const isFish = n.related_skill === 'fishing';
+        const cnt = n.level_requirement < 20 ? 2 : 1;
+        for (let i = 0; i < cnt; i++) for (let t = 0; t < 50; t++) {
+          // uniform spread across the region (not clustered at the anchor)
+          const x = Math.round(a.x + (rng() * 2 - 1) * a.r * 0.92), y = Math.round(a.y + (rng() * 2 - 1) * a.r * 0.92);
+          if (occupied.has(okey(x, y))) continue;
+          const gt = getT(x, y);
+          if (isFish ? gt === T.WATER : (gt === T.GRASS || gt === T.SWAMP)) {
+            placeObj({ x, y, type: 'structure', label, color: colorFor(n), skill: null, blocking: isFish ? false : blocking, depleted: false, nodeId: n.node_id });
+            break;
+          }
+        }
+      }
+    }
+  })();
+
+  // ---- collision + chunk buckets ----
+  const collision = new Uint8Array(WORLD_W * WORLD_H);
+  for (let i = 0; i < collision.length; i++) collision[i] = TERRAIN_DEFS[terrain[i]].walkable ? 0 : 1;
+  for (const o of objects) if (o.blocking) collision[idx(o.x, o.y)] = 1;
+  const objectsByChunk = new Map();
+  for (const o of objects) { const k = chunkKey(o.x, o.y); if (!objectsByChunk.has(k)) objectsByChunk.set(k, []); objectsByChunk.get(k).push(o); }
+
+  return { W: WORLD_W, H: WORLD_H, seed, terrain, collision, objects, objectAt, objectsByChunk, enemySpawns, friendlies, ENEMY_TYPES, spawn };
+}
+
+// ============================================================ queries
+export function isWalkable(world, x, y) { if (x < 0 || y < 0 || x >= world.W || y >= world.H) return false; return world.collision[y * world.W + x] === 0; }
+export function regionAt(x, y) {
+  for (const a of REGION_ANCHORS) { const b = a.bounds; if (b && x >= b[0] && y >= b[1] && x <= b[2] && y <= b[3]) return a.name; }
+  let best = null, bs = Infinity; for (const a of REGION_ANCHORS) { const d = Math.hypot(x - a.x, y - a.y) / a.r; if (d < bs) { bs = d; best = a; } }
+  return bs < 1.15 ? best.name : 'Goblin Wilds';
+}
+export function objectsInView(world, x0, y0, x1, y1) { const out = []; const c0x = (x0 / CHUNK) | 0, c1x = (x1 / CHUNK) | 0, c0y = (y0 / CHUNK) | 0, c1y = (y1 / CHUNK) | 0; for (let cy = c0y; cy <= c1y; cy++) for (let cx = c0x; cx <= c1x; cx++) { const arr = world.objectsByChunk.get(cy + ',' + cx); if (arr) for (const o of arr) out.push(o); } return out; }
+
+export function findPath(world, sx, sy, tx, ty, adjacent = false) {
+  const W = world.W, H = world.H;
+  const goal = adjacent ? (x, y) => Math.abs(x - tx) + Math.abs(y - ty) === 1 : (x, y) => x === tx && y === ty;
+  if (goal(sx, sy)) return [];
+  const startK = sy * W + sx;
+  const came = new Map([[startK, -1]]); const queue = [startK]; let head = 0; const MAX = 14000;
+  let best = startK, bestD = Math.abs(sx - tx) + Math.abs(sy - ty);
+  const N = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+  while (head < queue.length && came.size < MAX) {
+    const cur = queue[head++]; const cx = cur % W, cy = (cur - cx) / W;
+    for (const [dx, dy] of N) { const nx = cx + dx, ny = cy + dy; if (nx < 0 || ny < 0 || nx >= W || ny >= H) continue; const nk = ny * W + nx; if (came.has(nk) || world.collision[nk]) continue; came.set(nk, cur); if (goal(nx, ny)) return rebuild(came, nk, W); const d = Math.abs(nx - tx) + Math.abs(ny - ty); if (d < bestD) { bestD = d; best = nk; } queue.push(nk); }
+  }
+  return best !== startK ? rebuild(came, best, W) : [];
+}
+function rebuild(came, node, W) { const path = []; let c = node; while (c !== -1 && came.get(c) !== -1) { const x = c % W, y = (c - x) / W; path.unshift([x, y]); c = came.get(c); } return path; }

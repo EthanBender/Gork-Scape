@@ -1,0 +1,110 @@
+[
+  [
+    "Goblin Settlement",
+    "1-10",
+    "Teaser sampler",
+    "Normal trees, shrimp, copper/tin, 1 oak, 1 iron, farms",
+    "Training Rat, Goblin Trainee",
+    "Bank, shops, furnace, anvil, range, crafting bench",
+    "Player learns all loops without long travel"
+  ],
+  [
+    "Chopper Hollow",
+    "1-20",
+    "Woodcutting training",
+    "Normal trees, oak clusters, mushrooms",
+    "Forest Rat, Giant Spider",
+    "Woodcutting camp, sawpit",
+    "Oak and bow materials begin here"
+  ],
+  [
+    "Willow Riverlands",
+    "10-30",
+    "Fishing/Willow specialist",
+    "Willow trees, trout, river eel, reeds, clay",
+    "River Bandit, Mud Bug",
+    "Broken bridge, bait seller",
+    "Regional reason for willow/trout travel"
+  ],
+  [
+    "Main Farmlands",
+    "1-30",
+    "Farming/cooking support",
+    "Potatoes, cabbage, onions, herbs",
+    "Crows, Rats, Crop Bugs",
+    "Tool shed, compost, water source",
+    "Feeds stews and quest materials"
+  ],
+  [
+    "Grublake",
+    "15-45",
+    "Fishing hub",
+    "Pike, carp, willow, water herbs",
+    "Crazed Fisher-Gob, Lake Snapper",
+    "Dock, boat, lake island",
+    "Best pike/carp density and boat unlock"
+  ],
+  [
+    "Eastern Oakwoods",
+    "20-50",
+    "Oak/combat/hunter zone",
+    "Oak, dense oak, berries, hides",
+    "Oak Boar, Moss Wolf, Rival Scout",
+    "Hunter camp, hidden hut",
+    "Ranged and leather upgrade region"
+  ],
+  [
+    "Grubpit Quarry",
+    "1-25",
+    "Starter/iron mining",
+    "Copper, tin, clay, iron teaser",
+    "Cave Bug, Cave Bat",
+    "Starter cave, quarry camp",
+    "Metal tutorial into early iron"
+  ],
+  [
+    "Northern Mine Hills",
+    "20-55",
+    "Mining specialist",
+    "Iron, coal, silver, gold",
+    "Iron Rock Crab, Cave Goblin Miner",
+    "Mine camp, carts, caves",
+    "Best midgame ore density"
+  ],
+  [
+    "Bog of Grub",
+    "25-60",
+    "Swamp prep/danger",
+    "Deadwood, swamp herbs, bog eel, slime",
+    "Swamp Frog, Bog Rat, Bog Slime, Swamp Shaman",
+    "Swamp shrine, boardwalks",
+    "Poison prep, charms, swamp uniques"
+  ],
+  [
+    "Mushroom Forest",
+    "25-55",
+    "Crafting/weird food",
+    "Mushrooms, fungal logs, dead trees",
+    "Fungal Goblin",
+    "Witch hut, potion station",
+    "Unlocks odd utility recipes"
+  ],
+  [
+    "Rival Territory",
+    "45-70",
+    "Combat/unique gear",
+    "Black iron, crates, captured gear",
+    "Rival Warrior, Archer, Brute, Captain",
+    "Captured anvil, boss arena",
+    "First major hostile settlement"
+  ],
+  [
+    "Troll Ridge",
+    "55-80+",
+    "High risk mining",
+    "Coal, gold, gems, ironbark, meteor events",
+    "Troll Whelp, Cave Troll",
+    "Mountain pass, troll caves",
+    "Late mining/combat goal"
+  ]
+]

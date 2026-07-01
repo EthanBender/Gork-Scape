@@ -1,0 +1,171 @@
+{
+  "landmarks": [
+    {
+      "id": "town_bank",
+      "name": "Bank",
+      "region": "goblin_settlement",
+      "coord": [
+        485,
+        455
+      ],
+      "type": "service",
+      "local_map_required": true
+    },
+    {
+      "id": "town_furnace",
+      "name": "Town Furnace",
+      "region": "goblin_settlement",
+      "coord": [
+        515,
+        465
+      ],
+      "type": "station",
+      "station_type": "furnace"
+    },
+    {
+      "id": "town_anvil",
+      "name": "Town Anvil",
+      "region": "goblin_settlement",
+      "coord": [
+        525,
+        465
+      ],
+      "type": "station",
+      "station_type": "anvil"
+    },
+    {
+      "id": "training_yard",
+      "name": "Training Yard",
+      "region": "goblin_settlement",
+      "coord": [
+        515,
+        485
+      ],
+      "type": "combat_training"
+    },
+    {
+      "id": "west_bridge",
+      "name": "Repairable West Bridge",
+      "region": "willow_riverlands",
+      "coord": [
+        340,
+        435
+      ],
+      "type": "unlockable_shortcut",
+      "requires": [
+        "oak_logs",
+        "iron_nails"
+      ]
+    },
+    {
+      "id": "grublake_dock",
+      "name": "Grublake Dock",
+      "region": "grublake",
+      "coord": [
+        645,
+        440
+      ],
+      "type": "dock",
+      "requires": [
+        "willow_logs",
+        "rope"
+      ]
+    },
+    {
+      "id": "lake_island",
+      "name": "Lake Island",
+      "region": "grublake",
+      "coord": [
+        745,
+        520
+      ],
+      "type": "poi",
+      "requires": [
+        "boat_unlock"
+      ]
+    },
+    {
+      "id": "mine_cart",
+      "name": "Mine Cart Route",
+      "region": "northern_mine_hills",
+      "coord": [
+        590,
+        250
+      ],
+      "type": "unlockable_shortcut",
+      "requires": [
+        "iron_bars",
+        "oak_planks"
+      ]
+    },
+    {
+      "id": "deep_mine_entrance",
+      "name": "Deep Mine Entrance",
+      "region": "northern_mine_hills",
+      "coord": [
+        640,
+        170
+      ],
+      "type": "cave"
+    },
+    {
+      "id": "swamp_shrine",
+      "name": "Swamp Shrine",
+      "region": "bog_of_grub",
+      "coord": [
+        725,
+        775
+      ],
+      "type": "quest_station",
+      "requires": [
+        "goblin_charm"
+      ]
+    },
+    {
+      "id": "witch_goblin_hut",
+      "name": "Witch-Goblin Hut",
+      "region": "mushroom_forest",
+      "coord": [
+        250,
+        800
+      ],
+      "type": "quest_station"
+    },
+    {
+      "id": "captured_anvil",
+      "name": "Captured Anvil",
+      "region": "rival_goblin_territory",
+      "coord": [
+        840,
+        810
+      ],
+      "type": "station_unlock",
+      "requires": [
+        "red_ear_captain_defeated"
+      ]
+    },
+    {
+      "id": "troll_gate",
+      "name": "Troll Ridge Gate",
+      "region": "troll_ridge",
+      "coord": [
+        800,
+        120
+      ],
+      "type": "gate",
+      "requires": [
+        "mountain_key_fragment"
+      ]
+    },
+    {
+      "id": "old_ruin_chapel",
+      "name": "Old Ruin Chapel",
+      "region": "old_forest_ruins",
+      "coord": [
+        245,
+        150
+      ],
+      "type": "ruins"
+    }
+  ]
+}

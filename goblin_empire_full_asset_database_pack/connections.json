@@ -1,0 +1,67 @@
+{
+  "headers": [
+    "loop_name",
+    "input",
+    "output",
+    "connected_system",
+    "explanation"
+  ],
+  "rows": [
+    [
+      "Woodcutting -> Ranged",
+      "normal/oak/willow logs",
+      "arrow shafts/bows",
+      "crafting/ranged",
+      "Players chop logs to craft bows and arrows."
+    ],
+    [
+      "Mining -> Smithing -> Tools",
+      "ore",
+      "bars/tools",
+      "mining/woodcutting/fishing",
+      "Better tools improve gathering loops."
+    ],
+    [
+      "Fishing -> Cooking -> Combat",
+      "raw fish",
+      "cooked food",
+      "combat/exploration",
+      "Food enables longer trips and boss fights."
+    ],
+    [
+      "Swamp prep loop",
+      "bog eel + swamp herb + deadwood",
+      "bog eel stew + goblin charm",
+      "Bog of Grub access",
+      "Multi-skill gate into swamp."
+    ],
+    [
+      "Rival camp loop",
+      "smithing gear + cooked food + charms",
+      "rival boss kill",
+      "captured anvil/unlocks",
+      "Combat uses economy outputs and rewards new station."
+    ],
+    [
+      "Mushroom loop",
+      "mushrooms + fungal logs + bones",
+      "potions/charms",
+      "swamp and forest progression",
+      "Mushroom Forest feeds crafting/questing."
+    ],
+    [
+      "Farm loop",
+      "crops + herbs",
+      "stews/potions/quest food",
+      "cooking/combat",
+      "Farming supports food and utility items."
+    ],
+    [
+      "Boss unlock loop",
+      "region boss drops",
+      "new resource area",
+      "late-game progression",
+      "Boss uniques unlock specialist regions."
+    ]
+  ]
+}

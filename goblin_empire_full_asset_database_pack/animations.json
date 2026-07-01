@@ -1,0 +1,82 @@
+{
+  "headers": [
+    "asset_family",
+    "animation",
+    "frames",
+    "notes"
+  ],
+  "rows": [
+    [
+      "goblin_common",
+      "idle",
+      "4 frames",
+      "breathing/stance"
+    ],
+    [
+      "goblin_common",
+      "walk_north/south/east/west",
+      "6 frames each",
+      "grid movement"
+    ],
+    [
+      "goblin_common",
+      "attack_melee",
+      "6 frames",
+      "weapon swing"
+    ],
+    [
+      "goblin_common",
+      "hit",
+      "2 frames",
+      "damage reaction"
+    ],
+    [
+      "goblin_common",
+      "death",
+      "6 frames",
+      "drops loot"
+    ],
+    [
+      "tree_nodes",
+      "chop_fx",
+      "4 frames",
+      "leaf shake + chips"
+    ],
+    [
+      "ore_nodes",
+      "mine_fx",
+      "4 frames",
+      "spark/chip particles"
+    ],
+    [
+      "water_tiles",
+      "water_loop",
+      "6 frames",
+      "subtle ripple"
+    ],
+    [
+      "fishing_spots",
+      "ripple_loop",
+      "6 frames",
+      "fish spot indicator"
+    ],
+    [
+      "crop_nodes",
+      "growth_state_swap",
+      "4 states",
+      "empty/planted/growing/ready"
+    ],
+    [
+      "campfire",
+      "fire_loop",
+      "8 frames",
+      "lit cooking station"
+    ],
+    [
+      "bosses",
+      "phase_transition",
+      "8-12 frames",
+      "boss special state"
+    ]
+  ]
+}

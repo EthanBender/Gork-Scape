@@ -1,0 +1,162 @@
+[
+  [
+    "General Store",
+    "Goblin Settlement",
+    "small_net",
+    10,
+    1.2,
+    0.45,
+    "Always",
+    "Basic access item"
+  ],
+  [
+    "General Store",
+    "Goblin Settlement",
+    "fishing_rod",
+    35,
+    1.2,
+    0.45,
+    "Fishing 10 or quest",
+    "Rod unlock"
+  ],
+  [
+    "General Store",
+    "Goblin Settlement",
+    "fishing_bait",
+    2,
+    1.5,
+    0.2,
+    "Always",
+    "Ammo-like sink"
+  ],
+  [
+    "General Store",
+    "Goblin Settlement",
+    "clay_bowl",
+    8,
+    1.3,
+    0.35,
+    "Cooking quest",
+    "Stew container"
+  ],
+  [
+    "Tool Stall",
+    "Goblin Settlement",
+    "crude_hatchet",
+    8,
+    1.1,
+    0.35,
+    "Always",
+    "Starter woodcutting"
+  ],
+  [
+    "Tool Stall",
+    "Goblin Settlement",
+    "crude_pickaxe",
+    8,
+    1.1,
+    0.35,
+    "Always",
+    "Starter mining"
+  ],
+  [
+    "Weapon Shop",
+    "Goblin Settlement",
+    "bronze_dagger",
+    30,
+    1.35,
+    0.5,
+    "Attack 5",
+    "Starter weapon purchase"
+  ],
+  [
+    "Weapon Shop",
+    "Goblin Settlement",
+    "bronze_spear",
+    55,
+    1.35,
+    0.5,
+    "Attack 10",
+    "Goblin theme weapon"
+  ],
+  [
+    "Armour Shop",
+    "Goblin Settlement",
+    "leather_gloves",
+    45,
+    1.3,
+    0.5,
+    "Defence 5",
+    "Light armour"
+  ],
+  [
+    "Armour Shop",
+    "Goblin Settlement",
+    "bronze_shield",
+    70,
+    1.35,
+    0.5,
+    "Defence 15",
+    "Early defence"
+  ],
+  [
+    "Fishing Shack",
+    "Grublake",
+    "harpoon",
+    90,
+    1.4,
+    0.45,
+    "Dock repaired",
+    "Pike unlock"
+  ],
+  [
+    "Fishing Shack",
+    "Bog Edge",
+    "fishing_cage",
+    180,
+    1.45,
+    0.45,
+    "Swamp shrine started",
+    "Bog eel unlock"
+  ],
+  [
+    "Mining Camp",
+    "Northern Mine Hills",
+    "iron_pickaxe",
+    95,
+    1.4,
+    0.45,
+    "Mining 15",
+    "Mining route upgrade"
+  ],
+  [
+    "Mining Camp",
+    "Northern Mine Hills",
+    "steel_pickaxe",
+    240,
+    1.45,
+    0.45,
+    "Mining 35 + cart quest",
+    "Serious upgrade"
+  ],
+  [
+    "Hunter Camp",
+    "Eastern Oakwoods",
+    "oak_bow",
+    100,
+    1.4,
+    0.45,
+    "Ranged 15",
+    "Ranged access"
+  ],
+  [
+    "Witch-Gob Hut",
+    "Mushroom Forest",
+    "goblin_charm",
+    0,
+    0,
+    0,
+    "Quest reward only",
+    "Swamp progression item"
+  ]
+]

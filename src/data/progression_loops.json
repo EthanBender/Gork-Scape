@@ -1,0 +1,66 @@
+[
+  {
+    "loop_id": "bronze_starter_loop",
+    "name": "Bronze Starter Loop",
+    "steps": "mine copper/tin;smelt bronze;smith bronze spear;fight rats/cave bugs",
+    "skills": "mining;smithing;attack;hitpoints",
+    "regions": "spawn;grubpit_quarry",
+    "purpose": "First complete gathering to combat loop."
+  },
+  {
+    "loop_id": "ranged_bow_loop",
+    "name": "Ranged Bow Loop",
+    "steps": "cut logs;craft bow stave;get spider silk;make bowstring;mine ore;smith arrowheads;craft arrows;train ranged",
+    "skills": "woodcutting;crafting;mining;smithing;ranged;combat",
+    "regions": "choppers_hollow;grubpit_quarry;eastern_oakwoods",
+    "purpose": "Makes ranged depend on materials and monsters."
+  },
+  {
+    "loop_id": "swamp_access_loop",
+    "name": "Swamp Access Loop",
+    "steps": "catch bog eel;farm/loot swamp herb;cook bog eel stew;craft goblin charm;enter swamp shrine path",
+    "skills": "fishing;farming;cooking;crafting;combat",
+    "regions": "grublake;bog_of_grub;main_farmlands",
+    "purpose": "Multi-skill exploration gate."
+  },
+  {
+    "loop_id": "bridge_shortcut_loop",
+    "name": "Bridge Shortcut Loop",
+    "steps": "cut oak;make planks;mine iron;smith nails;defeat bridge bandit;repair west bridge",
+    "skills": "woodcutting;crafting;mining;smithing;combat;construction",
+    "regions": "choppers_hollow;willow_riverlands;grubpit_quarry",
+    "purpose": "Turns skilling into map traversal."
+  },
+  {
+    "loop_id": "minecart_loop",
+    "name": "Minecart Unlock Loop",
+    "steps": "mine iron/coal;smith brackets;craft wheels;fight cave goblin miner;repair minecart",
+    "skills": "mining;smithing;crafting;combat;construction",
+    "regions": "northern_mine_hills;deep_mines",
+    "purpose": "Unlocks ore deposit shortcut."
+  },
+  {
+    "loop_id": "rival_camp_loop",
+    "name": "Rival Camp Loop",
+    "steps": "smith steel gear;cook pike/carp;craft charm;fight scouts;collect map scraps;unlock rival gate",
+    "skills": "smithing;cooking;crafting;attack;defence;ranged",
+    "regions": "grublake;eastern_oakwoods;rival_goblin_territory",
+    "purpose": "Mid-game combat preparation and hostile camp access."
+  },
+  {
+    "loop_id": "troll_ridge_loop",
+    "name": "Troll Ridge Loop",
+    "steps": "craft warm/tough gear;brew defence potion;repair mountain pass;fight troll whelps;mine deep ore",
+    "skills": "crafting;herblore;construction;combat;mining",
+    "regions": "troll_ridge;deep_mines;old_forest_ruins",
+    "purpose": "High-level resource and combat loop."
+  },
+  {
+    "loop_id": "town_upgrade_loop",
+    "name": "Town Upgrade Loop",
+    "steps": "gather planks;smith braces;loot station parts;upgrade bank/furnace/anvil/range",
+    "skills": "woodcutting;smithing;crafting;construction;combat",
+    "regions": "spawn;regional_outposts",
+    "purpose": "Creates item sinks and permanent account/world progression."
+  }
+]

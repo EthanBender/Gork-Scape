@@ -1,0 +1,59 @@
+{
+  "headers": [
+    "boss_id",
+    "name",
+    "combat_level",
+    "region",
+    "role",
+    "unlock",
+    "drops",
+    "phase_design",
+    "arena_asset"
+  ],
+  "rows": [
+    [
+      "red_ear_captain",
+      "Red-Ear Captain",
+      62,
+      "Rival Goblin Territory",
+      "first war boss; unlock captured anvil",
+      "Unlocks Captured Anvil and Rival Camp reward chest",
+      "captains_banner; red_ear_spear_tip; black_iron_bar; war_feast",
+      "multi-phase recommended",
+      "unique arena asset required"
+    ],
+    [
+      "grub_bog_horror",
+      "Grub Bog Horror",
+      75,
+      "Bog of Grub",
+      "swamp boss; poison armour path",
+      "Unlocks Deep Bog resource loop",
+      "horror_heart; bog_horror_hide; slime_core; raw_grubshark",
+      "multi-phase recommended",
+      "unique arena asset required"
+    ],
+    [
+      "old_root_colossus",
+      "Old Root Colossus",
+      70,
+      "Old Forest Ruins",
+      "ancient forest boss; woodcutting/crafting route",
+      "Unlocks Elder Rotwood grove",
+      "elder_rotwood_logs; old_root_core; ancient_bark_plate; forest_relic",
+      "multi-phase recommended",
+      "unique arena asset required"
+    ],
+    [
+      "troll_king_grum",
+      "Troll King Grum",
+      85,
+      "Troll Ridge",
+      "mountain boss; late mining route",
+      "Unlocks Meteor Crater and high-tier ore",
+      "troll_king_tooth; meteor_shard; king_club_head; mountain_crown",
+      "multi-phase recommended",
+      "unique arena asset required"
+    ]
+  ]
+}

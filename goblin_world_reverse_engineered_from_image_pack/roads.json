@@ -1,0 +1,187 @@
+{
+  "roads": [
+    {
+      "id": "town_to_quarry_to_mines",
+      "name": "Northern Quarry Road",
+      "type": "main_road",
+      "width_tiles": 3,
+      "polyline": [
+        [
+          500,
+          455
+        ],
+        [
+          500,
+          390
+        ],
+        [
+          455,
+          285
+        ],
+        [
+          530,
+          240
+        ],
+        [
+          610,
+          190
+        ],
+        [
+          800,
+          120
+        ]
+      ],
+      "connects": [
+        "goblin_settlement",
+        "grubpit_quarry",
+        "northern_mine_hills",
+        "troll_ridge"
+      ]
+    },
+    {
+      "id": "town_to_grublake_to_oakwoods",
+      "name": "Eastern Lake Road",
+      "type": "main_road",
+      "width_tiles": 3,
+      "polyline": [
+        [
+          500,
+          455
+        ],
+        [
+          575,
+          455
+        ],
+        [
+          645,
+          440
+        ],
+        [
+          735,
+          420
+        ],
+        [
+          820,
+          330
+        ]
+      ],
+      "connects": [
+        "goblin_settlement",
+        "grublake",
+        "eastern_oakwoods"
+      ]
+    },
+    {
+      "id": "town_to_farms_to_swamp",
+      "name": "Southern Bog Road",
+      "type": "main_road",
+      "width_tiles": 3,
+      "polyline": [
+        [
+          500,
+          455
+        ],
+        [
+          510,
+          640
+        ],
+        [
+          610,
+          690
+        ],
+        [
+          725,
+          775
+        ],
+        [
+          850,
+          825
+        ]
+      ],
+      "connects": [
+        "goblin_settlement",
+        "main_farmlands",
+        "bog_of_grub",
+        "rival_goblin_territory"
+      ]
+    },
+    {
+      "id": "town_to_choppers_hollow",
+      "name": "West Woodcutters Road",
+      "type": "main_road",
+      "width_tiles": 3,
+      "polyline": [
+        [
+          500,
+          455
+        ],
+        [
+          420,
+          430
+        ],
+        [
+          335,
+          370
+        ]
+      ],
+      "connects": [
+        "goblin_settlement",
+        "choppers_hollow"
+      ]
+    },
+    {
+      "id": "willow_to_mushroom_trail",
+      "name": "Southwest Fungal Trail",
+      "type": "trail",
+      "width_tiles": 2,
+      "polyline": [
+        [
+          335,
+          370
+        ],
+        [
+          285,
+          610
+        ],
+        [
+          250,
+          800
+        ]
+      ],
+      "connects": [
+        "choppers_hollow",
+        "willow_riverlands",
+        "mushroom_forest"
+      ]
+    },
+    {
+      "id": "lake_to_bog_waterline",
+      "name": "Lake Drainage Path",
+      "type": "water_or_boardwalk",
+      "width_tiles": 2,
+      "polyline": [
+        [
+          735,
+          560
+        ],
+        [
+          705,
+          640
+        ],
+        [
+          685,
+          710
+        ],
+        [
+          725,
+          775
+        ]
+      ],
+      "connects": [
+        "grublake",
+        "bog_of_grub",
+        "swamp_shrine"
+      ]
+    }
+  ]
+}

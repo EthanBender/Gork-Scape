@@ -1,0 +1,224 @@
+{
+  "headers": [
+    "npc_id",
+    "name",
+    "mob_type",
+    "attitude",
+    "level",
+    "region",
+    "role",
+    "drops",
+    "interaction_type"
+  ],
+  "rows": [
+    [
+      "goblin_banker",
+      "Goblin Banker",
+      "npc",
+      "friendly",
+      1,
+      "Goblin Settlement",
+      "bank access",
+      "",
+      "dialogue/shop/quest"
+    ],
+    [
+      "general_storekeeper",
+      "General Storekeeper",
+      "npc",
+      "friendly",
+      1,
+      "Goblin Settlement",
+      "shop",
+      "",
+      "dialogue/shop/quest"
+    ],
+    [
+      "weapon_seller",
+      "Weapon Seller",
+      "npc",
+      "friendly",
+      1,
+      "Goblin Settlement",
+      "weapon shop",
+      "",
+      "dialogue/shop/quest"
+    ],
+    [
+      "armour_seller",
+      "Armour Seller",
+      "npc",
+      "friendly",
+      1,
+      "Goblin Settlement",
+      "armour shop",
+      "",
+      "dialogue/shop/quest"
+    ],
+    [
+      "goblin_chief",
+      "Goblin Chief",
+      "npc",
+      "friendly",
+      20,
+      "Goblin Settlement",
+      "main quests",
+      "",
+      "dialogue/shop/quest"
+    ],
+    [
+      "goblin_cook",
+      "Goblin Cook",
+      "npc",
+      "friendly",
+      5,
+      "Goblin Settlement",
+      "cooking tutorial",
+      "",
+      "dialogue/shop/quest"
+    ],
+    [
+      "goblin_smith",
+      "Goblin Smith",
+      "npc",
+      "friendly",
+      12,
+      "Goblin Settlement",
+      "smithing tutorial",
+      "",
+      "dialogue/shop/quest"
+    ],
+    [
+      "woodcutting_tutor",
+      "Woodcutting Tutor",
+      "npc",
+      "friendly",
+      8,
+      "Chopper's Hollow",
+      "woodcutting tutorial",
+      "",
+      "dialogue/shop/quest"
+    ],
+    [
+      "river_fisher",
+      "River Fisher",
+      "npc",
+      "friendly",
+      10,
+      "Willow Riverlands",
+      "fishing tutorial",
+      "",
+      "dialogue/shop/quest"
+    ],
+    [
+      "farmer_gob",
+      "Farmer Gob",
+      "npc",
+      "friendly",
+      7,
+      "Main Farmlands",
+      "farming tutorial",
+      "",
+      "dialogue/shop/quest"
+    ],
+    [
+      "witch_goblin",
+      "Witch-Goblin",
+      "npc",
+      "friendly_weird",
+      35,
+      "Mushroom Forest",
+      "potions and mushroom quests",
+      "",
+      "dialogue/shop/quest"
+    ],
+    [
+      "mine_prospector",
+      "Mine Prospector",
+      "npc",
+      "friendly",
+      20,
+      "Northern Mine Hills",
+      "mining quests",
+      "",
+      "dialogue/shop/quest"
+    ],
+    [
+      "hunter_gob",
+      "Hunter Gob",
+      "npc",
+      "friendly",
+      22,
+      "Eastern Oakwoods",
+      "hunter camp shop",
+      "",
+      "dialogue/shop/quest"
+    ],
+    [
+      "captured_goblin_smith",
+      "Captured Goblin Smith",
+      "npc",
+      "friendly_locked",
+      30,
+      "Rival Goblin Territory",
+      "captured anvil unlock",
+      "",
+      "dialogue/shop/quest"
+    ],
+    [
+      "swamp_herbalist",
+      "Swamp Herbalist",
+      "npc",
+      "friendly_hidden",
+      35,
+      "Bog of Grub",
+      "swamp charm and herb quests",
+      "",
+      "dialogue/shop/quest"
+    ],
+    [
+      "pack_mule",
+      "Pack Mule",
+      "friendly_mob",
+      "passive",
+      1,
+      "Goblin Settlement, roads",
+      "future storage/caravan",
+      "",
+      "ambient/passive interaction"
+    ],
+    [
+      "farm_chicken",
+      "Farm Chicken",
+      "passive_mob",
+      "passive",
+      1,
+      "Main Farmlands",
+      "eggs/feathers",
+      "egg; feather",
+      "ambient/passive interaction"
+    ],
+    [
+      "mud_duck",
+      "Mud Duck",
+      "passive_mob",
+      "passive",
+      3,
+      "Willow Riverlands",
+      "feathers/food",
+      "feather; raw_duck",
+      "ambient/passive interaction"
+    ],
+    [
+      "lake_turtle",
+      "Lake Turtle",
+      "passive_mob",
+      "neutral",
+      18,
+      "Grublake",
+      "shell/fishing flavour",
+      "turtle_shell",
+      "ambient/passive interaction"
+    ]
+  ]
+}

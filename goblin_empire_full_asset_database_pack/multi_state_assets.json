@@ -1,0 +1,805 @@
+{
+  "headers": [
+    "entity_id",
+    "state",
+    "asset_id",
+    "state_label",
+    "trigger_event",
+    "next_state",
+    "effect"
+  ],
+  "rows": [
+    [
+      "normal_tree",
+      "full",
+      "tree_normal_full",
+      "Can chop",
+      "on_successful_chop",
+      "stump",
+      "Produces normal_logs; awards woodcutting XP"
+    ],
+    [
+      "normal_tree",
+      "stump",
+      "tree_normal_stump",
+      "Depleted",
+      "after_45_seconds",
+      "full",
+      "Respawns to full tree"
+    ],
+    [
+      "oak_tree",
+      "full",
+      "tree_oak_full",
+      "Can chop",
+      "on_successful_chop",
+      "stump",
+      "Produces oak_logs; awards woodcutting XP"
+    ],
+    [
+      "oak_tree",
+      "stump",
+      "tree_oak_stump",
+      "Depleted",
+      "after_70_seconds",
+      "full",
+      "Respawns to full tree"
+    ],
+    [
+      "willow_tree",
+      "full",
+      "tree_willow_full",
+      "Can chop",
+      "on_successful_chop",
+      "stump",
+      "Produces willow_logs; awards woodcutting XP"
+    ],
+    [
+      "willow_tree",
+      "stump",
+      "tree_willow_stump",
+      "Depleted",
+      "after_90_seconds",
+      "full",
+      "Respawns to full tree"
+    ],
+    [
+      "deadwood_tree",
+      "full",
+      "tree_deadwood_full",
+      "Can chop",
+      "on_successful_chop",
+      "stump",
+      "Produces deadwood_logs; awards woodcutting XP"
+    ],
+    [
+      "deadwood_tree",
+      "stump",
+      "tree_deadwood_stump",
+      "Depleted",
+      "after_110_seconds",
+      "full",
+      "Respawns to full tree"
+    ],
+    [
+      "fungal_tree",
+      "full",
+      "tree_fungal_full",
+      "Can chop",
+      "on_successful_chop",
+      "stump",
+      "Produces fungal_logs; awards woodcutting XP"
+    ],
+    [
+      "fungal_tree",
+      "stump",
+      "tree_fungal_stump",
+      "Depleted",
+      "after_150_seconds",
+      "full",
+      "Respawns to full tree"
+    ],
+    [
+      "blackroot_tree",
+      "full",
+      "tree_blackroot_full",
+      "Can chop",
+      "on_successful_chop",
+      "stump",
+      "Produces blackroot_logs; awards woodcutting XP"
+    ],
+    [
+      "blackroot_tree",
+      "stump",
+      "tree_blackroot_stump",
+      "Depleted",
+      "after_180_seconds",
+      "full",
+      "Respawns to full tree"
+    ],
+    [
+      "ironbark_tree",
+      "full",
+      "tree_ironbark_full",
+      "Can chop",
+      "on_successful_chop",
+      "stump",
+      "Produces ironbark_logs; awards woodcutting XP"
+    ],
+    [
+      "ironbark_tree",
+      "stump",
+      "tree_ironbark_stump",
+      "Depleted",
+      "after_240_seconds",
+      "full",
+      "Respawns to full tree"
+    ],
+    [
+      "elder_rotwood_tree",
+      "full",
+      "tree_elder_rotwood_full",
+      "Can chop",
+      "on_successful_chop",
+      "stump",
+      "Produces elder_rotwood_logs; awards woodcutting XP"
+    ],
+    [
+      "elder_rotwood_tree",
+      "stump",
+      "tree_elder_rotwood_stump",
+      "Depleted",
+      "after_360_seconds",
+      "full",
+      "Respawns to full tree"
+    ],
+    [
+      "copper_rock",
+      "full",
+      "ore_copper_full",
+      "Can mine",
+      "on_successful_mine",
+      "depleted",
+      "Produces copper_ore; awards mining XP"
+    ],
+    [
+      "copper_rock",
+      "depleted",
+      "ore_copper_depleted",
+      "Empty rock",
+      "after_30_seconds",
+      "full",
+      "Ore respawns"
+    ],
+    [
+      "tin_rock",
+      "full",
+      "ore_tin_full",
+      "Can mine",
+      "on_successful_mine",
+      "depleted",
+      "Produces tin_ore; awards mining XP"
+    ],
+    [
+      "tin_rock",
+      "depleted",
+      "ore_tin_depleted",
+      "Empty rock",
+      "after_30_seconds",
+      "full",
+      "Ore respawns"
+    ],
+    [
+      "clay_deposit",
+      "full",
+      "clay_deposit_full",
+      "Can mine",
+      "on_successful_mine",
+      "depleted",
+      "Produces clay; awards mining XP"
+    ],
+    [
+      "clay_deposit",
+      "depleted",
+      "clay_deposit_depleted",
+      "Empty rock",
+      "after_35_seconds",
+      "full",
+      "Ore respawns"
+    ],
+    [
+      "iron_rock",
+      "full",
+      "ore_iron_full",
+      "Can mine",
+      "on_successful_mine",
+      "depleted",
+      "Produces iron_ore; awards mining XP"
+    ],
+    [
+      "iron_rock",
+      "depleted",
+      "ore_iron_depleted",
+      "Empty rock",
+      "after_55_seconds",
+      "full",
+      "Ore respawns"
+    ],
+    [
+      "coal_rock",
+      "full",
+      "ore_coal_full",
+      "Can mine",
+      "on_successful_mine",
+      "depleted",
+      "Produces coal; awards mining XP"
+    ],
+    [
+      "coal_rock",
+      "depleted",
+      "ore_coal_depleted",
+      "Empty rock",
+      "after_80_seconds",
+      "full",
+      "Ore respawns"
+    ],
+    [
+      "silver_rock",
+      "full",
+      "ore_silver_full",
+      "Can mine",
+      "on_successful_mine",
+      "depleted",
+      "Produces silver_ore; awards mining XP"
+    ],
+    [
+      "silver_rock",
+      "depleted",
+      "ore_silver_depleted",
+      "Empty rock",
+      "after_90_seconds",
+      "full",
+      "Ore respawns"
+    ],
+    [
+      "gold_rock",
+      "full",
+      "ore_gold_full",
+      "Can mine",
+      "on_successful_mine",
+      "depleted",
+      "Produces gold_ore; awards mining XP"
+    ],
+    [
+      "gold_rock",
+      "depleted",
+      "ore_gold_depleted",
+      "Empty rock",
+      "after_120_seconds",
+      "full",
+      "Ore respawns"
+    ],
+    [
+      "black_iron_rock",
+      "full",
+      "ore_black_iron_full",
+      "Can mine",
+      "on_successful_mine",
+      "depleted",
+      "Produces black_iron_ore; awards mining XP"
+    ],
+    [
+      "black_iron_rock",
+      "depleted",
+      "ore_black_iron_depleted",
+      "Empty rock",
+      "after_180_seconds",
+      "full",
+      "Ore respawns"
+    ],
+    [
+      "gem_rock",
+      "full",
+      "ore_gem_full",
+      "Can mine",
+      "on_successful_mine",
+      "depleted",
+      "Produces gem; awards mining XP"
+    ],
+    [
+      "gem_rock",
+      "depleted",
+      "ore_gem_depleted",
+      "Empty rock",
+      "after_240_seconds",
+      "full",
+      "Ore respawns"
+    ],
+    [
+      "meteor_rock",
+      "full",
+      "ore_meteor_full",
+      "Can mine",
+      "on_successful_mine",
+      "depleted",
+      "Produces meteor_shard; awards mining XP"
+    ],
+    [
+      "meteor_rock",
+      "depleted",
+      "ore_meteor_depleted",
+      "Empty rock",
+      "after_600_seconds",
+      "full",
+      "Ore respawns"
+    ],
+    [
+      "shrimp_spot",
+      "active",
+      "fishing_ripple_shrimp",
+      "Can fish",
+      "on_successful_catch",
+      "cooldown",
+      "Produces raw_shrimp; awards fishing XP"
+    ],
+    [
+      "shrimp_spot",
+      "cooldown",
+      "fishing_ripple_shrimp_faded",
+      "Temporarily inactive",
+      "after_25_seconds",
+      "active",
+      "Fish return"
+    ],
+    [
+      "mudfish_spot",
+      "active",
+      "fishing_ripple_mudfish",
+      "Can fish",
+      "on_successful_catch",
+      "cooldown",
+      "Produces raw_mudfish; awards fishing XP"
+    ],
+    [
+      "mudfish_spot",
+      "cooldown",
+      "fishing_ripple_mudfish_faded",
+      "Temporarily inactive",
+      "after_30_seconds",
+      "active",
+      "Fish return"
+    ],
+    [
+      "trout_spot",
+      "active",
+      "fishing_ripple_trout",
+      "Can fish",
+      "on_successful_catch",
+      "cooldown",
+      "Produces raw_trout; awards fishing XP"
+    ],
+    [
+      "trout_spot",
+      "cooldown",
+      "fishing_ripple_trout_faded",
+      "Temporarily inactive",
+      "after_35_seconds",
+      "active",
+      "Fish return"
+    ],
+    [
+      "river_eel_spot",
+      "active",
+      "fishing_ripple_river_eel",
+      "Can fish",
+      "on_successful_catch",
+      "cooldown",
+      "Produces raw_river_eel; awards fishing XP"
+    ],
+    [
+      "river_eel_spot",
+      "cooldown",
+      "fishing_ripple_river_eel_faded",
+      "Temporarily inactive",
+      "after_40_seconds",
+      "active",
+      "Fish return"
+    ],
+    [
+      "pike_spot",
+      "active",
+      "fishing_ripple_pike",
+      "Can fish",
+      "on_successful_catch",
+      "cooldown",
+      "Produces raw_pike; awards fishing XP"
+    ],
+    [
+      "pike_spot",
+      "cooldown",
+      "fishing_ripple_pike_faded",
+      "Temporarily inactive",
+      "after_50_seconds",
+      "active",
+      "Fish return"
+    ],
+    [
+      "bog_eel_spot",
+      "active",
+      "fishing_ripple_bog_eel",
+      "Can fish",
+      "on_successful_catch",
+      "cooldown",
+      "Produces raw_bog_eel; awards fishing XP"
+    ],
+    [
+      "bog_eel_spot",
+      "cooldown",
+      "fishing_ripple_bog_eel_faded",
+      "Temporarily inactive",
+      "after_60_seconds",
+      "active",
+      "Fish return"
+    ],
+    [
+      "lake_carp_spot",
+      "active",
+      "fishing_ripple_carp",
+      "Can fish",
+      "on_successful_catch",
+      "cooldown",
+      "Produces raw_carp; awards fishing XP"
+    ],
+    [
+      "lake_carp_spot",
+      "cooldown",
+      "fishing_ripple_carp_faded",
+      "Temporarily inactive",
+      "after_70_seconds",
+      "active",
+      "Fish return"
+    ],
+    [
+      "cavefish_spot",
+      "active",
+      "fishing_ripple_cavefish",
+      "Can fish",
+      "on_successful_catch",
+      "cooldown",
+      "Produces raw_cavefish; awards fishing XP"
+    ],
+    [
+      "cavefish_spot",
+      "cooldown",
+      "fishing_ripple_cavefish_faded",
+      "Temporarily inactive",
+      "after_90_seconds",
+      "active",
+      "Fish return"
+    ],
+    [
+      "catfish_spot",
+      "active",
+      "fishing_ripple_catfish",
+      "Can fish",
+      "on_successful_catch",
+      "cooldown",
+      "Produces raw_armoured_catfish; awards fishing XP"
+    ],
+    [
+      "catfish_spot",
+      "cooldown",
+      "fishing_ripple_catfish_faded",
+      "Temporarily inactive",
+      "after_120_seconds",
+      "active",
+      "Fish return"
+    ],
+    [
+      "grubshark_spot",
+      "active",
+      "fishing_ripple_grubshark",
+      "Can fish",
+      "on_successful_catch",
+      "cooldown",
+      "Produces raw_grubshark; awards fishing XP"
+    ],
+    [
+      "grubshark_spot",
+      "cooldown",
+      "fishing_ripple_grubshark_faded",
+      "Temporarily inactive",
+      "after_180_seconds",
+      "active",
+      "Fish return"
+    ],
+    [
+      "potato_patch",
+      "empty",
+      "potato_patch_empty",
+      "Empty patch",
+      "plant_seed",
+      "planted",
+      "Crop state for potato"
+    ],
+    [
+      "potato_patch",
+      "planted",
+      "potato_patch_planted",
+      "Seed planted",
+      "after_25_percent_grow_time",
+      "growing",
+      "Crop state for potato"
+    ],
+    [
+      "potato_patch",
+      "growing",
+      "potato_patch_growing",
+      "Growing crop",
+      "after_75_percent_grow_time",
+      "ready",
+      "Crop state for potato"
+    ],
+    [
+      "potato_patch",
+      "ready",
+      "potato_patch_ready",
+      "Ready to harvest",
+      "on_harvest",
+      "empty",
+      "Crop state for potato"
+    ],
+    [
+      "cabbage_patch",
+      "empty",
+      "cabbage_patch_empty",
+      "Empty patch",
+      "plant_seed",
+      "planted",
+      "Crop state for cabbage"
+    ],
+    [
+      "cabbage_patch",
+      "planted",
+      "cabbage_patch_planted",
+      "Seed planted",
+      "after_25_percent_grow_time",
+      "growing",
+      "Crop state for cabbage"
+    ],
+    [
+      "cabbage_patch",
+      "growing",
+      "cabbage_patch_growing",
+      "Growing crop",
+      "after_75_percent_grow_time",
+      "ready",
+      "Crop state for cabbage"
+    ],
+    [
+      "cabbage_patch",
+      "ready",
+      "cabbage_patch_ready",
+      "Ready to harvest",
+      "on_harvest",
+      "empty",
+      "Crop state for cabbage"
+    ],
+    [
+      "onion_patch",
+      "empty",
+      "onion_patch_empty",
+      "Empty patch",
+      "plant_seed",
+      "planted",
+      "Crop state for onion"
+    ],
+    [
+      "onion_patch",
+      "planted",
+      "onion_patch_planted",
+      "Seed planted",
+      "after_25_percent_grow_time",
+      "growing",
+      "Crop state for onion"
+    ],
+    [
+      "onion_patch",
+      "growing",
+      "onion_patch_growing",
+      "Growing crop",
+      "after_75_percent_grow_time",
+      "ready",
+      "Crop state for onion"
+    ],
+    [
+      "onion_patch",
+      "ready",
+      "onion_patch_ready",
+      "Ready to harvest",
+      "on_harvest",
+      "empty",
+      "Crop state for onion"
+    ],
+    [
+      "basic_herb_patch",
+      "empty",
+      "basic_herb_patch_empty",
+      "Empty patch",
+      "plant_seed",
+      "planted",
+      "Crop state for basic_herb"
+    ],
+    [
+      "basic_herb_patch",
+      "planted",
+      "basic_herb_patch_planted",
+      "Seed planted",
+      "after_25_percent_grow_time",
+      "growing",
+      "Crop state for basic_herb"
+    ],
+    [
+      "basic_herb_patch",
+      "growing",
+      "basic_herb_patch_growing",
+      "Growing crop",
+      "after_75_percent_grow_time",
+      "ready",
+      "Crop state for basic_herb"
+    ],
+    [
+      "basic_herb_patch",
+      "ready",
+      "basic_herb_patch_ready",
+      "Ready to harvest",
+      "on_harvest",
+      "empty",
+      "Crop state for basic_herb"
+    ],
+    [
+      "flower_patch",
+      "empty",
+      "flower_patch_empty",
+      "Empty patch",
+      "plant_seed",
+      "planted",
+      "Crop state for goblin_flower"
+    ],
+    [
+      "flower_patch",
+      "planted",
+      "flower_patch_planted",
+      "Seed planted",
+      "after_25_percent_grow_time",
+      "growing",
+      "Crop state for goblin_flower"
+    ],
+    [
+      "flower_patch",
+      "growing",
+      "flower_patch_growing",
+      "Growing crop",
+      "after_75_percent_grow_time",
+      "ready",
+      "Crop state for goblin_flower"
+    ],
+    [
+      "flower_patch",
+      "ready",
+      "flower_patch_ready",
+      "Ready to harvest",
+      "on_harvest",
+      "empty",
+      "Crop state for goblin_flower"
+    ],
+    [
+      "swamp_herb_patch",
+      "empty",
+      "swamp_herb_patch_empty",
+      "Empty patch",
+      "plant_seed",
+      "planted",
+      "Crop state for swamp_herb"
+    ],
+    [
+      "swamp_herb_patch",
+      "planted",
+      "swamp_herb_patch_planted",
+      "Seed planted",
+      "after_25_percent_grow_time",
+      "growing",
+      "Crop state for swamp_herb"
+    ],
+    [
+      "swamp_herb_patch",
+      "growing",
+      "swamp_herb_patch_growing",
+      "Growing crop",
+      "after_75_percent_grow_time",
+      "ready",
+      "Crop state for swamp_herb"
+    ],
+    [
+      "swamp_herb_patch",
+      "ready",
+      "swamp_herb_patch_ready",
+      "Ready to harvest",
+      "on_harvest",
+      "empty",
+      "Crop state for swamp_herb"
+    ],
+    [
+      "mushroom_patch",
+      "empty",
+      "mushroom_patch_empty",
+      "Empty patch",
+      "plant_seed",
+      "planted",
+      "Crop state for strange_mushroom"
+    ],
+    [
+      "mushroom_patch",
+      "planted",
+      "mushroom_patch_planted",
+      "Seed planted",
+      "after_25_percent_grow_time",
+      "growing",
+      "Crop state for strange_mushroom"
+    ],
+    [
+      "mushroom_patch",
+      "growing",
+      "mushroom_patch_growing",
+      "Growing crop",
+      "after_75_percent_grow_time",
+      "ready",
+      "Crop state for strange_mushroom"
+    ],
+    [
+      "mushroom_patch",
+      "ready",
+      "mushroom_patch_ready",
+      "Ready to harvest",
+      "on_harvest",
+      "empty",
+      "Crop state for strange_mushroom"
+    ],
+    [
+      "blackroot_patch",
+      "empty",
+      "blackroot_patch_empty",
+      "Empty patch",
+      "plant_seed",
+      "planted",
+      "Crop state for blackroot_fiber"
+    ],
+    [
+      "blackroot_patch",
+      "planted",
+      "blackroot_patch_planted",
+      "Seed planted",
+      "after_25_percent_grow_time",
+      "growing",
+      "Crop state for blackroot_fiber"
+    ],
+    [
+      "blackroot_patch",
+      "growing",
+      "blackroot_patch_growing",
+      "Growing crop",
+      "after_75_percent_grow_time",
+      "ready",
+      "Crop state for blackroot_fiber"
+    ],
+    [
+      "blackroot_patch",
+      "ready",
+      "blackroot_patch_ready",
+      "Ready to harvest",
+      "on_harvest",
+      "empty",
+      "Crop state for blackroot_fiber"
+    ]
+  ]
+}

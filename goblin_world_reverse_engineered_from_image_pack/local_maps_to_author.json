@@ -1,0 +1,84 @@
+{
+  "local_maps_to_author": [
+    {
+      "id": "goblin_settlement_local",
+      "parent_region": "goblin_settlement",
+      "size_tiles": [
+        128,
+        128
+      ],
+      "priority": 1,
+      "purpose": "main hub, all starter amenities"
+    },
+    {
+      "id": "grubpit_quarry_local",
+      "parent_region": "grubpit_quarry",
+      "size_tiles": [
+        96,
+        96
+      ],
+      "priority": 2,
+      "purpose": "starter mining and cave bug loop"
+    },
+    {
+      "id": "main_farmlands_local",
+      "parent_region": "main_farmlands",
+      "size_tiles": [
+        128,
+        128
+      ],
+      "priority": 3,
+      "purpose": "farming/cooking/herb loop"
+    },
+    {
+      "id": "choppers_hollow_local",
+      "parent_region": "choppers_hollow",
+      "size_tiles": [
+        128,
+        128
+      ],
+      "priority": 4,
+      "purpose": "normal/oak woodcutting and early spiders"
+    },
+    {
+      "id": "grublake_dock_local",
+      "parent_region": "grublake",
+      "size_tiles": [
+        96,
+        96
+      ],
+      "priority": 5,
+      "purpose": "fishing dock, pike unlock, boat"
+    },
+    {
+      "id": "willow_riverlands_local",
+      "parent_region": "willow_riverlands",
+      "size_tiles": [
+        160,
+        160
+      ],
+      "priority": 6,
+      "purpose": "willow/trout specialist route"
+    },
+    {
+      "id": "bog_of_grub_local",
+      "parent_region": "bog_of_grub",
+      "size_tiles": [
+        160,
+        160
+      ],
+      "priority": 7,
+      "purpose": "swamp danger/prep loop"
+    },
+    {
+      "id": "rival_goblin_camp_local",
+      "parent_region": "rival_goblin_territory",
+      "size_tiles": [
+        160,
+        160
+      ],
+      "priority": 8,
+      "purpose": "combat climax and captured anvil"
+    }
+  ]
+}

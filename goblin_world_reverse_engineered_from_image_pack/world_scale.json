@@ -1,0 +1,20 @@
+{
+  "source_image": "a_detailed_illustrated_fantasy_game_world_map_info.png",
+  "design_method": "Image-first reverse engineering",
+  "world_size_tiles": {
+    "width": 1000,
+    "height": 1000
+  },
+  "coordinate_system": "0,0 top-left; 1000,1000 bottom-right",
+  "recommended_game_tile_size_px": 32,
+  "image_to_world_mapping": "Use the image as art direction and the JSON coordinates as gameplay source of truth. Do not pixel-sample the painted image directly.",
+  "why": "The image is painterly and not tile-discrete. Work backwards by using the composition, then author tile maps and terrain masks to match it.",
+  "pipeline": [
+    "Use image as visual target.",
+    "Use regions.json for region placement and progression.",
+    "Use roads.json for path/bridge placement.",
+    "Use landmarks.json for hand-built points of interest.",
+    "Create local 64x64 to 160x160 tile maps for each detailed area.",
+    "Stitch local maps into the 1000x1000 world."
+  ]
+}

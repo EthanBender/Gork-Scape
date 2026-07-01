@@ -1,0 +1,1142 @@
+[
+  {
+    "monster_id": "training_rat",
+    "display_name": "Training Rat",
+    "combat_level": 1,
+    "region": "spawn",
+    "aggressive": false,
+    "respawn_seconds": 8,
+    "attack_xp": 2,
+    "strength_xp": 2,
+    "defence_xp": 1,
+    "ranged_xp": 2,
+    "hitpoints_xp": 1,
+    "drop_table_id": "training_rat_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "quadruped",
+      "size": 0.8
+    }
+  },
+  {
+    "monster_id": "cave_bug",
+    "display_name": "Cave Bug",
+    "combat_level": 3,
+    "region": "grubpit_quarry",
+    "aggressive": false,
+    "respawn_seconds": 8,
+    "attack_xp": 6,
+    "strength_xp": 6,
+    "defence_xp": 3,
+    "ranged_xp": 6,
+    "hitpoints_xp": 4,
+    "drop_table_id": "cave_bug_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "insectoid",
+      "size": 0.85
+    }
+  },
+  {
+    "monster_id": "mud_grub",
+    "display_name": "Mud Grub",
+    "combat_level": 4,
+    "region": "willow_riverlands",
+    "aggressive": false,
+    "respawn_seconds": 8,
+    "attack_xp": 8,
+    "strength_xp": 8,
+    "defence_xp": 4,
+    "ranged_xp": 8,
+    "hitpoints_xp": 6,
+    "drop_table_id": "mud_grub_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "insectoid",
+      "size": 0.85
+    }
+  },
+  {
+    "monster_id": "goblin_trainee",
+    "display_name": "Goblin Trainee",
+    "combat_level": 5,
+    "region": "spawn",
+    "aggressive": false,
+    "respawn_seconds": 8,
+    "attack_xp": 10,
+    "strength_xp": 10,
+    "defence_xp": 5,
+    "ranged_xp": 10,
+    "hitpoints_xp": 7,
+    "drop_table_id": "goblin_trainee_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "humanoid",
+      "size": 0.95
+    }
+  },
+  {
+    "monster_id": "giant_spider",
+    "display_name": "Giant Spider",
+    "combat_level": 8,
+    "region": "choppers_hollow",
+    "aggressive": false,
+    "respawn_seconds": 8,
+    "attack_xp": 16,
+    "strength_xp": 16,
+    "defence_xp": 8,
+    "ranged_xp": 16,
+    "hitpoints_xp": 12,
+    "drop_table_id": "giant_spider_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "insectoid",
+      "size": 1.15
+    }
+  },
+  {
+    "monster_id": "forest_rat",
+    "display_name": "Forest Rat",
+    "combat_level": 9,
+    "region": "choppers_hollow",
+    "aggressive": false,
+    "respawn_seconds": 9,
+    "attack_xp": 18,
+    "strength_xp": 18,
+    "defence_xp": 9,
+    "ranged_xp": 18,
+    "hitpoints_xp": 13,
+    "drop_table_id": "forest_rat_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "quadruped",
+      "size": 0.85
+    }
+  },
+  {
+    "monster_id": "river_bandit",
+    "display_name": "River Bandit",
+    "combat_level": 12,
+    "region": "willow_riverlands",
+    "aggressive": false,
+    "respawn_seconds": 13,
+    "attack_xp": 24,
+    "strength_xp": 24,
+    "defence_xp": 12,
+    "ranged_xp": 24,
+    "hitpoints_xp": 18,
+    "drop_table_id": "river_bandit_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "humanoid",
+      "size": 1.0
+    }
+  },
+  {
+    "monster_id": "mud_bug",
+    "display_name": "Mud Bug",
+    "combat_level": 13,
+    "region": "willow_riverlands",
+    "aggressive": false,
+    "respawn_seconds": 14,
+    "attack_xp": 26,
+    "strength_xp": 26,
+    "defence_xp": 13,
+    "ranged_xp": 26,
+    "hitpoints_xp": 19,
+    "drop_table_id": "mud_bug_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "insectoid",
+      "size": 0.9
+    }
+  },
+  {
+    "monster_id": "crazed_fisher_gob",
+    "display_name": "Crazed Fisher-Gob",
+    "combat_level": 15,
+    "region": "grublake",
+    "aggressive": false,
+    "respawn_seconds": 16,
+    "attack_xp": 30,
+    "strength_xp": 30,
+    "defence_xp": 15,
+    "ranged_xp": 30,
+    "hitpoints_xp": 22,
+    "drop_table_id": "crazed_fisher_gob_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "humanoid",
+      "size": 1.0
+    }
+  },
+  {
+    "monster_id": "oak_boar",
+    "display_name": "Oak Boar",
+    "combat_level": 18,
+    "region": "eastern_oakwoods",
+    "aggressive": false,
+    "respawn_seconds": 19,
+    "attack_xp": 36,
+    "strength_xp": 36,
+    "defence_xp": 18,
+    "ranged_xp": 36,
+    "hitpoints_xp": 27,
+    "drop_table_id": "oak_boar_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "quadruped",
+      "size": 1.15
+    }
+  },
+  {
+    "monster_id": "cave_bat",
+    "display_name": "Cave Bat",
+    "combat_level": 20,
+    "region": "grubpit_quarry",
+    "aggressive": false,
+    "respawn_seconds": 22,
+    "attack_xp": 40,
+    "strength_xp": 40,
+    "defence_xp": 20,
+    "ranged_xp": 40,
+    "hitpoints_xp": 30,
+    "drop_table_id": "cave_bat_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "quadruped",
+      "size": 0.8
+    }
+  },
+  {
+    "monster_id": "iron_rock_crab",
+    "display_name": "Iron Rock Crab",
+    "combat_level": 24,
+    "region": "northern_mine_hills",
+    "aggressive": false,
+    "respawn_seconds": 26,
+    "attack_xp": 48,
+    "strength_xp": 48,
+    "defence_xp": 24,
+    "ranged_xp": 48,
+    "hitpoints_xp": 36,
+    "drop_table_id": "iron_rock_crab_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "insectoid",
+      "size": 0.95
+    }
+  },
+  {
+    "monster_id": "moss_wolf",
+    "display_name": "Moss Wolf",
+    "combat_level": 26,
+    "region": "eastern_oakwoods",
+    "aggressive": false,
+    "respawn_seconds": 28,
+    "attack_xp": 52,
+    "strength_xp": 52,
+    "defence_xp": 26,
+    "ranged_xp": 52,
+    "hitpoints_xp": 39,
+    "drop_table_id": "moss_wolf_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "quadruped",
+      "size": 1.15
+    }
+  },
+  {
+    "monster_id": "rival_goblin_scout",
+    "display_name": "Rival Goblin Scout",
+    "combat_level": 28,
+    "region": "eastern_oakwoods",
+    "aggressive": true,
+    "respawn_seconds": 30,
+    "attack_xp": 56,
+    "strength_xp": 56,
+    "defence_xp": 28,
+    "ranged_xp": 56,
+    "hitpoints_xp": 42,
+    "drop_table_id": "rival_goblin_scout_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "humanoid",
+      "size": 1.0
+    }
+  },
+  {
+    "monster_id": "swamp_frog",
+    "display_name": "Swamp Frog",
+    "combat_level": 30,
+    "region": "bog_of_grub",
+    "aggressive": true,
+    "respawn_seconds": 33,
+    "attack_xp": 60,
+    "strength_xp": 60,
+    "defence_xp": 30,
+    "ranged_xp": 60,
+    "hitpoints_xp": 45,
+    "drop_table_id": "swamp_frog_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "quadruped",
+      "size": 0.85
+    }
+  },
+  {
+    "monster_id": "bog_rat",
+    "display_name": "Bog Rat",
+    "combat_level": 32,
+    "region": "bog_of_grub",
+    "aggressive": true,
+    "respawn_seconds": 35,
+    "attack_xp": 64,
+    "strength_xp": 64,
+    "defence_xp": 32,
+    "ranged_xp": 64,
+    "hitpoints_xp": 48,
+    "drop_table_id": "bog_rat_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "quadruped",
+      "size": 0.85
+    }
+  },
+  {
+    "monster_id": "fungal_goblin",
+    "display_name": "Fungal Goblin",
+    "combat_level": 34,
+    "region": "mushroom_forest",
+    "aggressive": true,
+    "respawn_seconds": 37,
+    "attack_xp": 68,
+    "strength_xp": 68,
+    "defence_xp": 34,
+    "ranged_xp": 68,
+    "hitpoints_xp": 51,
+    "drop_table_id": "fungal_goblin_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "humanoid",
+      "size": 1.0
+    }
+  },
+  {
+    "monster_id": "cave_goblin_miner",
+    "display_name": "Cave Goblin Miner",
+    "combat_level": 36,
+    "region": "northern_mine_hills",
+    "aggressive": true,
+    "respawn_seconds": 39,
+    "attack_xp": 72,
+    "strength_xp": 72,
+    "defence_xp": 36,
+    "ranged_xp": 72,
+    "hitpoints_xp": 54,
+    "drop_table_id": "cave_goblin_miner_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "humanoid",
+      "size": 1.0
+    }
+  },
+  {
+    "monster_id": "bog_slime",
+    "display_name": "Bog Slime",
+    "combat_level": 38,
+    "region": "bog_of_grub",
+    "aggressive": true,
+    "respawn_seconds": 41,
+    "attack_xp": 76,
+    "strength_xp": 76,
+    "defence_xp": 38,
+    "ranged_xp": 76,
+    "hitpoints_xp": 57,
+    "drop_table_id": "bog_slime_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "amorphous",
+      "size": 1.0
+    }
+  },
+  {
+    "monster_id": "lake_snapper",
+    "display_name": "Lake Snapper",
+    "combat_level": 40,
+    "region": "grublake",
+    "aggressive": true,
+    "respawn_seconds": 44,
+    "attack_xp": 80,
+    "strength_xp": 80,
+    "defence_xp": 40,
+    "ranged_xp": 80,
+    "hitpoints_xp": 60,
+    "drop_table_id": "lake_snapper_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "quadruped",
+      "size": 1.0
+    }
+  },
+  {
+    "monster_id": "rival_goblin_warrior",
+    "display_name": "Rival Goblin Warrior",
+    "combat_level": 42,
+    "region": "rival_goblin_territory",
+    "aggressive": true,
+    "respawn_seconds": 46,
+    "attack_xp": 84,
+    "strength_xp": 84,
+    "defence_xp": 42,
+    "ranged_xp": 84,
+    "hitpoints_xp": 63,
+    "drop_table_id": "rival_goblin_warrior_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "humanoid",
+      "size": 1.05
+    }
+  },
+  {
+    "monster_id": "rival_goblin_archer",
+    "display_name": "Rival Goblin Archer",
+    "combat_level": 44,
+    "region": "rival_goblin_territory",
+    "aggressive": true,
+    "respawn_seconds": 48,
+    "attack_xp": 88,
+    "strength_xp": 88,
+    "defence_xp": 44,
+    "ranged_xp": 88,
+    "hitpoints_xp": 66,
+    "drop_table_id": "rival_goblin_archer_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "humanoid",
+      "size": 1.0
+    }
+  },
+  {
+    "monster_id": "deep_cave_crawler",
+    "display_name": "Deep Cave Crawler",
+    "combat_level": 46,
+    "region": "deep_mines",
+    "aggressive": true,
+    "respawn_seconds": 50,
+    "attack_xp": 92,
+    "strength_xp": 92,
+    "defence_xp": 46,
+    "ranged_xp": 92,
+    "hitpoints_xp": 69,
+    "drop_table_id": "deep_cave_crawler_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "insectoid",
+      "size": 1.1
+    }
+  },
+  {
+    "monster_id": "black_iron_crab",
+    "display_name": "Black Iron Crab",
+    "combat_level": 50,
+    "region": "deep_mines",
+    "aggressive": true,
+    "respawn_seconds": 55,
+    "attack_xp": 100,
+    "strength_xp": 100,
+    "defence_xp": 50,
+    "ranged_xp": 100,
+    "hitpoints_xp": 75,
+    "drop_table_id": "black_iron_crab_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "insectoid",
+      "size": 1.0
+    }
+  },
+  {
+    "monster_id": "swamp_shaman",
+    "display_name": "Swamp Shaman",
+    "combat_level": 52,
+    "region": "bog_of_grub",
+    "aggressive": true,
+    "respawn_seconds": 57,
+    "attack_xp": 104,
+    "strength_xp": 104,
+    "defence_xp": 52,
+    "ranged_xp": 104,
+    "hitpoints_xp": 78,
+    "drop_table_id": "swamp_shaman_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "humanoid",
+      "size": 1.0
+    }
+  },
+  {
+    "monster_id": "rival_goblin_brute",
+    "display_name": "Rival Goblin Brute",
+    "combat_level": 55,
+    "region": "rival_goblin_territory",
+    "aggressive": true,
+    "respawn_seconds": 60,
+    "attack_xp": 110,
+    "strength_xp": 110,
+    "defence_xp": 55,
+    "ranged_xp": 110,
+    "hitpoints_xp": 82,
+    "drop_table_id": "rival_goblin_brute_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "humanoid",
+      "size": 1.3
+    }
+  },
+  {
+    "monster_id": "troll_whelp",
+    "display_name": "Troll Whelp",
+    "combat_level": 58,
+    "region": "troll_ridge",
+    "aggressive": true,
+    "respawn_seconds": 63,
+    "attack_xp": 116,
+    "strength_xp": 116,
+    "defence_xp": 58,
+    "ranged_xp": 116,
+    "hitpoints_xp": 87,
+    "drop_table_id": "troll_whelp_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "humanoid",
+      "size": 1.15
+    }
+  },
+  {
+    "monster_id": "red_ear_captain",
+    "display_name": "Red-Ear Captain",
+    "combat_level": 62,
+    "region": "rival_goblin_territory",
+    "aggressive": true,
+    "respawn_seconds": 68,
+    "attack_xp": 124,
+    "strength_xp": 124,
+    "defence_xp": 62,
+    "ranged_xp": 124,
+    "hitpoints_xp": 93,
+    "drop_table_id": "red_ear_captain_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "humanoid",
+      "size": 1.2
+    }
+  },
+  {
+    "monster_id": "cave_troll",
+    "display_name": "Cave Troll",
+    "combat_level": 68,
+    "region": "troll_ridge",
+    "aggressive": true,
+    "respawn_seconds": 74,
+    "attack_xp": 136,
+    "strength_xp": 136,
+    "defence_xp": 68,
+    "ranged_xp": 136,
+    "hitpoints_xp": 102,
+    "drop_table_id": "cave_troll_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "humanoid",
+      "size": 1.45
+    }
+  },
+  {
+    "monster_id": "grub_bog_horror",
+    "display_name": "Grub Bog Horror",
+    "combat_level": 75,
+    "region": "bog_of_grub",
+    "aggressive": true,
+    "respawn_seconds": 82,
+    "attack_xp": 150,
+    "strength_xp": 150,
+    "defence_xp": 75,
+    "ranged_xp": 150,
+    "hitpoints_xp": 112,
+    "drop_table_id": "grub_bog_horror_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "insectoid",
+      "size": 1.25
+    }
+  },
+  {
+    "monster_id": "reed_snake",
+    "display_name": "Reed Snake",
+    "combat_level": 16,
+    "region": "willow_riverlands",
+    "aggressive": false,
+    "respawn_seconds": 17,
+    "attack_xp": 32,
+    "strength_xp": 32,
+    "defence_xp": 16,
+    "ranged_xp": 32,
+    "hitpoints_xp": 24,
+    "drop_table_id": "reed_snake_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "quadruped",
+      "size": 0.85
+    }
+  },
+  {
+    "monster_id": "lost_lumber_gob",
+    "display_name": "Lost Lumber Gob",
+    "combat_level": 19,
+    "region": "choppers_hollow",
+    "aggressive": false,
+    "respawn_seconds": 20,
+    "attack_xp": 38,
+    "strength_xp": 38,
+    "defence_xp": 19,
+    "ranged_xp": 38,
+    "hitpoints_xp": 28,
+    "drop_table_id": "lost_lumber_gob_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "humanoid",
+      "size": 1.0
+    }
+  },
+  {
+    "monster_id": "quarry_imp",
+    "display_name": "Quarry Imp",
+    "combat_level": 22,
+    "region": "grubpit_quarry",
+    "aggressive": false,
+    "respawn_seconds": 24,
+    "attack_xp": 44,
+    "strength_xp": 44,
+    "defence_xp": 22,
+    "ranged_xp": 44,
+    "hitpoints_xp": 33,
+    "drop_table_id": "quarry_imp_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "humanoid",
+      "size": 0.85
+    }
+  },
+  {
+    "monster_id": "lake_thief",
+    "display_name": "Lake Thief",
+    "combat_level": 24,
+    "region": "grublake",
+    "aggressive": false,
+    "respawn_seconds": 26,
+    "attack_xp": 48,
+    "strength_xp": 48,
+    "defence_xp": 24,
+    "ranged_xp": 48,
+    "hitpoints_xp": 36,
+    "drop_table_id": "lake_thief_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "humanoid",
+      "size": 1.0
+    }
+  },
+  {
+    "monster_id": "moss_spider",
+    "display_name": "Moss Spider",
+    "combat_level": 29,
+    "region": "eastern_oakwoods",
+    "aggressive": true,
+    "respawn_seconds": 31,
+    "attack_xp": 58,
+    "strength_xp": 58,
+    "defence_xp": 29,
+    "ranged_xp": 58,
+    "hitpoints_xp": 43,
+    "drop_table_id": "moss_spider_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "insectoid",
+      "size": 0.9
+    }
+  },
+  {
+    "monster_id": "ruin_wisp",
+    "display_name": "Ruin Wisp",
+    "combat_level": 35,
+    "region": "old_forest_ruins",
+    "aggressive": true,
+    "respawn_seconds": 38,
+    "attack_xp": 70,
+    "strength_xp": 70,
+    "defence_xp": 35,
+    "ranged_xp": 70,
+    "hitpoints_xp": 52,
+    "drop_table_id": "ruin_wisp_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "amorphous",
+      "size": 0.9
+    }
+  },
+  {
+    "monster_id": "fungal_rat",
+    "display_name": "Fungal Rat",
+    "combat_level": 31,
+    "region": "mushroom_forest",
+    "aggressive": true,
+    "respawn_seconds": 34,
+    "attack_xp": 62,
+    "strength_xp": 62,
+    "defence_xp": 31,
+    "ranged_xp": 62,
+    "hitpoints_xp": 46,
+    "drop_table_id": "fungal_rat_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "quadruped",
+      "size": 0.85
+    }
+  },
+  {
+    "monster_id": "bog_mosquito",
+    "display_name": "Bog Mosquito",
+    "combat_level": 33,
+    "region": "bog_of_grub",
+    "aggressive": true,
+    "respawn_seconds": 36,
+    "attack_xp": 66,
+    "strength_xp": 66,
+    "defence_xp": 33,
+    "ranged_xp": 66,
+    "hitpoints_xp": 49,
+    "drop_table_id": "bog_mosquito_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "insectoid",
+      "size": 0.85
+    }
+  },
+  {
+    "monster_id": "mine_skulker",
+    "display_name": "Mine Skulker",
+    "combat_level": 41,
+    "region": "northern_mine_hills",
+    "aggressive": true,
+    "respawn_seconds": 45,
+    "attack_xp": 82,
+    "strength_xp": 82,
+    "defence_xp": 41,
+    "ranged_xp": 82,
+    "hitpoints_xp": 61,
+    "drop_table_id": "mine_skulker_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "humanoid",
+      "size": 1.0
+    }
+  },
+  {
+    "monster_id": "oakwood_berserker",
+    "display_name": "Oakwood Berserker",
+    "combat_level": 48,
+    "region": "eastern_oakwoods",
+    "aggressive": true,
+    "respawn_seconds": 52,
+    "attack_xp": 96,
+    "strength_xp": 96,
+    "defence_xp": 48,
+    "ranged_xp": 96,
+    "hitpoints_xp": 72,
+    "drop_table_id": "oakwood_berserker_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "humanoid",
+      "size": 1.35
+    }
+  },
+  {
+    "monster_id": "swamp_mireling",
+    "display_name": "Swamp Mireling",
+    "combat_level": 47,
+    "region": "bog_of_grub",
+    "aggressive": true,
+    "respawn_seconds": 51,
+    "attack_xp": 94,
+    "strength_xp": 94,
+    "defence_xp": 47,
+    "ranged_xp": 94,
+    "hitpoints_xp": 70,
+    "drop_table_id": "swamp_mireling_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "amorphous",
+      "size": 0.95
+    }
+  },
+  {
+    "monster_id": "spore_crawler",
+    "display_name": "Spore Crawler",
+    "combat_level": 49,
+    "region": "mushroom_forest",
+    "aggressive": true,
+    "respawn_seconds": 53,
+    "attack_xp": 98,
+    "strength_xp": 98,
+    "defence_xp": 49,
+    "ranged_xp": 98,
+    "hitpoints_xp": 73,
+    "drop_table_id": "spore_crawler_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "insectoid",
+      "size": 0.9
+    }
+  },
+  {
+    "monster_id": "rival_supplier",
+    "display_name": "Rival Supplier",
+    "combat_level": 45,
+    "region": "rival_goblin_territory",
+    "aggressive": true,
+    "respawn_seconds": 49,
+    "attack_xp": 90,
+    "strength_xp": 90,
+    "defence_xp": 45,
+    "ranged_xp": 90,
+    "hitpoints_xp": 67,
+    "drop_table_id": "rival_supplier_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "humanoid",
+      "size": 1.0
+    }
+  },
+  {
+    "monster_id": "rival_sharpshooter",
+    "display_name": "Rival Sharpshooter",
+    "combat_level": 57,
+    "region": "rival_goblin_territory",
+    "aggressive": true,
+    "respawn_seconds": 62,
+    "attack_xp": 114,
+    "strength_xp": 114,
+    "defence_xp": 57,
+    "ranged_xp": 114,
+    "hitpoints_xp": 85,
+    "drop_table_id": "rival_sharpshooter_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "humanoid",
+      "size": 1.05
+    }
+  },
+  {
+    "monster_id": "troll_miner",
+    "display_name": "Troll Miner",
+    "combat_level": 64,
+    "region": "troll_ridge",
+    "aggressive": true,
+    "respawn_seconds": 70,
+    "attack_xp": 128,
+    "strength_xp": 128,
+    "defence_xp": 64,
+    "ranged_xp": 128,
+    "hitpoints_xp": 96,
+    "drop_table_id": "troll_miner_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "humanoid",
+      "size": 1.4
+    }
+  },
+  {
+    "monster_id": "meteor_sprite",
+    "display_name": "Meteor Sprite",
+    "combat_level": 78,
+    "region": "troll_ridge",
+    "aggressive": true,
+    "respawn_seconds": 85,
+    "attack_xp": 156,
+    "strength_xp": 156,
+    "defence_xp": 78,
+    "ranged_xp": 156,
+    "hitpoints_xp": 117,
+    "drop_table_id": "meteor_sprite_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "amorphous",
+      "size": 0.9
+    }
+  },
+  {
+    "monster_id": "old_guardian",
+    "display_name": "Old Guardian",
+    "combat_level": 55,
+    "region": "old_forest_ruins",
+    "aggressive": true,
+    "respawn_seconds": 60,
+    "attack_xp": 110,
+    "strength_xp": 110,
+    "defence_xp": 55,
+    "ranged_xp": 110,
+    "hitpoints_xp": 82,
+    "drop_table_id": "old_guardian_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "humanoid",
+      "size": 1.4
+    }
+  },
+  {
+    "monster_id": "blackroot_stalker",
+    "display_name": "Blackroot Stalker",
+    "combat_level": 59,
+    "region": "mushroom_forest",
+    "aggressive": true,
+    "respawn_seconds": 64,
+    "attack_xp": 118,
+    "strength_xp": 118,
+    "defence_xp": 59,
+    "ranged_xp": 118,
+    "hitpoints_xp": 88,
+    "drop_table_id": "blackroot_stalker_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "humanoid",
+      "size": 1.1
+    }
+  },
+  {
+    "monster_id": "deep_metal_golem",
+    "display_name": "Deep Metal Golem",
+    "combat_level": 72,
+    "region": "deep_mines",
+    "aggressive": true,
+    "respawn_seconds": 79,
+    "attack_xp": 144,
+    "strength_xp": 144,
+    "defence_xp": 72,
+    "ranged_xp": 144,
+    "hitpoints_xp": 108,
+    "drop_table_id": "deep_metal_golem_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "humanoid",
+      "size": 1.5
+    }
+  },
+  {
+    "monster_id": "lake_island_guard",
+    "display_name": "Lake Island Guard",
+    "combat_level": 43,
+    "region": "grublake",
+    "aggressive": true,
+    "respawn_seconds": 47,
+    "attack_xp": 86,
+    "strength_xp": 86,
+    "defence_xp": 43,
+    "ranged_xp": 86,
+    "hitpoints_xp": 64,
+    "drop_table_id": "lake_island_guard_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "humanoid",
+      "size": 1.05
+    }
+  },
+  {
+    "monster_id": "farm_scavenger",
+    "display_name": "Farm Scavenger",
+    "combat_level": 11,
+    "region": "main_farmlands",
+    "aggressive": false,
+    "respawn_seconds": 12,
+    "attack_xp": 22,
+    "strength_xp": 22,
+    "defence_xp": 11,
+    "ranged_xp": 22,
+    "hitpoints_xp": 16,
+    "drop_table_id": "farm_scavenger_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "humanoid",
+      "size": 0.95
+    }
+  },
+  {
+    "monster_id": "crop_bug_swarm",
+    "display_name": "Crop Bug Swarm",
+    "combat_level": 14,
+    "region": "main_farmlands",
+    "aggressive": false,
+    "respawn_seconds": 15,
+    "attack_xp": 28,
+    "strength_xp": 28,
+    "defence_xp": 14,
+    "ranged_xp": 28,
+    "hitpoints_xp": 21,
+    "drop_table_id": "crop_bug_swarm_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "insectoid",
+      "size": 1.1
+    }
+  },
+  {
+    "monster_id": "goblin_poacher",
+    "display_name": "Goblin Poacher",
+    "combat_level": 27,
+    "region": "eastern_oakwoods",
+    "aggressive": false,
+    "respawn_seconds": 29,
+    "attack_xp": 54,
+    "strength_xp": 54,
+    "defence_xp": 27,
+    "ranged_xp": 54,
+    "hitpoints_xp": 40,
+    "drop_table_id": "goblin_poacher_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "humanoid",
+      "size": 1.0
+    }
+  },
+  {
+    "monster_id": "bridge_bandit",
+    "display_name": "Bridge Bandit",
+    "combat_level": 23,
+    "region": "willow_riverlands",
+    "aggressive": false,
+    "respawn_seconds": 25,
+    "attack_xp": 46,
+    "strength_xp": 46,
+    "defence_xp": 23,
+    "ranged_xp": 46,
+    "hitpoints_xp": 34,
+    "drop_table_id": "bridge_bandit_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "humanoid",
+      "size": 1.0
+    }
+  },
+  {
+    "monster_id": "deadwood_spirit",
+    "display_name": "Deadwood Spirit",
+    "combat_level": 39,
+    "region": "bog_of_grub",
+    "aggressive": true,
+    "respawn_seconds": 42,
+    "attack_xp": 78,
+    "strength_xp": 78,
+    "defence_xp": 39,
+    "ranged_xp": 78,
+    "hitpoints_xp": 58,
+    "drop_table_id": "deadwood_spirit_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "amorphous",
+      "size": 1.0
+    }
+  },
+  {
+    "monster_id": "witchs_helper",
+    "display_name": "Witch's Helper",
+    "combat_level": 42,
+    "region": "mushroom_forest",
+    "aggressive": true,
+    "respawn_seconds": 46,
+    "attack_xp": 84,
+    "strength_xp": 84,
+    "defence_xp": 42,
+    "ranged_xp": 84,
+    "hitpoints_xp": 63,
+    "drop_table_id": "witchs_helper_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "humanoid",
+      "size": 0.95
+    }
+  },
+  {
+    "monster_id": "red_ear_scout",
+    "display_name": "Red-Ear Scout",
+    "combat_level": 38,
+    "region": "rival_goblin_territory",
+    "aggressive": true,
+    "respawn_seconds": 41,
+    "attack_xp": 76,
+    "strength_xp": 76,
+    "defence_xp": 38,
+    "ranged_xp": 76,
+    "hitpoints_xp": 57,
+    "drop_table_id": "red_ear_scout_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "humanoid",
+      "size": 1.0
+    }
+  },
+  {
+    "monster_id": "red_ear_shaman",
+    "display_name": "Red-Ear Shaman",
+    "combat_level": 61,
+    "region": "rival_goblin_territory",
+    "aggressive": true,
+    "respawn_seconds": 67,
+    "attack_xp": 122,
+    "strength_xp": 122,
+    "defence_xp": 61,
+    "ranged_xp": 122,
+    "hitpoints_xp": 91,
+    "drop_table_id": "red_ear_shaman_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "humanoid",
+      "size": 1.05
+    }
+  },
+  {
+    "monster_id": "ridge_wolf",
+    "display_name": "Ridge Wolf",
+    "combat_level": 66,
+    "region": "troll_ridge",
+    "aggressive": true,
+    "respawn_seconds": 72,
+    "attack_xp": 132,
+    "strength_xp": 132,
+    "defence_xp": 66,
+    "ranged_xp": 132,
+    "hitpoints_xp": 99,
+    "drop_table_id": "ridge_wolf_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "quadruped",
+      "size": 1.2
+    }
+  },
+  {
+    "monster_id": "bog_king",
+    "display_name": "Bog King",
+    "combat_level": 82,
+    "region": "bog_of_grub",
+    "aggressive": true,
+    "respawn_seconds": 90,
+    "attack_xp": 164,
+    "strength_xp": 164,
+    "defence_xp": 82,
+    "ranged_xp": 164,
+    "hitpoints_xp": 123,
+    "drop_table_id": "bog_king_drops",
+    "role": "skilling_material_source;combat_progression;economy_source",
+    "render": {
+      "bodyType": "humanoid",
+      "size": 1.5
+    }
+  }
+]

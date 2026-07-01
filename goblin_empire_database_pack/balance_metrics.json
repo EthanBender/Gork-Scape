@@ -1,0 +1,177 @@
+[
+  {
+    "metric": "item_count_by_category",
+    "key": "Resource",
+    "value": 122
+  },
+  {
+    "metric": "item_count_by_category",
+    "key": "Processed Material",
+    "value": 87
+  },
+  {
+    "metric": "item_count_by_category",
+    "key": "Consumable",
+    "value": 114
+  },
+  {
+    "metric": "item_count_by_category",
+    "key": "Junk",
+    "value": 32
+  },
+  {
+    "metric": "item_count_by_category",
+    "key": "Tool",
+    "value": 96
+  },
+  {
+    "metric": "item_count_by_category",
+    "key": "Equipment",
+    "value": 168
+  },
+  {
+    "metric": "item_count_by_category",
+    "key": "Ammo",
+    "value": 10
+  },
+  {
+    "metric": "item_count_by_category",
+    "key": "Quest/Build Item",
+    "value": 170
+  },
+  {
+    "metric": "item_count_by_category",
+    "key": "Unique Drop",
+    "value": 148
+  },
+  {
+    "metric": "item_count_by_category",
+    "key": "Utility",
+    "value": 75
+  },
+  {
+    "metric": "item_count_by_category",
+    "key": "Drop Material",
+    "value": 50
+  },
+  {
+    "metric": "item_count_by_skill",
+    "key": "woodcutting",
+    "value": 23
+  },
+  {
+    "metric": "item_count_by_skill",
+    "key": "crafting",
+    "value": 136
+  },
+  {
+    "metric": "item_count_by_skill",
+    "key": "cooking",
+    "value": 87
+  },
+  {
+    "metric": "item_count_by_skill",
+    "key": "mining",
+    "value": 33
+  },
+  {
+    "metric": "item_count_by_skill",
+    "key": "smithing",
+    "value": 22
+  },
+  {
+    "metric": "item_count_by_skill",
+    "key": "fishing",
+    "value": 49
+  },
+  {
+    "metric": "item_count_by_skill",
+    "key": "farming",
+    "value": 69
+  },
+  {
+    "metric": "item_count_by_skill",
+    "key": "herblore",
+    "value": 88
+  },
+  {
+    "metric": "item_count_by_skill",
+    "key": "prayer",
+    "value": 7
+  },
+  {
+    "metric": "item_count_by_skill",
+    "key": "attack",
+    "value": 29
+  },
+  {
+    "metric": "item_count_by_skill",
+    "key": "strength",
+    "value": 29
+  },
+  {
+    "metric": "item_count_by_skill",
+    "key": "ranged",
+    "value": 31
+  },
+  {
+    "metric": "item_count_by_skill",
+    "key": "defence",
+    "value": 71
+  },
+  {
+    "metric": "item_count_by_skill",
+    "key": "construction",
+    "value": 95
+  },
+  {
+    "metric": "item_count_by_skill",
+    "key": "combat",
+    "value": 198
+  },
+  {
+    "metric": "item_count_by_skill",
+    "key": "none",
+    "value": 20
+  },
+  {
+    "metric": "item_count_by_skill",
+    "key": "hitpoints",
+    "value": 5
+  },
+  {
+    "metric": "item_count_by_skill",
+    "key": "quest",
+    "value": 80
+  },
+  {
+    "metric": "total_items",
+    "key": "all",
+    "value": 1072
+  },
+  {
+    "metric": "total_recipes",
+    "key": "all",
+    "value": 517
+  },
+  {
+    "metric": "total_world_nodes",
+    "key": "all",
+    "value": 64
+  },
+  {
+    "metric": "total_monsters",
+    "key": "all",
+    "value": 60
+  },
+  {
+    "metric": "total_drop_entries",
+    "key": "all",
+    "value": 302
+  },
+  {
+    "metric": "total_interactions",
+    "key": "all",
+    "value": 2612
+  }
+]

@@ -1,0 +1,90 @@
+[
+  {
+    "Skill": "Woodcutting",
+    "Role": "Primary material supply",
+    "Consumes": "Axes, food for dangerous zones",
+    "Produces": "Logs, shafts, handles, planks, shrine fuel",
+    "Feeds": "Cooking, Crafting, Smithing, Ranged, Construction/shortcuts",
+    "Design Rule": "Teaser nodes near spawn; true density in forest/water regions."
+  },
+  {
+    "Skill": "Fishing",
+    "Role": "Food supply and travel prep",
+    "Consumes": "Fishing tools, bait, region unlocks",
+    "Produces": "Raw fish, eel, rare lake food",
+    "Feeds": "Cooking, Combat, Quests, Swamp prep",
+    "Design Rule": "Town water teaches fishing; Grublake/Riverlands specialize."
+  },
+  {
+    "Skill": "Mining",
+    "Role": "Metal economy supply",
+    "Consumes": "Pickaxes, food for caves",
+    "Produces": "Ore, stone, clay, gems, coal",
+    "Feeds": "Smithing, Crafting, Ranged, Tool upgrades, Bridges",
+    "Design Rule": "Starter quarry teaches ore; mine hills and caves specialize."
+  },
+  {
+    "Skill": "Cooking",
+    "Role": "Survival conversion skill",
+    "Consumes": "Fish, meat, crops, herbs, logs/ranges",
+    "Produces": "Healing food, buffs, resist meals",
+    "Feeds": "Combat, Exploration, Bossing, Dangerous gathering",
+    "Design Rule": "Food should be a real resource sink, not just vendor trash."
+  },
+  {
+    "Skill": "Smithing",
+    "Role": "Gear and infrastructure production",
+    "Consumes": "Ore, bars, coal, logs, monster parts",
+    "Produces": "Tools, weapons, armour, arrowheads, nails",
+    "Feeds": "All gathering, Combat, Ranged, Region unlocks",
+    "Design Rule": "Smithing should unlock faster gathering and world shortcuts."
+  },
+  {
+    "Skill": "Crafting",
+    "Role": "Cross-skill glue",
+    "Consumes": "Hides, bones, logs, gems, silk, herbs, bars",
+    "Produces": "Bows, charms, bags, jewelry, light armour",
+    "Feeds": "Ranged, Defence, Exploration, Utility, Quests",
+    "Design Rule": "Monster drops become useful through crafting."
+  },
+  {
+    "Skill": "Attack",
+    "Role": "Weapon accuracy/tier",
+    "Consumes": "Weapons, food, potions",
+    "Produces": "Combat access, monster drops",
+    "Feeds": "Drops, quests, region safety",
+    "Design Rule": "Attack unlocks weapon classes, not raw progress alone."
+  },
+  {
+    "Skill": "Strength",
+    "Role": "Damage scaling",
+    "Consumes": "Weapons, buff food",
+    "Produces": "Faster kills, boss viability",
+    "Feeds": "Drop acquisition, dangerous gathering",
+    "Design Rule": "Strength is supported by food and heavy weapon recipes."
+  },
+  {
+    "Skill": "Defence",
+    "Role": "Survivability and armour tier",
+    "Consumes": "Armour, shields, charms",
+    "Produces": "Safe exploration and boss access",
+    "Feeds": "Mining, Swamp, Rival Camp, Troll Ridge",
+    "Design Rule": "Defence should make dangerous resources efficient, not mandatory walls."
+  },
+  {
+    "Skill": "Ranged",
+    "Role": "Safe damage style",
+    "Consumes": "Bows, arrows, poison, hides",
+    "Produces": "Combat access, unique drops",
+    "Feeds": "Monster farming, bosses, dangerous zones",
+    "Design Rule": "Ranged must depend on Woodcutting + Crafting + Smithing + drops."
+  },
+  {
+    "Skill": "Hitpoints",
+    "Role": "Risk tolerance",
+    "Consumes": "Food, armour, positioning",
+    "Produces": "Practical access to danger rings",
+    "Feeds": "All combat and remote gathering",
+    "Design Rule": "HP gates danger naturally through survival, not invisible walls."
+  }
+]

@@ -1,0 +1,116 @@
+{
+  "headers": [
+    "interaction",
+    "type",
+    "held_item",
+    "target",
+    "result"
+  ],
+  "rows": [
+    [
+      "Use hatchet on tree",
+      "inventory_tool_on_node",
+      "hatchet",
+      "tree_node",
+      "if woodcutting level met, play chop animation, add logs, tree becomes stump"
+    ],
+    [
+      "Use pickaxe on ore rock",
+      "inventory_tool_on_node",
+      "pickaxe",
+      "ore_node",
+      "if mining level met, play mine animation, add ore, rock becomes depleted"
+    ],
+    [
+      "Use fishing tool on spot",
+      "inventory_tool_on_node",
+      "fishing_tool",
+      "fishing_spot",
+      "if fishing level met, roll catch, add raw fish, spot cooldown optional"
+    ],
+    [
+      "Use seed on patch",
+      "inventory_item_on_node",
+      "seed",
+      "farm_patch_empty",
+      "patch becomes planted"
+    ],
+    [
+      "Use watering can on crop",
+      "inventory_item_on_node",
+      "watering_can",
+      "farm_patch_planted/growing",
+      "crop growth boost"
+    ],
+    [
+      "Use raw fish on range",
+      "inventory_item_on_station",
+      "raw_fish",
+      "cooking_range",
+      "cook into food or burn"
+    ],
+    [
+      "Use ore on furnace",
+      "inventory_item_on_station",
+      "ore",
+      "furnace",
+      "smelt bar if recipe and level met"
+    ],
+    [
+      "Use bar on anvil",
+      "inventory_item_on_station",
+      "bar",
+      "anvil",
+      "open smithing recipes"
+    ],
+    [
+      "Use hide on tanning rack",
+      "inventory_item_on_station",
+      "hide",
+      "tanning_rack",
+      "convert into leather"
+    ],
+    [
+      "Use bowstring on bow staff",
+      "inventory_item_on_inventory_item",
+      "bowstring",
+      "bow_staff",
+      "craft bow"
+    ],
+    [
+      "Use poison gland on arrows",
+      "inventory_item_on_inventory_item",
+      "poison_gland",
+      "arrows",
+      "make poison arrows"
+    ],
+    [
+      "Use repair materials on bridge",
+      "inventory_item_on_world_object",
+      "planks+nails",
+      "broken_bridge",
+      "bridge becomes repaired/open shortcut"
+    ],
+    [
+      "Use goblin charm on swamp shrine",
+      "inventory_item_on_world_object",
+      "goblin_charm",
+      "swamp_shrine",
+      "unlocks safe swamp route"
+    ],
+    [
+      "Open chest",
+      "world_object_interaction",
+      "none",
+      "loot_chest_closed",
+      "roll chest loot, chest becomes open/looted"
+    ],
+    [
+      "Open gate",
+      "world_object_interaction",
+      "none/key",
+      "gate_closed",
+      "gate opens if permitted"
+    ]
+  ]
+}

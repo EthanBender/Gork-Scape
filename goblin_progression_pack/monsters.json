@@ -1,0 +1,484 @@
+{
+  "monsters": {
+    "training_rat": {
+      "id": "training_rat",
+      "name": "Training Rat",
+      "combat_level": 1,
+      "location": "goblin_town_training_yard",
+      "purpose": "starter combat and cooking tutorial",
+      "aggressive": false,
+      "respawn_seconds": 8,
+      "xp": {
+        "attack": 2,
+        "strength": 2,
+        "defence": 1,
+        "hitpoints": 1
+      },
+      "drop_table_id": "training_rat_drops"
+    },
+    "cave_bug": {
+      "id": "cave_bug",
+      "name": "Cave Bug",
+      "combat_level": 3,
+      "location": "starter_mine",
+      "purpose": "starter mine enemy and crafting shell source",
+      "aggressive": false,
+      "respawn_seconds": 8,
+      "xp": {
+        "attack": 6,
+        "strength": 6,
+        "defence": 3,
+        "hitpoints": 4
+      },
+      "drop_table_id": "cave_bug_drops"
+    },
+    "mud_grub": {
+      "id": "mud_grub",
+      "name": "Mud Grub",
+      "combat_level": 4,
+      "location": "river_mud_banks",
+      "purpose": "bait, slime, and early cooking source",
+      "aggressive": false,
+      "respawn_seconds": 8,
+      "xp": {
+        "attack": 8,
+        "strength": 8,
+        "defence": 4,
+        "hitpoints": 6
+      },
+      "drop_table_id": "mud_grub_drops"
+    },
+    "goblin_trainee": {
+      "id": "goblin_trainee",
+      "name": "Goblin Trainee",
+      "combat_level": 5,
+      "location": "training_yard_beginner_roads",
+      "purpose": "humanoid starter sparring enemy",
+      "aggressive": false,
+      "respawn_seconds": 8,
+      "xp": {
+        "attack": 10,
+        "strength": 10,
+        "defence": 5,
+        "hitpoints": 7
+      },
+      "drop_table_id": "goblin_trainee_drops"
+    },
+    "giant_spider": {
+      "id": "giant_spider",
+      "name": "Giant Spider",
+      "combat_level": 8,
+      "location": "beginner_forest",
+      "purpose": "crafting and poison material source",
+      "aggressive": false,
+      "respawn_seconds": 8,
+      "xp": {
+        "attack": 16,
+        "strength": 16,
+        "defence": 8,
+        "hitpoints": 12
+      },
+      "drop_table_id": "giant_spider_drops"
+    },
+    "forest_rat": {
+      "id": "forest_rat",
+      "name": "Forest Rat",
+      "combat_level": 9,
+      "location": "beginner_forest",
+      "purpose": "meat, hide, bones, and minor wood material",
+      "aggressive": false,
+      "respawn_seconds": 8,
+      "xp": {
+        "attack": 18,
+        "strength": 18,
+        "defence": 9,
+        "hitpoints": 13
+      },
+      "drop_table_id": "forest_rat_drops"
+    },
+    "river_bandit": {
+      "id": "river_bandit",
+      "name": "River Bandit",
+      "combat_level": 12,
+      "location": "willow_riverlands",
+      "purpose": "coin and fishing-area humanoid drop source",
+      "aggressive": false,
+      "respawn_seconds": 9,
+      "xp": {
+        "attack": 24,
+        "strength": 24,
+        "defence": 12,
+        "hitpoints": 18
+      },
+      "drop_table_id": "river_bandit_drops"
+    },
+    "mud_bug": {
+      "id": "mud_bug",
+      "name": "Mud Bug",
+      "combat_level": 13,
+      "location": "willow_riverlands",
+      "purpose": "clay, shell, slime, and river food source",
+      "aggressive": false,
+      "respawn_seconds": 10,
+      "xp": {
+        "attack": 26,
+        "strength": 26,
+        "defence": 13,
+        "hitpoints": 19
+      },
+      "drop_table_id": "mud_bug_drops"
+    },
+    "crazed_fisher_gob": {
+      "id": "crazed_fisher_gob",
+      "name": "Crazed Fisher-Gob",
+      "combat_level": 15,
+      "location": "grublake_shore",
+      "purpose": "fishing gear and fish drop source",
+      "aggressive": false,
+      "respawn_seconds": 12,
+      "xp": {
+        "attack": 30,
+        "strength": 30,
+        "defence": 15,
+        "hitpoints": 22
+      },
+      "drop_table_id": "crazed_fisher_gob_drops"
+    },
+    "oak_boar": {
+      "id": "oak_boar",
+      "name": "Oak Boar",
+      "combat_level": 18,
+      "location": "eastern_oakwoods_edge",
+      "purpose": "meat, hide, bones, and spear upgrade source",
+      "aggressive": false,
+      "respawn_seconds": 14,
+      "xp": {
+        "attack": 36,
+        "strength": 36,
+        "defence": 18,
+        "hitpoints": 27
+      },
+      "drop_table_id": "oak_boar_drops"
+    },
+    "cave_bat": {
+      "id": "cave_bat",
+      "name": "Cave Bat",
+      "combat_level": 20,
+      "location": "beginner_mine_deeper_section",
+      "purpose": "wing, bone, iron, and amulet source",
+      "aggressive": false,
+      "respawn_seconds": 16,
+      "xp": {
+        "attack": 40,
+        "strength": 40,
+        "defence": 20,
+        "hitpoints": 30
+      },
+      "drop_table_id": "cave_bat_drops"
+    },
+    "iron_rock_crab": {
+      "id": "iron_rock_crab",
+      "name": "Iron Rock Crab",
+      "combat_level": 24,
+      "location": "northern_mine_hills",
+      "purpose": "iron ore, coal, shell, and food source",
+      "aggressive": false,
+      "respawn_seconds": 19,
+      "xp": {
+        "attack": 48,
+        "strength": 48,
+        "defence": 24,
+        "hitpoints": 36
+      },
+      "drop_table_id": "iron_rock_crab_drops"
+    },
+    "moss_wolf": {
+      "id": "moss_wolf",
+      "name": "Moss Wolf",
+      "combat_level": 26,
+      "location": "eastern_oakwoods",
+      "purpose": "hide, bones, meat, and ranger armour source",
+      "aggressive": false,
+      "respawn_seconds": 20,
+      "xp": {
+        "attack": 52,
+        "strength": 52,
+        "defence": 26,
+        "hitpoints": 39
+      },
+      "drop_table_id": "moss_wolf_drops"
+    },
+    "rival_goblin_scout": {
+      "id": "rival_goblin_scout",
+      "name": "Rival Goblin Scout",
+      "combat_level": 28,
+      "location": "oakwoods_lake_edge",
+      "purpose": "quest maps, coins, and ranged gear source",
+      "aggressive": true,
+      "respawn_seconds": 22,
+      "xp": {
+        "attack": 56,
+        "strength": 56,
+        "defence": 28,
+        "hitpoints": 42
+      },
+      "drop_table_id": "rival_goblin_scout_drops"
+    },
+    "swamp_frog": {
+      "id": "swamp_frog",
+      "name": "Swamp Frog",
+      "combat_level": 30,
+      "location": "bog_edge",
+      "purpose": "frog legs, slime, poison, and swamp herb source",
+      "aggressive": true,
+      "respawn_seconds": 24,
+      "xp": {
+        "attack": 60,
+        "strength": 60,
+        "defence": 30,
+        "hitpoints": 45
+      },
+      "drop_table_id": "swamp_frog_drops"
+    },
+    "bog_rat": {
+      "id": "bog_rat",
+      "name": "Bog Rat",
+      "combat_level": 32,
+      "location": "bog_of_grub",
+      "purpose": "deadwood, diseased hide, bones, and poison charm source",
+      "aggressive": true,
+      "respawn_seconds": 25,
+      "xp": {
+        "attack": 64,
+        "strength": 64,
+        "defence": 32,
+        "hitpoints": 48
+      },
+      "drop_table_id": "bog_rat_drops"
+    },
+    "fungal_goblin": {
+      "id": "fungal_goblin",
+      "name": "Fungal Goblin",
+      "combat_level": 34,
+      "location": "mushroom_forest",
+      "purpose": "mushroom, fungal log, bone needle, and mask source",
+      "aggressive": true,
+      "respawn_seconds": 27,
+      "xp": {
+        "attack": 68,
+        "strength": 68,
+        "defence": 34,
+        "hitpoints": 51
+      },
+      "drop_table_id": "fungal_goblin_drops"
+    },
+    "cave_goblin_miner": {
+      "id": "cave_goblin_miner",
+      "name": "Cave Goblin Miner",
+      "combat_level": 36,
+      "location": "northern_mine_caves",
+      "purpose": "iron, coal, pickaxe parts, and mining belt source",
+      "aggressive": true,
+      "respawn_seconds": 28,
+      "xp": {
+        "attack": 72,
+        "strength": 72,
+        "defence": 36,
+        "hitpoints": 54
+      },
+      "drop_table_id": "cave_goblin_miner_drops"
+    },
+    "bog_slime": {
+      "id": "bog_slime",
+      "name": "Bog Slime",
+      "combat_level": 38,
+      "location": "bog_of_grub",
+      "purpose": "slime, herbs, eel, poison, and core source",
+      "aggressive": true,
+      "respawn_seconds": 30,
+      "xp": {
+        "attack": 76,
+        "strength": 76,
+        "defence": 38,
+        "hitpoints": 57
+      },
+      "drop_table_id": "bog_slime_drops"
+    },
+    "lake_snapper": {
+      "id": "lake_snapper",
+      "name": "Lake Snapper",
+      "combat_level": 40,
+      "location": "grublake_deep_shore",
+      "purpose": "fish, shell, herb, and trinket source",
+      "aggressive": true,
+      "respawn_seconds": 32,
+      "xp": {
+        "attack": 80,
+        "strength": 80,
+        "defence": 40,
+        "hitpoints": 60
+      },
+      "drop_table_id": "lake_snapper_drops"
+    },
+    "rival_goblin_warrior": {
+      "id": "rival_goblin_warrior",
+      "name": "Rival Goblin Warrior",
+      "combat_level": 42,
+      "location": "rival_territory_edge",
+      "purpose": "coins, iron gear, arrows, food, and blade fragment source",
+      "aggressive": true,
+      "respawn_seconds": 33,
+      "xp": {
+        "attack": 84,
+        "strength": 84,
+        "defence": 42,
+        "hitpoints": 63
+      },
+      "drop_table_id": "rival_goblin_warrior_drops"
+    },
+    "rival_goblin_archer": {
+      "id": "rival_goblin_archer",
+      "name": "Rival Goblin Archer",
+      "combat_level": 44,
+      "location": "rival_territory_watchtowers",
+      "purpose": "arrows, bows, bowstrings, coins, wristguard source",
+      "aggressive": true,
+      "respawn_seconds": 35,
+      "xp": {
+        "attack": 88,
+        "strength": 88,
+        "defence": 44,
+        "hitpoints": 66
+      },
+      "drop_table_id": "rival_goblin_archer_drops"
+    },
+    "deep_cave_crawler": {
+      "id": "deep_cave_crawler",
+      "name": "Deep Cave Crawler",
+      "combat_level": 46,
+      "location": "deep_mine",
+      "purpose": "coal, gold, cavefish, chitin, claw source",
+      "aggressive": true,
+      "respawn_seconds": 36,
+      "xp": {
+        "attack": 92,
+        "strength": 92,
+        "defence": 46,
+        "hitpoints": 69
+      },
+      "drop_table_id": "deep_cave_crawler_drops"
+    },
+    "black_iron_crab": {
+      "id": "black_iron_crab",
+      "name": "Black Iron Crab",
+      "combat_level": 50,
+      "location": "deep_mine_troll_ridge_edge",
+      "purpose": "black iron, coal, food, shell, core source",
+      "aggressive": true,
+      "respawn_seconds": 40,
+      "xp": {
+        "attack": 100,
+        "strength": 100,
+        "defence": 50,
+        "hitpoints": 75
+      },
+      "drop_table_id": "black_iron_crab_drops"
+    },
+    "swamp_shaman": {
+      "id": "swamp_shaman",
+      "name": "Swamp Shaman",
+      "combat_level": 52,
+      "location": "bog_shrine_rival_swamp_camps",
+      "purpose": "herbs, charms, gold, coins, totem source",
+      "aggressive": true,
+      "respawn_seconds": 41,
+      "xp": {
+        "attack": 104,
+        "strength": 104,
+        "defence": 52,
+        "hitpoints": 78
+      },
+      "drop_table_id": "swamp_shaman_drops"
+    },
+    "rival_goblin_brute": {
+      "id": "rival_goblin_brute",
+      "name": "Rival Goblin Brute",
+      "combat_level": 55,
+      "location": "rival_camp",
+      "purpose": "steel, black iron, food, coins, club source",
+      "aggressive": true,
+      "respawn_seconds": 44,
+      "xp": {
+        "attack": 110,
+        "strength": 110,
+        "defence": 55,
+        "hitpoints": 82
+      },
+      "drop_table_id": "rival_goblin_brute_drops"
+    },
+    "troll_whelp": {
+      "id": "troll_whelp",
+      "name": "Troll Whelp",
+      "combat_level": 58,
+      "location": "troll_ridge_lower_path",
+      "purpose": "troll meat, big bones, coal, gold, tooth source",
+      "aggressive": true,
+      "respawn_seconds": 46,
+      "xp": {
+        "attack": 116,
+        "strength": 116,
+        "defence": 58,
+        "hitpoints": 87
+      },
+      "drop_table_id": "troll_whelp_drops"
+    },
+    "red_ear_captain": {
+      "id": "red_ear_captain",
+      "name": "Red-Ear Captain",
+      "combat_level": 62,
+      "location": "rival_goblin_camp_boss_area",
+      "purpose": "first major boss/miniboss and unique spear source",
+      "aggressive": true,
+      "respawn_seconds": 49,
+      "xp": {
+        "attack": 124,
+        "strength": 124,
+        "defence": 62,
+        "hitpoints": 93
+      },
+      "drop_table_id": "red_ear_captain_drops"
+    },
+    "cave_troll": {
+      "id": "cave_troll",
+      "name": "Cave Troll",
+      "combat_level": 68,
+      "location": "troll_ridge_caves",
+      "purpose": "bones, coal, gold, hide, club, mountain key source",
+      "aggressive": true,
+      "respawn_seconds": 54,
+      "xp": {
+        "attack": 136,
+        "strength": 136,
+        "defence": 68,
+        "hitpoints": 102
+      },
+      "drop_table_id": "cave_troll_drops"
+    },
+    "grub_bog_horror": {
+      "id": "grub_bog_horror",
+      "name": "Grub Bog Horror",
+      "combat_level": 75,
+      "location": "deep_bog_boss",
+      "purpose": "deep bog boss and poison armour source",
+      "aggressive": true,
+      "respawn_seconds": 60,
+      "xp": {
+        "attack": 150,
+        "strength": 150,
+        "defence": 75,
+        "hitpoints": 112
+      },
+      "drop_table_id": "grub_bog_horror_drops"
+    }
+  }
+}

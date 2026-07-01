@@ -1,0 +1,74 @@
+{
+  "headers": [
+    "region",
+    "required_assets",
+    "rule"
+  ],
+  "rows": [
+    [
+      "Goblin Settlement",
+      "town buildings; palisade walls; gates; market props; bank; shops; stations; friendly NPCs",
+      "Must be physically built, not represented by a label only"
+    ],
+    [
+      "Chopper's Hollow",
+      "normal/oak trees; stumps; woodcutting camp; spiders; rats; fallen logs",
+      "Must be physically built, not represented by a label only"
+    ],
+    [
+      "Willow Riverlands",
+      "willow trees; water tiles; bridges; reeds; mud; fishing spots; bandits",
+      "Must be physically built, not represented by a label only"
+    ],
+    [
+      "Main Farmlands",
+      "farm soil; crop states; fences; scarecrows; compost; farmer NPCs; passive animals",
+      "Must be physically built, not represented by a label only"
+    ],
+    [
+      "Grublake",
+      "lake water; shore; dock; boats; fishing spots; snapper; lake island assets",
+      "Must be physically built, not represented by a label only"
+    ],
+    [
+      "Eastern Oakwoods",
+      "oak trees; hunter camp; boars; wolves; scout markers",
+      "Must be physically built, not represented by a label only"
+    ],
+    [
+      "Grubpit Quarry",
+      "copper/tin/iron rocks; carts; quarry cliffs; cave entrance; cave bugs",
+      "Must be physically built, not represented by a label only"
+    ],
+    [
+      "Northern Mine Hills",
+      "mountains; caves; mine carts; coal/gold; crabs; cave miners",
+      "Must be physically built, not represented by a label only"
+    ],
+    [
+      "Bog of Grub",
+      "swamp water; mud; deadwood; slime pools; boardwalk; swamp shrine; frogs/slimes",
+      "Must be physically built, not represented by a label only"
+    ],
+    [
+      "Mushroom Forest",
+      "fungal trees; mushroom clusters; witch hut; cave; fungal goblins",
+      "Must be physically built, not represented by a label only"
+    ],
+    [
+      "Rival Goblin Territory",
+      "enemy fences; tents; watchtowers; banners; captured anvil; boss arena; rival mobs",
+      "Must be physically built, not represented by a label only"
+    ],
+    [
+      "Troll Ridge",
+      "cliffs; caves; high ore; troll camp; boss arena; snow/grey rock variants",
+      "Must be physically built, not represented by a label only"
+    ],
+    [
+      "Old Forest Ruins",
+      "ruins; broken stone; hidden chests; old paths; overgrown trees; old boss clues",
+      "Must be physically built, not represented by a label only"
+    ]
+  ]
+}

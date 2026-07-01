@@ -1,0 +1,22 @@
+[
+  {
+    "section": "Purpose",
+    "detail": "Data-driven item/economy database for Goblin Empire. Designed to prevent siloed skills by connecting resources, recipes, drops, nodes, shops, GP, and progression unlocks."
+  },
+  {
+    "section": "Design Rule",
+    "detail": "Every item should have a source, use, interaction, GP value, and connection to at least one other skill/system."
+  },
+  {
+    "section": "Item Count",
+    "detail": "1072 item records included. Target was at least 800."
+  },
+  {
+    "section": "Interaction Model",
+    "detail": "Items have inventory actions; world nodes have use/tool/skill requirements; recipes define station interactions; monsters feed drops into crafting/economy."
+  },
+  {
+    "section": "Implementation",
+    "detail": "Use JSON or SQLite as source of truth; spreadsheet is for design/balance review."
+  }
+]

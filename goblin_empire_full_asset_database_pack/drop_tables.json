@@ -1,0 +1,1066 @@
+{
+  "headers": [
+    "mob_id",
+    "item_id",
+    "chance",
+    "unit",
+    "rarity",
+    "region",
+    "purpose"
+  ],
+  "rows": [
+    [
+      "training_rat",
+      "rat_meat",
+      60,
+      "%",
+      "common",
+      "Goblin Settlement",
+      "starter combat tutorial"
+    ],
+    [
+      "training_rat",
+      "bones",
+      48,
+      "%",
+      "common",
+      "Goblin Settlement",
+      "starter combat tutorial"
+    ],
+    [
+      "training_rat",
+      "coins",
+      36,
+      "%",
+      "common",
+      "Goblin Settlement",
+      "starter combat tutorial"
+    ],
+    [
+      "cave_bug",
+      "bug_shell",
+      60,
+      "%",
+      "common",
+      "Grubpit Quarry",
+      "starter mine enemy"
+    ],
+    [
+      "cave_bug",
+      "bones",
+      48,
+      "%",
+      "common",
+      "Grubpit Quarry",
+      "starter mine enemy"
+    ],
+    [
+      "cave_bug",
+      "copper_ore",
+      36,
+      "%",
+      "common",
+      "Grubpit Quarry",
+      "starter mine enemy"
+    ],
+    [
+      "mud_grub",
+      "grub_meat",
+      60,
+      "%",
+      "common",
+      "Willow Riverlands",
+      "bait and slime source"
+    ],
+    [
+      "mud_grub",
+      "slime_glob",
+      48,
+      "%",
+      "common",
+      "Willow Riverlands",
+      "bait and slime source"
+    ],
+    [
+      "mud_grub",
+      "fishing_bait",
+      36,
+      "%",
+      "common",
+      "Willow Riverlands",
+      "bait and slime source"
+    ],
+    [
+      "goblin_trainee",
+      "coins",
+      60,
+      "%",
+      "common",
+      "Goblin Settlement",
+      "training NPC"
+    ],
+    [
+      "goblin_trainee",
+      "cooked_shrimp",
+      48,
+      "%",
+      "common",
+      "Goblin Settlement",
+      "training NPC"
+    ],
+    [
+      "giant_spider",
+      "spider_silk",
+      60,
+      "%",
+      "common",
+      "Chopper's Hollow",
+      "silk and poison source"
+    ],
+    [
+      "giant_spider",
+      "poison_gland",
+      48,
+      "%",
+      "common",
+      "Chopper's Hollow",
+      "silk and poison source"
+    ],
+    [
+      "giant_spider",
+      "bones",
+      36,
+      "%",
+      "common",
+      "Chopper's Hollow",
+      "silk and poison source"
+    ],
+    [
+      "forest_rat",
+      "rat_meat",
+      60,
+      "%",
+      "common",
+      "Chopper's Hollow",
+      "early meat/hide source"
+    ],
+    [
+      "forest_rat",
+      "hide_scrap",
+      48,
+      "%",
+      "common",
+      "Chopper's Hollow",
+      "early meat/hide source"
+    ],
+    [
+      "forest_rat",
+      "bones",
+      36,
+      "%",
+      "common",
+      "Chopper's Hollow",
+      "early meat/hide source"
+    ],
+    [
+      "river_bandit",
+      "coins",
+      60,
+      "%",
+      "common",
+      "Willow Riverlands",
+      "coin and fish thief"
+    ],
+    [
+      "river_bandit",
+      "raw_trout",
+      48,
+      "%",
+      "common",
+      "Willow Riverlands",
+      "coin and fish thief"
+    ],
+    [
+      "river_bandit",
+      "fishing_bait",
+      36,
+      "%",
+      "common",
+      "Willow Riverlands",
+      "coin and fish thief"
+    ],
+    [
+      "mud_bug",
+      "bug_shell",
+      60,
+      "%",
+      "common",
+      "Willow Riverlands",
+      "shell/clay source"
+    ],
+    [
+      "mud_bug",
+      "mud_slime",
+      48,
+      "%",
+      "common",
+      "Willow Riverlands",
+      "shell/clay source"
+    ],
+    [
+      "mud_bug",
+      "clay",
+      36,
+      "%",
+      "common",
+      "Willow Riverlands",
+      "shell/clay source"
+    ],
+    [
+      "crazed_fisher_gob",
+      "raw_trout",
+      60,
+      "%",
+      "common",
+      "Grublake",
+      "fishing rival"
+    ],
+    [
+      "crazed_fisher_gob",
+      "raw_pike",
+      48,
+      "%",
+      "common",
+      "Grublake",
+      "fishing rival"
+    ],
+    [
+      "crazed_fisher_gob",
+      "fishing_rod",
+      36,
+      "%",
+      "common",
+      "Grublake",
+      "fishing rival"
+    ],
+    [
+      "oak_boar",
+      "boar_meat",
+      60,
+      "%",
+      "common",
+      "Eastern Oakwoods",
+      "meat/hide source"
+    ],
+    [
+      "oak_boar",
+      "tough_hide",
+      48,
+      "%",
+      "common",
+      "Eastern Oakwoods",
+      "meat/hide source"
+    ],
+    [
+      "oak_boar",
+      "bones",
+      36,
+      "%",
+      "common",
+      "Eastern Oakwoods",
+      "meat/hide source"
+    ],
+    [
+      "cave_bat",
+      "bat_wing",
+      60,
+      "%",
+      "common",
+      "Grubpit Quarry",
+      "mine cave enemy"
+    ],
+    [
+      "cave_bat",
+      "bones",
+      48,
+      "%",
+      "common",
+      "Grubpit Quarry",
+      "mine cave enemy"
+    ],
+    [
+      "cave_bat",
+      "iron_ore",
+      36,
+      "%",
+      "common",
+      "Grubpit Quarry",
+      "mine cave enemy"
+    ],
+    [
+      "iron_rock_crab",
+      "iron_ore",
+      58,
+      "%",
+      "common",
+      "Northern Mine Hills",
+      "ore/food source"
+    ],
+    [
+      "iron_rock_crab",
+      "stone_chunk",
+      46,
+      "%",
+      "common",
+      "Northern Mine Hills",
+      "ore/food source"
+    ],
+    [
+      "iron_rock_crab",
+      "crab_meat",
+      34,
+      "%",
+      "common",
+      "Northern Mine Hills",
+      "ore/food source"
+    ],
+    [
+      "moss_wolf",
+      "wolf_meat",
+      57,
+      "%",
+      "common",
+      "Eastern Oakwoods",
+      "mid combat hide source"
+    ],
+    [
+      "moss_wolf",
+      "wolf_hide",
+      45,
+      "%",
+      "common",
+      "Eastern Oakwoods",
+      "mid combat hide source"
+    ],
+    [
+      "moss_wolf",
+      "bones",
+      33,
+      "%",
+      "common",
+      "Eastern Oakwoods",
+      "mid combat hide source"
+    ],
+    [
+      "rival_goblin_scout",
+      "coins",
+      56,
+      "%",
+      "common",
+      "Eastern Oakwoods",
+      "rival arc foreshadowing"
+    ],
+    [
+      "rival_goblin_scout",
+      "iron_dagger",
+      44,
+      "%",
+      "common",
+      "Eastern Oakwoods",
+      "rival arc foreshadowing"
+    ],
+    [
+      "rival_goblin_scout",
+      "scout_map_scrap",
+      32,
+      "%",
+      "common",
+      "Eastern Oakwoods",
+      "rival arc foreshadowing"
+    ],
+    [
+      "swamp_frog",
+      "frog_legs",
+      55,
+      "%",
+      "common",
+      "Bog of Grub",
+      "frog legs/poison"
+    ],
+    [
+      "swamp_frog",
+      "slime_glob",
+      43,
+      "%",
+      "common",
+      "Bog of Grub",
+      "frog legs/poison"
+    ],
+    [
+      "swamp_frog",
+      "poison_gland",
+      31,
+      "%",
+      "common",
+      "Bog of Grub",
+      "frog legs/poison"
+    ],
+    [
+      "bog_rat",
+      "rat_meat",
+      54,
+      "%",
+      "common",
+      "Bog of Grub",
+      "swamp hide/deadwood"
+    ],
+    [
+      "bog_rat",
+      "diseased_hide",
+      42,
+      "%",
+      "common",
+      "Bog of Grub",
+      "swamp hide/deadwood"
+    ],
+    [
+      "bog_rat",
+      "deadwood_logs",
+      30,
+      "%",
+      "common",
+      "Bog of Grub",
+      "swamp hide/deadwood"
+    ],
+    [
+      "fungal_goblin",
+      "strange_mushroom",
+      53,
+      "%",
+      "common",
+      "Mushroom Forest",
+      "mushroom drops"
+    ],
+    [
+      "fungal_goblin",
+      "fungal_logs",
+      41,
+      "%",
+      "common",
+      "Mushroom Forest",
+      "mushroom drops"
+    ],
+    [
+      "fungal_goblin",
+      "bone_needle",
+      29,
+      "%",
+      "uncommon",
+      "Mushroom Forest",
+      "mushroom drops"
+    ],
+    [
+      "cave_goblin_miner",
+      "iron_ore",
+      52,
+      "%",
+      "common",
+      "Northern Mine Hills",
+      "mining humanoid"
+    ],
+    [
+      "cave_goblin_miner",
+      "coal",
+      40,
+      "%",
+      "common",
+      "Northern Mine Hills",
+      "mining humanoid"
+    ],
+    [
+      "cave_goblin_miner",
+      "pickaxe_head",
+      28,
+      "%",
+      "uncommon",
+      "Northern Mine Hills",
+      "mining humanoid"
+    ],
+    [
+      "bog_slime",
+      "slime_glob",
+      51,
+      "%",
+      "common",
+      "Bog of Grub",
+      "slime/core source"
+    ],
+    [
+      "bog_slime",
+      "swamp_herb",
+      39,
+      "%",
+      "common",
+      "Bog of Grub",
+      "slime/core source"
+    ],
+    [
+      "bog_slime",
+      "raw_bog_eel",
+      27,
+      "%",
+      "uncommon",
+      "Bog of Grub",
+      "slime/core source"
+    ],
+    [
+      "lake_snapper",
+      "raw_pike",
+      50,
+      "%",
+      "common",
+      "Grublake",
+      "lake creature"
+    ],
+    [
+      "lake_snapper",
+      "raw_carp",
+      38,
+      "%",
+      "common",
+      "Grublake",
+      "lake creature"
+    ],
+    [
+      "lake_snapper",
+      "snapper_shell",
+      26,
+      "%",
+      "uncommon",
+      "Grublake",
+      "lake creature"
+    ],
+    [
+      "rival_goblin_warrior",
+      "coins",
+      49,
+      "%",
+      "common",
+      "Rival Goblin Territory",
+      "rival combat"
+    ],
+    [
+      "rival_goblin_warrior",
+      "iron_sword",
+      37,
+      "%",
+      "common",
+      "Rival Goblin Territory",
+      "rival combat"
+    ],
+    [
+      "rival_goblin_warrior",
+      "steel_arrowheads",
+      25,
+      "%",
+      "uncommon",
+      "Rival Goblin Territory",
+      "rival combat"
+    ],
+    [
+      "rival_goblin_archer",
+      "iron_arrows",
+      48,
+      "%",
+      "common",
+      "Rival Goblin Territory",
+      "ranged rival"
+    ],
+    [
+      "rival_goblin_archer",
+      "oak_bow",
+      36,
+      "%",
+      "common",
+      "Rival Goblin Territory",
+      "ranged rival"
+    ],
+    [
+      "rival_goblin_archer",
+      "bowstring",
+      24,
+      "%",
+      "uncommon",
+      "Rival Goblin Territory",
+      "ranged rival"
+    ],
+    [
+      "black_iron_crab",
+      "black_iron_ore",
+      45,
+      "%",
+      "common",
+      "Troll Ridge",
+      "black iron source"
+    ],
+    [
+      "black_iron_crab",
+      "coal",
+      33,
+      "%",
+      "common",
+      "Troll Ridge",
+      "black iron source"
+    ],
+    [
+      "black_iron_crab",
+      "heavy_shell",
+      21,
+      "%",
+      "uncommon",
+      "Troll Ridge",
+      "black iron source"
+    ],
+    [
+      "swamp_shaman",
+      "swamp_herb",
+      44,
+      "%",
+      "common",
+      "Bog of Grub",
+      "swamp magic enemy"
+    ],
+    [
+      "swamp_shaman",
+      "bone_amulet",
+      32,
+      "%",
+      "common",
+      "Bog of Grub",
+      "swamp magic enemy"
+    ],
+    [
+      "swamp_shaman",
+      "gold_ore",
+      20,
+      "%",
+      "uncommon",
+      "Bog of Grub",
+      "swamp magic enemy"
+    ],
+    [
+      "rival_goblin_brute",
+      "steel_bar",
+      43,
+      "%",
+      "common",
+      "Rival Goblin Territory",
+      "strength enemy"
+    ],
+    [
+      "rival_goblin_brute",
+      "black_iron_ore",
+      31,
+      "%",
+      "common",
+      "Rival Goblin Territory",
+      "strength enemy"
+    ],
+    [
+      "rival_goblin_brute",
+      "brute_club_head",
+      19,
+      "%",
+      "uncommon",
+      "Rival Goblin Territory",
+      "strength enemy"
+    ],
+    [
+      "troll_whelp",
+      "troll_meat",
+      41,
+      "%",
+      "common",
+      "Troll Ridge",
+      "intro troll"
+    ],
+    [
+      "troll_whelp",
+      "big_bones",
+      29,
+      "%",
+      "uncommon",
+      "Troll Ridge",
+      "intro troll"
+    ],
+    [
+      "troll_whelp",
+      "coal",
+      17,
+      "%",
+      "uncommon",
+      "Troll Ridge",
+      "intro troll"
+    ],
+    [
+      "cave_troll",
+      "big_bones",
+      36,
+      "%",
+      "common",
+      "Troll Ridge",
+      "high tier enemy"
+    ],
+    [
+      "cave_troll",
+      "coal",
+      24,
+      "%",
+      "uncommon",
+      "Troll Ridge",
+      "high tier enemy"
+    ],
+    [
+      "cave_troll",
+      "troll_hide",
+      12,
+      "%",
+      "uncommon",
+      "Troll Ridge",
+      "high tier enemy"
+    ],
+    [
+      "farm_chicken",
+      "egg",
+      60,
+      "%",
+      "common",
+      "Main Farmlands",
+      "eggs/feathers"
+    ],
+    [
+      "farm_chicken",
+      "feather",
+      48,
+      "%",
+      "common",
+      "Main Farmlands",
+      "eggs/feathers"
+    ],
+    [
+      "mud_duck",
+      "feather",
+      60,
+      "%",
+      "common",
+      "Willow Riverlands",
+      "feathers/food"
+    ],
+    [
+      "mud_duck",
+      "raw_duck",
+      48,
+      "%",
+      "common",
+      "Willow Riverlands",
+      "feathers/food"
+    ],
+    [
+      "lake_turtle",
+      "turtle_shell",
+      60,
+      "%",
+      "common",
+      "Grublake",
+      "shell/fishing flavour"
+    ],
+    [
+      "red_ear_captain",
+      "captains_banner",
+      39,
+      "%",
+      "common",
+      "Rival Goblin Territory",
+      "first war boss; unlock captured anvil"
+    ],
+    [
+      "red_ear_captain",
+      "red_ear_spear_tip",
+      27,
+      "%",
+      "uncommon",
+      "Rival Goblin Territory",
+      "first war boss; unlock captured anvil"
+    ],
+    [
+      "red_ear_captain",
+      "black_iron_bar",
+      15,
+      "%",
+      "uncommon",
+      "Rival Goblin Territory",
+      "first war boss; unlock captured anvil"
+    ],
+    [
+      "red_ear_captain",
+      "war_feast",
+      3,
+      "%",
+      "rare",
+      "Rival Goblin Territory",
+      "first war boss; unlock captured anvil"
+    ],
+    [
+      "grub_bog_horror",
+      "horror_heart",
+      33,
+      "%",
+      "common",
+      "Bog of Grub",
+      "swamp boss; poison armour path"
+    ],
+    [
+      "grub_bog_horror",
+      "bog_horror_hide",
+      21,
+      "%",
+      "uncommon",
+      "Bog of Grub",
+      "swamp boss; poison armour path"
+    ],
+    [
+      "grub_bog_horror",
+      "slime_core",
+      9,
+      "%",
+      "rare",
+      "Bog of Grub",
+      "swamp boss; poison armour path"
+    ],
+    [
+      "grub_bog_horror",
+      "raw_grubshark",
+      1,
+      "%",
+      "rare",
+      "Bog of Grub",
+      "swamp boss; poison armour path"
+    ],
+    [
+      "old_root_colossus",
+      "elder_rotwood_logs",
+      35,
+      "%",
+      "common",
+      "Old Forest Ruins",
+      "ancient forest boss; woodcutting/crafting route"
+    ],
+    [
+      "old_root_colossus",
+      "old_root_core",
+      23,
+      "%",
+      "uncommon",
+      "Old Forest Ruins",
+      "ancient forest boss; woodcutting/crafting route"
+    ],
+    [
+      "old_root_colossus",
+      "ancient_bark_plate",
+      11,
+      "%",
+      "uncommon",
+      "Old Forest Ruins",
+      "ancient forest boss; woodcutting/crafting route"
+    ],
+    [
+      "old_root_colossus",
+      "forest_relic",
+      1,
+      "%",
+      "rare",
+      "Old Forest Ruins",
+      "ancient forest boss; woodcutting/crafting route"
+    ],
+    [
+      "troll_king_grum",
+      "troll_king_tooth",
+      28,
+      "%",
+      "uncommon",
+      "Troll Ridge",
+      "mountain boss; late mining route"
+    ],
+    [
+      "troll_king_grum",
+      "meteor_shard",
+      16,
+      "%",
+      "uncommon",
+      "Troll Ridge",
+      "mountain boss; late mining route"
+    ],
+    [
+      "troll_king_grum",
+      "king_club_head",
+      4,
+      "%",
+      "rare",
+      "Troll Ridge",
+      "mountain boss; late mining route"
+    ],
+    [
+      "troll_king_grum",
+      "mountain_crown",
+      1,
+      "%",
+      "rare",
+      "Troll Ridge",
+      "mountain boss; late mining route"
+    ],
+    [
+      "red_ear_captain",
+      "captains_banner",
+      100,
+      "%",
+      "boss_common",
+      "Rival Goblin Territory",
+      "Unlocks Captured Anvil and Rival Camp reward chest"
+    ],
+    [
+      "red_ear_captain",
+      "red_ear_spear_tip",
+      35,
+      "%",
+      "boss_common",
+      "Rival Goblin Territory",
+      "Unlocks Captured Anvil and Rival Camp reward chest"
+    ],
+    [
+      "red_ear_captain",
+      "black_iron_bar",
+      15,
+      "%",
+      "boss_unique",
+      "Rival Goblin Territory",
+      "Unlocks Captured Anvil and Rival Camp reward chest"
+    ],
+    [
+      "red_ear_captain",
+      "war_feast",
+      5,
+      "%",
+      "boss_unique",
+      "Rival Goblin Territory",
+      "Unlocks Captured Anvil and Rival Camp reward chest"
+    ],
+    [
+      "grub_bog_horror",
+      "horror_heart",
+      100,
+      "%",
+      "boss_common",
+      "Bog of Grub",
+      "Unlocks Deep Bog resource loop"
+    ],
+    [
+      "grub_bog_horror",
+      "bog_horror_hide",
+      35,
+      "%",
+      "boss_common",
+      "Bog of Grub",
+      "Unlocks Deep Bog resource loop"
+    ],
+    [
+      "grub_bog_horror",
+      "slime_core",
+      15,
+      "%",
+      "boss_unique",
+      "Bog of Grub",
+      "Unlocks Deep Bog resource loop"
+    ],
+    [
+      "grub_bog_horror",
+      "raw_grubshark",
+      5,
+      "%",
+      "boss_unique",
+      "Bog of Grub",
+      "Unlocks Deep Bog resource loop"
+    ],
+    [
+      "old_root_colossus",
+      "elder_rotwood_logs",
+      100,
+      "%",
+      "boss_common",
+      "Old Forest Ruins",
+      "Unlocks Elder Rotwood grove"
+    ],
+    [
+      "old_root_colossus",
+      "old_root_core",
+      35,
+      "%",
+      "boss_common",
+      "Old Forest Ruins",
+      "Unlocks Elder Rotwood grove"
+    ],
+    [
+      "old_root_colossus",
+      "ancient_bark_plate",
+      15,
+      "%",
+      "boss_unique",
+      "Old Forest Ruins",
+      "Unlocks Elder Rotwood grove"
+    ],
+    [
+      "old_root_colossus",
+      "forest_relic",
+      5,
+      "%",
+      "boss_unique",
+      "Old Forest Ruins",
+      "Unlocks Elder Rotwood grove"
+    ],
+    [
+      "troll_king_grum",
+      "troll_king_tooth",
+      100,
+      "%",
+      "boss_common",
+      "Troll Ridge",
+      "Unlocks Meteor Crater and high-tier ore"
+    ],
+    [
+      "troll_king_grum",
+      "meteor_shard",
+      35,
+      "%",
+      "boss_common",
+      "Troll Ridge",
+      "Unlocks Meteor Crater and high-tier ore"
+    ],
+    [
+      "troll_king_grum",
+      "king_club_head",
+      15,
+      "%",
+      "boss_unique",
+      "Troll Ridge",
+      "Unlocks Meteor Crater and high-tier ore"
+    ],
+    [
+      "troll_king_grum",
+      "mountain_crown",
+      5,
+      "%",
+      "boss_unique",
+      "Troll Ridge",
+      "Unlocks Meteor Crater and high-tier ore"
+    ]
+  ]
+}
