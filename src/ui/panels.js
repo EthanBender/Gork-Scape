@@ -6,8 +6,9 @@ import {
   Game, equipItem, unequipItem, removeAt, playerCombatLevel, totalBonuses,
   playerAttackRange, needsAmmo, ammoCount, playerProfile,
   grantXp, prayerLevel, togglePrayer,
-  bankDeposit, bankDepositAll, bankWithdraw,
+  bankDeposit, bankDepositAll, bankWithdraw, nextBankSpaceCost, buyBankSpace, BANK_SPACE_CHUNK,
   weaponSpec, toggleSpec, forgeBossWeapon, SPEC_MAX,
+  spawnGroundItem,
 } from '../engine/state.js';
 import { unlockedPrayers } from '../engine/prayer.js';
 import { maxHit, maxAttackRoll } from '../engine/combat.js';
@@ -24,6 +25,7 @@ import {
   playerCoins, countTotal, ensureLiquidity, geTax, mmInfo, marketEvent,
 } from '../systems/geActions.js';
 import { checkHeist, heistView, resolveHeistVictory } from '../systems/treasuryHeist.js';
+import { startWorldChat, playerSay, cheerLevel } from '../systems/worldChat.js';
 import { shopStock, buyFromShop, sellToShop } from '../systems/shops.js';
 import { lightFireAt } from '../systems/firemaking.js'; // [economy lane] Firemaking
 import { renderAlchemy } from '../systems/alchemy.js'; // [economy lane] Alchemy skill
@@ -175,6 +177,7 @@ function showLevelUp(skill, level) {
   fxLayer().appendChild(b);
   setTimeout(() => { b.classList.add('out'); }, 2400);
   setTimeout(() => b.remove(), 3000);
+  cheerLevel(skill, level); // a "player" might gz you in world chat
 }
 
 // Registered as Game.ui.onXp — called once per XP grant from state.grantXp.
@@ -211,12 +214,15 @@ export function initPanels() {
     renderQuests,
     onQuestComplete,
     onXp,
+    postChat,
   };
   switchTab('skills');
   Game.refresh();
   // backfill any log lines emitted before the panel existed
   els.chatlog.innerHTML = '';
   for (const l of Game.logLines) appendLog(l);
+  buildChatInput();
+  startWorldChat();
 }
 
 function buildLayout() {
@@ -312,6 +318,9 @@ export function renderSkills() {
         <div class="xptext">${Math.floor(sk.xp).toLocaleString()} xp</div>
         ${nextLine}
       </div>`;
+    cell.classList.add('sg-clickable');
+    cell.title = 'View unlock guide';
+    cell.onclick = () => showSkillGuide(name);
     grid.appendChild(cell);
   }
   v.appendChild(grid);
@@ -320,6 +329,49 @@ export function renderSkills() {
   hp.className = 'skill-foot';
   hp.textContent = `Hitpoints ${Game.hitpoints.level} · ${Game.hp}/${Game.maxHp} HP`;
   v.appendChild(hp);
+}
+
+// ---------- Skill guide popup (RuneScape-style level unlock list) ----------
+// Clicking a skill opens a modal listing every unlock for it by level, marking
+// which are already available (✓) vs still locked (🔒) at the player's level.
+function showSkillGuide(name) {
+  const skill = name.toLowerCase();
+  const level = levelProgress(Game.skills[name].xp).level;
+  const unlocks = (GameData.levelUnlocks || [])
+    .filter((u) => u.skill === skill && u.display_name)
+    .sort((a, b) => a.level - b.level || String(a.display_name).localeCompare(b.display_name));
+  const rows = unlocks.length
+    ? unlocks.map((u) => {
+        const open = level >= u.level;
+        const kind = u.unlock_type === 'world_node' ? 'node' : 'item';
+        return `<div class="sg-row ${open ? 'sg-open' : 'sg-locked'}">
+          <span class="sg-lvl">${u.level}</span>
+          <span class="sg-name">${tipEsc(u.display_name)}</span>
+          <span class="sg-kind">${kind}</span>
+          <span class="sg-state">${open ? '✓' : '🔒'}</span>
+        </div>`;
+      }).join('')
+    : '<div class="sg-empty">No level unlocks are recorded for this skill yet.</div>';
+
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.onclick = () => close();
+  const panel = document.createElement('div');
+  panel.className = 'modal-panel';
+  panel.onclick = (e) => e.stopPropagation();
+  panel.innerHTML = `
+    <div class="modal-head">
+      <span class="modal-title">${SKILL_EMOJI[name] || ''} ${name} — Level ${level}/99</span>
+      <button class="modal-close" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-sub">${unlocks.length} unlock${unlocks.length === 1 ? '' : 's'} · ✓ available now · 🔒 locked</div>
+    <div class="modal-body skill-guide">${rows}</div>`;
+  overlay.appendChild(panel);
+  function close() { overlay.remove(); document.removeEventListener('keydown', onKey); }
+  function onKey(e) { if (e.key === 'Escape') close(); }
+  panel.querySelector('.modal-close').onclick = close;
+  document.addEventListener('keydown', onKey);
+  document.body.appendChild(overlay);
 }
 
 // ---------- Quest Journal ----------
@@ -766,14 +818,25 @@ export function renderBank() {
     return;
   }
 
+  const used = Game.bank.length, cap = Game.bankMax || 120;
   const head = document.createElement('div');
   head.className = 'ge-head';
-  head.innerHTML = `<span class="stat-title" style="margin:0">Bank of Gorkholm</span>`;
+  head.innerHTML = `<span class="stat-title" style="margin:0">Bank of Gorkholm</span>`
+    + `<span class="ge-coins" style="color:${used >= cap ? '#c9556a' : 'var(--muted)'}">${used} / ${cap} slots</span>`;
   const depAll = document.createElement('button');
   depAll.className = 'ge-mini'; depAll.textContent = 'Deposit all';
   depAll.onclick = () => { bankDepositAll(); renderBank(); };
   head.appendChild(depAll);
   v.appendChild(head);
+
+  // Expand-bank control: buy +chunk slots for escalating GP (a coin sink), or
+  // earn slots from quests via grantBankSpace().
+  const cost = nextBankSpaceCost();
+  const upg = document.createElement('button');
+  upg.className = 'ge-mini'; upg.style.marginBottom = '8px';
+  upg.textContent = `Buy +${BANK_SPACE_CHUNK} slots — ${cost.toLocaleString()} gp`;
+  upg.onclick = () => { buyBankSpace(); renderBank(); };
+  v.appendChild(upg);
 
   // Stored items — left-click withdraw 1, right-click withdraw all.
   const store = document.createElement('div');
@@ -828,6 +891,11 @@ export function renderBank() {
 export function renderInventory() {
   const v = els.views.inventory;
   v.innerHTML = '';
+  const used = Game.inventory.filter(Boolean).length;
+  const head = document.createElement('div');
+  head.className = 'inv-head';
+  head.textContent = `Inventory \u00b7 ${used}/${Game.inventory.length}`;
+  v.appendChild(head);
   const grid = document.createElement('div');
   grid.className = 'inv-grid';
   for (let i = 0; i < Game.inventory.length; i++) {
@@ -960,7 +1028,7 @@ function onInvContext(e, i) {
     }]);
   }
   opts.push(['Examine', () => Game.log(examineText(item.id, item.name))]);
-  opts.push(['Drop', () => { hideTip(); removeAt(i); Game.log(`You drop the ${item.name}.`); Game.refresh(); }]);
+  opts.push(['Drop', () => { hideTip(); const it = Game.inventory[i]; if (!it) return; removeAt(i); spawnGroundItem(it.id, it.qty || 1, Game.player.tileX, Game.player.tileY, Game.ticker ? Game.ticker.count : 0); Game.log(`You drop the ${it.name}.`); Game.refresh(); }]);
   showContextMenu(e.clientX, e.clientY, opts);
 }
 
@@ -1139,9 +1207,6 @@ function specDesc(spec) {
 
 // Special-attack block: an energy bar + (if the weapon has one) an arm button.
 function renderSpec() {
-  try { return renderSpecInner(); } catch (err) { window.__specErr = String((err && err.stack) || err); return document.createElement('div'); }
-}
-function renderSpecInner() {
   const wrap = document.createElement('div');
   wrap.style.marginTop = '10px';
   const spec = weaponSpec();
@@ -1205,6 +1270,45 @@ export function appendLog(msg) {
   els.chatlog.appendChild(line);
   while (els.chatlog.children.length > 100) els.chatlog.removeChild(els.chatlog.firstChild);
   els.chatlog.scrollTop = els.chatlog.scrollHeight;
+}
+
+// Stable per-name colour so each "player" reads consistently in chat.
+const CHAT_COLORS = ['#8fbcff', '#f0a24a', '#7bbf4a', '#e88fd0', '#5ecfc0', '#d9c25a', '#c98af0', '#e0796f', '#9fd86a'];
+function nameColor(name) {
+  let h = 0; for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) >>> 0;
+  return CHAT_COLORS[h % CHAT_COLORS.length];
+}
+
+// Render a public-chat line (bot chatter, replies, or the player's own message).
+export function postChat({ name, text, self }) {
+  if (!els.chatlog) return;
+  const line = document.createElement('div');
+  line.className = 'chat-line chat-msg' + (self ? ' chat-self' : '');
+  const col = self ? 'var(--accent)' : nameColor(name);
+  line.innerHTML = `<span class="chat-name" style="color:${col}">${tipEsc(name)}:</span> `
+    + `<span class="chat-text">${tipEsc(text)}</span>`;
+  els.chatlog.appendChild(line);
+  while (els.chatlog.children.length > 120) els.chatlog.removeChild(els.chatlog.firstChild);
+  els.chatlog.scrollTop = els.chatlog.scrollHeight;
+}
+
+// Inject the "Press Enter to chat" input below the chat log. keydown/up are
+// stopped from bubbling so typing doesn't trigger the game's movement/camera keys.
+function buildChatInput() {
+  if (!els.chatlog || document.getElementById('chat-input-bar')) return;
+  const bar = document.createElement('div');
+  bar.id = 'chat-input-bar';
+  const input = document.createElement('input');
+  input.id = 'chat-input';
+  input.type = 'text';
+  input.maxLength = 120;
+  input.placeholder = 'Press Enter to chat…';
+  ['keydown', 'keyup', 'keypress'].forEach((ev) => input.addEventListener(ev, (e) => e.stopPropagation()));
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && input.value.trim()) { playerSay(input.value); input.value = ''; }
+  });
+  bar.appendChild(input);
+  els.chatlog.parentNode.insertBefore(bar, els.chatlog.nextSibling);
 }
 
 // ---------- Context menu ----------

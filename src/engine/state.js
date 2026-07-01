@@ -29,7 +29,8 @@ export const Game = {
   equipment: {},       // slot -> item | undefined
   selectedInv: null,   // selected inventory index
   groundItems: [],     // [{ id, qty, x, y, despawnAt }]
-  bank: [],            // [{ id, qty }] — infinite storage; everything stacks (used at the Bank)
+  bank: [],            // [{ id, qty }] — each distinct item is one slot; everything stacks
+  bankMax: 120,        // slot capacity; grows via buyBankSpace() (GP) or grantBankSpace() (quests)
 
   attackStyle: 'Aggressive',
   location: 'Goblin Settlement',
@@ -87,6 +88,60 @@ export function initState() {
   Game.selectedInv = null;
   Game.groundItems = [];
   Game.bank = [];
+  Game.bankMax = BANK_BASE_CAP;
+}
+
+// ---- bank capacity ----
+// The bank starts at 120 slots (one per distinct item). Expand it two ways:
+//   - buyBankSpace(): pay escalating GP at the Banker (a strong late-game coin SINK)
+//   - grantBankSpace(n): a quest / reward hands out slots for free
+export const BANK_BASE_CAP = 120;
+export const BANK_SPACE_CHUNK = 20;          // slots per GP purchase
+export const BANK_SPACE_BASE_COST = 20000;   // first upgrade cost; doubles each time
+
+export function bankSlotsUsed() { return Game.bank.length; }
+export function bankUpgradesBought() {
+  return Math.max(0, Math.round(((Game.bankMax || BANK_BASE_CAP) - BANK_BASE_CAP) / BANK_SPACE_CHUNK));
+}
+// Cost of the NEXT +20 slots: 20k, 40k, 80k, … (doubles per purchase).
+export function nextBankSpaceCost() {
+  return BANK_SPACE_BASE_COST * Math.pow(2, bankUpgradesBought());
+}
+
+function invCoins() {
+  return Game.inventory.reduce((n, s) => n + (s && s.id === 'coins' ? (s.qty || 1) : 0), 0);
+}
+function spendInvCoins(n) {
+  let left = n;
+  for (let i = 0; i < Game.inventory.length && left > 0; i++) {
+    const s = Game.inventory[i];
+    if (s && s.id === 'coins') {
+      const take = Math.min(s.qty || 1, left); s.qty -= take; left -= take;
+      if (s.qty <= 0) Game.inventory[i] = null;
+    }
+  }
+  return left === 0;
+}
+
+// Buy +BANK_SPACE_CHUNK slots with coins from the inventory. Returns true on buy.
+export function buyBankSpace() {
+  const cost = nextBankSpaceCost();
+  if (invCoins() < cost) {
+    Game.log(`You need ${cost.toLocaleString()} coins (in your inventory) to buy more bank space.`);
+    return false;
+  }
+  spendInvCoins(cost);
+  Game.bankMax = (Game.bankMax || BANK_BASE_CAP) + BANK_SPACE_CHUNK;
+  Game.log(`The Banker extends your vault by ${BANK_SPACE_CHUNK} slots — now ${Game.bankMax}.`);
+  Game.refresh();
+  return true;
+}
+
+// Grant bank slots for free (quests, achievements, event rewards).
+export function grantBankSpace(n) {
+  Game.bankMax = (Game.bankMax || BANK_BASE_CAP) + n;
+  Game.log(`Your bank has grown by ${n} slots — now ${Game.bankMax}.`);
+  return Game.bankMax;
 }
 
 // ---- banking (used at the Bank; everything stacks, storage is unlimited) ----
@@ -97,7 +152,14 @@ export function bankDeposit(invIndex, qty = Infinity) {
   if (!it) return false;
   const amount = it.stackable ? Math.min(qty, it.qty || 1) : 1;
   let slot = Game.bank.find((b) => b.id === it.id);
-  if (!slot) { slot = { id: it.id, qty: 0 }; Game.bank.push(slot); }
+  if (!slot) {
+    // A new distinct item needs a free slot; existing items always stack.
+    if (Game.bank.length >= (Game.bankMax || BANK_BASE_CAP)) {
+      Game.log('Your bank is full. Buy more space from the Banker.');
+      return false;
+    }
+    slot = { id: it.id, qty: 0 }; Game.bank.push(slot);
+  }
   slot.qty += amount;
   if (it.stackable) { it.qty -= amount; if (it.qty <= 0) Game.inventory[invIndex] = null; }
   else Game.inventory[invIndex] = null;
@@ -444,12 +506,25 @@ export function forgeBossWeapon(componentId) {
   if (Game.skills.Smithing.level < f.smithing) {
     Game.log(`You need Smithing ${f.smithing} to forge the ${out.name}.`); return false;
   }
-  const bars = countItem(f.bar);
+  // Count total bars held (bars are stackable, so count quantities not slots).
+  const bars = Game.inventory.reduce((n, s) => n + (s && s.id === f.bar ? (s.qty || 1) : 0), 0);
   if (bars < f.barQty) {
     Game.log(`You need ${f.barQty} ${ITEMS[f.bar].name} to forge the ${out.name}.`); return false;
   }
   removeOneById(componentId);
-  for (let i = 0; i < f.barQty; i++) removeOneById(f.bar);
+  // Consume barQty bars, decrementing stacks (works for stackable or not).
+  let need = f.barQty;
+  for (let i = 0; i < Game.inventory.length && need > 0; i++) {
+    const s = Game.inventory[i];
+    if (!s || s.id !== f.bar) continue;
+    if (s.stackable) {
+      const take = Math.min(need, s.qty || 1);
+      s.qty -= take; need -= take;
+      if (s.qty <= 0) Game.inventory[i] = null;
+    } else {
+      Game.inventory[i] = null; need -= 1;
+    }
+  }
   addItem(f.into);
   grantXp('Smithing', f.xp || 500);
   Game.log(`You forge the ${out.name}! A weapon of legend.`);
