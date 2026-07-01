@@ -3,7 +3,7 @@
 Three agents are building this game in parallel. **Read this file before editing any
 shared file.** Update your own lane's section when you claim or release a file.
 
-Last updated: 2026-06-30
+Last updated: 2026-07-01
 
 ---
 
@@ -36,12 +36,57 @@ The repo is now under **git** (owner-approved 2026-06-30). Baseline commit exist
 6. **Auto-commit safety net (NEW, affects ALL lanes in this shared tree):** a `Stop`
    hook (`.claude/settings.json` → `scripts/autocommit.sh`) snapshots the working tree to
    a `auto: green snapshot …` commit each time an agent finishes a turn — but ONLY when
-   `smoke.mjs` passes, and it NEVER pushes. So a broken tree is left dirty (visible), and
+   `smoke.mjs` passes, and (as of 2026-07-01) **auto-PUSHES green snapshots to
+   `origin/main` → live on gorkscape.ca** — see the "HOW IT GOES LIVE" section below.
+   So a broken tree is left dirty (visible) and never ships, and
    a green one is checkpointed so nobody's work is lost/clobbered. If you don't want your
    in-progress edits snapshotted, work in a worktree (item 1).
 
 Root cause of the "fighting": 5 agents editing ONE working tree with no VCS. Git +
 worktrees give isolation; the smoke gate + green-`master` rule give integration.
+
+---
+
+## 🚀 HOW IT GOES LIVE — gorkscape.ca (READ THIS before asking "how do I deploy")
+
+**The client auto-deploys. There is NO manual publish step.** End to end:
+
+1. You finish a turn → the `Stop` hook runs `scripts/autocommit.sh`.
+2. It runs `node scripts/smoke.mjs`. **RED → nothing commits, nothing ships** (tree
+   left dirty so the break is visible + fixable). **GREEN → it commits AND
+   `git push`es to `origin/main`** (auto-push was owner-enabled 2026-07-01).
+3. **Cloudflare Pages** watches `origin/main` and publishes the **repo root** as a
+   static site (vanilla ES modules + JSON, **no build step**). Live at
+   **https://gorkscape.ca** within ~1 min. (Confirmed: `server: cloudflare`, and the
+   repo's `_headers` no-cache is in effect on the live domain.)
+
+So **"pushing to the domain" = keeping the tree GREEN.** The ONLY requirements on you:
+- **`node scripts/smoke.mjs` must pass** — valid imports/exports/syntax (the #1
+  black-screen cause). Also run `scripts/economy_sim.mjs` + `scripts/quest_test.mjs`
+  before calling economy/quest work done (they're CI gates in `.github/workflows/ci.yml`
+  too). **A red gate means your work does NOT reach the live site.**
+- **No client build tooling.** The browser gets the files as-is. Don't add anything
+  that needs `npm install` / a bundler to run client-side.
+- **Don't delete** `_headers`, `netlify.toml`, or `wrangler.jsonc` (deploy config).
+
+**What is NOT on the domain: the server.** `server/index.mjs` (password accounts +
+login + the always-on 24/7 economy) is a **Node process** — a static host can't run it.
+**Owner decision (2026-07-01): run it LOCALLY on the owner's laptop for now**
+(`node server/index.mjs` → http://localhost:5200), **pay for a dynamic host later**
+when the game is more polished. Until then, **gorkscape.ca is client-only**, so the
+account system correctly shows its **offline fallback there — that is EXPECTED, not a bug.**
+
+**⛔ HARD RULE for every lane — the client must ALWAYS boot with NO server reachable.**
+Never make a client feature hard-depend on `/api/*`. Follow the `serverLink.js` /
+`src/net/authClient.js` pattern: probe with a timeout, fall back to local on ANY
+failure. This is exactly what keeps the static domain working while the server lives
+only on a laptop. A networked feature that can't degrade to standalone will
+**black-screen the live site** — and the green gate won't catch it (it boots fine
+against localhost). Test with the server OFF.
+
+When the server IS hosted later: point gorkscape.ca (or a subdomain — `play.`/`api.`)
+at the Node host; the client auto-detects it via `authClient.probe()`, **no client
+change needed.**
 
 ---
 
