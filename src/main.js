@@ -1932,18 +1932,25 @@ function updateLabels() {
     y: p.py + AV_FEET - AV_TOP - 4 - tileLiftXY(p.tileX, p.tileY),
     w: playerLabel.width, prio: 2,
   }];
-  for (const n of Game.npcs) {
-    if (!n._label) continue;
-    const near = !n.dead && manhattan(n.tileX, n.tileY, p.tileX, p.tileY) <= 18;
-    n._label.setVisible(near);
-    if (!near) continue;
-    labelSet.push({
-      t: n._label, x: n.px,
-      y: n.py + AV_FEET - AV_TOP - 2 - tileLiftXY(n.tileX, n.tileY),
-      w: n._label.width,
-      prio: (n === p.combatTarget || n.target === p) ? 1 : 0,
-    });
+  // Pooled NPC labels: gather the nearest live NPCs (from the active set only), then
+  // hand each a pooled text object. Capped at 50 so a dense mob field can't spawn
+  // hundreds of text objects — closest first, which is what the player cares about.
+  const nearNpcs = [];
+  for (const n of Game.activeNpcs) { if (!n.dead && manhattan(n.tileX, n.tileY, p.tileX, p.tileY) <= 18) nearNpcs.push(n); }
+  nearNpcs.sort((a, b) => manhattan(a.tileX, a.tileY, p.tileX, p.tileY) - manhattan(b.tileX, b.tileY, p.tileX, p.tileY));
+  if (nearNpcs.length > 50) nearNpcs.length = 50;
+  for (let i = 0; i < nearNpcs.length; i++) {
+    const n = nearNpcs[i];
+    let t = npcLabelPool[i];
+    if (!t) {
+      t = scene.add.text(0, 0, '', { fontFamily: 'monospace', fontSize: '11px', fontStyle: 'bold' }).setOrigin(0.5, 1).setDepth(40);
+      t.setStroke('#000', 3); npcLabelPool.push(t);
+      if (uiCam) uiCam.ignore(t);
+    }
+    t.setText(npcLabelText(n)).setColor(n.type === 'elder' ? '#d8b0ff' : '#ffb0b0').setVisible(true);
+    labelSet.push({ t, x: n.px, y: n.py + AV_FEET - AV_TOP - 2 - tileLiftXY(n.tileX, n.tileY), w: t.width, prio: (n === p.combatTarget || n.target === p) ? 1 : 0 });
   }
+  for (let i = nearNpcs.length; i < npcLabelPool.length; i++) npcLabelPool[i].setVisible(false);
   declutterLabels(labelSet);
   for (const L of labelSet) L.t.setPosition(L.x, L.y).setRotation(rot);
   // Object labels: nearest labeled visible objects, pooled.

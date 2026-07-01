@@ -381,6 +381,18 @@ Client-side until Phase 4; each phase keeps the player-freeze + world-continuity
   Rerouting would risk the legacy cook/smith branches; revisit with id migration.
 
 ## Change log
+- 2026-07-01 — Economy agent: **Tinkering expansion phase 2 (resource base) + automation
+  DESIGN locked.** +34 items (raw minerals/botanicals, 8 monster-derived raws, 12 processed
+  chemicals/components) → **126 tinker items / 100 recipes**; +28 world node types →
+  `world_nodes.json` (**102 total, ~83 auto-placed**); +22 `drop_tables.json` rows (raws on
+  thematic mobs). Verified live (:5205): boot clean, new nodes gather (sulfur_rock),
+  chitin/sinew drop from mobs, acid_vial/capacitor build (voltaic gate holds). Progress vs
+  the ~200/~100 target: ~126/200 items, 38 tinker node types. NEXT toward 200: gadget MODS/
+  attachments + ammo variants. **Automation** (`docs/TINKERING_AUTOMATION.md`) design locked
+  by owner — persistent contraptions as CONVERTERS not creators, full-stack throttle (fuel +
+  capped hopper + durability + GP upkeep), soft slot cap (escalating GP licence). Reuses
+  `farming.js` world-clock/serialize/offline-catch-up. DEFERRED until the item/node expansion
+  is fuller. (JSON-only + tinkering.js this pass — no shared-file risk.)
 - 2026-07-01 — Economy agent (⚠️ CROSS-LANE, owner-directed): **skilling THREE-ARM
   bug fixed** in `src/render/avatar.js` (character-render lane — heads up). Front/back
   view drew the idle off-arm unconditionally AND a second grip-hand while skilling →
