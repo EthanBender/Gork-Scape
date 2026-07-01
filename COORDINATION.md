@@ -7,6 +7,28 @@ Last updated: 2026-07-01
 
 ---
 
+## 🛑 SEEING "The realm is resting — the server is offline" IN PREVIEW? (READ FIRST)
+
+**This is NOT a bug. Do not "fix" it in client code.** As of the multiplayer update
+(2026-07-01) the game client **requires the backend server**. Previewing against a
+**static / python server** → the client correctly shows the "realm is resting"
+landing page and will NOT enter the world. That is BY DESIGN (there is no offline
+mode anymore).
+
+**To preview or test the game, run the Node server and open THAT:**
+```
+node server/index.mjs          # serves the client AND /api on http://localhost:5200
+```
+Open **http://localhost:5200** (launch config `goblin-empire-worldserver`). It serves
+the client and the API same-origin, so the client enters the world normally.
+
+Server calls route through `src/net/config.js` (`api()`), which targets
+`api.gorkscape.ca` in prod and same-origin in dev. No backend reachable → landing
+page. **Do NOT edit pointer/label/render/Phaser code to force the world to load** —
+it won't help and collides with other lanes. Full detail in "HOW IT GOES LIVE" below.
+
+---
+
 ## 🔧 WORKFLOW — git + boot smoke-check (adopt this to stop colliding)
 
 The repo is now under **git** (owner-approved 2026-06-30). Baseline commit exists;
