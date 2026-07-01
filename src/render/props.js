@@ -21,8 +21,9 @@ export function propKind(label = '') {
   if (/grand exchange|\bexchange\b/.test(n)) return 'exchange';
   if (/anvil|smith|forge/.test(n)) return 'anvil';
   if (/deposit|\bbank\b|coffer|lockbox|hidden chest|\bchest\b|storage|vault/.test(n)) return 'chest';
+  if (/tavern|\binn\b|\bpub\b|alehouse|brewery/.test(n)) return 'barrel';
   if (/barrel|keg|cask/.test(n)) return 'barrel';
-  if (/stall|market|bait shack|produce|grocer|fishmonger|fletcher|lumber stall|shop|store/.test(n)) return 'stall';
+  if (/stall|market|shack|bait|tackle|produce|grocer|fishmonger|fletcher|lumber stall|shop|store/.test(n)) return 'stall';
   if (/weapon rack|armou?r|\brack\b/.test(n)) return 'weaponrack';
   if (/dummy/.test(n)) return 'dummy';
   if (/banner|\bflag\b/.test(n)) return 'banner';
