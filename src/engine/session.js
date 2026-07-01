@@ -10,10 +10,7 @@
 // makes a later swap to a real server backend a localized change.
 
 import { Game } from './state.js';
-import {
-  listAccounts, hasSave, savedAt, loadSave, saveGame, deleteSave,
-  exportSaveString, importSaveString, serialize,
-} from './save.js';
+import { loadSave, saveGame, serialize } from './save.js';
 import * as authClient from '../net/authClient.js';
 
 export const IDLE_LOGOUT_MS = 10 * 60 * 1000;  // auto-logout after 10 min idle
@@ -23,8 +20,7 @@ const IDLE_CHECK_MS = 15 * 1000;               // how often we test for idleness
 let hooks = { onStart: () => {}, onStop: () => {} };
 const extraSavers = []; // extra persistence callbacks (e.g. shared world state)
 let account = null;
-let authMode = 'local';            // 'server' (real account) | 'local' (this-device fallback)
-let serverAvailable = false;       // is an auth server reachable this session?
+let serverAvailable = false;       // is the authoritative server reachable this session?
 let running = false;               // true between game-ready and logout
 let lastActivity = 0;
 let autosaveTimer = null;
@@ -41,18 +37,23 @@ export async function initSession({ onStart, onStop }) {
   hooks = { onStart, onStop };
   injectStyles();
   wireGlobalListeners();
+  await gateOnServer();
+}
+
+// Boot / refresh gate. The game REQUIRES the authoritative server — there is no
+// local, this-device play mode (that dual state was confusing). If the server is
+// up, resume a held token (refresh stays signed in) or show the login. If it's
+// down, show the "server resting" landing page — an ad for the game with a Retry
+// — never a throwaway local character. The Retry button calls this again.
+async function gateOnServer() {
   showConnecting();
-  // Resume a server session from a held token (page refresh keeps you signed in);
-  // otherwise decide which login screen to show based on whether an auth server
-  // is reachable at all. No server → the local, this-device-only fallback UI.
   const resumed = await authClient.resume();
-  if (resumed.ok) {
-    serverAvailable = true;
-    beginServerSession(resumed.username, resumed.save);
-    return;
-  }
+  if (resumed.ok) { serverAvailable = true; beginSession(resumed.username, resumed.save); return; }
+  // resume() only reports `offline` when it actually tried (had a token). With no
+  // token it returns {ok:false}; probe to see whether a server is there at all.
   serverAvailable = resumed.offline ? false : await authClient.probe();
-  showLogin();
+  if (serverAvailable) showLogin();
+  else showComingSoon();
 }
 
 // Called by main.js create() once the game has finished loading/applying the
@@ -78,14 +79,14 @@ function runExtraSavers() {
   for (const fn of extraSavers) { try { fn(); } catch { /* best-effort */ } }
 }
 
-// Persist the current character + any registered world state (best-effort).
-// Local storage is always written (offline cache); server accounts also push the
-// save to the server, which is the source of truth for the character.
+// Persist the current character + any registered world state. The server is the
+// source of truth (pushSave); localStorage is kept only as a silent crash-safety
+// cache, never surfaced as a separate "local character".
 export function save() {
   if (!(account && running)) return;
   saveGame(account);
   runExtraSavers();
-  if (authMode === 'server') authClient.pushSave(serialize()); // async, best-effort
+  authClient.pushSave(serialize()); // async, best-effort
 }
 
 export function logout(reason) {
@@ -94,7 +95,7 @@ export function logout(reason) {
   if (account) {
     saveGame(account);
     runExtraSavers();
-    if (authMode === 'server') authClient.pushSave(serialize());
+    authClient.pushSave(serialize());
   }
   running = false;
   stopAutosave();
@@ -102,35 +103,21 @@ export function logout(reason) {
   hideLogoutButton();
   hooks.onStop();
   const who = account;
-  const wasServer = authMode === 'server';
   account = null;
-  authMode = 'local';
   Game.account = null;
   Game.pendingSave = null;
-  if (wasServer) authClient.logout();   // drop the server session token (best-effort)
+  authClient.logout();   // drop the server session token (best-effort)
   showLogin(reason ? { notice: reasonText(reason, who) } : undefined);
 }
 
 // ---------------------------------------------------------------- login flow
-// A real server account: the save comes from the server (source of truth). We
-// still mirror it into localStorage as an offline cache, and fall back to any
-// local cache if the server had no save yet.
-function beginServerSession(username, serverSave) {
-  authMode = 'server';
+// Enter the world as a signed-in server account. The save comes from the server
+// (source of truth); localStorage is only a fallback if the server had none yet.
+function beginSession(username, serverSave) {
   account = username;
   Game.account = username;
   Game.pendingSave = serverSave || loadSave(username);
   hooks.onStart();  // create the Phaser game; create() calls notifyGameReady()
-}
-
-// A local, this-device-only character — the offline / static-host fallback.
-// No server password; behaves like the original name-only login.
-function beginLocalSession(name, { isNew }) {
-  authMode = 'local';
-  account = name;
-  Game.account = name;
-  Game.pendingSave = isNew ? null : loadSave(name);
-  hooks.onStart();
 }
 
 function reasonText(reason, who) {
@@ -158,9 +145,9 @@ function wireGlobalListeners() {
     if (!(running && account)) return;
     saveGame(account);
     runExtraSavers();
-    // Server accounts: an async fetch can't be awaited during unload, so use a
-    // queued beacon that survives the page going away.
-    if (authMode === 'server') authClient.beaconSave(serialize());
+    // An async fetch can't be awaited during unload — use a queued beacon that
+    // survives the page going away.
+    authClient.beaconSave(serialize());
   };
   window.addEventListener('pagehide', flush);
   window.addEventListener('beforeunload', flush);
@@ -217,10 +204,30 @@ function showConnecting() {
 function showLogin(opts = {}) {
   const overlay = ensureOverlay();
   overlay.hidden = false;
-  // Server reachable → the real password-gated account form. Otherwise → the
-  // local, this-device-only fallback (name-only, with backup/restore).
-  if (serverAvailable) renderAuthLogin(overlay, opts.notice || '');
-  else renderLocalLogin(overlay, opts.notice || '');
+  renderAuthLogin(overlay, opts.notice || '');
+}
+
+// The "server is resting" landing page — shown whenever the authoritative server
+// can't be reached (e.g. the host laptop is closed). It's an ad for the game, not
+// an error: title, tagline, and a Retry that re-probes. There is deliberately no
+// way to "play offline" from here — one canonical world, hosted by the server.
+function showComingSoon() {
+  const overlay = ensureOverlay();
+  overlay.hidden = false;
+  overlay.innerHTML = `
+    <div class="login-panel coming-soon">
+      <div class="cs-crest">🏰</div>
+      <h1 class="login-title">Goblin Empire</h1>
+      <p class="cs-tagline">A living goblin world — mine, craft, trade, and fight in a realm that keeps its own time whether you're watching or not.</p>
+      <div class="cs-status">
+        <span class="cs-dot"></span>
+        <span>The realm is resting — the server is offline right now.</span>
+      </div>
+      <p class="cs-sub">Come back soon. Your character and everything you've built are safe on the server.</p>
+      <button id="cs-retry" class="login-primary">Try again</button>
+    </div>`;
+  const retry = el('cs-retry');
+  if (retry) retry.onclick = () => { retry.disabled = true; retry.textContent = 'Checking…'; gateOnServer(); };
 }
 
 function hideLogin() {
@@ -228,9 +235,9 @@ function hideLogin() {
   if (overlay) overlay.hidden = true;
 }
 
-// The real account screen: Sign In / Create Account, username + password. The
-// username IS the in-game character name (created accounts are told so). Falls
-// back to local play if the server vanishes between the boot probe and submit.
+// The account screen: Sign In / Create Account, username + password. The username
+// IS the in-game character name (created accounts are told so). If the server
+// drops between the boot probe and submit, we fall through to the coming-soon page.
 let authFormMode = 'signin'; // 'signin' | 'create'
 
 function renderAuthLogin(overlay, notice) {
@@ -292,14 +299,15 @@ function renderAuthLogin(overlay, notice) {
       : await authClient.login(username, password);
 
     if (res.offline) {
-      // Server dropped between the boot probe and this submit — degrade to local.
+      // Server dropped between the boot probe and this submit → the realm is
+      // resting. Show the coming-soon page (no local play).
       serverAvailable = false;
       setBusy(false);
-      showLogin({ notice: 'Lost the server connection — you can still play offline on this device.' });
+      showComingSoon();
       return;
     }
     if (!res.ok) { showErr(res.error || 'Sign-in failed.'); setBusy(false); return; }
-    beginServerSession(res.username, res.save);
+    beginSession(res.username, res.save);
   };
 
   submitBtn.onclick = submit;
@@ -309,117 +317,6 @@ function renderAuthLogin(overlay, notice) {
   if (isCreate) el('auth-pass2').onkeydown = onEnter;
   userInput.focus();
 }
-
-// The local, this-device-only fallback (no server): the original name-only login
-// with the "continue" list + backup/restore, plus a banner explaining it's local.
-function renderLocalLogin(overlay, notice) {
-  const accounts = listAccounts().filter(hasSave);
-  const rows = accounts.map((name) => {
-    const when = relTime(savedAt(name));
-    return `<div class="login-acct">
-        <button class="login-continue" data-acct="${escapeAttr(name)}">
-          <span class="la-name">${escapeHtml(name)}</span>
-          <span class="la-when">last played ${when}</span>
-        </button>
-        <button class="login-backup" data-acct="${escapeAttr(name)}" title="Download a backup of this character">⬇</button>
-        <button class="login-delete" data-acct="${escapeAttr(name)}" title="Delete this character">✕</button>
-      </div>`;
-  }).join('');
-
-  overlay.innerHTML = `
-    <div class="login-panel">
-      <h1 class="login-title">Goblin Empire</h1>
-      <p class="login-sub">The world keeps its own time.</p>
-      <div class="login-offline">Offline — characters are saved on this device only. Connect to the server for a password-protected account you can use anywhere.</div>
-      ${notice ? `<div class="login-notice">${escapeHtml(notice)}</div>` : ''}
-      ${accounts.length ? `<div class="login-section-label">Continue</div><div class="login-accts">${rows}</div>` : ''}
-      <div class="login-section-label">${accounts.length ? 'Or start a new character' : 'New character'}</div>
-      <div class="login-new">
-        <input id="login-name" type="text" maxlength="16" placeholder="Character name" autocomplete="off" spellcheck="false" />
-        <button id="login-enter">Enter World</button>
-      </div>
-      <div id="login-error" class="login-error"></div>
-      <div class="login-restore">
-        <button id="login-restore-btn" title="Restore a character from a downloaded backup file">Restore from backup…</button>
-        <input id="login-restore-file" type="file" accept="application/json,.json" hidden />
-      </div>
-    </div>`;
-
-  const nameInput = el('login-name');
-  const errBox = el('login-error');
-  const showErr = (m) => { if (errBox) errBox.textContent = m; };
-
-  const enter = () => {
-    const raw = (nameInput.value || '').trim();
-    if (!validName(raw)) { showErr('Use 2–16 letters, numbers, spaces, - or _.'); return; }
-    beginLocalSession(raw, { isNew: !hasSave(raw) });
-  };
-  el('login-enter').onclick = enter;
-  nameInput.onkeydown = (e) => { if (e.key === 'Enter') enter(); };
-
-  overlay.querySelectorAll('.login-continue').forEach((btn) => {
-    btn.onclick = () => beginLocalSession(btn.dataset.acct, { isNew: false });
-  });
-  overlay.querySelectorAll('.login-delete').forEach((btn) => {
-    btn.onclick = () => {
-      const name = btn.dataset.acct;
-      if (confirm(`Delete character "${name}"? This cannot be undone.`)) {
-        deleteSave(name);
-        renderLogin(overlay, '');
-      }
-    };
-  });
-
-  // ⬇ per-account backup: download a portable JSON copy of the character. This
-  // is the escape hatch from localStorage-only persistence — the file survives a
-  // cache clear or a move to another machine (restore below re-imports it).
-  overlay.querySelectorAll('.login-backup').forEach((btn) => {
-    btn.onclick = () => {
-      const name = btn.dataset.acct;
-      const json = exportSaveString(name);
-      if (!json) { showErr(`No save to back up for "${name}".`); return; }
-      downloadText(`goblin-empire-${sanitizeFile(name)}.json`, json);
-    };
-  });
-
-  // Restore-from-backup: read a downloaded file, import it into storage, then the
-  // player can Continue as usual. If the backup names an existing character we
-  // ask before overwriting.
-  const restoreBtn = el('login-restore-btn');
-  const restoreFile = el('login-restore-file');
-  if (restoreBtn && restoreFile) {
-    restoreBtn.onclick = () => restoreFile.click();
-    restoreFile.onchange = () => {
-      const file = restoreFile.files && restoreFile.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = () => {
-        const typed = (nameInput.value || '').trim();
-        // Import under the typed name if given, else the backup's own name.
-        const res = importSaveString(String(reader.result), typed && validName(typed) ? typed : null);
-        restoreFile.value = '';
-        if (!res.ok) { showErr(res.error); return; }
-        renderLogin(overlay, `Restored “${res.account}”. Select it above to continue.`);
-      };
-      reader.onerror = () => showErr('Could not read that file.');
-      reader.readAsText(file);
-    };
-  }
-
-  nameInput.focus();
-}
-
-// Trigger a client-side download of a text blob (no server round-trip).
-function downloadText(filename, text) {
-  const blob = new Blob([text], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = filename;
-  document.body.appendChild(a); a.click(); a.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 0);
-}
-
-function sanitizeFile(name) { return String(name).replace(/[^A-Za-z0-9_-]+/g, '_'); }
 
 function validName(name) {
   return /^[A-Za-z0-9 _-]{2,16}$/.test(name);
@@ -448,24 +345,11 @@ function hideLogoutButton() {
 }
 
 // ---------------------------------------------------------------- helpers
-function relTime(ms) {
-  if (!ms) return 'never';
-  const s = Math.max(0, Math.floor((Date.now() - ms) / 1000));
-  if (s < 60) return 'just now';
-  const m = Math.floor(s / 60);
-  if (m < 60) return `${m} min ago`;
-  const h = Math.floor(m / 60);
-  if (h < 24) return `${h} hr ago`;
-  const d = Math.floor(h / 24);
-  return `${d} day${d === 1 ? '' : 's'} ago`;
-}
-
 function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, (c) => (
     { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
   ));
 }
-function escapeAttr(s) { return escapeHtml(s); }
 
 function injectStyles() {
   if (el('session-styles')) return;
@@ -529,6 +413,26 @@ function injectStyles() {
     .login-primary:hover { background: var(--accent, #7bbf4a); }
     .login-primary:disabled { opacity: .6; cursor: default; }
     .login-hint { margin-top: 12px; font-size: 11.5px; line-height: 1.5; text-align: center; color: var(--muted, #a89c7d); }
+    /* "Server resting" landing / ad page */
+    .login-panel.coming-soon { text-align: center; }
+    .cs-crest { font-size: 46px; line-height: 1; margin-bottom: 6px; filter: drop-shadow(0 3px 0 #000); }
+    .cs-tagline { margin: 6px 2px 18px; font-size: 13.5px; line-height: 1.55; color: var(--text, #efe8d4); }
+    .cs-status {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      margin: 0 0 10px; padding: 9px 12px; border-radius: 6px; font-size: 12.5px;
+      background: rgba(232,198,90,.10); border: 1px solid var(--gold-dk, #a8842a); color: var(--gold, #e8c65a);
+    }
+    .cs-dot {
+      width: 9px; height: 9px; border-radius: 50%; background: var(--gold, #e8c65a);
+      box-shadow: 0 0 0 0 rgba(232,198,90,.6); animation: cs-pulse 1.8s infinite;
+    }
+    @keyframes cs-pulse {
+      0% { box-shadow: 0 0 0 0 rgba(232,198,90,.5); }
+      70% { box-shadow: 0 0 0 8px rgba(232,198,90,0); }
+      100% { box-shadow: 0 0 0 0 rgba(232,198,90,0); }
+    }
+    .cs-sub { margin: 0 0 18px; font-size: 12px; line-height: 1.5; color: var(--muted, #a89c7d); }
+    .coming-soon .login-primary { width: 100%; }
     .login-notice {
       margin: 0 0 14px; padding: 8px 10px; font-size: 12.5px; border-radius: 6px;
       background: rgba(232,198,90,.12); border: 1px solid var(--gold-dk, #a8842a);
