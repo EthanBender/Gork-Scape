@@ -1020,9 +1020,14 @@ function gameTick(count, isLast = true) {
   // Movement: walk 1 tile/tick, or RUN 2 tiles/tick while the run toggle is on and
   // energy remains. Energy drains on a true run, else regenerates (idle or walking).
   const running = wantsToRun(p);
+  // Don't walk THROUGH a big monster: if the next path tile lands on a footprint,
+  // stop short. (Combat approach already halts at the edge, so this only bites on
+  // plain travel; the current target is excluded as a safety belt.)
+  const blockedAhead = () => p.path && p.path.length && mobFootprintAt(p.path[0][0], p.path[0][1], p.combatTarget);
+  if (blockedAhead()) p.path = [];
   stepAlongPath(p);
   let ran = false;
-  if (running && p.path && p.path.length) { stepAlongPath(p); ran = true; }
+  if (running && !blockedAhead() && p.path && p.path.length) { stepAlongPath(p); ran = true; }
   updateRunEnergy(ran);
   p._ranTick = ran; // render interpolates 2× faster on a run tick (see update())
 
