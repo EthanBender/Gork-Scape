@@ -238,22 +238,50 @@ function drawArm(ctx, shoulderX, angle, color, len = ARM_LEN) {
   return [handX, handY];
 }
 
-function drawHead(ctx, skin, head, facing) {
+function drawHead(ctx, skin, head, facing, feat = {}) {
   const back = facing === 'N';
-  // ears (goblin points)
-  poly(ctx, [[-HEAD_R, HEAD_Y + 1], [-HEAD_R - 3, HEAD_Y + 3], [-HEAD_R, HEAD_Y + 3]], shade(skin, 0.85));
-  poly(ctx, [[HEAD_R, HEAD_Y + 1], [HEAD_R + 3, HEAD_Y + 3], [HEAD_R, HEAD_Y + 3]], shade(skin, 0.85));
+  const dark = shade(skin, 0.85);
+  // ---- ears (goblin points by default; bigger for 'goblin', none for humans) ----
+  const ears = feat.ears || 'default';
+  if (ears !== 'none') {
+    const el = ears === 'goblin' ? 5 : 3;            // ear length
+    const ey = ears === 'goblin' ? 4.5 : 3;
+    poly(ctx, [[-HEAD_R, HEAD_Y + 1], [-HEAD_R - el, HEAD_Y + ey], [-HEAD_R, HEAD_Y + 3]], dark);
+    poly(ctx, [[HEAD_R, HEAD_Y + 1], [HEAD_R + el, HEAD_Y + ey], [HEAD_R, HEAD_Y + 3]], dark);
+  }
   disc(ctx, 0, HEAD_Y, HEAD_R, skin);
   if (!back) {
-    // face: brow + eyes + snout, oriented by facing
     const ex = facing === 'E' ? 1.6 : facing === 'W' ? -1.6 : 0;
-    disc(ctx, ex - 1.6, HEAD_Y + 0.6, 0.9, 0xf2e9c0);
-    disc(ctx, ex + 1.6, HEAD_Y + 0.6, 0.9, 0xf2e9c0);
-    disc(ctx, ex - 1.6, HEAD_Y + 0.6, 0.4, 0x1a1a12);
-    disc(ctx, ex + 1.6, HEAD_Y + 0.6, 0.4, 0x1a1a12);
+    // heavy brow ridge (trolls / brutes) — a dark bar shading the eyes
+    if (feat.brow) seg(ctx, ex - 2.2, HEAD_Y + 1.8, ex + 2.2, HEAD_Y + 1.8, 1.4, shade(skin, 0.6));
+    const eyeWhite = feat.eyeGlow ? feat.eyeGlow : 0xf2e9c0;
+    const pupil = feat.eyeGlow ? feat.eyeGlow : (feat.eyeColor || 0x1a1a12);
+    disc(ctx, ex - 1.6, HEAD_Y + 0.6, 0.9, eyeWhite, feat.eyeGlow ? 0.55 : 1);
+    disc(ctx, ex + 1.6, HEAD_Y + 0.6, 0.9, eyeWhite, feat.eyeGlow ? 0.55 : 1);
+    disc(ctx, ex - 1.6, HEAD_Y + 0.6, 0.45, pupil);
+    disc(ctx, ex + 1.6, HEAD_Y + 0.6, 0.45, pupil);
+    if (feat.eyeGlow) { // faint glow aura
+      disc(ctx, ex - 1.6, HEAD_Y + 0.6, 1.4, feat.eyeGlow, 0.25);
+      disc(ctx, ex + 1.6, HEAD_Y + 0.6, 1.4, feat.eyeGlow, 0.25);
+    }
     if (facing === 'E' || facing === 'W') disc(ctx, ex * 1.8, HEAD_Y - 0.6, 1.1, shade(skin, 0.8)); // snout
+    // tusks (trolls / ogres): two ivory tusks jutting up from the jaw
+    if (feat.tusks) {
+      poly(ctx, [[ex - 1.6, HEAD_Y - 2], [ex - 2.2, HEAD_Y - 4.5], [ex - 0.9, HEAD_Y - 2]], 0xe8e0c0);
+      poly(ctx, [[ex + 1.6, HEAD_Y - 2], [ex + 2.2, HEAD_Y - 4.5], [ex + 0.9, HEAD_Y - 2]], 0xe8e0c0);
+    } else if (feat.teeth) { // snaggle teeth (goblins)
+      seg(ctx, ex - 0.8, HEAD_Y - 1.8, ex - 0.8, HEAD_Y - 3, 0.6, 0xf0ead0);
+    }
+    // warts (trolls): a couple of darker bumps
+    if (feat.warts) { disc(ctx, ex - 2.4, HEAD_Y + 2.6, 0.7, dark); disc(ctx, ex + 2.6, HEAD_Y - 0.8, 0.6, dark); }
   } else {
     disc(ctx, 0, HEAD_Y + 1, HEAD_R * 0.8, shade(skin, 0.7)); // back of skull
+  }
+  // ---- horns (imps / demons): curved horns rising from the crown ----
+  if (feat.horns) {
+    const hc = feat.hornColor || shade(skin, 0.55);
+    poly(ctx, [[-2.5, HEAD_Y + HEAD_R - 1], [-4.5, HEAD_Y + HEAD_R + 3.5], [-3, HEAD_Y + HEAD_R + 4], [-1.5, HEAD_Y + HEAD_R - 0.5]], hc);
+    poly(ctx, [[2.5, HEAD_Y + HEAD_R - 1], [4.5, HEAD_Y + HEAD_R + 3.5], [3, HEAD_Y + HEAD_R + 4], [1.5, HEAD_Y + HEAD_R - 0.5]], hc);
   }
   // helm on top
   if (head) {
@@ -686,6 +714,7 @@ export function drawAvatar(g, cx, cy, state = {}) {
   const facing = state.facing || 'S';
   const skin = state.skin != null ? state.skin : SKIN;
   const gear = state.gear || gearHints(state.equipment || {});
+  const feat = state.features || {};   // per-creature distinctive features (also used by humanoid head)
   const p = pose(state);
   const isRanged = gear.weapon && (gear.weapon.kind === 'bow' || gear.weapon.kind === 'cbow');
 
@@ -742,7 +771,6 @@ export function drawAvatar(g, cx, cy, state = {}) {
   const bodyType = state.bodyType || 'humanoid';
   if (bodyType !== 'humanoid') {
     const t = state.t || 0;
-    const feat = state.features || {};   // per-creature distinctive visual hints
     if (bodyType === 'quadruped') drawQuadruped(ctx, skin, p, facing, t, feat);
     else if (bodyType === 'insectoid') drawInsectoid(ctx, skin, p, facing, t, feat);
     else if (bodyType === 'avian') drawAvian(ctx, skin, p, facing, t, feat);
@@ -773,7 +801,7 @@ export function drawAvatar(g, cx, cy, state = {}) {
       if (gear.shield) drawShield(ctx, -TORSO_W / 2 - 1.5, gear.shield, back);
     }
     drawTorso(ctx, skin, gear.body, p);
-    drawHead(ctx, skin, gear.head, facing);
+    drawHead(ctx, skin, gear.head, facing, feat);
     // weapon arm (screen-right hand)
     if (rangedNow) {
       const draw = state.anim === 'attack' ? p.bowDraw : 0;   // 0 = bow at rest (held while walking)
@@ -796,7 +824,7 @@ export function drawAvatar(g, cx, cy, state = {}) {
     drawArm(ctx, -1, offAng, shade(armCol, 0.85));
     if (gear.shield) drawShield(ctx, -2, gear.shield, false);
     drawTorso(ctx, skin, gear.body, p);
-    drawHead(ctx, skin, gear.head, facing);
+    drawHead(ctx, skin, gear.head, facing, feat);
     drawLeg(ctx, 1.5, p.legSwing, legCol, bootCol);                            // near leg
     // near arm + weapon
     if (rangedNow) {

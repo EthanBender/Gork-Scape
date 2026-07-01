@@ -153,8 +153,13 @@ target, `attackStyle`) — no new fields required on the world side.
 >   abdomen, red hourglass, bent legs, eye cluster, fangs). **`drawQuadruped` (wolf/rat/
 >   boar/bear/frog/lizard via `qHead`/`qTail` helpers — distinct ears/snouts/tails/tusks/
 >   fangs) and `drawBlob` (slime dome+nucleus+drips vs floating glowing wisp) are now
->   feature-driven too** — verified in-browser. Remaining: `drawAvian`, `drawSerpent`, and
->   the humanoid rig (goblins/trolls/etc.) still accept `feat` but don't consume it yet.
+>   feature-driven too** — verified in-browser. **UPDATE: all six body-type families now
+>   consume `feat`** — `drawAvian` (bat/bird/moth/wasp wings + ears/beak/antennae + stinger),
+>   `drawSerpent` (snake/viper/cobra-hood/eel-fins/worm-segments/slug-eyestalks), and the
+>   **humanoid `drawHead`** (goblin ears+teeth, troll/ogre tusks+warts+brow, imp horns,
+>   shaman glowing eyes, bandit no-ears). All keyword-driven in `creatureFeatures`; verified
+>   in-browser. Mob visual sweep is COMPLETE. Follow-up (world-gen lane): footprint-aware
+>   monster pathfinding.
 > - **Label de-overlap:** `main.js updateLabels` now collects visible head labels and
 >   `declutterLabels()` nudges colliding ones upward (player + combat target keep
 >   priority) — fixes name/level tags piling up in melee. All tagged `[labels]`.

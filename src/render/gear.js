@@ -208,6 +208,21 @@ export function creatureFeatures(name = '') {
     f.eyestalks = true; f.tongue = false; f.pattern = 'none'; f.eyeColor = 0x141414;
   }
 
+  // --- humanoids (the gear rig — head features layer over the drawn face) ---
+  else if (/troll|ogre/.test(n)) {
+    f.ears = 'small'; f.tusks = true; f.warts = true; f.brow = true; f.eyeColor = 0xffd23a;
+  } else if (/imp|\bdemon\b|fiend|devil|hellion/.test(n)) {
+    f.horns = true; f.ears = 'none'; f.eyeColor = 0xff4a2a; f.hornColor = 0x2a2028;
+  } else if (/shaman|witch|warlock|mystic|sage|necro|seer|spirit.?caller/.test(n)) {
+    f.ears = 'goblin'; f.eyeGlow = 0x9fe8ff;
+  } else if (/berserk|brute|\brager\b|savage|marauder/.test(n)) {
+    f.ears = 'default'; f.brow = true; f.teeth = true; f.eyeColor = 0xff5a3a;
+  } else if (/goblin|\bgob\b|hobgob|snotling/.test(n)) {
+    f.ears = 'goblin'; f.teeth = true; f.eyeColor = 0xffe14d;
+  } else if (/bandit|thief|rogue|poacher|assassin|smuggler|cutthroat/.test(n)) {
+    f.ears = 'none'; f.eyeColor = 0xdcd0b0; // human outlaws — no goblin ears
+  }
+
   return f;
 }
 
