@@ -135,7 +135,24 @@ function detail(cx, cy, full) {
   }
 }
 
+// ---- seam scan: every border, worst first ---------------------------------
+function seamScan() {
+  const rows = [];
+  for (let cy = 0; cy < 10; cy++) for (let cx = 0; cx < 10; cx++) {
+    for (const d of [[1, 0], [0, 1]]) { // E and S only (each border counted once)
+      const s = seam(cx, cy, d);
+      if (s) rows.push({ cx, cy, ...s });
+    }
+  }
+  rows.sort((a, b) => b.unnatural - a.unnatural);
+  console.log('\nBORDER SEAM SCAN — worst first (unnatural = hard biome jumps w/o transition, per 100 edge tiles)\n');
+  for (const r of rows.slice(0, 24)) console.log(`  (c${r.cx},r${r.cy}) ${r.dir}: unnatural ${String(r.unnatural).padStart(3)}   flips ${r.flips}` + (r.unnatural > 6 ? '   <-- HARD SEAM' : ''));
+  const hard = rows.filter((r) => r.unnatural > 6).length;
+  console.log(`\n  ${hard} border(s) over the hard-seam threshold (>6). ${rows.length} borders scanned.\n`);
+}
+
 // ---- main ------------------------------------------------------------------
 const a = process.argv.slice(2).filter((s) => s !== 'full');
-if (a.length < 2) overview();
+if (a[0] === 'seams') seamScan();
+else if (a.length < 2) overview();
 else detail(Number(a[0]), Number(a[1]), process.argv.includes('full'));

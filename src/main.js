@@ -1162,10 +1162,16 @@ function findShortcutObj(id) {
 // if the object isn't placed (records the id so a later re-apply can catch it).
 function grantShortcut(id) {
   const o = findShortcutObj(id);
-  if (!o) { (Game.openedShortcuts || (Game.openedShortcuts = [])).includes(id) || Game.openedShortcuts.push(id); return; }
-  if (o.shortcut.opened) return;
+  if (!o) {
+    // Not placed yet (world-gen hasn't wired this shortcut's geometry) — record
+    // the flag so it opens once it exists, but report "not opened" for now.
+    (Game.openedShortcuts || (Game.openedShortcuts = [])).includes(id) || Game.openedShortcuts.push(id);
+    return false;
+  }
+  if (o.shortcut.opened) return false;
   applyShortcutOpen(o);
   Game.log(o.shortcut.doneMsg || `A new shortcut opens: ${o.shortcut.doneLabel || id}.`);
+  return true;
 }
 // [economy lane] Re-apply saved opened shortcuts after the world is (re)built on
 // login, so a bridge you opened stays open across sessions.

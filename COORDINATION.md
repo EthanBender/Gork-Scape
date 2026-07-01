@@ -331,6 +331,28 @@ Client-side until Phase 4; each phase keeps the player-freeze + world-continuity
   Rerouting would risk the legacy cook/smith branches; revisit with id migration.
 
 ## Change log
+- 2026-07-01 — Economy agent: **world-panel headers + a Bank-render bug fix +
+  found/worked-around a stale-module boot break.** UI: shop/bank/exchange/station
+  panels now get a framed **`worldHeader`** (icon + asset name + **✕ close** →
+  `closeWorldPanels`) so you can see what you're at and close by hand; the Stations
+  panel dropped its multi-station switcher (you're physically at ONE station).
+  `STATION_LABELS.fire_or_range = 'Cooking Fire'`.
+  - **BUG FIX (pre-existing, not mine):** `state.js` `Game.refresh()` called every
+    panel render **except `renderBank`** → the Bank panel never rendered (empty).
+    Added `u.renderBank && u.renderBank();`. Bank now shows.
+  - **⚠️ TEAM — stale JS-module cache was breaking boot for EVERYONE.** The live
+    preview was a black screen because the browser had a **cached old `quests.js`**
+    (pre-dating another chat's `questMarkers` export) while `main.js` imported it →
+    the whole module graph failed to load. `python -m http.server` sends no cache
+    headers, so browsers keep stale modules under our no-build live-edit workflow.
+    Fix: pointed my `goblin-empire-econ` (5189) launch config at the existing
+    `.claude/devserver_nocache.py` (sends `no-store`). **Recommend every lane
+    switch its port to that no-cache server** — otherwise you'll intermittently
+    boot a broken old+new module mix. Note: an already-stale browser needs a
+    cache-busted navigation (`/?fresh=<ts>`) once to drop the old modules.
+  - Verified live on :5189 (fresh boot): all 4 headers correct (🏪 General Store /
+    🏦 Bank / 🏛️ Grand Exchange / 🔨 Anvil), Bank renders, ✕ close → normal tab,
+    tabbar = 6, 0 console errors.
 - 2026-07-01 — Economy agent: **TINKERING — the third combat style ("sapper"), built
   exhaustively + verified live.** A whole new skill + weapon line + combat corner, NOT
   magic (design doc: `docs/TINKERING_DESIGN.md`). Self-contained like alchemy/travel

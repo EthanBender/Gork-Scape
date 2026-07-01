@@ -14,7 +14,7 @@
       { "type": "obtain", "target": "bones", "count": 1, "text": "Pick up the Bones it dropped", "say": "It dropped some bones. Walk over them to pick them up — that's how you loot." },
       { "type": "talk", "target": "elder", "name": "Goblin Elder", "text": "Return to the Goblin Elder", "say": "Now bring those bones back to me, back west in the settlement." }
     ],
-    "rewards": { "coins": 25, "xp": [ { "skill": "Attack", "amount": 70 } ], "items": [] }
+    "rewards": { "coins": 25, "xp": [ { "skill": "Attack", "amount": 70 } ], "items": [ { "id": "bronze_helm" } ] }
   },
   {
     "id": "first_pickaxe",
@@ -60,7 +60,7 @@
       { "type": "obtain", "target": "bronze_dagger", "count": 1, "text": "Obtain a Bronze Dagger", "say": "Buy one from my shop, smith one from a bronze bar at the anvil, or loot one." },
       { "type": "talk", "target": "shopkeeper_weapon_shop", "name": "Weapon Shop Keeper", "text": "Show the dagger to the Weapon Keeper", "say": "Bring it here and let me see it, back in the Forge Ward." }
     ],
-    "rewards": { "coins": 40, "xp": [ { "skill": "Attack", "amount": 120 } ], "items": [] }
+    "rewards": { "coins": 40, "xp": [ { "skill": "Attack", "amount": 120 } ], "items": [ { "id": "bronze_shield" } ] }
   },
   {
     "id": "cabbage_for_cowards",
@@ -91,7 +91,7 @@
       { "type": "kill", "target": "training_rat", "count": 5, "text": "Defeat 5 Training Rats", "say": "The yard's east of town — thin them out." },
       { "type": "talk", "target": "shopkeeper_general_store", "name": "General Store Keeper", "text": "Report back to the Store Keeper", "say": "Come tell me when the storehouse is clear." }
     ],
-    "rewards": { "coins": 60, "xp": [ { "skill": "Strength", "amount": 200 }, { "skill": "Hitpoints", "amount": 80 } ], "items": [] }
+    "rewards": { "coins": 60, "xp": [ { "skill": "Strength", "amount": 200 }, { "skill": "Hitpoints", "amount": 80 } ], "items": [ { "id": "bronze_body" } ], "bankSpace": 10 }
   },
 
   {
@@ -111,7 +111,7 @@
       { "type": "kill", "target": "bridge_bandit", "count": 1, "text": "Drive off the Bridge Bandit", "say": "There's the squatter. Send him packing." },
       { "type": "talk", "target": "shopkeeper_lumber_stall", "name": "Timber Row Foreman", "text": "Report back to the Foreman", "say": "Come tell me the bridge is ours again." }
     ],
-    "rewards": { "coins": 120, "xp": [ { "skill": "Crafting", "amount": 400 }, { "skill": "Woodcutting", "amount": 250 } ], "items": [] }
+    "rewards": { "coins": 120, "xp": [ { "skill": "Crafting", "amount": 400 }, { "skill": "Woodcutting", "amount": 250 } ], "items": [ { "id": "iron_helm" } ], "bankSpace": 10, "openShortcut": "west_bridge" }
   },
   {
     "id": "the_grubpit_problem",

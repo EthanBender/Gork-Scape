@@ -176,7 +176,7 @@ function completeQuest(id, speaker) {
   // grantBankSpace lives in state.js; opening a shortcut is a world action, so it
   // routes through a hook main.js installs (Game.grantShortcut) to avoid a cycle.
   if (r.bankSpace) grantBankSpace(r.bankSpace);
-  if (r.openShortcut && Game.grantShortcut) Game.grantShortcut(r.openShortcut);
+  const shortcutOpened = (r.openShortcut && Game.grantShortcut) ? Game.grantShortcut(r.openShortcut) : false;
   const lines = [];
   if (q.outro) lines.push(q.outro);
   const bits = [];
@@ -184,7 +184,7 @@ function completeQuest(id, speaker) {
   if (Array.isArray(r.xp)) for (const x of r.xp) bits.push(`${x.amount} ${x.skill} xp`);
   if (Array.isArray(r.items)) for (const it of r.items) bits.push(`${it.qty || 1}× ${it.id}`);
   if (r.bankSpace) bits.push(`+${r.bankSpace} bank slots`);
-  if (r.openShortcut) bits.push('a new shortcut opens');
+  if (shortcutOpened) bits.push('a new shortcut opens');
   if (bits.length) lines.push(`Reward: ${bits.join(', ')}.`);
   emitDialogue(speaker || q.giver?.name || q.name, lines);
   Game.log(`✅ Quest complete: ${q.name}!`);

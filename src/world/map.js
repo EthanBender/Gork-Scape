@@ -918,17 +918,71 @@ export function regionAt(x, y) {
 }
 export function objectsInView(world, x0, y0, x1, y1) { const out = []; const c0x = (x0 / CHUNK) | 0, c1x = (x1 / CHUNK) | 0, c0y = (y0 / CHUNK) | 0, c1y = (y1 / CHUNK) | 0; for (let cy = c0y; cy <= c1y; cy++) for (let cx = c0x; cx <= c1x; cx++) { const arr = world.objectsByChunk.get(cy + ',' + cx); if (arr) for (const o of arr) out.push(o); } return out; }
 
+// A* pathfinding over the tile grid. 8-directional (diagonals) with corner-cut
+// prevention, an octile heuristic (admissible for 8-dir, so paths are optimal),
+// and a node-expansion cap. If the goal can't be reached within the cap it
+// returns the best partial path toward it (callers re-path each tick to finish
+// long / far routes). Same signature as before — a drop-in for the old BFS.
+const SQRT2 = Math.SQRT2;
+const PATH_DIRS = [
+  [1, 0, 1], [-1, 0, 1], [0, 1, 1], [0, -1, 1],
+  [1, 1, SQRT2], [1, -1, SQRT2], [-1, 1, SQRT2], [-1, -1, SQRT2],
+];
 export function findPath(world, sx, sy, tx, ty, adjacent = false) {
-  const W = world.W, H = world.H;
-  const goal = adjacent ? (x, y) => Math.abs(x - tx) + Math.abs(y - ty) === 1 : (x, y) => x === tx && y === ty;
+  const W = world.W, H = world.H, col = world.collision;
+  const goal = adjacent
+    ? (x, y) => Math.abs(x - tx) + Math.abs(y - ty) === 1
+    : (x, y) => x === tx && y === ty;
   if (goal(sx, sy)) return [];
+  const walk = (x, y) => x >= 0 && y >= 0 && x < W && y < H && !col[y * W + x];
+  // octile distance: cheapest 8-dir cost ignoring obstacles (admissible)
+  const heur = (x, y) => {
+    const dx = Math.abs(x - tx), dy = Math.abs(y - ty);
+    return (dx + dy) + (SQRT2 - 2) * Math.min(dx, dy);
+  };
+
+  const MAX = 14000;
+  // binary min-heap of node keys, ordered by f = g + h (parallel arrays)
+  const hk = [], hf = [];
+  const push = (k, f) => {
+    hk.push(k); hf.push(f);
+    let i = hk.length - 1;
+    while (i > 0) { const p = (i - 1) >> 1; if (hf[p] <= hf[i]) break; [hf[p], hf[i]] = [hf[i], hf[p]]; [hk[p], hk[i]] = [hk[i], hk[p]]; i = p; }
+  };
+  const pop = () => {
+    const k = hk[0]; const lk = hk.pop(), lf = hf.pop();
+    if (hk.length) {
+      hk[0] = lk; hf[0] = lf; let i = 0;
+      for (;;) { let s = i; const l = 2 * i + 1, r = 2 * i + 2; if (l < hk.length && hf[l] < hf[s]) s = l; if (r < hk.length && hf[r] < hf[s]) s = r; if (s === i) break; [hf[s], hf[i]] = [hf[i], hf[s]]; [hk[s], hk[i]] = [hk[i], hk[s]]; i = s; }
+    }
+    return k;
+  };
+
   const startK = sy * W + sx;
-  const came = new Map([[startK, -1]]); const queue = [startK]; let head = 0; const MAX = 14000;
-  let best = startK, bestD = Math.abs(sx - tx) + Math.abs(sy - ty);
-  const N = [[1, 0], [-1, 0], [0, 1], [0, -1]];
-  while (head < queue.length && came.size < MAX) {
-    const cur = queue[head++]; const cx = cur % W, cy = (cur - cx) / W;
-    for (const [dx, dy] of N) { const nx = cx + dx, ny = cy + dy; if (nx < 0 || ny < 0 || nx >= W || ny >= H) continue; const nk = ny * W + nx; if (came.has(nk) || world.collision[nk]) continue; came.set(nk, cur); if (goal(nx, ny)) return rebuild(came, nk, W); const d = Math.abs(nx - tx) + Math.abs(ny - ty); if (d < bestD) { bestD = d; best = nk; } queue.push(nk); }
+  const gScore = new Map([[startK, 0]]);
+  const came = new Map([[startK, -1]]);
+  push(startK, heur(sx, sy));
+  let best = startK, bestH = heur(sx, sy), expanded = 0;
+
+  while (hk.length && expanded < MAX) {
+    const cur = pop();
+    const cx = cur % W, cy = (cur - cx) / W;
+    if (goal(cx, cy)) return rebuild(came, cur, W);
+    expanded++;
+    const cg = gScore.get(cur);
+    for (const [dx, dy, cost] of PATH_DIRS) {
+      const nx = cx + dx, ny = cy + dy;
+      if (!walk(nx, ny)) continue;
+      // no corner cutting: a diagonal step needs both shared orthogonals open
+      if (dx && dy && (!walk(cx + dx, cy) || !walk(cx, cy + dy))) continue;
+      const nk = ny * W + nx;
+      const ng = cg + cost;
+      if (gScore.has(nk) && ng >= gScore.get(nk)) continue;
+      gScore.set(nk, ng); came.set(nk, cur);
+      const nh = heur(nx, ny);
+      if (nh < bestH) { bestH = nh; best = nk; }
+      push(nk, ng + nh);
+    }
   }
   return best !== startK ? rebuild(came, best, W) : [];
 }
