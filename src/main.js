@@ -393,6 +393,8 @@ function create() {
   if (runBtn) runBtn.onclick = () => { toggleRun(); };
   updateRunHud(true);
 
+  initTinkerHud(); // [economy lane] Tinker's Workbench HUD button + overlay
+
   this.input.mouse.disableContextMenu();
   this.input.on('pointerdown', onPointerDown);
   this.input.on('wheel', onWheel);

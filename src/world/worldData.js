@@ -95,21 +95,6 @@ export const ROADS = [
   { id: 'lake_to_bog_waterline', type: 'water_or_boardwalk', w: 2, pts: [[735, 560], [705, 640], [685, 710], [725, 775]] },
 ];
 
-// Interactive shortcuts: a blocked crossing (rotted bridge, locked gate) that the
-// player opens by spending materials, flipping collision so a new route appears.
-// `anchor` is the land tile you interact from; `across`/`maxSpan` scan for the
-// water/wall gap to lay `BRIDGE` (or clear) at open-time (see placeShortcuts in
-// map.js). Coords are validated against the *generated* terrain, not the art pack.
-export const SHORTCUTS = [
-  {
-    id: 'west_bridge', kind: 'bridge', label: 'Rotted Bridge', doneLabel: 'West Bridge',
-    color: 0x7a5a3a, anchor: [320, 466], across: [1, 0], maxSpan: 12,
-    cost: [['oak_plank', 2], ['iron_bar', 1]],
-    hint: 'The old bridge has rotted away. With 2 oak planks and an iron bar you could rebuild it.',
-    doneMsg: 'You rebuild the West Bridge — the willow-river crossing is open!',
-  },
-];
-
 // Pack mob names -> base enemy stat block in ENEMY_TYPES (display name is the
 // prettified pack name, so region flavour is preserved).
 export const MOB_MAP = {
@@ -236,8 +221,19 @@ export const EXTRA_LOOT = {
 };
 
 // --- Gates / shortcuts / quests (data scaffolding; not all wired yet) ---
+// Interactive crossings: the player spends materials to open a blocked route
+// (rotted bridge, locked gate), flipping collision so a shortcut appears. A fully
+// wired entry carries: kind, anchor (land tile you act from), across (dir to scan
+// for the gap), maxSpan, and cost [[itemId, qty]]. `at`/`requires`/`connects` are
+// the original human-facing design notes. Entries without `anchor` are stubs wired
+// later — placeShortcuts (map.js) skips them. Coords are tuned to the *generated*
+// terrain, not the art pack.
 export const SHORTCUTS = [
-  { id: 'west_bridge', name: 'West Bridge', connects: ['settlement', 'willow'], at: [360, 575], requires: '10 logs, 5 oak logs, bronze nails' },
+  { id: 'west_bridge', name: 'West Bridge', connects: ['settlement', 'willow'], kind: 'bridge',
+    label: 'Rotted Bridge', doneLabel: 'West Bridge', color: 0x7a5a3a,
+    anchor: [320, 466], across: [1, 0], maxSpan: 12, cost: [['oak_plank', 2], ['iron_bar', 1]],
+    hint: 'The old bridge has rotted away. With 2 oak planks and an iron bar you could rebuild it.',
+    doneMsg: 'You rebuild the West Bridge — the willow-river crossing is open!' },
   { id: 'mine_cart', name: 'Mine Cart', connects: ['minehills', 'settlement'], at: [665, 300], requires: 'iron bars, planks, engineer quest' },
   { id: 'grublake_boat', name: 'Grublake Boat', connects: ['grublake', 'oakwoods'], at: [685, 525], requires: 'willow logs, rope, coins' },
   { id: 'swamp_path', name: 'Swamp Shrine Path', connects: ['farmlands', 'bog', 'mushroom'], at: [735, 745], requires: 'deadwood, swamp herbs, combat' },

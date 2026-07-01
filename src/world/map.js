@@ -772,6 +772,7 @@ export function generateWorld(seed = DEFAULT_SEED) {
   // near shore. Skips quietly if the generated terrain has no gap there.
   (function placeShortcuts() {
     for (const s of SHORTCUTS) {
+      if (!s.anchor || !s.across || !s.cost) continue; // design stub, not yet wired
       const [ax, ay] = s.anchor, [dx, dy] = s.across;
       let x = ax, y = ay, guard = 0;
       while (guard++ < 40 && inB(x, y) && getT(x, y) !== T.WATER) { x += dx; y += dy; }
