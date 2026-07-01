@@ -1830,6 +1830,7 @@ function drawObjects() {
     }
     if (o.transport) { drawTransport(g, cx, cy, o.kind); continue; } // [economy lane] portal/cart art
     if (o.altar) { drawAltar(g, cx, cy); continue; } // [economy lane] altar art
+    if (o.type === 'structure') { drawProp(g, cx, cy, o); continue; } // [char-render] recognisable prop instead of a flat square
     g.fillStyle(o.depleted ? 0x555555 : o.color, 1);
     g.fillRect(cx + 4, cy + 4, TILE_SIZE - 8, TILE_SIZE - 8);
     if (o.label === 'Range' && !o.depleted) { g.fillStyle(0xffd24d, 0.8); g.fillCircle(cx + 16, cy + 16, 5); }

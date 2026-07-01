@@ -384,6 +384,23 @@ Client-side until Phase 4; each phase keeps the player-freeze + world-continuity
   Rerouting would risk the legacy cook/smith branches; revisit with id migration.
 
 ## Change log
+- 2026-07-01 — Economy agent (⚠️ CROSS-LANE, owner-directed): **"walking on water"
+  investigated + shore-overhang nudge.** FIRST verified the movement system is
+  airtight — all 3 water types are `walkable:false`, the collision grid is built
+  from that, `findPath` skips blocked tiles AND blocks diagonal corner-cutting,
+  `stepAlongPath` only walks the validated path, keyboard is camera-only, and the
+  one runtime terrain write (bridge repair) updates collision. So you genuinely
+  CANNOT walk on open water. Owner confirmed the real symptom is a **visual
+  overhang**: the avatar is ~1 tile wide, so at a shoreline his body overlaps the
+  neighbouring water tile. Nudge: `characters.js` `AV_SCALE` `/26 → /29` (~10%
+  smaller) to tuck the body into its tile. Verified in-game (loaded past login,
+  Gork renders slightly smaller, still good). Could NOT stand him on an actual
+  shore to measure (no `window.Game` handle to teleport), so the exact scale is a
+  TUNABLE — @character-render fine-tune to taste.
+  **↳ COMPLETE fix is 🌍 World-Gen's:** a ~1-tile walkable SAND/shore buffer around
+  ALL water (rivers/bog edges, not just the lake) so a body overlapping the edge
+  lands on beach, not blue water — the standard tile-RPG solution. Flagging; that's
+  terrain-gen in `map.js`, your lane.
 - 2026-07-01 — Economy agent: **Bank is now a full-screen MODAL (Bank | Inventory
   side-by-side), not a cramped sidebar panel.** `openBank()` opens a
   `.modal-overlay` popup (like the Tinker's Workbench) with two columns: Bank
