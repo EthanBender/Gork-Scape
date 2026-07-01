@@ -15,6 +15,17 @@ const CHAT_MAX = 80;     // ring buffer of recent shared-chat lines
 const num = (v) => (typeof v === 'number' && isFinite(v) ? v : 0);
 const str = (v, max) => String(v == null ? '' : v).slice(0, max);
 
+// Keep only the small, known gear-hint slots (client-computed render hints for a
+// player's equipment), so a client can't stuff arbitrary/huge data through here.
+function sanitizeGear(g) {
+  if (!g || typeof g !== 'object') return null;
+  const out = {};
+  for (const slot of ['weapon', 'body', 'legs', 'head', 'shield', 'cape']) {
+    if (g[slot] && typeof g[slot] === 'object') out[slot] = g[slot];
+  }
+  return out;
+}
+
 export class Presence {
   constructor() {
     this.players = new Map(); // username -> { name, x, y, dir, combat, skin, feats, lastSeen }
@@ -29,10 +40,8 @@ export class Presence {
     this.players.set(username, {
       name: username,
       x: num(data.x), y: num(data.y),
-      dir: str(data.dir, 8),
       combat: num(data.combat),
-      skin: num(data.skin),        // appearance seed hint (optional)
-      feats: str(data.feats, 40),  // appearance feature tag (optional)
+      gear: sanitizeGear(data.gear), // render hints for the player's equipment
       lastSeen: now,
     });
     this._sweep(now);
@@ -40,7 +49,7 @@ export class Presence {
     const others = [];
     for (const [name, p] of this.players) {
       if (name === username) continue;
-      others.push({ name: p.name, x: p.x, y: p.y, dir: p.dir, combat: p.combat, skin: p.skin, feats: p.feats });
+      others.push({ name: p.name, x: p.x, y: p.y, combat: p.combat, gear: p.gear });
     }
     const chat = this.chat.filter((m) => m.id > (sinceChat || 0));
     return { players: others, chat, chatCursor: this.chatSeq, online: this.players.size };

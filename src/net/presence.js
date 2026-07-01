@@ -15,6 +15,7 @@
 
 import { Game } from '../engine/state.js';
 import { NPC } from '../world/entities.js';
+import { gearHints } from '../render/gear.js';
 import { api } from './config.js';
 import * as authClient from './authClient.js';
 
@@ -51,6 +52,17 @@ async function post(path, body) {
 
 // Create a render-only NPC for a remote player. type:'player' keeps it out of the
 // AI/aggro/targeting paths (see the [presence lane] guards in main.js).
+// Force the render caches avatarStateFor() would otherwise derive from the name,
+// so a remote player renders as a humanoid goblin wearing THEIR real equipment
+// (the gear hints they sent) instead of a name-guessed default loadout.
+function applyAppearance(npc, pl) {
+  npc._body = { type: 'humanoid', size: 1 };
+  npc._features = null;
+  npc._variant = null;
+  if (npc._tOff == null) npc._tOff = 0;
+  npc._gearCache = pl.gear || npc._gearCache || gearHints({});
+}
+
 function spawnRemote(pl) {
   const npc = new NPC({
     id: 'net_' + pl.name, name: pl.name, type: 'player',
@@ -62,6 +74,7 @@ function spawnRemote(pl) {
   npc.remote = true;
   npc.px = tilePx(pl.x);
   npc.py = tilePx(pl.y);
+  applyAppearance(npc, pl);
   Game.npcs.push(npc);
   remotes.set(pl.name, npc);
   return npc;
@@ -81,6 +94,7 @@ function reconcile(players) {
       npc.tileX = pl.x;
       npc.tileY = pl.y;
       if (pl.combat) npc.combatLevel = pl.combat;
+      if (pl.gear) npc._gearCache = pl.gear; // keep gear live as they swap equipment
     }
   }
   for (const [name, npc] of remotes) {
@@ -104,6 +118,7 @@ async function beat() {
   const data = await post('/api/presence', {
     token, x: p.tileX, y: p.tileY,
     combat: Game.myCombat || 0,
+    gear: gearHints(Game.equipment), // render hints so others see my real weapon/armour
     sinceChat: chatCursor,
   });
   if (!data) return;

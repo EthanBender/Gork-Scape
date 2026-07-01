@@ -34,7 +34,12 @@
     -webkit-font-smoothing: antialiased; -webkit-text-size-adjust: 100%;
     overscroll-behavior: none; }
   #app { display: flex; flex-direction: column; height: 100vh; height: 100dvh; }
-  #game-canvas { touch-action: none; } /* game taps shouldn't scroll/zoom the page */
+  /* touch-action must be on the ACTUAL <canvas> Phaser injects, not just the wrapper —
+     it doesn't inherit. Without this the canvas is touch-action:auto, so iOS reads taps
+     as scroll/pan gestures (especially after scrolling the panel below it in the stacked
+     mobile layout) and the player stops responding to taps. none = every touch is the game's. */
+  #game-canvas, #game-canvas canvas { touch-action: none; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+  html, body { overscroll-behavior: none; } /* no rubber-band scroll stealing touches on iPad */
 
   /* Themed scrollbars */
   * { scrollbar-width: thin; scrollbar-color: var(--border) var(--panel-lo); }

@@ -35,6 +35,7 @@ import { styleOfWeapon, PROTECT_FACTOR } from './engine/prayer.js';
 // generated item catalogue into ITEMS and exposes the gadget combat effects.
 import { isTinkerWeapon, effectiveGadgetEffect } from './systems/tinkering.js';
 import { initTinkerHud, openWorkbench } from './systems/tinkeringUI.js';
+import { initWiki } from './ui/wiki.js'; // [economy lane] item Codex/Wiki button + overlay
 import { gather as gatherNode, rollGatherByproduct } from './systems/gathering.js'; // [economy lane] data-driven world-node gathering + byproducts
 import { rollSkillSuccess } from './engine/skills.js';
 import { emptyBonuses, ITEMS } from './items/equipment.js';
@@ -481,23 +482,10 @@ function create() {
   updateHomeHud();
 
   initTinkerHud(); // [economy lane] readies the Tinker's Workbench popup CSS (opened from the world node)
+  initWiki(); // [economy lane] the item Codex/Wiki button
 
   this.input.mouse.disableContextMenu();
-  // iPad/touch: give Phaser extra pointer slots. With the default single pointer, a
-  // touch that ENDS over the HTML side-panel never delivers pointerup to the canvas,
-  // so that pointer stays stuck "down" and every later tap on the world is read as the
-  // same held pointer — the player stops moving. Extra pointers + a global release keep
-  // touch input from wedging after the player uses the inventory or side panel.
-  this.input.addPointer(3);
-  const releaseStuckPointers = () => {
-    const mgr = this.input && this.input.manager; if (!mgr || !mgr.pointers) return;
-    // A finger just lifted somewhere on the page, so NO touch pointer should still be
-    // held. Fully release each one — clearing `active` is the key bit, since that's the
-    // flag Phaser checks to hand a fresh slot to the next touch. Mouse pointer untouched.
-    for (const pt of mgr.pointers) { if (pt && pt.pointerType !== 'mouse') { pt.isDown = false; pt.primaryDown = false; pt.active = false; pt.dirty = true; } }
-  };
-  for (const ev of ['touchend', 'touchcancel', 'pointerup', 'pointercancel']) window.addEventListener(ev, releaseStuckPointers, false);
-  this.events.once('shutdown', () => { for (const ev of ['touchend', 'touchcancel', 'pointerup', 'pointercancel']) window.removeEventListener(ev, releaseStuckPointers, false); });
+  this.input.addPointer(3); // iPad multitouch: allow a few simultaneous touch pointers
   this.input.on('pointerdown', onPointerDown);
   this.input.on('pointermove', onPointerMove);
   this.input.on('wheel', onWheel);

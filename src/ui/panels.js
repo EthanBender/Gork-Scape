@@ -16,6 +16,7 @@ import { SKILL_NAMES, levelProgress } from '../engine/skills.js';
 import { EQUIP_SLOTS, STAT_KEYS, itemView } from '../items/equipment.js';
 import { splitList, GameData } from '../data/gameData.js';
 import { itemIcon, itemIconHTML } from '../data/itemIcons.js';
+import { openWiki } from './wiki.js'; // [economy lane] item Codex lookup
 import { recipesForStation, craft, stationTypes } from '../systems/crafting.js';
 import { rollMonsterDrops } from '../systems/drops.js';
 import { gather, resolveNode } from '../systems/gathering.js';
@@ -1153,6 +1154,7 @@ function onInvContext(e, i) {
     }]);
   }
   opts.push(['Examine', () => Game.log(examineText(item.id, item.name))]);
+  opts.push(['Look up (Wiki)', () => { hideTip(); openWiki(item.id); }]);
   opts.push(['Drop', () => { hideTip(); const it = Game.inventory[i]; if (!it) return; removeAt(i); spawnGroundItem(it.id, it.qty || 1, Game.player.tileX, Game.player.tileY, Game.ticker ? Game.ticker.count : 0); Game.log(`You drop the ${it.name}.`); Game.refresh(); }]);
   showContextMenu(e.clientX, e.clientY, opts);
 }
