@@ -478,7 +478,7 @@ function create() {
   Game.location = regionAt(Game.player.tileX, Game.player.tileY);
   if (!Game.pendingSave) {
     // First-time intro — a returning player already got a "welcome back".
-    Game.log('Welcome to the Goblin Empire, young Gork!');
+    Game.log(`Welcome to the Goblin Empire, young ${Game.account || 'Gork'}!`);
     Game.log('You stand in the goblin settlement at the heart of the world.');
     Game.log('Explore outward — resources get richer and more dangerous the farther you roam.');
   }
@@ -2042,7 +2042,7 @@ function updateLabels() {
   // DE-OVERLAP them: in a tight melee scrum the name/level tags would otherwise
   // pile on top of each other. We nudge colliding labels upward so they stack
   // legibly, letting the player and the current combat target keep their spot.
-  playerLabel.setText(`Gork (Lv ${playerCombatLevel()})`);
+  playerLabel.setText(`${Game.account || 'Gork'} (Lv ${playerCombatLevel()})`);
   const labelSet = [{
     t: playerLabel, x: p.px,
     y: p.py + AV_FEET - AV_TOP - 4 - tileLiftXY(p.tileX, p.tileY),

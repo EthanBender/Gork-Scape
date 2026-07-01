@@ -330,7 +330,7 @@ function worldHeader(v, icon, title) {
 // ---------- Top bar ----------
 export function renderTopBar() {
   const set = (id, v) => { const e = document.getElementById(id); if (e) e.textContent = v; };
-  set('tb-name', 'Gork');
+  set('tb-name', Game.account || 'Gork');
   set('tb-combat', 'Combat Lv ' + playerCombatLevel());
   set('tb-location', Game.location);
   const gpEl = document.getElementById('tb-gp');

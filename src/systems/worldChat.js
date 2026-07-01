@@ -140,7 +140,7 @@ async function llmReply(playerText) {
 export function playerSay(text) {
   text = (text || '').trim().slice(0, 120);
   if (!text || !Game.ui.postChat) return;
-  Game.ui.postChat({ channel: 'public', name: 'Gork', text, self: true });
+  Game.ui.postChat({ channel: 'public', name: Game.account || 'Gork', text, self: true });
   const replies = chance(0.65) ? (chance(0.3) ? 2 : 1) : 0;
   for (let i = 0; i < replies; i++) {
     setTimeout(async () => {
