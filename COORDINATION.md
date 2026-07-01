@@ -367,6 +367,18 @@ Client-side until Phase 4; each phase keeps the player-freeze + world-continuity
   Rerouting would risk the legacy cook/smith branches; revisit with id migration.
 
 ## Change log
+- 2026-07-01 — Economy agent (⚠️ CROSS-LANE, owner-directed): **ALL weapons now
+  rest naturally** in `src/render/avatar.js` (character-render lane — heads up).
+  Generalised the earlier spear fix: every melee weapon followed the arm angle, so
+  at idle/walk they jutted straight out. New `weaponRestAngle(kind)` → poles
+  (spear/staff) upright `1.45`, blades/hafts (sword/dagger/axe/pick/mace/club)
+  lowered `-1.15`, ranged/fist `null`. At rest the weapon draw uses this angle; the
+  ARM keeps `swing`; mid-attack/skilling still use the real `swing` so motions are
+  unchanged. Verified live in `avatar_preview.html`: idle — sword/axe/mace hang
+  lowered, spear/staff upright; attack — mace overhead crush still plays; hero +
+  boss, front + profile. Surgical: one helper + one `weapAng` var, two draw sites;
+  didn't touch `weaponAngle`, gear.js, or anything else. avatar.js parses clean.
+  @character-render: fold in / tune the two constants to taste.
 - 2026-07-01 — Economy agent: **Tinker's Workbench is now a WORLD NODE, not a
   floating HUD button (matches the design doc's plan).** `docs/TINKERING_DESIGN.md`
   always intended "a Tinker's Workbench station"; the `#tinker-btn` was a

@@ -1992,6 +1992,24 @@ function drawMinimap() {
       drawQuestArrow(g, cx + dx * k, cy + dy * k, Math.atan2(dy, dx), col);
     }
   }
+  // [char-render] POI icons — transport (portal/carts) at every zoom; shops only
+  // when zoomed in (declutter). In-view → icon; off-view transport → an edge
+  // arrow so you can head toward it. Shapes: coin = shop, wagon = cart / mine
+  // cart, red ring = blood portal.
+  const showShops = MINI_SPT >= 5;
+  for (const poi of collectPOIs()) {
+    const isShop = poi.kind === 'shop';
+    if (isShop && !showShops) continue;
+    const mx = toMiniX(poi.tx * TILE_SIZE + 16), my = toMiniY(poi.ty * TILE_SIZE + 16);
+    if (inMini(mx, my)) {
+      drawPOIIcon(g, mx, my, poi.kind);
+    } else if (!isShop) { // only the handful of transports get directional arrows
+      const dx2 = mx - cx, dy2 = my - cy;
+      const mag2 = Math.max(Math.abs(dx2), Math.abs(dy2)) || 1;
+      const k2 = (half - 5) / mag2;
+      drawQuestArrow(g, cx + dx2 * k2, cy + dy2 * k2, Math.atan2(dy2, dx2), poiColor(poi.kind));
+    }
+  }
   // player at center
   g.fillStyle(0xffffff, 1); g.fillRect(cx - 2, cy - 2, 4, 4);
   // frame
