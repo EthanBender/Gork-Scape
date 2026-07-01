@@ -1220,14 +1220,23 @@ function playerAttack(npc, count) {
   if (!npc.target) npc.target = Game.player;
   const defender = { levels: npc.levels, bonuses: npc.bonuses };
 
-  // Special attack: armed + weapon has a spec + enough energy → fire it instead
-  // of a normal swing (may be multi-hit). Otherwise a single ordinary attack.
+  // Effect resolution priority: an armed weapon SPECIAL (boss weapons, costs
+  // energy) > a tinker gadget's always-on EFFECT (pierce/rapid hits, free) >
+  // an ordinary single attack.
+  const weapon = Game.equipment.weapon;
   const spec = weaponSpec();
+  const gadget = isTinkerWeapon(weapon) ? tinkerEffect(weapon) : null;
   let results;
+  let areaEffect = null;
   if (Game.specArmed && spec && Game.specEnergy >= spec.cost) {
     consumeSpec(spec.cost);
     results = resolveSpecial(playerProfile(), defender, spec);
+    areaEffect = spec;
     Game.log(`You unleash ${spec.name}!`);
+  } else if (gadget) {
+    if (Game.specArmed) Game.specArmed = false;
+    results = resolveSpecial(playerProfile(), defender, gadget); // pierce / rapid hits
+    areaEffect = gadget;
   } else {
     if (Game.specArmed) Game.specArmed = false; // armed but can't fire → disarm
     results = [resolveAttack(playerProfile(), defender)];
@@ -1245,6 +1254,10 @@ function playerAttack(npc, count) {
   } else {
     Game.log(`You swing at the ${npc.name}... but miss.`);
   }
+
+  // Gadget area effects (splash to neighbours / chain to a nearby foe / burn DoT
+  // / snare) apply on a landed hit.
+  if (areaEffect && total > 0) applyAreaEffects(npc, areaEffect, total, count);
 
   if (npc.hp <= 0) {
     npc.dead = true; npc.respawnAt = count + 16; npc.target = null;
