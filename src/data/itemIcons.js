@@ -131,10 +131,83 @@ export function itemIcon(idOrItem) {
 }
 
 // Inline HTML: a crafted <svg> when we have one, else an emoji <span>.
+// --- Material tinting -------------------------------------------------------
+// The ~60 shape keys are shared by hundreds of items; tinting the shape by the
+// item's MATERIAL/tier is what actually tells (e.g.) a copper bar from a gold
+// one apart. Semantic colours for known materials; a stable name-hash hue for
+// the rest so no two items in a "varied" group look identical.
+// [m, md] = main + shadow colour. Order matters: compound names before base
+// (black_iron before iron, ironbark before iron, dense_oak/deadwood before oak).
+const MAT = [
+  ['black_iron', '#3a3a44', '#20202a'], ['deep_metal', '#4a5a7a', '#2f3a55'],
+  ['meteor', '#7a5a9a', '#4f3a68'], ['dragon', '#b03030', '#7a1e1e'],
+  ['adamant', '#4f8f6a', '#2f6046'], ['runite', '#4aa0b8', '#2f7088'],
+  ['mithril', '#5a7ab0', '#3a5588'], ['bronze', '#a9713f', '#734a26'],
+  ['copper', '#b87333', '#7a4a1f'], ['tin', '#b9bec6', '#8a8f97'],
+  ['steel', '#b7c0cc', '#7b8894'], ['silver', '#cdd6e0', '#97a0ac'],
+  ['gold', '#e8c65a', '#a8842a'], ['iron', '#6a6a72', '#44444c'],
+  // gems
+  ['ruby', '#c0392b', '#7a2018'], ['sapphire', '#2e5cb8', '#1c3a78'],
+  ['emerald', '#2e8b57', '#1c5a38'], ['diamond', '#d6ecf2', '#9fc0cc'],
+  ['opal', '#a7dbe3', '#6aa0a8'], ['jade', '#4a9a6a', '#2f6044'],
+  ['amber', '#d89030', '#9a5f18'], ['pearl', '#eae0d0', '#b8ad98'],
+  ['topaz', '#e0b040', '#a07820'], ['amethyst', '#9a5ab0', '#653a78'],
+  ['agate', '#b06a4a', '#7a442a'],
+  // woods (specific before oak/base)
+  ['moonwillow', '#8aa8c0', '#5a7488'], ['elder_rotwood', '#5a4a3a', '#3a3028'],
+  ['rotwood', '#5a4a3a', '#3a3028'], ['ironbark', '#5a5548', '#3a3830'],
+  ['blackroot', '#3a3a30', '#22221c'], ['fungal', '#7a6a9a', '#4f4568'],
+  ['dense_oak', '#7a5a28', '#4f3a18'], ['deadwood', '#6a5a4a', '#45392e'],
+  ['willow', '#8fae5a', '#5f7a38'], ['maple', '#b0663a', '#7a4222'],
+  ['yew', '#63764a', '#42502e'], ['oak', '#8a6a2f', '#5a4420'],
+  ['normal_log', '#a9843f', '#6f5426'], ['normal_plank', '#c9975a', '#9a6a2e'],
+  // leather / cloth
+  ['dragonhide', '#4a7a4a', '#2f5030'], ['leather', '#8a5a34', '#5f3d1f'],
+  ['hide', '#8a5a34', '#5f3d1f'], ['wool', '#d8cbb0', '#a89b80'],
+];
+const MAT_MAP = MAT.map(([kw, m, md]) => [kw.replace(/_/g, ' '), m, md, kw]);
+
+// Which palette colours in each shape are the "material" (→ m) vs shadow (→ md).
+const TINT = {
+  sword: [[P.steel], [P.steelD]], dagger: [[P.steel], [P.steelD]], axe: [[P.steel], [P.steelD]],
+  pickaxe: [[P.steel], [P.steelD]], spear: [[P.steel], [P.steelD]], mace: [[P.steel, P.steelD], []],
+  shield: [[P.steel], [P.steelD]], helm: [[P.steel], [P.steelD]], body: [[P.steel], [P.steelD]],
+  legs: [[P.steel], [P.steelD]], arrow: [[P.steel], [P.steelD]], bar: [[P.steel], [P.steelD]],
+  log: [[P.wood], [P.woodD]], plank: [['#c9975a'], ['#b9863f']], ore: [[P.gold], []],
+  gem: [[P.glass, '#a8ecff'], ['#3aa0c8']], fish: [['#6fa8c8'], ['#3f7590']],
+  herb: [[P.leaf], [P.greenD]], potion: [[P.red], []], boots: [[P.leather], [P.woodD]],
+  gloves: [[P.leather], [P.woodD]], cape: [['#7a3b5a'], ['#4a2338']],
+};
+// Keys that should get a hash-hue when no known material matches (naturally
+// multi-coloured item groups). Metal/wood shapes stay their default otherwise.
+const HASH_KEYS = new Set(['gem', 'fish', 'herb', 'potion', 'cape', 'amulet', 'ring', 'charm']);
+
+function hueFromString(str) {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) % 360;
+  return h;
+}
+function materialTint(hay, key) {
+  for (const [kw, m, md] of MAT_MAP) if (hay.includes(kw)) return { m, md };
+  if (HASH_KEYS.has(key)) { const h = hueFromString(hay); return { m: `hsl(${h},55%,62%)`, md: `hsl(${h},50%,40%)` }; }
+  return null;
+}
+function tintInner(inner, key, tint) {
+  const spec = TINT[key];
+  if (!spec || !tint) return inner;
+  for (const hex of spec[0]) inner = inner.split(hex).join(tint.m);
+  for (const hex of spec[1]) inner = inner.split(hex).join(tint.md);
+  return inner;
+}
+
 export function itemIconSVG(idOrItem) {
+  const id = typeof idOrItem === 'string' ? idOrItem : (idOrItem && idOrItem.id) || '';
   const key = iconKey(idOrItem);
-  const inner = ICON_SVG[key];
+  let inner = ICON_SVG[key];
   if (inner) {
+    const meta = GameData.item(id);
+    const name = (typeof idOrItem === 'object' && idOrItem && idOrItem.name) || (meta && meta.display_name) || id;
+    inner = tintInner(inner, key, materialTint(`${id} ${name}`.toLowerCase(), key));
     return `<svg class="item-svg" viewBox="0 0 24 24" width="100%" height="100%" `
       + `xmlns="http://www.w3.org/2000/svg">${inner}</svg>`;
   }

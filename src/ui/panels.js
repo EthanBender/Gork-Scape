@@ -29,7 +29,7 @@ import { startWorldChat, playerSay, cheerLevel } from '../systems/worldChat.js';
 import { shopStock, buyFromShop, sellToShop } from '../systems/shops.js';
 import { lightFireAt } from '../systems/firemaking.js'; // [economy lane] Firemaking
 import { renderAlchemy } from '../systems/alchemy.js'; // [economy lane] Alchemy skill
-import { questBoard, startQuest } from '../systems/quests.js'; // [economy lane] quest journal
+import { questBoard, startQuest, trackQuest, trackedQuestId } from '../systems/quests.js'; // [economy lane] quest journal
 
 // Tiny inline SVG sparkline of recent trade prices for the GE price chart.
 function sparkline(prices, w = 160, h = 34) {
@@ -466,9 +466,12 @@ function rewardSummary(r) {
 }
 function questCard(q, opts = {}) {
   const card = document.createElement('div');
+  const tracked = trackedQuestId() === q.id;
+  const trackable = q.status === 'active' || q.status === 'available';
   card.className = 'quest-card'
     + (q.status === 'complete' ? ' quest-done' : '')
-    + (q.status === 'active' ? ' quest-active' : '');
+    + (q.status === 'active' ? ' quest-active' : '')
+    + (tracked ? ' quest-tracked' : '');
   const giverName = q.giver && q.giver.name ? q.giver.name : '';
 
   // Steps: past = done, the one you're on = current (with a live counter/bar),
@@ -494,6 +497,12 @@ function questCard(q, opts = {}) {
   const startHint = (q.status === 'available' && giverName)
     ? `<div class="quest-starthint">Speak to <b>${tipEsc(giverName)}</b> to begin — follow the ✦ marker on your map.</div>` : '';
 
+  // Track toggle — only the tracked quest shows a marker on the map/minimap, so
+  // the world doesn't clutter with every quest at once.
+  const trackBtn = trackable
+    ? `<button class="quest-track ${tracked ? 'on' : ''}" title="${tracked ? 'Stop tracking' : 'Track on the map'}">${tracked ? '📍 Tracked' : '📍 Track'}</button>`
+    : '';
+
   card.innerHTML = `
     <div class="quest-head">
       <span class="quest-name">${tipEsc(q.name)}</span>
@@ -504,7 +513,12 @@ function questCard(q, opts = {}) {
     ${dir}
     ${stepsHtml}
     ${startHint}
-    ${q.rewards ? `<div class="quest-reward">Reward: ${tipEsc(rewardSummary(q.rewards))}</div>` : ''}`;
+    ${q.rewards ? `<div class="quest-reward">Reward: ${tipEsc(rewardSummary(q.rewards))}</div>` : ''}
+    ${trackBtn}`;
+  if (trackable) {
+    const btn = card.querySelector('.quest-track');
+    if (btn) btn.onclick = () => { trackQuest(q.id); renderQuests(); };
+  }
   return card;
 }
 export function renderQuests() {

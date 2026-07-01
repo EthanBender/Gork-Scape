@@ -103,6 +103,7 @@ export function initQuests() {
   recomputeUnlocks(); // re-derive feature unlocks from completed quests (post-load)
   refreshAvailability();
   evaluate(true);
+  autoTrack(); // pick a sensible tracked quest for the map (first active/available)
 }
 
 export function refreshAvailability() {
@@ -140,6 +141,7 @@ export function startQuest(id) {
   st.status = 'active';
   st.step = 0;
   st.prog = 0;
+  Game.trackedQuest = id; // track the quest you just started (its marker guides you)
   Game.log(`Quest started: ${q.name}.`);
   const intro = q.intro ? [q.intro] : [];
   const step0 = q.steps[0];
@@ -254,6 +256,7 @@ function completeQuest(id, speaker) {
   Game.log(`✅ Quest complete: ${q.name}!`);
   if (Game.ui.onQuestComplete) Game.ui.onQuestComplete(q);
   refreshAvailability();
+  autoTrack(); // the tracked quest just finished → follow the next one
   syncUI();
 }
 
@@ -438,6 +441,7 @@ export function serializeQuests() {
   for (const [id, st] of Object.entries(Game.questState)) {
     out[id] = { status: st.status, step: st.step || 0, prog: st.prog || 0 };
   }
+  if (Game.trackedQuest) out.__tracked = Game.trackedQuest; // which quest the map follows
   return out;
 }
 
@@ -445,8 +449,9 @@ export function applyQuests(data) {
   if (!Game.questState) Game.questState = {};
   for (const q of QUESTS) Game.questState[q.id] = { status: 'locked', step: 0, prog: 0 };
   if (data && typeof data === 'object') {
+    if (typeof data.__tracked === 'string') Game.trackedQuest = data.__tracked; // restore map selection
     for (const [id, st] of Object.entries(data)) {
-      if (!Q_BY_ID.has(id) || !st) continue;
+      if (id === '__tracked' || !Q_BY_ID.has(id) || !st) continue;
       // v1 saves had {status, kills} with a parallel-step model; an in-progress
       // v1 quest can't map onto ordered steps, so only 'complete' carries over —
       // anything else re-derives from prereqs (may re-offer the quest). Clean.

@@ -367,6 +367,45 @@ Client-side until Phase 4; each phase keeps the player-freeze + world-continuity
   Rerouting would risk the legacy cook/smith branches; revisit with id migration.
 
 ## Change log
+- 2026-07-01 — Economy agent: **Tinkering EXPANSION — proof slice: quest-gated skill +
+  world nodes + cross-skill byproducts + kit/out tools.** Plan: `docs/TINKERING_EXPANSION_PLAN.md`
+  (owner picked: proof slice → phase; craft-your-own kit tools; out-tools now; and
+  NEW: **quest-gated progression** — the skill is unlocked by a quest, a quest LINE
+  expands it). Shipped + verified live:
+  • **Unlock registry** — `Game.unlocks` (Set, re-derived from completed quests, no
+    save-field). New quest reward type `unlock: <id>`; `grantUnlock/hasUnlock/
+    recomputeUnlocks` in `quests.js`. Recipes/workbench check `hasUnlock`.
+  • **Quest line** (`quests.json`, giver `sprocket`): "Sparks of Invention" → unlock
+    `tinkering` (+Rusty Wrench); "Powder and Patience" → `tinkering_powder`; "A Bigger
+    Bang" → `tinkering_cannons`; "Tools of the Trade" → `tinkering_tools` (+Lens).
+    Gadget/ammo recipes tagged with these unlocks (gadgetUnlock/ammoUnlock in tinkering.js).
+  • **Sprocket the Tinker** NPC hand-placed in `main.js buildWorld` (id `sprocket`,
+    talk opens the Workbench via `openWorkbench`).
+  • **10 new world node types** → `world_nodes.json` (scrap heaps, saltpeter/sparkstone
+    veins, sulfur/tar vents, resin taps) across Quarry/Mine Hills/Troll/Bog/Choppers/
+    Oakwoods/Ruins/Rival — **auto-placed by world-gen's `populateNodesFromDb` (25
+    instances live).** ⚠️ **I WIRED GENERIC NODE GATHERING in `main.js`** (`o.nodeId`
+    → `startInteract` → `performNodeGather` → `gathering.gather()`), which was
+    previously a farming-only path — world-gen/economy: db nodes are now clickable-to-
+    gather + light-deplete/respawn. New tool families (`scavenge/tap/chem_kit/heat_tongs`)
+    resolve via item `tool` property (no worldData.TOOLS edit needed for gathering).
+  • **Cross-skill byproduct** — `rollGatherByproduct()` in `gathering.js`, hooked into
+    BOTH `gather()` (data nodes) and `main.js` baseline resource gather: ~6% (2× with a
+    boosting tool) to also get a Tinkering raw + Tinkering XP while mining/chopping/fishing.
+  • **Kit + out tools** — rusty_wrench/gum_tap/chem_kit/heat_tongs (gather-gating) and
+    prospector_lens/clockwork_hatchet/powered_pickaxe (`boosts` a skill). 92 tinker items now.
+  • `crafting.js SKILL_MAP` gained farming/firemaking/alchemy/tinkering so those nodes/
+    recipes grant XP (was silently null → level 0).
+  ⚠️ **COLLISION — the Tinker's Workbench:** another chat is concurrently turning the
+  workbench into a WORLD OBJECT (it removed the HUD button in `tinkeringUI.js` and left
+  `initTinkerHud` as CSS-only + exported `openWorkbench`, but the world-object placement
+  in `map.js`/interaction hook wasn't wired yet when I looked). To keep it reachable I
+  open it from **Sprocket** (talk). These compose (both call `openWorkbench`) — whoever
+  finishes the world-object: great, keep `openWorkbench` exported; Sprocket-talk stays as
+  a second entry point. Let's not both wire the same map object — ping in this file.
+  Verified live (:5197): boot clean, workbench locked→unlocked by the intro quest,
+  25 nodes placed + gatherable (saltpeter/scrap yield), byproduct fires, quest completes
+  and grants the unlock + Rusty Wrench, Blackpowder buildable from Saltpeter+Sulfur+Charcoal.
 - 2026-07-01 — Economy agent (⚠️ CROSS-LANE, owner-directed): **ALL weapons now
   rest naturally** in `src/render/avatar.js` (character-render lane — heads up).
   Generalised the earlier spear fix: every melee weapon followed the arm angle, so

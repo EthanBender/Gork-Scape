@@ -186,7 +186,16 @@ chain, see a byproduct fire.
   `tinkering_tools` (powered out-tools). Each stage is a real quest with objectives
   (gather X, build Y, defeat Z) and the unlock as its reward.
 
-## Proof slice (this build)
+## Proof slice — ✅ DONE (2026-07-01), verified live
+
+Built + verified: unlock registry + `unlock` quest-reward; 4-quest line + Sprocket NPC;
+workbench gated (locked→unlocked by the intro quest); 10 node types (25 placed, auto by
+world-gen) made gatherable via a new generic `nodeId` gather path; kit tools + 3 out-tools;
+cross-skill byproduct hook; blackpowder from the new mineral nodes. See COORDINATION.md
+(incl. the workbench world-object collision note). NEXT: phase up to the full ~200/~100
+(more nodes/regions, drop-based raws, mods/attachments, deeper quest stages).
+
+## Proof slice (original spec)
 
 Spine that proves the whole loop end-to-end:
 1. Unlock registry + `unlock` reward type in the quest engine + save persistence.
