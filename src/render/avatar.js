@@ -601,10 +601,14 @@ export function drawAvatar(g, cx, cy, state = {}) {
     // legs
     drawLeg(ctx, -2.2, back ? p.legSwing : -p.legSwing, legCol, bootCol);
     drawLeg(ctx, 2.2, back ? -p.legSwing : p.legSwing, legCol, bootCol);
-    // off-arm (holds shield if any) behind torso
-    const offAng = Math.PI - 0.4 + (p.armSwing || 0);
-    const [ohx, ohy] = drawArm(ctx, -TORSO_W / 2 + 0.5, offAng, armCol);
-    if (gear.shield) drawShield(ctx, -TORSO_W / 2 - 1.5, gear.shield, back);
+    // off-arm (holds shield if any) behind torso. While skilling, BOTH hands grip
+    // the tool (drawn on the weapon side), so skip the idle off-arm — otherwise the
+    // rig shows three arms.
+    if (!skilling) {
+      const offAng = Math.PI - 0.4 + (p.armSwing || 0);
+      drawArm(ctx, -TORSO_W / 2 + 0.5, offAng, armCol);
+      if (gear.shield) drawShield(ctx, -TORSO_W / 2 - 1.5, gear.shield, back);
+    }
     drawTorso(ctx, skin, gear.body, p);
     drawHead(ctx, skin, gear.head, facing);
     // weapon arm (screen-right hand)

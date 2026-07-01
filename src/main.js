@@ -887,6 +887,21 @@ function worldUpkeep(count) {
   }
 }
 
+// Rebuild Game.activeNpcs: the NPCs within (ACTIVATE + margin) of the player. This is
+// the ONLY O(total) scan of Game.npcs per tick (cheap — a manhattan compare each), and
+// it runs a few times a second, not per frame. Every per-frame loop (interpolation,
+// drawing, labels, minimap) iterates this small set, so 100 mobs or 100,000 mobs cost
+// the same on screen. NPCs entering/leaving the set get their sprite snapped to tile.
+function refreshActiveNpcs() {
+  const p = Game.player, R = ACTIVATE + 8, list = [];
+  for (const n of Game.npcs) {
+    const near = (Math.abs(n.tileX - p.tileX) + Math.abs(n.tileY - p.tileY)) <= R;
+    if (near) { if (!n._active) { n._active = true; n.px = tilePx(n.tileX); n.py = tilePx(n.tileY); } list.push(n); }
+    else if (n._active) { n._active = false; n.px = tilePx(n.tileX); n.py = tilePx(n.tileY); }
+  }
+  Game.activeNpcs = list;
+}
+
 function gameTick(count, isLast = true) {
   const world = Game.world;
   const p = Game.player;
@@ -1022,11 +1037,14 @@ function gameTick(count, isLast = true) {
     questOnArrive(regionAt(p.tileX, p.tileY), p.tileX, p.tileY);
   }
 
+  // Rebuild the near-player active set once per tick; every per-frame + per-tick NPC
+  // loop below iterates THIS, not all of Game.npcs — so total mob count never costs frames.
+  refreshActiveNpcs();
+
   // --- NPC AI (only near the player) ---
-  for (const n of Game.npcs) {
+  for (const n of Game.activeNpcs) {
     if (n.dead) continue; // revival handled in worldUpkeep()
     if (n.type === 'elder') continue;
-    if (manhattan(n.tileX, n.tileY, p.tileX, p.tileY) > ACTIVATE) continue;
 
     // Tinker burn DoT: a burning enemy loses HP each tick.
     if (n.burnTicks > 0) {
@@ -1616,9 +1634,8 @@ function update(time, delta) {
   const pSpeed = speed * (p._ranTick ? RUN_TILES : 1);
   approach(p, 'px', tilePx(p.tileX), pSpeed * delta);
   approach(p, 'py', tilePx(p.tileY), pSpeed * delta);
-  for (const n of Game.npcs) {
+  for (const n of Game.activeNpcs) {
     if (n.dead) continue;
-    if (manhattan(n.tileX, n.tileY, p.tileX, p.tileY) > ACTIVATE + 4) { n.px = tilePx(n.tileX); n.py = tilePx(n.tileY); continue; }
     approach(n, 'px', tilePx(n.tileX), speed * delta);
     approach(n, 'py', tilePx(n.tileY), speed * delta);
   }
