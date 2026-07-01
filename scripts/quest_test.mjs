@@ -111,6 +111,7 @@ ok('quest reward granted gear into the inventory',
 // The Bridge quest grants openShortcut:'west_bridge'. Mock the world hook main.js
 // would install, then drive the quest to completion and assert it fired.
 Game.grantShortcut = (id) => { Game.__sc = id; return true; };
+Game.inventory = new Array(Game.inventory.length).fill(null); // room for materials
 grantXp('Woodcutting', 2000);           // reach the Woodcutting 10 prereq
 q.refreshAvailability();
 q.onTalk('shopkeeper_lumber_stall');    // start Bridge Over Dumb Water
