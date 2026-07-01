@@ -445,6 +445,16 @@ Client-side until Phase 4; each phase keeps the player-freeze + world-continuity
   Rerouting would risk the legacy cook/smith branches; revisit with id migration.
 
 ## Change log
+- 2026-07-01 — Economy agent: **persistence audit — closed the remaining save
+  gaps.** Full diff of `Game.*` player state vs `serialize()`. Fixed: `gadgetMods`
+  (installed Tinker rig mods — crafted progression) and `trackedQuest` (pinned
+  quest) were NOT saved; added both to `serialize()`/`applySave()`. Confirmed
+  fine: `alchemy.discovered` persists via its own **account-scoped** key
+  (`ge_alchemy_<account>`); `unlocks` re-derives from completed quests; prayer
+  points/active prayers, spec energy, run energy, poison, `selectedInv`,
+  `location`, chat log all reset by design; `Game.farming` is just the system
+  module (no crop data yet — will need saving once farming plots land). Verified
+  live: disk round-trip restores gadgetMods + trackedQuest + bank; 0 errors.
 - 2026-07-01 — Character-render lane (⚠️ one line in WORLD-GEN's `drawObjects`,
   `[char-render]`-tagged): **structure props — flat coloured squares → recognisable
   objects.** New `src/render/props.js`: `drawProp(g, cx, cy, o)` keyword-maps a
