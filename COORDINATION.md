@@ -473,6 +473,31 @@ Client-side until Phase 4; each phase keeps the player-freeze + world-continuity
   Rerouting would risk the legacy cook/smith branches; revisit with id migration.
 
 ## Change log
+- 2026-07-01 — Economy/items lane (owner-directed FULL VISUAL PASS on spawn): the
+  settlement "looked half-built/flat/undecorated". Root cause: the map DATA is good
+  (walled `building()`s, keep, wards, elevation) but the RENDERER drew every tile as
+  one flat rect. Four layers, all verified in-preview:
+  ⚠️ **(1) `main.js drawTerrain()` REWRITTEN (world-gen's core render fn — please
+  reconcile, don't clobber).** Added per-terrain texture (all fillRect for speed):
+  WALL → capped stone brick w/ mortar + staggered joints; FLOOR → flagstone grout
+  grid; ROAD/BRIDGE/DIRT → cobble speckle; GRASS variants → blade/tuft variation;
+  WATER → animated ripple; FIELD → furrows. New helpers `tHash` + `detail*` sit
+  just above `drawTerrain`; elevation logic preserved. Perf: 60fps outdoors, ~36fps
+  in a full-screen-of-walls keep view (tunable — could drop the 2 brick-joint rects).
+  (2) NEW `src/systems/townDecor.js` — a decoration layer on its own `decorGfx`
+  (depth 1.2, uiCam-ignored; drawn after drawObjects). Procedural props tied to the
+  fixed town: fountain, striped stall awnings+goods, lamp posts, banners, wall
+  torches, bank rug+coin stacks, barrels/crates/sacks/hay/logs/nets/flowers. main.js
+  edits: import + `decorGfx` layer + uiCam.ignore + one draw call.
+  (3) **Banker moved INTO the Bank** (main.js): was my "provisional" NPC parked at
+  spawn; now at the counter (493,432) in the keep's west-wing vault (reachable via
+  the N passage + the 497,427 wing door). Keeps id 'banker' for the proximity gate.
+  (4) **Town elevation** — `raiseSettlement(world)` in `travel.js` (runs from the
+  same buildWorld hook as placeTransports) bumps `world.elevation`: town platform
+  +7 over the fields, keep +15, plaza mound +6 → terraced drop-shadows. Render-only,
+  never touches pathing. Verified live (field 71 → plaza 105 → keep 114).
+  Server stopped after. NOTE: `drawTerrain` is world-gen's file — I owned this at the
+  owner's explicit request; tag/reconcile rather than overwrite.
 - 2026-07-01 — Economy agent: **persistence audit — closed the remaining save
   gaps.** Full diff of `Game.*` player state vs `serialize()`. Fixed: `gadgetMods`
   (installed Tinker rig mods — crafted progression) and `trackedQuest` (pinned
