@@ -88,6 +88,15 @@
         "5194"
       ],
       "port": 5194
+    },
+    {
+      "name": "goblin-empire-tinker",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        ".claude/devserver_nocache.py",
+        "5197"
+      ],
+      "port": 5197
     }
   ]
 }

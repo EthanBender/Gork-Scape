@@ -209,6 +209,12 @@ const server = http.createServer(async (req, res) => {
     return sendJson(res, 200, { item: id, name: displayName.get(id) || id, ...market.quote(id) });
   }
 
+  // Full authoritative guide-price table — the client mirrors this into its local
+  // market so every player sees the same shared, always-on prices.
+  if (path === '/api/prices') {
+    return sendJson(res, 200, { savedAt: Date.now(), guide: [...market.guide.entries()] });
+  }
+
   if (path === '/api/order' && req.method === 'POST') {
     try {
       const { side, itemId, qty, limit, trader } = JSON.parse(await readBody(req) || '{}');

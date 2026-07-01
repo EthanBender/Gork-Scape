@@ -319,6 +319,32 @@ Client-side until Phase 4; each phase keeps the player-freeze + world-continuity
   Rerouting would risk the legacy cook/smith branches; revisit with id migration.
 
 ## Change log
+- 2026-07-01 — Economy agent: **QUEST SYSTEM v2 — story/tutorial redesign
+  (owner-directed). Location-driven, multi-step, dialogue, map+minimap markers.
+  Verified in-browser (StoryGoblin on :5194, server released).** Quests are now
+  the onboarding: find a marked giver → TALK to start → they direct you step by
+  step (teaches move/combat/gather/shops/GE).
+  - **Engine (`src/systems/quests.js`, my lane):** rewrote to ORDERED steps (only
+    the current step is active) + new objective types **`talk`** (converse w/ an
+    NPC) and **`goto`** (reach a place/region) alongside kill/obtain/level. Each
+    step carries `say` (dialogue) + `where` {x,y,name}. Giver-based start; markers
+    API `questMarkers()`. `quest_test.mjs` rewritten → **28/28**.
+  - **Content (`src/data/quests.json`, my lane):** Act 1 rebuilt as a real tutorial
+    chain (talk→travel→do→return); Act 2 lifted to the same shape. Givers use real
+    NPC ids (`elder`, `shopkeeper_*`) + coords from LANDMARKS/REGION_ANCHORS.
+  - ⚠️ **Shared edits, tagged `[economy lane]`:** `main.js` — `talkTo()` routes to
+    `questOnTalk` first; `gameTick` fires `questOnArrive` on tile-change (goto);
+    **quest markers drawn in `drawMinimap` (gold pip=giver, green=objective, edge
+    arrows when off-view) and `drawWorldMap` (gold/green '!')**; onboarding nudge.
+    `panels.js` — Quest Journal shows the CURRENT step + its spoken directions;
+    available quests say "find the giver" (no Accept button); **`Game.ui.showDialogue`
+    speech box**. `index.html` — dialogue-box + v2 journal CSS.
+  - 🌍 **World-Gen note:** markers resolve a giver's live tile by NPC id, else fall
+    back to the quest's `where` coords — so relocating a shopkeeper/elder keeps its
+    marker correct automatically. `goto` matching uses coord-radius (regionAt returns
+    a NAME, not an id), so region placement doesn't need to match my target strings.
+  - Landed in 4 green increments: engine `960d989`, hooks+markers `070465b`,
+    UI `219f7ea`, + this doc.
 - 2026-07-01 — Character-render lane: **verified the render path live + added
   creature forms + save-test coverage.**
   (1) **Verified live** (logged in past the gate): the `characters.js` extraction,

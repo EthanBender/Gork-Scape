@@ -33,6 +33,7 @@ import { styleOfWeapon, PROTECT_FACTOR } from './engine/prayer.js';
 // [economy lane] Tinkering — the sapper combat style. Importing registers its
 // generated item catalogue into ITEMS and exposes the gadget combat effects.
 import { isTinkerWeapon, tinkerEffect } from './systems/tinkering.js';
+import { initTinkerHud } from './systems/tinkeringUI.js';
 import { rollSkillSuccess } from './engine/skills.js';
 import { emptyBonuses, ITEMS } from './items/equipment.js';
 import { rollLoot } from './world/loot.js';
