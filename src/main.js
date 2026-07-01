@@ -323,6 +323,12 @@ function create() {
   // time the player was away. For a new character this is a no-op.
   applyPendingSave();
 
+  // [economy lane] Quest reward payoffs that touch the world: expose the free
+  // shortcut-opener to the (pure) quest engine, and re-apply any shortcuts the
+  // player had already opened so bridges stay open across sessions.
+  Game.grantShortcut = grantShortcut;
+  reapplyOpenedShortcuts();
+
   // [economy lane] Quest engine: build the quest slate (new character) or reconcile
   // the restored one (returning character). Idempotent — never restarts a quest
   // that's already active/complete; auto-starts the opening tutorial for newcomers.
@@ -1122,11 +1128,19 @@ function updateCropLabels() {
   }
 }
 
-// Open an interactive shortcut: check + consume its material cost, then bridge the
-// recorded span (flip terrain to BRIDGE + clear collision) so the crossing opens.
-// Records the id on Game.openedShortcuts so the save layer can re-apply it on load.
+// Bridge the recorded span (flip terrain to BRIDGE + clear collision) so the
+// crossing opens, and record the id on Game.openedShortcuts so the save layer can
+// re-apply it on load. Shared by the material-spend path and quest-reward grants.
+function applyShortcutOpen(o) {
+  const sc = o.shortcut, W = Game.world.W;
+  for (const [tx, ty] of sc.span) { const i = ty * W + tx; Game.world.terrain[i] = T.BRIDGE; Game.world.collision[i] = 0; }
+  sc.opened = true; o.label = sc.doneLabel; o.color = 0x9a7a4a;
+  (Game.openedShortcuts || (Game.openedShortcuts = [])).includes(sc.id) || Game.openedShortcuts.push(sc.id);
+}
+
+// Open an interactive shortcut by spending its material cost (player interaction).
 function tryOpenShortcut(o) {
-  const p = Game.player, sc = o.shortcut, W = Game.world.W;
+  const p = Game.player, sc = o.shortcut;
   if (sc.opened) { Game.log(`The ${sc.doneLabel} is already open.`); p.interactTarget = null; return; }
   if (sc.cost.some(([id, q]) => countItem(id) < q)) {
     const need = sc.cost.map(([id, q]) => `${q}× ${ITEMS[id] ? ITEMS[id].name : id}`).join(', ');
@@ -1134,11 +1148,32 @@ function tryOpenShortcut(o) {
     p.interactTarget = null; return;
   }
   for (const [id, q] of sc.cost) for (let k = 0; k < q; k++) removeOneById(id);
-  for (const [tx, ty] of sc.span) { const i = ty * W + tx; Game.world.terrain[i] = T.BRIDGE; Game.world.collision[i] = 0; }
-  sc.opened = true; o.label = sc.doneLabel; o.color = 0x9a7a4a;
-  (Game.openedShortcuts || (Game.openedShortcuts = [])).includes(sc.id) || Game.openedShortcuts.push(sc.id);
+  applyShortcutOpen(o);
   Game.log(sc.doneMsg || `You open the ${sc.doneLabel}.`);
   p.interactTarget = null;
+}
+
+// [economy lane] Find a placed shortcut object by its SHORTCUTS id.
+function findShortcutObj(id) {
+  return (Game.world && Game.world.objects || []).find((o) => o.shortcut && o.shortcut.id === id);
+}
+// [economy lane] Grant-open a shortcut for FREE (a quest reward). Installed as
+// Game.grantShortcut so the pure quest engine can trigger it. Degrades gracefully
+// if the object isn't placed (records the id so a later re-apply can catch it).
+function grantShortcut(id) {
+  const o = findShortcutObj(id);
+  if (!o) { (Game.openedShortcuts || (Game.openedShortcuts = [])).includes(id) || Game.openedShortcuts.push(id); return; }
+  if (o.shortcut.opened) return;
+  applyShortcutOpen(o);
+  Game.log(o.shortcut.doneMsg || `A new shortcut opens: ${o.shortcut.doneLabel || id}.`);
+}
+// [economy lane] Re-apply saved opened shortcuts after the world is (re)built on
+// login, so a bridge you opened stays open across sessions.
+function reapplyOpenedShortcuts() {
+  for (const id of (Game.openedShortcuts || [])) {
+    const o = findShortcutObj(id);
+    if (o && !o.shortcut.opened) applyShortcutOpen(o);
+  }
 }
 
 function performSkill(o, count) {

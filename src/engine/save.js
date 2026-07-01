@@ -99,6 +99,8 @@ export function serialize() {
     equipment,
     pos: p ? { x: p.tileX, y: p.tileY } : null,
     quests: serializeQuests(), // quest status + kill tallies (obtain/level recompute live)
+    bankMax: Game.bankMax,     // [economy lane] bank capacity (quest / GP upgrades)
+    openedShortcuts: Array.isArray(Game.openedShortcuts) ? Game.openedShortcuts.slice() : [], // opened bridges/gates
   };
 }
 
@@ -144,6 +146,10 @@ export function applySave(data) {
   // Quest progress. applyQuests tolerates undefined (pre-v3 saves) by starting
   // everyone on a clean locked slate and re-deriving availability.
   applyQuests(data.quests);
+  // [economy lane] Bank capacity + opened shortcuts (quest-reward payoffs). main.js
+  // re-applies the shortcut terrain flips after the world is built (reapplyOpenedShortcuts).
+  if (typeof data.bankMax === 'number') Game.bankMax = data.bankMax;
+  Game.openedShortcuts = Array.isArray(data.openedShortcuts) ? data.openedShortcuts.slice() : [];
   Game.selectedInv = null;
 }
 

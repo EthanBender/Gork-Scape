@@ -331,6 +331,39 @@ Client-side until Phase 4; each phase keeps the player-freeze + world-continuity
   Rerouting would risk the legacy cook/smith branches; revisit with id migration.
 
 ## Change log
+- 2026-07-01 — Economy agent: **TINKERING — the third combat style ("sapper"), built
+  exhaustively + verified live.** A whole new skill + weapon line + combat corner, NOT
+  magic (design doc: `docs/TINKERING_DESIGN.md`). Self-contained like alchemy/travel
+  to dodge contested files. NEW `src/systems/tinkering.js` GENERATES its catalogue
+  and injects it into ITEMS: **81 items** — 42 gadgets (6 classes × 7 tiers:
+  Bombard/Hand Cannon/Dart Spitter/Flame Bellows/Trap Launcher/Tesla Coil ×
+  Scrapwork→Voltaic), 24 ammo, 15 components/materials — plus **81 recipes**. Deep
+  cross-pollination: gadgets/ammo are assembled from **Woodcutting** (logs→stocks),
+  **Mining/Smithing** (bars→casings/barrels/springs/cogs), **Firemaking**
+  (logs→charcoal→blackpowder), **Crafting/combat** (torn_hide→grips). NEW
+  `tinkeringUI.js` = a self-contained "🔧 Tinker's Workbench" HUD button + overlay
+  (own DOM/CSS, no panels.js touch) showing have/need per input. Combat: new
+  `weaponType: 'tinker'` + `tinker_atk/def/str` stats (STAT_KEYS, equipment.js);
+  `combat.js` accuracy/max-hit use the **Tinkering** level; gadget `effect` runs each
+  shot (armour-pierce / rapid hits via resolveSpecial; splash / chain / burn-DoT /
+  snare applied in `main.js applyAreaEffects` + NPC-loop burn/snare processing).
+  Ammo reuses the ranged ammo slot with family matching (a Bombard needs Bombs).
+  Verified live (logged in on :5197): 81 items/recipes generated, cross-skill
+  assembly spends the right materials, gadget equips (level-gated) + fires + trains
+  Tinkering + pierces armour (49 dmg through tinker_def 40), workbench renders with
+  colour-coded inputs. Headless combat tests pass (pierce lifts hit-rate 0.46→0.72).
+  **Shared edits, tagged `[economy lane]`:** `skills.js` (+Tinkering), `equipment.js`
+  (+tinker STAT_KEYS), `combat.js` (tinker weaponType math), `state.js` (tinkering in
+  profile + ammo family), `main.js` (2 imports, `initTinkerHud()` by the run HUD,
+  grantCombatXp route, playerAttack gadget branch + area-effect helpers + NPC-loop
+  burn/snare), `panels.js` (Tinkering colour/emoji).
+  ⚠️ **World-gen (JSON-first, non-urgent):** a deeper raw tree wants **saltpeter /
+  sulfur / sparkstone** mining nodes + a physical **Tinker's Workbench** station;
+  for now it's a HUD button and blackpowder = charcoal+coal (all obtainable). Bugs
+  fixed mid-build: gadget effect key `pierce`→`armorPierce` (match resolveSpecial);
+  `countMaterial` summed slots not qty; `{any:'coal'}` matched "char**coal**".
+  ⚠️ **Character-render:** gadget/thrown-bomb visuals TBD (gadgets are `weaponType:
+  'tinker'`, mostly `twoHanded`).
 - 2026-07-01 — Character-render lane: **expanded the test net to boot-critical +
   cross-lane systems (35 → 53 tests, 8 files).** Added `test/worldClock.test.mjs`
   (day/night, offline drift, `daysBetween` — all deterministic) and
