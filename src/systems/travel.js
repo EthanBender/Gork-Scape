@@ -62,11 +62,32 @@ function findOpen(world, cx, cy, radius) {
   return null;
 }
 
+// Give the settlement vertical relief: the whole town sits a step above the fields,
+// the plaza mounds up in the middle, and the keep rises highest. Purely visual —
+// elevation only drives render lift + drop-shadow, never pathing.
+function raiseSettlement(world) {
+  const e = world.elevation;
+  if (!e) return;
+  const W = world.W;
+  const bump = (x0, y0, x1, y1, amt) => {
+    for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
+      const i = y * W + x; e[i] = Math.min(255, e[i] + amt);
+    }
+  };
+  bump(449, 404, 556, 511, 7);   // the town on a raised platform above the fields
+  bump(489, 417, 511, 436, 15);  // the keep steps up above the plaza
+  const cx = 500, cy = 455, r = 9; // plaza mound
+  for (let y = cy - r; y <= cy + r; y++) for (let x = cx - r; x <= cx + r; x++) {
+    if ((x - cx) * (x - cx) + (y - cy) * (y - cy) <= r * r) { const i = y * W + x; e[i] = Math.min(255, e[i] + 6); }
+  }
+}
+
 // Place all transport objects into the world. Called from main.js buildWorld().
 // Also seeds the starter money-making nodes near spawn + hubs (piggybacked here so
 // it runs from the same single buildWorld hook without another main.js edit).
 export function placeTransports(world) {
   placeStarterActivities(world);
+  raiseSettlement(world);
   for (const pl of PLACEMENTS) {
     const spot = findOpen(world, pl.at[0], pl.at[1], 14);
     if (!spot) continue;
