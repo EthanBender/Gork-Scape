@@ -349,6 +349,14 @@ Client-side until Phase 4; each phase keeps the player-freeze + world-continuity
   Rerouting would risk the legacy cook/smith branches; revisit with id migration.
 
 ## Change log
+- 2026-07-01 — Economy agent: **minimap HUD tidied — the wide "controls" hint box
+  is now a "?" bubble.** `#cam-hint` went from a 168px text panel to a 42px round
+  bubble that reveals the click/scroll/zoom/rotate controls in a hover popover.
+  Now a clean row of three bubbles sits under the minimap — **[?] [🚶 run] [🗺 map]**
+  — replacing the two wide bars + text box that used to eat the top-right corner.
+  Pure `index.html` (CSS + the hint markup); mobile still hides `#cam-hint`.
+  Verified live (desktop screenshot): three 42px bubbles, run energy ring intact,
+  map opens the overlay, 0 console errors.
 - 2026-07-01 — Character-render lane (⚠️ **touched WORLD-GEN's `map.js` — please
   review**): **rewrote `findPath` from BFS → A\*, now 8-directional.** Owner asked
   me to improve pathing for players + mobs. Same signature — a **drop-in**, no

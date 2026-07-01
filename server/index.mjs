@@ -241,13 +241,14 @@ const server = http.createServer(async (req, res) => {
       }
       ensureServerLiquidity(itemId);                         // shared market-maker depth
       const { order, fills } = market.place(side, itemId, qty, limit, trader || 'player');
-      // This step does not rest player orders server-side (distributed resting-order
-      // settlement is the next step): cancel any unfilled remainder so the client
-      // refunds it. What filled, filled against the SHARED book at authoritative prices.
-      if (order.qty > 0) market.cancel(order.id);
+      // Any unfilled remainder now RESTS in the shared book, owned by this trader —
+      // so another player's order can cross it later (real player-to-player matching).
+      // The client tracks it via /api/offers and settles late fills via /api/collect.
       const gross = fills.reduce((s, f) => s + f.price * f.qty, 0);
       return sendJson(res, 200, {
-        side, itemId, filled: order.filled, gross, fills, guide: market.guidePrice(itemId),
+        orderId: order.id, side, itemId,
+        filled: order.filled, remaining: order.qty, gross, fills,
+        guide: market.guidePrice(itemId),
       });
     } catch (e) { return sendJson(res, 400, { error: e.message }); }
   }

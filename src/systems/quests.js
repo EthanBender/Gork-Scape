@@ -72,6 +72,7 @@ export function stepProgress(step, st) {
   let have = 0;
   switch (step.type) {
     case 'kill':   have = st.prog || 0; break;         // tallied at kill site
+    case 'boss':   have = st.prog || 0; break;         // a unique quest-spawned boss
     case 'obtain': have = haveItem(step.target); break; // live inventory
     case 'level':  have = skillLevel(step.target); break;
     case 'talk':   have = st.prog || 0; break;          // 0 until the talk happens
@@ -165,7 +166,28 @@ function advance(id, speaker) {
   st.prog = 0;
   if (st.step >= q.steps.length) { completeQuest(id, speaker); return; }
   announceStep(q, st.step, speaker);
+  spawnBossForStep(id);
   syncUI();
+}
+
+// If the quest's current step is a unique boss encounter, ask main.js to spawn
+// the named boss into the world (idempotent — main.js won't duplicate it, and
+// removes it when slain). Dead bosses aren't re-spawned; the step advances on kill.
+function spawnBossForStep(id) {
+  const step = activeStep(id);
+  if (step && step.type === 'boss' && step.boss && Game.spawnQuestBoss) {
+    Game.spawnQuestBoss(Object.assign(
+      { id: step.target, x: step.where && step.where.x, y: step.where && step.where.y },
+      step.boss,
+    ));
+  }
+}
+
+// Called by main.js after the world (re)builds on login, so a boss encounter the
+// player was mid-fight on re-spawns instead of being un-winnable.
+export function ensureQuestBosses() {
+  if (!Game.questState) return;
+  for (const q of QUESTS) spawnBossForStep(q.id);
 }
 
 // ---- feature unlocks (quest-gated content, e.g. the Tinkering skill) ----
@@ -291,7 +313,7 @@ export function onKill(monsterId) {
     const st = Game.questState[q.id];
     if (!st || st.status !== 'active') continue;
     const step = q.steps[st.step];
-    if (step && step.type === 'kill' && step.target === monsterId) {
+    if (step && (step.type === 'kill' || step.type === 'boss') && step.target === monsterId) {
       st.prog = (st.prog || 0) + 1;
       if (st.prog >= (step.count || 1)) advance(q.id);
       else syncUI();
