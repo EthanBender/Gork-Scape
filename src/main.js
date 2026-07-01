@@ -1098,7 +1098,14 @@ function performSkill(o, count) {
     return;
   }
 
-  // Structures: Smithing / Cooking / Crafting
+  // [economy lane] A fixed crafting station opens the data-driven Stations UI
+  // (furnace/anvil/range/bench) instead of the legacy quick-craft — so crafting
+  // is a "walk to the anvil" world interaction. Firemaking fires (o.fire) keep
+  // their auto-cook path below.
+  const STATION_OF = { 'Town Furnace': 'furnace', 'Town Anvil': 'anvil', 'Cooking Range': 'fire_or_range', 'Crafting Bench': 'crafting_bench', 'Sawmill': 'sawmill' };
+  if (!o.fire && STATION_OF[o.label]) { openStation(STATION_OF[o.label]); p.interactTarget = null; return; }
+
+  // Structures: Smithing / Cooking / Crafting (legacy quick-craft + firemaking fires)
   switch (o.skill) {
     case 'Cooking': {
       const ri = Game.inventory.findIndex((s) => s && ITEMS[s.id].cookInto);
