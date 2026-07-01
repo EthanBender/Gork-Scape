@@ -33,7 +33,8 @@ import { styleOfWeapon, PROTECT_FACTOR } from './engine/prayer.js';
 // [economy lane] Tinkering — the sapper combat style. Importing registers its
 // generated item catalogue into ITEMS and exposes the gadget combat effects.
 import { isTinkerWeapon, tinkerEffect } from './systems/tinkering.js';
-import { initTinkerHud } from './systems/tinkeringUI.js';
+import { initTinkerHud, openWorkbench } from './systems/tinkeringUI.js';
+import { gather as gatherNode } from './systems/gathering.js'; // [economy lane] data-driven world-node gathering
 import { rollSkillSuccess } from './engine/skills.js';
 import { emptyBonuses, ITEMS } from './items/equipment.js';
 import { rollLoot } from './world/loot.js';
@@ -55,7 +56,7 @@ import { activeFires, tickFires, fireAt, fireLifeRatio } from './systems/firemak
 import { loadAndAdvanceWorldMarket, saveWorldMarket } from './systems/geActions.js';
 import {
   initQuests, evaluate as tickQuests, onKill as questOnKill,
-  onTalk as questOnTalk, onArrive as questOnArrive, questMarkers,
+  onTalk as questOnTalk, onArrive as questOnArrive, questMarkers, ensureQuestBosses,
 } from './systems/quests.js'; // [economy lane] quest engine v2
 import { playCutscene } from './systems/cutscene.js'; // [economy lane] cinematic quest beats
 import './data/questItems.js'; // [economy lane] register unique quest items into ITEMS
@@ -251,6 +252,37 @@ function hasTool(toolType) {
   return Game.inventory.some((s) => s && ids.includes(s.id));
 }
 
+// [economy lane] Spawn a unique QUEST BOSS into the world (installed as
+// Game.spawnQuestBoss for the quest engine's `boss` steps). Idempotent — won't
+// duplicate a boss that's already present; worldUpkeep removes it once slain.
+// onKill(spec.id) (via the boss NPC's monsterId) advances the quest step.
+function spawnQuestBoss(spec) {
+  if (!spec || !spec.id || !Game.world || !Game.player) return;
+  const npcId = 'qb_' + spec.id;
+  if (Game.npcs.some((n) => n.id === npcId)) return; // already spawned (or being slain)
+  const p = Game.player;
+  const pos = findOpenTileNear(Game.world, spec.x != null ? spec.x : p.tileX,
+    spec.y != null ? spec.y : p.tileY, 12) || { x: p.tileX, y: p.tileY };
+  const lv = { attack: spec.att || 10, strength: spec.str || 10, defence: spec.def || 10, ranged: 1, hitpoints: spec.hp || 40 };
+  const npc = new NPC({
+    id: npcId, name: spec.name || 'Quest Boss', type: 'guard',
+    tileX: pos.x, tileY: pos.y, color: spec.color || 0x9a3a3a,
+    monsterId: spec.id,                        // onKill(spec.id) advances the step
+    aggressive: !!spec.aggressive, aggroRange: spec.aggroRange != null ? spec.aggroRange : 6,
+    wanderRadius: 2, leashRadius: 24,
+    attackSpeed: spec.attackSpeed || 3, weaponType: spec.weaponType || 'crush',
+    levels: lv, combatLevel: spec.combatLevel || combatLevel(lv), lootTable: null,
+    bonuses: Object.assign(emptyBonuses(), {
+      crush_atk: spec.att || 10, melee_str: spec.str || 10,
+      slash_def: spec.def || 10, crush_def: spec.def || 10, stab_def: spec.def || 10,
+    }),
+  });
+  npc.questBoss = true;
+  Game.npcs.push(npc);
+  Game.log(`⚔️ ${npc.name} rises to face you!`);
+  Game.refresh();
+}
+
 // [economy lane] perf probe helpers (exposed via window.__GE). stress(n) spawns n
 // throwaway wandering guards around the player to MEASURE the frame cost of many
 // procedural rigs (watch #tb-fps). They're tagged `_stress` so stressClear() can
@@ -338,10 +370,15 @@ function create() {
   window.__cutsceneCamSet = (x, y) => { Game.cutsceneCam = { x, y }; };
   window.__cutsceneCamClear = () => { Game.cutsceneCam = null; };
 
+  // [economy lane] Quest bosses: the engine spawns unique named bosses through
+  // this hook; re-spawn one the player was mid-fight on after a world rebuild.
+  Game.spawnQuestBoss = spawnQuestBoss;
+
   // [economy lane] Quest engine: build the quest slate (new character) or reconcile
   // the restored one (returning character). Idempotent — never restarts a quest
   // that's already active/complete; auto-starts the opening tutorial for newcomers.
   initQuests();
+  ensureQuestBosses(); // [economy lane] re-spawn any active quest-boss encounter
   // [economy lane] Onboarding nudge: point a brand-new goblin at their first
   // quest-giver (the '!' on the map), so the very first thing they learn is
   // "walk to the marker and talk". Only when the opening quest is still available.
@@ -653,6 +690,7 @@ function onPointerDown(pointer) {
   if (npc && npc.type === 'guard') return startAttack(npc);
   if (usableObj && (usableObj.skill || usableObj.altar || usableObj.transport || usableObj.shortcut)) return startInteract(usableObj);
   if (usableObj && isCropPatch(usableObj)) return startInteract(usableObj); // plant/harvest
+  if (usableObj && usableObj.nodeId) return startInteract(usableObj); // [economy lane] data-driven gather node
   if (usableObj) { Game.log(`${usableObj.label}. (Nothing to do here yet.)`); return walkTo(tx, ty); }
   if (fire) return startInteract(fire); // [economy lane] walk to & cook at the fire
   if (ground.length) return startPickup(tx, ty);
@@ -817,7 +855,12 @@ function worldUpkeep(count) {
     Game.groundItems = Game.groundItems.filter((g) => count < g.despawnAt);
   }
   for (const n of Game.npcs) {
+    if (n.questBoss) continue; // one-shot quest bosses never revive
     if (n.dead && count >= n.respawnAt) reviveNpc(n);
+  }
+  // [economy lane] Remove slain quest bosses (their step advanced on the kill).
+  if (Game.npcs.some((n) => n.questBoss && n.dead)) {
+    Game.npcs = Game.npcs.filter((n) => !(n.questBoss && n.dead));
   }
 }
 
@@ -1036,6 +1079,27 @@ function cropPatchDef(o) {
 }
 function isCropPatch(o) { return !!cropPatchDef(o); }
 
+// [economy lane] Gather a data-driven world node (world_nodes.json). gather() does
+// the skill/tool checks + item/XP payout; here we surface failures and apply a
+// light depletion so nodes read as finite and respawn on the world clock.
+function performNodeGather(o, count) {
+  const p = Game.player;
+  const res = gatherNode(o.nodeId);
+  if (!res || !res.ok) {
+    Game.log(`You can't gather here${res && res.reason ? ` — ${res.reason}` : ''}.`);
+    p.interactTarget = null;
+    return;
+  }
+  const node = GameData.node ? GameData.node(o.nodeId) : null;
+  const respawnS = node && node.respawn_seconds;
+  if (respawnS && Math.random() < 0.14) {
+    o.depleted = true;
+    o.respawnAt = count + Math.max(8, Math.round(respawnS / 0.6));
+    p.interactTarget = null;
+    Game.log(`The ${(node && node.display_name) || 'node'} is spent for now.`);
+  }
+}
+
 // The seed that plants a given crop. Seeds are named `<crop>_seed`; fall back to
 // scanning the database for a Seed whose recipe output is this crop.
 let _seedMap = null;
@@ -1202,6 +1266,11 @@ function performSkill(o, count) {
 
   // Crop patches: plant/harvest via the world-time growth engine.
   if (isCropPatch(o)) return performFarming(o);
+
+  // [economy lane] Data-driven gather nodes (mining/woodcutting/fishing/tinkering
+  // materials defined in world_nodes.json). gather() checks skill/tool, adds the
+  // output + grants XP; we handle light depletion + respawn here.
+  if (o.nodeId) return performNodeGather(o, count);
 
   // Bones Altar: offer one bones stack per tick until the player runs out.
   if (o.altar) {

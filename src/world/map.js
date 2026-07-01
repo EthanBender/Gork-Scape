@@ -12,6 +12,7 @@ import {
 // The design database (items/monsters/nodes). Loaded via resilient top-level
 // await; empty in Node so world-gen falls back to the hand-authored baseline.
 import { GameData } from '../data/gameData.js';
+import { WILDERNESS } from './wilderness.js';
 
 export const TILE_SIZE = 32;
 export { WORLD_W, WORLD_H, CHUNK, TERRAIN_DEFS, T };
@@ -763,6 +764,47 @@ export function generateWorld(seed = DEFAULT_SEED) {
     // Waterfall where the north river spills off the hills into the lowlands
     for (let y = 314; y <= 322; y++) { for (const x of [684, 685, 686]) { const t = getT(x, y); if (t === T.GRASS || t === T.ROCK) setT(x, y, T.WATER); } }
     ringDecor(685, 324, 3, 40, 0xdfefff, 3, 'circle'); disc(685, 326, 2, (x, y) => { if (getT(x, y) === T.GRASS) setT(x, y, T.WATER); }); S(688, 318, 'Waterfall', 0x9ecfe0, false);
+  })();
+
+  // ---- Wilderness encounters: fill the empty gaps so travel always has something ----
+  // A jittered ~22-tile lattice over the whole map. At each cell we drop ONE unique
+  // encounter from the 150-entry catalog — but only where there isn't already content
+  // nearby (a coarse presence grid of existing mobs/nodes/structures), so the dense
+  // regions are left alone and only the empty wilds get topped up. Entries are matched
+  // to the local biome + region tier so nothing lands out of place.
+  (function populateWilderness() {
+    const G = 8, gw = Math.ceil(WORLD_W / G), gh = Math.ceil(WORLD_H / G);
+    const pres = new Uint8Array(gw * gh);
+    const markP = (x, y) => { pres[((y / G) | 0) * gw + ((x / G) | 0)] = 1; };
+    for (const o of objects) if (o.type === 'resource' || o.type === 'structure') markP(o.x, o.y);
+    for (const s of enemySpawns) markP(s.x, s.y);
+    const nearContent = (x, y) => { const gx = (x / G) | 0, gy = (y / G) | 0; for (let a = -1; a <= 1; a++) for (let b = -1; b <= 1; b++) { const nx = gx + a, ny = gy + b; if (nx >= 0 && ny >= 0 && nx < gw && ny < gh && pres[ny * gw + nx]) return true; } return false; };
+    const tierOf = {}; for (const a of REGION_ANCHORS) { const m = parseInt(String(a.level), 10) || 1; tierOf[a.name] = m >= 45 ? 'high' : m >= 20 ? 'mid' : 'low'; }
+    const localBiome = (x, y) => {
+      for (let r = 1; r <= 3; r++) for (const [a, b] of [[r, 0], [-r, 0], [0, r], [0, -r]]) { const t = getT(x + a, y + b); if (t === T.WATER) return 'water'; if (t === T.ROCK) return 'rock'; if (t === T.SWAMP) return 'swamp'; if (t === T.SAND) return 'sand'; }
+      for (let a = -3; a <= 3; a++) for (let b = -3; b <= 3; b++) { const o = objectAt.get(okey(x + a, y + b)); if (o && o.skill === 'Woodcutting') return 'forest'; }
+      return 'grass';
+    };
+    const biomeOK = (e, b) => e.biome === 'any' || e.biome === b || (e.biome === 'forest' && b === 'grass') || (e.biome === 'grass' && b === 'forest');
+    const tierOK = (e, t) => e.tier === 'any' || e.tier === t || (t === 'mid' && e.tier === 'low') || (t === 'high' && e.tier === 'mid');
+    const S = 22;
+    for (let gy0 = 60; gy0 < WORLD_H - 60; gy0 += S) for (let gx0 = 60; gx0 < WORLD_W - 60; gx0 += S) {
+      const cx = Math.round(gx0 + (rng() * 2 - 1) * 7), cy = Math.round(gy0 + (rng() * 2 - 1) * 7);
+      let tx = -1, ty = -1;
+      for (let r = 0; r < 4 && tx < 0; r++) for (const [a, b] of [[0, 0], [r, 0], [-r, 0], [0, r], [0, -r]]) { const x = cx + a, y = cy + b; if (getT(x, y) === T.GRASS && !occupied.has(okey(x, y))) { tx = x; ty = y; break; } }
+      if (tx < 0 || nearContent(tx, ty)) continue;
+      const tier = tierOf[regionAt(tx, ty)] || 'low', biome = localBiome(tx, ty);
+      let e = null;
+      for (let k = 0; k < 10; k++) { const c = WILDERNESS[(rng() * WILDERNESS.length) | 0]; if (biomeOK(c, biome) && tierOK(c, tier)) { e = c; break; } }
+      if (!e) continue;
+      if (e.kind === 'fight' && e.base) {
+        const n = e.n || 1;
+        for (let m = 0; m < n; m++) { const ox = tx + (m ? (rng() * 3 - 1) | 0 : 0), oy = ty + (m ? (rng() * 3 - 1) | 0 : 0); if (landish(ox, oy) && !occupied.has(okey(ox, oy))) { enemySpawns.push({ type: e.base, x: ox, y: oy, name: e.name }); occupied.add(okey(ox, oy)); } }
+      } else {
+        placeObj({ x: tx, y: ty, type: 'structure', label: e.name, color: e.color, skill: null, blocking: false, depleted: false, examine: e.blurb, loot: e.loot || null, wild: e.kind });
+      }
+      markP(tx, ty);
+    }
   })();
 
   // ---- Interactive shortcuts: repairable marker on the shore + the gap to span ----

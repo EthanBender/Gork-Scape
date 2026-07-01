@@ -9,10 +9,26 @@ import { GameData } from '../data/gameData.js';
 import { canonicalId } from '../data/idAliases.js';
 import { Game, addItem, firstFreeSlot } from '../engine/state.js';
 import { marketBias, activeEvent } from './worldEvents.js'; // [world-continuity] event-driven demand
-import { serverLinkStatus, postOrder } from '../net/serverLink.js'; // [Phase 4] shared-server execution
+import { serverLinkStatus, postOrder, getOffers, collectOrder, cancelOrder } from '../net/serverLink.js'; // [Phase 4] shared-server execution
 
 const isOnline = () => serverLinkStatus() === 'online';
 const traderId = () => Game.account || 'player';
+
+// [Phase 4] Cache of THIS player's resting orders on the shared server, so the
+// (synchronous) UI can render them. Refreshed after every trade/collect/cancel
+// and on a slow poll (to notice late fills from other players).
+let serverOffers = [];
+async function refreshServerOffers() {
+  if (!isOnline()) { serverOffers = []; return; }
+  serverOffers = await getOffers(traderId());
+  Game.refresh();
+}
+let _offerPollStarted = false;
+function ensureOfferPoll() {
+  if (_offerPollStarted) return;
+  _offerPollStarted = true;
+  setInterval(() => { if (isOnline()) refreshServerOffers(); }, 4000);
+}
 
 const COINS = 'coins';
 
@@ -196,6 +212,16 @@ export function ensureLiquidity(itemId) {
 // ---- player active offers (resting orders owned by the player) ----------------
 const playerOrders = new Map(); // orderId -> { order, side, itemId, escrowCoins }
 export function playerOffers() {
+  // Online: the shared server owns the resting orders (cached in serverOffers).
+  if (isOnline()) {
+    return serverOffers.map((o) => ({
+      id: o.id, side: o.side, itemId: o.itemId,
+      qty: o.qty, filled: o.filled, limit: o.limit,
+      coinsOwed: o.coinsOwed, itemsOwed: o.itemsOwed,
+      escrowCoins: o.side === 'buy' ? o.qty * o.limit : 0,
+      complete: o.qty === 0,
+    }));
+  }
   return [...playerOrders.values()].map(({ order, side, itemId, escrowCoins }) => ({
     id: order.id, side, itemId,
     qty: order.qty, filled: order.filled, limit: order.limit,
@@ -212,18 +238,24 @@ async function buyOnline(cid, qty, maxPrice, escrowed) {
   try {
     const r = await postOrder('buy', cid, qty, maxPrice, traderId());
     if (!r) throw new Error('server unreachable');
-    const filled = r.filled || 0;
-    const spent = r.gross || 0;
+    const filled = r.filled || 0;                     // filled immediately
+    const spent = r.gross || 0;                       // coins spent on those fills
     if (filled > 0) addItem(cid, filled);
-    const refund = Math.max(0, escrowed - spent);
-    if (refund > 0) addCoins(refund);                 // savings + any unfilled coins
+    // Refund only the SAVINGS on the immediate fills (executed at/below maxPrice).
+    // The remaining (qty-filled)*maxPrice stays escrowed in the resting order; it
+    // fills later at exactly maxPrice, so no further refund — just collect items.
+    const refund = Math.max(0, filled * maxPrice - spent);
+    if (refund > 0) addCoins(refund);
     if (typeof r.guide === 'number') market.setGuide(cid, r.guide);
+    const rest = r.remaining || 0;
     Game.log(`GE buy: ${filled}/${qty} ${itemName(cid)} filled on the shared market`
-      + (filled < qty ? `, ${qty - filled} unfilled (refunded)` : '') + '.');
+      + (rest ? `, ${rest} resting` : '') + '.');
   } catch {
     addCoins(escrowed);                               // reconcile: nothing executed
     Game.log(`GE buy could not reach the shared market — your ${escrowed} coins were refunded.`);
   }
+  ensureOfferPoll();
+  await refreshServerOffers();
   Game.refresh();
 }
 
@@ -232,16 +264,20 @@ async function sellOnline(cid, qty, minPrice) {
     const r = await postOrder('sell', cid, qty, minPrice, traderId());
     if (!r) throw new Error('server unreachable');
     const filled = r.filled || 0;
-    const gross = r.gross || 0;
+    const gross = r.gross || 0;                        // coins from immediate fills
     const { net, tax } = gross > 0 ? creditSale(gross) : { net: 0, tax: 0 };
-    if (filled < qty) addItem(cid, qty - filled);     // return the unsold escrow
+    // The unsold remainder RESTS (escrow stays as items in the resting order); it
+    // is not returned — it fills later and the coins are collected then.
     if (typeof r.guide === 'number') market.setGuide(cid, r.guide);
+    const rest = r.remaining || 0;
     Game.log(`GE sell: ${filled}/${qty} ${itemName(cid)} → ${net} coins`
-      + (tax ? ` (−${tax} tax)` : '') + (filled < qty ? `, ${qty - filled} unsold (returned)` : '') + '.');
+      + (tax ? ` (−${tax} tax)` : '') + (rest ? `, ${rest} resting` : '') + '.');
   } catch {
     addItem(cid, qty);                                // reconcile: return escrowed items
     Game.log(`GE sell could not reach the shared market — your ${itemName(cid)} was returned.`);
   }
+  ensureOfferPoll();
+  await refreshServerOffers();
   Game.refresh();
 }
 
@@ -299,6 +335,7 @@ export function sellOffer(itemId, qty, minPrice) {
 
 // ---- collect owed goods from a resting order that filled later ----------------
 export function collectOffer(orderId) {
+  if (isOnline()) { collectOnline(orderId); return { ok: true, pending: true }; }
   const rec = playerOrders.get(orderId);
   if (!rec) return { ok: false };
   const { order, side, itemId } = rec;
@@ -309,8 +346,39 @@ export function collectOffer(orderId) {
   return { ok: true };
 }
 
+// [Phase 4] Online collect: pull owed goods for a resting order from the server
+// and settle them locally (buy → items, sell → coins with tax).
+async function collectOnline(orderId) {
+  const r = await collectOrder(orderId, traderId());
+  if (r) {
+    if (r.side === 'buy' && r.items > 0) addItem(r.itemId, r.items);
+    if (r.side === 'sell' && r.coins > 0) creditSale(r.coins);
+    if ((r.items > 0) || (r.coins > 0)) Game.log(`Collected from your ${itemName(r.itemId)} offer.`);
+  }
+  await refreshServerOffers();
+  Game.refresh();
+}
+
+// [Phase 4] Online cancel: hand back the unfilled escrow + any uncollected owed.
+async function cancelOnline(orderId) {
+  const r = await cancelOrder(orderId, traderId());
+  if (r) {
+    if (r.side === 'buy') {
+      if (r.itemsOwed > 0) addItem(r.itemId, r.itemsOwed);   // already-filled items
+      addCoins(r.remaining * r.limit);                       // unfilled coin escrow back
+    } else {
+      if (r.coinsOwed > 0) creditSale(r.coinsOwed);          // already-sold coins (taxed)
+      if (r.remaining > 0) addItem(r.itemId, r.remaining);   // unsold item escrow back
+    }
+    Game.log('GE offer cancelled.');
+  }
+  await refreshServerOffers();
+  Game.refresh();
+}
+
 // ---- cancel: refund the unfilled escrow -------------------------------------
 export function cancelOffer(orderId) {
+  if (isOnline()) { cancelOnline(orderId); return { ok: true, pending: true }; }
   const rec = playerOrders.get(orderId);
   if (!rec) return { ok: false };
   const { order, side, itemId } = rec;

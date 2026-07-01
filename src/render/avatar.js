@@ -492,6 +492,11 @@ export function drawAvatar(g, cx, cy, state = {}) {
   const swing = state.anim === 'attack' ? weaponAngle(wStyle, p.strike)
     : skilling ? skillAngle(state.skillType, p.strike, state.t || 0)
     : (p.armSwing || 0) * 0.4 - 0.2;
+  // Pole weapons (spear/halberd) look wrong jutting straight out at rest — carry
+  // a held spear UPRIGHT (near-vertical, tip up) while the arm keeps `swing`.
+  // Mid-attack/skilling keep the real swing so the stab still reads.
+  const spearUpright = state.anim !== 'attack' && !skilling && drawWeap && drawWeap.kind === 'spear';
+  const weapAng = spearUpright ? 1.45 : swing;
 
   // ---- boss aura (all body types): a pulsing glow behind the rig ----------
   if (state.boss) {
@@ -547,7 +552,7 @@ export function drawAvatar(g, cx, cy, state = {}) {
       const wristAng = swing;
       const [whx, why] = drawArm(ctx, TORSO_W / 2 - 0.5, wristAng, armCol);
       if (skilling) drawArm(ctx, -TORSO_W / 2 + 1, wristAng - 0.15, armCol); // second hand on the tool
-      drawWeapon(ctx, whx, why, wristAng, drawWeap);
+      drawWeapon(ctx, whx, why, weapAng, drawWeap);
     }
   } else {
     // PROFILE (E/W): far limbs first, then torso/head, then near limbs
@@ -569,7 +574,7 @@ export function drawAvatar(g, cx, cy, state = {}) {
     } else {
       const nearAng = swing;
       const [whx, why] = drawArm(ctx, 1.5, nearAng, armCol);
-      drawWeapon(ctx, whx, why, nearAng, drawWeap);
+      drawWeapon(ctx, whx, why, weapAng, drawWeap);
     }
   }
 

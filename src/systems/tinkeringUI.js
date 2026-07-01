@@ -103,7 +103,7 @@ function render() {
   }
 }
 
-function openWorkbench() {
+export function openWorkbench() {
   let overlay = document.getElementById('tinker-overlay');
   if (!overlay) {
     overlay = document.createElement('div');
@@ -133,15 +133,12 @@ function openWorkbench() {
 // Re-render on each game refresh if the workbench is open (live have/need).
 export function refreshWorkbench() { render(); }
 
+// [economy lane] The workbench is now a WORLD OBJECT you click (placed in map.js
+// buildTown, opened via the main.js interaction hook) — matching the design doc's
+// "Tinker's Workbench station", not a floating HUD button. This just readies the
+// overlay's CSS at boot; openWorkbench() builds/opens the popup on demand.
 export function initTinkerHud() {
   if (mounted) return;
   mounted = true;
   injectCss();
-  const host = document.getElementById('game-panel') || document.body;
-  const btn = document.createElement('button');
-  btn.id = 'tinker-btn';
-  btn.textContent = '🔧 Tinker';
-  btn.title = "Open the Tinker's Workbench";
-  btn.onclick = openWorkbench;
-  host.appendChild(btn);
 }

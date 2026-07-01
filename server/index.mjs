@@ -88,6 +88,28 @@ function ensureServerLiquidity(itemId) {
   market.place('buy', itemId, MM_DEPTH, Math.max(1, Math.round(g * (1 - MM_SPREAD))), MM);
 }
 
+// Registry of players' resting orders. We retain the order OBJECT (same reference
+// the matching engine mutates) even after the engine splices a fully-filled order
+// out of the book — so its accrued `coinsOwed`/`itemsOwed` stay collectable. This
+// is in-memory only: resting orders don't survive a server restart yet (guide
+// prices do). Moving escrow fully server-side is the step that fixes that.
+const placedOrders = new Map();  // orderId -> order object
+const traderOrders = new Map();  // trader -> Set<orderId>
+function registerOrder(order, trader) {
+  placedOrders.set(order.id, order);
+  if (!traderOrders.has(trader)) traderOrders.set(trader, new Set());
+  traderOrders.get(trader).add(order.id);
+}
+function deregisterOrder(orderId, trader) {
+  placedOrders.delete(orderId);
+  const s = traderOrders.get(trader);
+  if (s) s.delete(orderId);
+}
+function ownedOrder(orderId, trader) {
+  const o = placedOrders.get(orderId);
+  return o && o.trader === trader ? o : null;
+}
+
 // Authoritative price movement. Runs every loop with NO client required: guides
 // mean-revert toward their base value (biased by any live world event) plus a
 // small bounded random walk. Same shape as the client's offline drift — here it
@@ -239,17 +261,63 @@ const server = http.createServer(async (req, res) => {
       if (!['buy', 'sell'].includes(side) || !itemId || !(qty > 0) || !(limit > 0)) {
         return sendJson(res, 400, { error: 'need { side:"buy"|"sell", itemId, qty>0, limit>0 }' });
       }
+      const who = trader || 'player';
       ensureServerLiquidity(itemId);                         // shared market-maker depth
-      const { order, fills } = market.place(side, itemId, qty, limit, trader || 'player');
-      // Any unfilled remainder now RESTS in the shared book, owned by this trader —
-      // so another player's order can cross it later (real player-to-player matching).
-      // The client tracks it via /api/offers and settles late fills via /api/collect.
+      const { order, fills } = market.place(side, itemId, qty, limit, who);
       const gross = fills.reduce((s, f) => s + f.price * f.qty, 0);
+      // The client settles these IMMEDIATE fills from the response; clear the
+      // order's owed so they aren't double-collected, then register any resting
+      // remainder so later cross-fills (from other players) accrue fresh owed.
+      order.coinsOwed = 0; order.itemsOwed = 0;
+      if (order.qty > 0) registerOrder(order, who);
       return sendJson(res, 200, {
         orderId: order.id, side, itemId,
         filled: order.filled, remaining: order.qty, gross, fills,
         guide: market.guidePrice(itemId),
       });
+    } catch (e) { return sendJson(res, 400, { error: e.message }); }
+  }
+
+  // A trader's resting orders (still open OR filled-but-uncollected).
+  if (path === '/api/offers') {
+    const trader = url.searchParams.get('trader');
+    const ids = traderOrders.get(trader) || new Set();
+    const offers = [];
+    for (const id of ids) {
+      const o = placedOrders.get(id);
+      if (!o) continue;
+      offers.push({ id: o.id, side: o.side, itemId: o.itemId, qty: o.qty, filled: o.filled,
+        limit: o.limit, coinsOwed: o.coinsOwed, itemsOwed: o.itemsOwed });
+    }
+    return sendJson(res, 200, { offers });
+  }
+
+  // Collect owed goods from a resting order that filled (partially or fully).
+  if (path === '/api/collect' && req.method === 'POST') {
+    try {
+      const { orderId, trader } = JSON.parse(await readBody(req) || '{}');
+      const o = ownedOrder(orderId, trader);
+      if (!o) return sendJson(res, 404, { error: 'no such order' });
+      const coins = o.coinsOwed, items = o.itemsOwed;
+      o.coinsOwed = 0; o.itemsOwed = 0;
+      if (o.qty === 0) deregisterOrder(orderId, trader); // fully filled + collected → gone
+      return sendJson(res, 200, { side: o.side, itemId: o.itemId, coins, items });
+    } catch (e) { return sendJson(res, 400, { error: e.message }); }
+  }
+
+  // Cancel a resting order: hand back the unfilled remainder (for the client to
+  // refund escrow) plus any already-filled-but-uncollected owed.
+  if (path === '/api/cancel' && req.method === 'POST') {
+    try {
+      const { orderId, trader } = JSON.parse(await readBody(req) || '{}');
+      const o = ownedOrder(orderId, trader);
+      if (!o) return sendJson(res, 404, { error: 'no such order' });
+      market.cancel(orderId); // remove from the book if still resting
+      const out = { side: o.side, itemId: o.itemId, remaining: o.qty, limit: o.limit,
+        coinsOwed: o.coinsOwed, itemsOwed: o.itemsOwed };
+      o.coinsOwed = 0; o.itemsOwed = 0; o.qty = 0;
+      deregisterOrder(orderId, trader);
+      return sendJson(res, 200, out);
     } catch (e) { return sendJson(res, 400, { error: e.message }); }
   }
 

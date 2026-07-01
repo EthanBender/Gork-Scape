@@ -74,6 +74,27 @@ export async function postOrder(side, itemId, qty, limit, trader) {
   }
 }
 
+async function postJson(url, body) {
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), FETCH_TIMEOUT_MS);
+  try {
+    const res = await fetch(url, {
+      method: 'POST', signal: ctrl.signal, headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch { return null; } finally { clearTimeout(t); }
+}
+
+// A trader's resting orders on the shared server (open + filled-but-uncollected).
+export async function getOffers(trader) {
+  const data = await fetchJson(`/api/offers?trader=${encodeURIComponent(trader)}`);
+  return (data && Array.isArray(data.offers)) ? data.offers : [];
+}
+export function collectOrder(orderId, trader) { return postJson('/api/collect', { orderId, trader }); }
+export function cancelOrder(orderId, trader) { return postJson('/api/cancel', { orderId, trader }); }
+
 function setStatus(next) {
   if (next === status) return;
   status = next;

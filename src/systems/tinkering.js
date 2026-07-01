@@ -88,6 +88,11 @@ const MATERIALS = {
   blackpowder:  { name: 'Blackpowder',    color: 0x1c1c22, value: 30 },
   scrap_metal:  { name: 'Scrap Metal',    color: 0x777066, value: 8 },
   machine_oil:  { name: 'Machine Oil',    color: 0x6a5a2a, value: 12 },
+  // raw gatherables (from the new world nodes — the cross-skill sources)
+  saltpeter:    { name: 'Saltpeter',      color: 0xd8d0b8, value: 10 },
+  sulfur:       { name: 'Sulfur',         color: 0xd8c84a, value: 10 },
+  tree_resin:   { name: 'Tree Resin',     color: 0xc98a3a, value: 8 },
+  sparkstone:   { name: 'Sparkstone',     color: 0x6a8acf, value: 45 },
   // components
   metal_casing: { name: 'Metal Casing',   color: 0xa08050, value: 20 },
   iron_barrel:  { name: 'Iron Barrel',    color: 0x8a8a94, value: 40 },
@@ -104,6 +109,23 @@ const MATERIALS = {
 for (const [id, d] of Object.entries(MATERIALS)) {
   reg(id, { slot: null, stackable: true, value: d.value, material: true, ...d });
 }
+
+// Kit tools (gather nodes require the matching `tool`) + powered out-tools that
+// boost OTHER skills. Non-stackable; sit in the inventory. gathering.hasTool reads
+// the `tool` property. Out-tools' effects are applied where those skills resolve.
+const TOOL_ITEMS = {
+  rusty_wrench:    { name: 'Rusty Wrench',       color: 0x8a7a5a, tool: 'scavenge', value: 20 },
+  gum_tap:         { name: 'Gum Tap',            color: 0x9a7a4a, tool: 'tap',      value: 25 },
+  chem_kit:        { name: 'Chemistry Kit',      color: 0x6aa06a, tool: 'chem_kit', value: 60 },
+  heat_tongs:      { name: 'Heat Tongs',         color: 0xc25a3a, tool: 'heat_tongs', value: 70 },
+  prospector_lens: { name: "Prospector's Lens",  color: 0xc9b45a, tool: 'prospect', value: 240, boosts: 'mining' },
+  clockwork_hatchet: { name: 'Clockwork Hatchet', color: 0xb0894a, tool: 'axe',     value: 260, boosts: 'woodcutting' },
+  powered_pickaxe: { name: 'Powered Pickaxe',    color: 0x9a9aa8, tool: 'pickaxe',  value: 280, boosts: 'mining' },
+};
+for (const [id, d] of Object.entries(TOOL_ITEMS)) {
+  reg(id, { slot: null, stackable: false, value: d.value, tinkerTool: true, ...d });
+}
+export const OUT_TOOLS = TOOL_ITEMS;
 
 // Flexible material matcher: {any:'log'} matches any log id, etc. Keeps the recipe
 // web robust against the legacy-vs-canonical id split (logs, coal_ore, …).
@@ -134,7 +156,17 @@ function spendMaterial(inp, qty) {
 // ---- foundational processing recipes (each pulls from another skill) ----
 recipe('char_log',   { output: 'charcoal',    outQty: 2, level: 1,  xp: 8,  inputs: [{ any: 'log', qty: 1 }] });                       // Woodcutting/Firemaking
 recipe('mill_scrap', { output: 'scrap_metal', outQty: 3, level: 3,  xp: 10, inputs: [{ any: 'bar', qty: 1 }] });                        // Mining/Smithing
-recipe('blackpowder',{ output: 'blackpowder', outQty: 3, level: 12, xp: 24, unlock: 'tinkering_powder', inputs: [{ id: 'charcoal', qty: 2 }, { any: 'coal', qty: 1 }] });
+// Real gunpowder = saltpeter + sulfur + charcoal (mine the first two, char the
+// third). This ties blackpowder — the keystone consumable — to Mining + Firemaking.
+recipe('blackpowder',{ output: 'blackpowder', outQty: 3, level: 12, xp: 24, unlock: 'tinkering_powder', inputs: [{ id: 'saltpeter', qty: 1 }, { id: 'sulfur', qty: 1 }, { id: 'charcoal', qty: 1 }] });
+// Kit tools (unlock gathering) + powered out-tools (boost other skills).
+recipe('rusty_wrench',    { output: 'rusty_wrench',    outQty: 1, level: 1,  xp: 15, inputs: [{ any: 'bar', qty: 1 }, { id: 'scrap_metal', qty: 2 }] });
+recipe('gum_tap',         { output: 'gum_tap',         outQty: 1, level: 6,  xp: 20, inputs: [{ any: 'bar', qty: 1 }, { any: 'log', qty: 1 }] });
+recipe('chem_kit',        { output: 'chem_kit',        outQty: 1, level: 18, xp: 45, inputs: [{ id: 'metal_casing', qty: 2 }, { id: 'sulfur', qty: 2 }] });
+recipe('heat_tongs',      { output: 'heat_tongs',      outQty: 1, level: 30, xp: 55, inputs: [{ id: 'steel_bar', qty: 1 }, { id: 'leather_grip', qty: 1 }] });
+recipe('prospector_lens', { output: 'prospector_lens', outQty: 1, level: 35, xp: 130, unlock: 'tinkering_tools', inputs: [{ id: 'sparkstone', qty: 1 }, { id: 'brass_cog', qty: 2 }, { any: 'bar', qty: 2 }] });
+recipe('clockwork_hatchet', { output: 'clockwork_hatchet', outQty: 1, level: 40, xp: 160, unlock: 'tinkering_tools', inputs: [{ id: 'steam_piston', qty: 1 }, { id: 'coil_spring', qty: 2 }, { any: 'log', qty: 3 }] });
+recipe('powered_pickaxe', { output: 'powered_pickaxe', outQty: 1, level: 45, xp: 180, unlock: 'tinkering_tools', inputs: [{ id: 'steam_piston', qty: 1 }, { id: 'metal_casing', qty: 2 }, { id: 'sparkstone', qty: 1 }] });
 recipe('metal_casing', { output: 'metal_casing', outQty: 2, level: 6,  xp: 14, inputs: [{ any: 'bar', qty: 1 }] });
 recipe('iron_barrel',  { output: 'iron_barrel',  outQty: 1, level: 15, xp: 30, inputs: [{ id: 'iron_bar', qty: 2 }] });
 recipe('coil_spring',  { output: 'coil_spring',  outQty: 2, level: 10, xp: 16, inputs: [{ any: 'bar', qty: 1 }, { id: 'scrap_metal', qty: 1 }] });
