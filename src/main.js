@@ -81,7 +81,12 @@ let playerLabel = null;
 let projectiles = []; // [character-render lane] in-flight arrows/bolts: {x,y,tx,ty,at,dur}
 
 const MINI_SIZE = 168; // local minimap size in px
-const MINI_SPT = 3;    // minimap pixels per world tile (zoom)
+// [char-render] minimap zoom: px per world tile. Scroll over the minimap steps
+// through these; wider (smaller) shows more world, closer (larger) shows detail
+// and reveals more POI icons (shops appear only when zoomed in — declutter).
+const MINI_ZOOMS = [2, 3, 5, 8];
+let miniZoomI = 1;              // index into MINI_ZOOMS (default 3 px/tile)
+let MINI_SPT = MINI_ZOOMS[miniZoomI];
 const hexCss = (n) => '#' + n.toString(16).padStart(6, '0');
 
 // ---- camera controls (zoom + rotate around the player) --------------------
@@ -699,6 +704,12 @@ function onPointerDown(pointer) {
 
 // Mouse wheel zooms toward / away from the player.
 function onWheel(pointer, over, dx, dy) {
+  // scrolling over the minimap zooms the MINIMAP (not the world camera)
+  if (pointerOnMinimap(pointer.x, pointer.y)) {
+    miniZoomI = Phaser.Math.Clamp(miniZoomI + (dy > 0 ? -1 : 1), 0, MINI_ZOOMS.length - 1);
+    MINI_SPT = MINI_ZOOMS[miniZoomI];
+    return;
+  }
   const f = dy > 0 ? 1 - ZOOM_STEP : 1 + ZOOM_STEP;
   targetZoom = Phaser.Math.Clamp(targetZoom * f, ZOOM_MIN, ZOOM_MAX);
 }
@@ -808,6 +819,9 @@ function talkTo(npc) {
   if (npc.id === 'exchange_merchant') { openExchange(); panelAnchor = { tab: 'ge', x: npc.tileX, y: npc.tileY, range: 3 }; }
   else if (npc.id && npc.id.startsWith('shopkeeper_')) { openShop(npc.id.replace('shopkeeper_', '')); panelAnchor = { tab: 'shop', x: npc.tileX, y: npc.tileY, range: 3 }; }
   else if (npc.id === 'banker') { openBank(); panelAnchor = { tab: 'bank', x: npc.tileX, y: npc.tileY, range: 3 }; }
+  // [economy lane] Sprocket the Tinker — talking opens his Workbench (the overlay
+  // itself gates on the intro-quest unlock).
+  else if (npc.id === 'sprocket') { openWorkbench(); }
 }
 
 // ---------------------------------------------------------------- tick logic
