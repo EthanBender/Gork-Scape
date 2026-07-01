@@ -1,0 +1,51 @@
+# Deploy Goblin Empire to GitHub Pages — but ONLY when the boot smoke-check passes.
+# This is the "green master → live URL" rule from COORDINATION.md, automated.
+# The game is a static site (no build step), so deploy = publish the repo as-is.
+#
+# To turn it on: push this repo to GitHub, then Settings → Pages → Source = "GitHub
+# Actions". Every push to master then runs the gate and (if green) publishes.
+
+name: Deploy
+
+on:
+  push:
+    branches: [master, main]
+  workflow_dispatch: {}
+
+# Least-privilege token that Pages deploy needs.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One live deploy at a time; a newer push supersedes an in-flight one.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  # GATE: the same smoke-check we run locally. If imports/exports or syntax are
+  # broken, the deploy never happens — master stays deployable.
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+      - name: Boot smoke-check (syntax + import/export consistency)
+        run: node scripts/smoke.mjs
+
+  deploy:
+    needs: smoke            # only deploy if the gate passed
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - name: Upload static site (repo root — vanilla ES modules, no build)
+        uses: actions/upload-pages-artifact@v3
+        with: { path: '.' }
+      - id: deployment
+        uses: actions/deploy-pages@v4

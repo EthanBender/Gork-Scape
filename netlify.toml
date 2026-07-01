@@ -1,0 +1,22 @@
+# Netlify config — zero-build static deploy of Goblin Empire.
+# Option A: drag the project folder onto app.netlify.com/drop (no git needed).
+# Option B: "Add new site → Import from Git", pick this repo. These settings apply.
+#
+# The game is vanilla ES modules + static JSON, so there's nothing to build —
+# Netlify just serves the repo root.
+
+[build]
+  publish = "."
+  command = ""            # no build step
+
+# Run the boot smoke-check as a deploy gate in Netlify too (optional but nice):
+# uncomment to block a broken deploy.
+# [build]
+#   command = "node scripts/smoke.mjs"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # ES modules + JSON need correct content types; Netlify handles this, but be
+    # explicit that we don't want aggressive caching of the fast-moving dev build.
+    Cache-Control = "no-cache"
