@@ -20,7 +20,7 @@
 // (onTalk/onArrive); kill is tallied at the kill site; obtain/level are checked
 // live by a once-per-tick evaluate().
 
-import { Game, addItem, grantXp } from '../engine/state.js';
+import { Game, addItem, grantXp, grantBankSpace } from '../engine/state.js';
 
 let QUESTS = [];
 const Q_BY_ID = new Map();
@@ -172,12 +172,19 @@ function completeQuest(id, speaker) {
   if (r.coins) addItem('coins', r.coins);
   if (Array.isArray(r.items)) for (const it of r.items) addItem(it.id, it.qty || 1);
   if (Array.isArray(r.xp)) for (const x of r.xp) grantXp(x.skill, x.amount);
+  // World-payoff rewards: more bank space, and opening a real world shortcut.
+  // grantBankSpace lives in state.js; opening a shortcut is a world action, so it
+  // routes through a hook main.js installs (Game.grantShortcut) to avoid a cycle.
+  if (r.bankSpace) grantBankSpace(r.bankSpace);
+  if (r.openShortcut && Game.grantShortcut) Game.grantShortcut(r.openShortcut);
   const lines = [];
   if (q.outro) lines.push(q.outro);
   const bits = [];
   if (r.coins) bits.push(`${r.coins} coins`);
   if (Array.isArray(r.xp)) for (const x of r.xp) bits.push(`${x.amount} ${x.skill} xp`);
   if (Array.isArray(r.items)) for (const it of r.items) bits.push(`${it.qty || 1}× ${it.id}`);
+  if (r.bankSpace) bits.push(`+${r.bankSpace} bank slots`);
+  if (r.openShortcut) bits.push('a new shortcut opens');
   if (bits.length) lines.push(`Reward: ${bits.join(', ')}.`);
   emitDialogue(speaker || q.giver?.name || q.name, lines);
   Game.log(`✅ Quest complete: ${q.name}!`);

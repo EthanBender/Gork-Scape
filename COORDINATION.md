@@ -277,6 +277,18 @@ Client-side until Phase 4; each phase keeps the player-freeze + world-continuity
     still runs standalone; wiring it to the server is the next step via
     `src/net/marketTransport.js` (add `NetworkMarketTransport`). Run: `node server/index.mjs`.
     See `server/README.md` + `docs/MULTIPLAYER_ARCHITECTURE.md`.
+  - **STEP 1 (client wiring) LANDED (2026-07-01) — first client↔server link:**
+    `src/net/serverLink.js` (NEW) makes the GE **guide prices the player sees the SHARED,
+    always-on ones** from the server. On boot (`main.js create()` → `connectServerLink()`)
+    it probes `/api/prices`, mirrors the server's guide table into the local `market`, polls
+    every 5s, and shows a green **🌐 Shared World** topbar chip. Server got `GET /api/prices`
+    (all guides). ⚠️ **Fully fallback-safe / additive:** no server reachable (e.g. served via
+    python dev server) → silent LOCAL mode, chip hidden, client behaves exactly as before
+    (defensive `fetch` w/ 3s timeout + null-guards). Escrow/settlement/inventory still LOCAL —
+    only the price feed is networked; moving the order book + player state server-side is the
+    next step. Verified in-browser (served by the node server): chip shows "🌐 Shared World",
+    a server-side trade moved bronze_bar 18→24 and the client mirrored it on the next poll
+    (`synced:true`), no console errors. Shared main.js edit: 1 import + 1 call, tagged `[economy lane]`.
 - **Phase 5 — accounts, presence, multiplayer.** Real auth (not just a name),
   see-other-players, server-validated actions, DB persistence, reconnection.
 - **Phase 6 — scale & ops.** Hosting/deploy, anti-cheat, interest management/sharding,
