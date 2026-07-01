@@ -92,21 +92,20 @@
   #panel-content { flex: 1 1 auto; overflow-y: auto; padding: 12px; }
 
   /* Skills */
-  .skills-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .skill-cell { display: flex; gap: 8px; padding: 7px;
+  /* Compact skill tiles: icon · name · level + a thin xp bar. All ~18 fit without scrolling. */
+  .skills-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+  .skill-cell { display: grid; grid-template-columns: 16px 1fr auto; align-items: center; column-gap: 6px;
+    padding: 5px 7px 6px;
     background: linear-gradient(180deg, var(--panel2), var(--panel));
-    border: 1px solid var(--bevel-lo); border-radius: 5px; box-shadow: var(--raise);
-    transition: transform .1s, box-shadow .1s; }
-  .skill-cell:hover { transform: translateY(-1px);
-    box-shadow: var(--raise), 0 3px 8px rgba(0,0,0,.35); }
-  .skill-icon { width: 24px; height: 24px; border-radius: 4px; flex: 0 0 24px; margin-top: 2px;
-    border: 1px solid var(--bevel-lo);
-    box-shadow: inset 0 1px 2px rgba(255,255,255,.35), inset 0 -2px 4px rgba(0,0,0,.4); }
-  .skill-info { flex: 1; min-width: 0; }
-  .skill-top { display: flex; justify-content: space-between; font-size: 12px; }
-  .skill-top .lvl { color: var(--gold); font-weight: 700; text-shadow: 0 1px 0 #000; }
-  .xpbar { height: 7px; background: var(--panel-lo); border-radius: 4px; margin: 4px 0; overflow: hidden;
-    box-shadow: var(--sink); }
+    border: 1px solid var(--bevel-lo); border-radius: 4px; box-shadow: var(--raise);
+    transition: box-shadow .1s; }
+  .skill-cell:hover { box-shadow: var(--raise), inset 0 0 0 1px rgba(232,198,90,.35); }
+  .skill-icon { width: 16px; height: 16px; border-radius: 3px; border: 1px solid var(--bevel-lo);
+    box-shadow: inset 0 1px 1px rgba(255,255,255,.3), inset 0 -1px 2px rgba(0,0,0,.4); }
+  .skill-name { font-size: 11px; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .skill-cell .lvl { font-size: 12px; font-weight: 700; color: var(--gold); text-shadow: 0 1px 0 #000; }
+  .skill-cell .xpbar { grid-column: 1 / -1; height: 3px; margin: 4px 0 0; }
+  .xpbar { height: 7px; background: var(--panel-lo); border-radius: 3px; overflow: hidden; box-shadow: var(--sink); }
   .xpfill { height: 100%; background: linear-gradient(180deg,#9cd86a,#5a8f3d);
     box-shadow: inset 0 1px 0 rgba(255,255,255,.4); }
   .xptext { font-size: 10px; color: var(--muted); }

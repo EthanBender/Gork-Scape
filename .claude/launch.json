@@ -114,6 +114,15 @@
         "5205"
       ],
       "port": 5205
+    },
+    {
+      "name": "goblin-empire-authtest",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "server/index.mjs",
+        "5206"
+      ],
+      "port": 5206
     }
   ]
 }
