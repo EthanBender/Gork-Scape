@@ -384,6 +384,16 @@ Client-side until Phase 4; each phase keeps the player-freeze + world-continuity
   Rerouting would risk the legacy cook/smith branches; revisit with id migration.
 
 ## Change log
+- 2026-07-01 — Economy agent: **Skills panel compacted (owner: "too big, make it
+  fit without scrolling").** Redesigned the skill tiles from a tall stack (icon +
+  name + level + xp bar + xp text + "Next unlock" line) to a compact one-line tile:
+  **icon · name · level + a thin 3px xp bar**. The xp count and next-unlock moved to
+  the hover title; the tile is still click-to-open the full unlock guide. All 16
+  skills now fit the panel at a glance with room to spare (was scrolling). `panels.js`
+  `renderSkills` (new `skillCell()` helper) + compact `.skill-cell` grid CSS in
+  `index.html` (scoped `.skill-cell .xpbar` to 3px so other `.xpbar` uses are
+  untouched). My lane. Verified in-game: 16 tiles, no scrollbar, sleek. Same
+  compaction pattern can extend to other tabs on request.
 - 2026-07-01 — Economy agent: **bank quantity controls (OSRS-style).** The bank
   modal gained a **Move: [1] [5] [10] [X] [All]** row that sets what a left-click
   moves; the active mode highlights and the column titles update live ("left-click
