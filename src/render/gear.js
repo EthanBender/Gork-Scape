@@ -46,8 +46,8 @@ export function weaponHint(item) {
   else if (/spear|lance|hasta|halberd/.test(id)) { kind = 'spear'; style = 'stab'; len = 20; }
   else if (/dagger|knife|dirk/.test(id))    { kind = 'dagger'; style = 'stab';  len = 7; }
   else if (/scimitar|sword|blade|sabre/.test(id)) { kind = 'sword'; style = 'slash'; len = 14; }
+  else if (/pickaxe|pick/.test(id))         { kind = 'pick';   style = 'crush'; len = 12; } // before 'axe' — a pickaxe is not a hatchet
   else if (/hatchet|axe|cleaver/.test(id))  { kind = 'axe';    style = 'slash'; len = 12; }
-  else if (/pickaxe|pick/.test(id))         { kind = 'pick';   style = 'crush'; len = 12; }
   else if (/mace|hammer|maul|club|flail/.test(id)) { kind = 'mace'; style = 'crush'; len = 11; }
   else if (/staff|wand|rod/.test(id))       { kind = 'staff';  style = 'crush'; len = 18; }
   else                                      { kind = 'club';   style = 'crush'; len = 10; }

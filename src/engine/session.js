@@ -10,7 +10,10 @@
 // makes a later swap to a real server backend a localized change.
 
 import { Game } from './state.js';
-import { listAccounts, hasSave, savedAt, loadSave, saveGame, deleteSave } from './save.js';
+import {
+  listAccounts, hasSave, savedAt, loadSave, saveGame, deleteSave,
+  exportSaveString, importSaveString,
+} from './save.js';
 
 export const IDLE_LOGOUT_MS = 5 * 60 * 1000;  // auto-logout after 5 min idle
 const AUTOSAVE_MS = 20 * 1000;                 // periodic background save
@@ -166,6 +169,7 @@ function renderLogin(overlay, notice) {
           <span class="la-name">${escapeHtml(name)}</span>
           <span class="la-when">last played ${when}</span>
         </button>
+        <button class="login-backup" data-acct="${escapeAttr(name)}" title="Download a backup of this character">⬇</button>
         <button class="login-delete" data-acct="${escapeAttr(name)}" title="Delete this character">✕</button>
       </div>`;
   }).join('');
@@ -182,6 +186,10 @@ function renderLogin(overlay, notice) {
         <button id="login-enter">Enter World</button>
       </div>
       <div id="login-error" class="login-error"></div>
+      <div class="login-restore">
+        <button id="login-restore-btn" title="Restore a character from a downloaded backup file">Restore from backup…</button>
+        <input id="login-restore-file" type="file" accept="application/json,.json" hidden />
+      </div>
     </div>`;
 
   const nameInput = el('login-name');
@@ -209,8 +217,56 @@ function renderLogin(overlay, notice) {
     };
   });
 
+  // ⬇ per-account backup: download a portable JSON copy of the character. This
+  // is the escape hatch from localStorage-only persistence — the file survives a
+  // cache clear or a move to another machine (restore below re-imports it).
+  overlay.querySelectorAll('.login-backup').forEach((btn) => {
+    btn.onclick = () => {
+      const name = btn.dataset.acct;
+      const json = exportSaveString(name);
+      if (!json) { showErr(`No save to back up for "${name}".`); return; }
+      downloadText(`goblin-empire-${sanitizeFile(name)}.json`, json);
+    };
+  });
+
+  // Restore-from-backup: read a downloaded file, import it into storage, then the
+  // player can Continue as usual. If the backup names an existing character we
+  // ask before overwriting.
+  const restoreBtn = el('login-restore-btn');
+  const restoreFile = el('login-restore-file');
+  if (restoreBtn && restoreFile) {
+    restoreBtn.onclick = () => restoreFile.click();
+    restoreFile.onchange = () => {
+      const file = restoreFile.files && restoreFile.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        const typed = (nameInput.value || '').trim();
+        // Import under the typed name if given, else the backup's own name.
+        const res = importSaveString(String(reader.result), typed && validName(typed) ? typed : null);
+        restoreFile.value = '';
+        if (!res.ok) { showErr(res.error); return; }
+        renderLogin(overlay, `Restored “${res.account}”. Select it above to continue.`);
+      };
+      reader.onerror = () => showErr('Could not read that file.');
+      reader.readAsText(file);
+    };
+  }
+
   nameInput.focus();
 }
+
+// Trigger a client-side download of a text blob (no server round-trip).
+function downloadText(filename, text) {
+  const blob = new Blob([text], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 0);
+}
+
+function sanitizeFile(name) { return String(name).replace(/[^A-Za-z0-9_-]+/g, '_'); }
 
 function validName(name) {
   return /^[A-Za-z0-9 _-]{2,16}$/.test(name);
@@ -309,6 +365,19 @@ function injectStyles() {
       border: 1px solid var(--border, #4a4331);
     }
     .login-delete:hover { color: #ff8a8a; border-color: #7a3030; }
+    .login-backup {
+      width: 34px; cursor: pointer; border-radius: 6px;
+      background: var(--panel, #26221a); color: var(--muted, #a89c7d);
+      border: 1px solid var(--border, #4a4331);
+    }
+    .login-backup:hover { color: var(--gold, #e8c65a); border-color: var(--gold-dk, #a8842a); }
+    .login-restore { margin-top: 12px; text-align: center; }
+    #login-restore-btn {
+      padding: 6px 12px; cursor: pointer; font-size: 12px; border-radius: 6px;
+      background: transparent; color: var(--muted, #a89c7d);
+      border: 1px dashed var(--border, #4a4331);
+    }
+    #login-restore-btn:hover { color: var(--text, #efe8d4); border-color: var(--accent, #7bbf4a); }
     .login-new { display: flex; gap: 6px; }
     #login-name {
       flex: 1; padding: 9px 12px; font-size: 14px; border-radius: 6px;

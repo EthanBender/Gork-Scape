@@ -29,6 +29,7 @@ export const Game = {
   equipment: {},       // slot -> item | undefined
   selectedInv: null,   // selected inventory index
   groundItems: [],     // [{ id, qty, x, y, despawnAt }]
+  bank: [],            // [{ id, qty }] — infinite storage; everything stacks (used at the Bank)
 
   attackStyle: 'Aggressive',
   location: 'Goblin Settlement',
@@ -37,6 +38,10 @@ export const Game = {
   prayerPoints: 1,
   maxPrayer: 1,
   activePrayers: [],   // ids of currently-active prayers
+
+  // Special-attack energy (0–100). Boss-forged weapons spend it for a special.
+  specEnergy: 100,
+  specArmed: false,    // when true, the next attack is a special
 
   logLines: [],
   ui: {},              // render hooks installed by panels.js
@@ -56,6 +61,7 @@ export const Game = {
     u.renderCombat && u.renderCombat();
     u.renderTopBar && u.renderTopBar();
     u.renderStations && u.renderStations();
+    u.renderAlchemy && u.renderAlchemy();
     u.renderGrandExchange && u.renderGrandExchange();
     u.renderShop && u.renderShop();
   },
@@ -73,10 +79,56 @@ export function initState() {
   Game.maxPrayer = Game.skills.Prayer ? Game.skills.Prayer.level : 1;
   Game.prayerPoints = Game.maxPrayer;
   Game.activePrayers = [];
+  Game.specEnergy = 100;
+  Game.specArmed = false;
   Game.inventory = new Array(INVENTORY_SIZE).fill(null);
   Game.equipment = {};
   Game.selectedInv = null;
   Game.groundItems = [];
+  Game.bank = [];
+}
+
+// ---- banking (used at the Bank; everything stacks, storage is unlimited) ----
+// Deposit from an inventory slot into the bank. Stackables move the whole stack
+// (or `qty`); non-stackables move one. Coins deposit like any other item.
+export function bankDeposit(invIndex, qty = Infinity) {
+  const it = Game.inventory[invIndex];
+  if (!it) return false;
+  const amount = it.stackable ? Math.min(qty, it.qty || 1) : 1;
+  let slot = Game.bank.find((b) => b.id === it.id);
+  if (!slot) { slot = { id: it.id, qty: 0 }; Game.bank.push(slot); }
+  slot.qty += amount;
+  if (it.stackable) { it.qty -= amount; if (it.qty <= 0) Game.inventory[invIndex] = null; }
+  else Game.inventory[invIndex] = null;
+  if (Game.selectedInv === invIndex && !Game.inventory[invIndex]) Game.selectedInv = null;
+  return true;
+}
+
+// Deposit every inventory slot (worn equipment is untouched). QoL "bank all".
+export function bankDepositAll() {
+  let moved = 0;
+  for (let i = 0; i < Game.inventory.length; i++) if (Game.inventory[i]) { bankDeposit(i); moved++; }
+  return moved;
+}
+
+// Total units of an item currently in the inventory (stack qty for stackables,
+// one per slot for non-stackables).
+function heldQty(id) {
+  return Game.inventory.reduce((n, s) => n + (s && s.id === id ? (s.qty || 1) : 0), 0);
+}
+
+// Withdraw up to `qty` of an item from the bank into the inventory. Only debits
+// the bank by however many actually fit (addItem handles placement + "too full").
+export function bankWithdraw(id, qty = 1) {
+  const slot = Game.bank.find((b) => b.id === id);
+  if (!slot) return false;
+  const want = Math.min(qty, slot.qty);
+  const before = heldQty(id);
+  addItem(id, want);
+  const took = heldQty(id) - before;         // how many actually landed
+  slot.qty -= took;
+  if (slot.qty <= 0) Game.bank = Game.bank.filter((b) => b !== slot);
+  return took > 0;
 }
 
 // ---- XP / levelling ----
@@ -206,6 +258,14 @@ export function removeAt(idx) {
 export function equipItem(index) {
   const item = Game.inventory[index];
   if (!item || !item.slot) return;
+  // Level-gate: tiered weapons carry a reqSkill/reqLevel from the database.
+  if (item.reqSkill && item.reqLevel) {
+    const sk = Game.skills[item.reqSkill];
+    if (sk && sk.level < item.reqLevel) {
+      Game.log(`You need ${item.reqSkill} level ${item.reqLevel} to wield the ${item.name}.`);
+      return;
+    }
+  }
   const slot = item.slot;
 
   // Pull the item out of the inventory slot first.
@@ -340,6 +400,59 @@ export function drainPrayer() {
 // Recharge to full (altars, death).
 export function restorePrayer() {
   Game.prayerPoints = Game.maxPrayer;
+}
+
+// ---- special attack ----
+export const SPEC_MAX = 100;
+export const SPEC_REGEN = 2; // energy per tick (~full in 50 ticks / 30s)
+
+// The equipped weapon's special-attack definition, or null.
+export function weaponSpec() {
+  const w = Game.equipment.weapon;
+  return w && w.spec ? w.spec : null;
+}
+
+// Regenerate spec energy one tick's worth. Called from the game tick.
+export function regenSpec() {
+  if (Game.specEnergy < SPEC_MAX) Game.specEnergy = Math.min(SPEC_MAX, Game.specEnergy + SPEC_REGEN);
+}
+
+// Toggle "arm the special for the next attack". Validates weapon + energy.
+export function toggleSpec() {
+  const spec = weaponSpec();
+  if (!spec) { Game.log('Your weapon has no special attack.'); Game.specArmed = false; return; }
+  if (Game.specArmed) { Game.specArmed = false; return; }
+  if (Game.specEnergy < spec.cost) { Game.log(`Not enough special energy (need ${spec.cost}%).`); return; }
+  Game.specArmed = true;
+}
+
+// Spend energy for a special that just fired.
+export function consumeSpec(cost) {
+  Game.specEnergy = Math.max(0, Game.specEnergy - cost);
+  Game.specArmed = false;
+}
+
+// ---- boss-weapon forging ----
+// Combine a boss component (item with a `forge` descriptor) + the required bars
+// at the required Smithing level into a named boss weapon. See equipment.js.
+export function forgeBossWeapon(componentId) {
+  const def = ITEMS[componentId];
+  if (!def || !def.forge) return false;
+  const f = def.forge;
+  const out = ITEMS[f.into];
+  if (Game.skills.Smithing.level < f.smithing) {
+    Game.log(`You need Smithing ${f.smithing} to forge the ${out.name}.`); return false;
+  }
+  const bars = countItem(f.bar);
+  if (bars < f.barQty) {
+    Game.log(`You need ${f.barQty} ${ITEMS[f.bar].name} to forge the ${out.name}.`); return false;
+  }
+  removeOneById(componentId);
+  for (let i = 0; i < f.barQty; i++) removeOneById(f.bar);
+  addItem(f.into);
+  grantXp('Smithing', f.xp || 500);
+  Game.log(`You forge the ${out.name}! A weapon of legend.`);
+  return true;
 }
 
 // How many tiles away the player can currently attack from — driven by the

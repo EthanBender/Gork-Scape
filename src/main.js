@@ -25,8 +25,9 @@ import {
   GROUND_DESPAWN_TICKS,
   playerAttackRange, needsAmmo, hasAmmoForRanged, consumeAmmo, ammoRecoveryChance,
   drainPrayer, restorePrayer, isProtecting,
+  weaponSpec, consumeSpec, regenSpec,
 } from './engine/state.js';
-import { resolveAttack, combatLevel, weaponRange } from './engine/combat.js';
+import { resolveAttack, resolveSpecial, combatLevel, weaponRange } from './engine/combat.js';
 import { RUN_TILES, ensureRun, wantsToRun, updateRunEnergy, toggleRun, updateRunHud } from './engine/run.js';
 import { styleOfWeapon, PROTECT_FACTOR } from './engine/prayer.js';
 import { rollSkillSuccess } from './engine/skills.js';
@@ -37,7 +38,7 @@ import { initPanels, showContextMenu, openExchange, openShop } from './ui/panels
 // [economy lane] — combat drops from the database drop tables. See COORDINATION.md.
 import { rollMonsterDrops } from './systems/drops.js';
 import { monsterIdForSpawn } from './data/worldContract.js';
-import { shopkeeperSpawns } from './systems/shops.js'; // [economy lane] shopkeeper NPCs
+import { shopkeeperSpawns, loadAndRestockShops, saveWorldShops, restockShops } from './systems/shops.js'; // [economy lane] shopkeeper NPCs + world-time restock
 // [economy lane] — Firemaking: temporary ground fires (lit from inventory in
 // panels.js) render here, expire on the global tick, and cook via performSkill.
 import { activeFires, tickFires, fireAt, fireLifeRatio } from './systems/firemaking.js';
@@ -115,11 +116,16 @@ function buildWorld() {
   // relocate each to its themed building using its `region`, keep id
   // `shopkeeper_<shop_id>` so the gate + talk hook still find it.
   shopkeeperSpawns().forEach((sk, k, arr) => {
+    // [economy lane] Stand ward keepers at their building post; region shops with
+    // no town building fall back to the provisional ring west of spawn.
     const ang = (k / arr.length) * Math.PI * 2;
+    const [tileX, tileY] = sk.post || [
+      world.spawn.x - 4 + Math.round(Math.cos(ang) * 3),
+      world.spawn.y + Math.round(Math.sin(ang) * 3),
+    ];
     Game.npcs.push(new NPC({
       id: sk.npcId, name: sk.shopName + ' Keeper', type: 'elder',
-      tileX: world.spawn.x - 4 + Math.round(Math.cos(ang) * 3),
-      tileY: world.spawn.y + Math.round(Math.sin(ang) * 3),
+      tileX, tileY,
       color: 0x8fb8e0, aggressive: false,
       dialog: `Welcome to the ${sk.shopName}!`,
       levels: elderLevels, combatLevel: null, bonuses: emptyBonuses(),
@@ -214,6 +220,41 @@ function hasTool(toolType) {
   return Game.inventory.some((s) => s && ids.includes(s.id));
 }
 
+// [economy lane] perf probe helpers (exposed via window.__GE). stress(n) spawns n
+// throwaway wandering guards around the player to MEASURE the frame cost of many
+// procedural rigs (watch #tb-fps). They're tagged `_stress` so stressClear() can
+// remove exactly them without touching real NPCs.
+function stressSpawn(n = 100) {
+  const world = Game.world, p = Game.player;
+  if (!world || !p) { console.warn('stress: world not ready'); return 0; }
+  const lv = { attack: 1, strength: 1, defence: 1, ranged: 1, hitpoints: 10 };
+  let made = 0;
+  for (let i = 0; i < n; i++) {
+    const pos = findOpenTileNear(world, p.tileX + randInt(-10, 10), p.tileY + randInt(-10, 10), 12);
+    if (!pos) continue;
+    const npc = new NPC({
+      id: '_stress' + i, name: 'Stress Dummy', type: 'guard',
+      tileX: pos.x, tileY: pos.y, color: 0x9a9a9a,
+      wanderRadius: 5, aggressive: false, aggroRange: 0,
+      levels: lv, combatLevel: combatLevel(lv), bonuses: emptyBonuses(),
+    });
+    npc._stress = true;
+    Game.npcs.push(npc);
+    made++;
+  }
+  Game.log(`Perf probe: spawned ${made} stress dummies (${Game.npcs.length} NPCs total). Watch the fps readout.`);
+  Game.refresh();
+  return made;
+}
+function stressClear() {
+  const before = Game.npcs.length;
+  Game.npcs = Game.npcs.filter((n) => !n._stress);
+  const removed = before - Game.npcs.length;
+  Game.log(`Perf probe: cleared ${removed} stress dummies (${Game.npcs.length} NPCs remain).`);
+  Game.refresh();
+  return removed;
+}
+
 // ---------------------------------------------------------------- scene create
 function create() {
   scene = this;
@@ -240,7 +281,12 @@ function create() {
   Game.worldClock = WorldClock;
   Game.worldEvents = WorldEvents;
   mountWorldClockHud();
-  ticker.onTick((_c, isLast) => { if (isLast) { updateWorldClockHud(); updateWorldEventHud(); } });
+  ticker.onTick((_c, isLast) => {
+    if (!isLast) return;
+    updateWorldClockHud();
+    updateWorldEventHud();
+    restockShops(); // self-throttled (~15s); refills NPC shops during live play too
+  });
 
   // Overlay the signed-in character's saved state (skills, inventory, position,
   // clock) onto the freshly-built world, then advance the sim clock by the real
@@ -250,6 +296,9 @@ function create() {
   // [economy lane] Restore the shared Grand Exchange world state and fast-forward
   // it over the real time everyone was away — the market kept trading offline.
   restoreWorldMarket();
+  // [economy lane] Restore + fast-forward NPC shop stock: shelves that ran low
+  // refill over world-time whether or not anyone was online.
+  restoreShopsOnLogin();
   // [world-continuity] Tell the returning player what's happening in the world
   // right now and what's coming — events run on the world calendar regardless.
   announceWorldEvents();
@@ -317,7 +366,12 @@ function create() {
   }
   Game.refresh();
 
-  window.__GE = { Game, startInteract, startAttack, regionAt };
+  // [economy lane] perf probe — window.__GE.stress(n) spawns n throwaway dummy
+  // NPCs around the player so the "135 procedural rigs at 60fps" claim can be
+  // MEASURED (watch the #tb-fps topbar readout) instead of asserted. stressClear()
+  // removes them. Dummies are inert guards on valid ground; they cost render +
+  // the near-player AI/interp exactly like real NPCs.
+  window.__GE = { Game, startInteract, startAttack, regionAt, stress: stressSpawn, stressClear };
 
   // Persistence/idle/autosave may start now that saved state is applied.
   notifyGameReady();
@@ -340,6 +394,13 @@ function restoreWorldMarket() {
     const arrow = m.pct >= 0 ? '▲' : '▼';
     Game.log(`  ${arrow} ${m.name}: ${m.from} → ${m.to} gp (${(m.pct * 100).toFixed(0)}%)`);
   }
+}
+
+// [economy lane] Restore shop stock and refill it for the offline gap; note it
+// to the returning player if shelves were meaningfully restocked.
+function restoreShopsOnLogin() {
+  const refilled = loadAndRestockShops();
+  if (refilled >= 10) Game.log('The merchants have restocked their shelves while you were away.');
 }
 
 // [world-continuity] Login summary of the world calendar: the live event (if any)
@@ -816,6 +877,9 @@ function gameTick(count, isLast = true) {
   // --- prayer point drain (active prayers cost points every tick) ---
   drainPrayer();
 
+  // --- special-attack energy regen ---
+  regenSpec();
+
   // --- location name ---
   const loc = regionAt(p.tileX, p.tileY);
   if (loc !== Game.location) { Game.location = loc; Game.log(`You enter: ${loc}.`); }
@@ -929,17 +993,35 @@ function grantCombatXp(dmg) {
 }
 
 function playerAttack(npc, count) {
-  const r = resolveAttack(playerProfile(), { levels: npc.levels, bonuses: npc.bonuses });
   if (!npc.target) npc.target = Game.player;
-  if (r.hit) {
-    npc.hp = Math.max(0, npc.hp - r.damage);
-    floatText(npc, '-' + r.damage, '#ffe14d');
-    Game.log(`You swing at the ${npc.name}... and hit for ${r.damage} damage.`);
-    if (r.damage > 0) grantCombatXp(r.damage);
+  const defender = { levels: npc.levels, bonuses: npc.bonuses };
+
+  // Special attack: armed + weapon has a spec + enough energy → fire it instead
+  // of a normal swing (may be multi-hit). Otherwise a single ordinary attack.
+  const spec = weaponSpec();
+  let results;
+  if (Game.specArmed && spec && Game.specEnergy >= spec.cost) {
+    consumeSpec(spec.cost);
+    results = resolveSpecial(playerProfile(), defender, spec);
+    Game.log(`You unleash ${spec.name}!`);
   } else {
-    floatText(npc, '0', '#cccccc');
+    if (Game.specArmed) Game.specArmed = false; // armed but can't fire → disarm
+    results = [resolveAttack(playerProfile(), defender)];
+  }
+
+  let total = 0;
+  for (const r of results) {
+    if (r.hit) { total += r.damage; floatText(npc, '-' + r.damage, '#ffe14d'); }
+    else floatText(npc, '0', '#cccccc');
+  }
+  npc.hp = Math.max(0, npc.hp - total);
+  if (total > 0) {
+    Game.log(`You ${results.length > 1 ? 'strike' : 'swing at'} the ${npc.name}... and hit for ${total} damage.`);
+    grantCombatXp(total);
+  } else {
     Game.log(`You swing at the ${npc.name}... but miss.`);
   }
+
   if (npc.hp <= 0) {
     npc.dead = true; npc.respawnAt = count + 16; npc.target = null;
     Game.log(`You have defeated the ${npc.name}!`);
@@ -1720,7 +1802,8 @@ function stopGame() {
   playerLabel = null;
 }
 
-// [economy lane] The shared GE world state is saved alongside every player save
-// (autosave / tab-close / logout), so its `savedAt` stays fresh for offline drift.
+// [economy lane] The shared GE + shop world state is saved alongside every player
+// save (autosave / tab-close / logout), so `savedAt` stays fresh for offline drift.
 registerSaver(saveWorldMarket);
+registerSaver(saveWorldShops);
 initSession({ onStart: startGame, onStop: stopGame });

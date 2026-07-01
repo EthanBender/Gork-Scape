@@ -33,11 +33,29 @@ smoke-check and only publishes if it passes.
    `https://<you>.github.io/goblin-empire/`.
    A broken push (bad import/export) **fails the gate and never goes live.**
 
-## Option C — Vercel ⏱️ ~2 min
+## Option C — Cloudflare Pages + custom domain (recommended if you own a domain) ⏱️ ~5 min
+Best pick for a custom domain, and it's the same platform we'd host the future
+server on (Workers + Durable Objects).
+1. Cloudflare dashboard → **Workers & Pages → Create → Pages → Connect to Git** → pick the repo.
+2. Build settings: **Framework preset = None**, **Build command = `node scripts/smoke.mjs`**
+   (this makes the smoke-check a deploy gate — a broken push won't publish),
+   **Build output directory = `/`** (repo root).
+3. Deploy → live at `*.pages.dev`.
+4. **Custom domain:** Pages → your project → **Custom domains → Set up a domain**.
+   If your domain's DNS is already on Cloudflare it's ~1 click + auto SSL.
+
+`_headers` (Cloudflare-native) is already set to avoid stale-module caching.
+
+> Future server: host the authoritative Grand Exchange / world as a **Cloudflare
+> Worker + Durable Object** (a DO is a single-threaded stateful object — ideal for
+> an order book). The `Market` class ports in nearly as-is; the client's
+> `NetworkMarketTransport` points at the Worker's WebSocket. Same domain, via a route.
+
+## Option D — Vercel ⏱️ ~2 min
 "Add New → Project" → import the repo → Framework preset **"Other"**, build command
 **empty**, output dir **`.`** → Deploy.
 
-## Option D — Your own static host / VPS
+## Option E — Your own static host / VPS
 Serve the repo root over HTTP: `python3 -m http.server 8080` (that's literally what
 our preview does), or drop the files behind nginx/Caddy. Any static file server works.
 

@@ -1,0 +1,32 @@
+# normal_logs [Resource]
+Normal Logs (Logs), raw natural material, rough texture, isometric low-poly 3D game item icon, single object centered, soft studio lighting, subtle ambient occlusion, clean flat background, transparent background, warm earthy fantasy palette, crisp edges, no text, no watermark, consistent 45-degree camera
+
+# normal_plank [Processed Material]
+Normal Plank (Planks), refined crafted material, smooth, isometric low-poly 3D game item icon, single object centered, soft studio lighting, subtle ambient occlusion, clean flat background, transparent background, warm earthy fantasy palette, crisp edges, no text, no watermark, consistent 45-degree camera
+
+# cooked_shrimp [Consumable]
+Cooked Shrimp (Food), small glass or food object, appetizing, isometric low-poly 3D game item icon, single object centered, soft studio lighting, subtle ambient occlusion, clean flat background, transparent background, warm earthy fantasy palette, crisp edges, no text, no watermark, consistent 45-degree camera
+
+# burnt_shrimp [Junk]
+Burnt Shrimp (Burnt Food), worn broken scrap, isometric low-poly 3D game item icon, single object centered, soft studio lighting, subtle ambient occlusion, clean flat background, transparent background, warm earthy fantasy palette, crisp edges, no text, no watermark, consistent 45-degree camera
+
+# crude_hatchet [Tool]
+Crude Hatchet (Hatchet), sturdy handcrafted tool, isometric low-poly 3D game item icon, single object centered, soft studio lighting, subtle ambient occlusion, clean flat background, transparent background, warm earthy fantasy palette, crisp edges, no text, no watermark, consistent 45-degree camera
+
+# crude_dagger [Equipment]
+Crude Dagger (Weapon), detailed craftsmanship, metal and leather materials, isometric low-poly 3D game item icon, single object centered, soft studio lighting, subtle ambient occlusion, clean flat background, transparent background, warm earthy fantasy palette, crisp edges, no text, no watermark, consistent 45-degree camera
+
+# training_arrows [Ammo]
+Training Arrows (Arrows), small projectile, set of a few, isometric low-poly 3D game item icon, single object centered, soft studio lighting, subtle ambient occlusion, clean flat background, transparent background, warm earthy fantasy palette, crisp edges, no text, no watermark, consistent 45-degree camera
+
+# bronze_nails [Quest/Build Item]
+Bronze Nails (Construction), special ornate quest object, isometric low-poly 3D game item icon, single object centered, soft studio lighting, subtle ambient occlusion, clean flat background, transparent background, warm earthy fantasy palette, crisp edges, no text, no watermark, consistent 45-degree camera
+
+# bug_eye_ring [Unique Drop]
+Bug-Eye Ring (Monster Unique), rare glowing artifact, ornate, isometric low-poly 3D game item icon, single object centered, soft studio lighting, subtle ambient occlusion, clean flat background, transparent background, warm earthy fantasy palette, crisp edges, no text, no watermark, consistent 45-degree camera
+
+# woodcutting_novice_manual [Utility]
+Novice Woodcutting Manual (Skill Manual), small utilitarian object, isometric low-poly 3D game item icon, single object centered, soft studio lighting, subtle ambient occlusion, clean flat background, transparent background, warm earthy fantasy palette, crisp edges, no text, no watermark, consistent 45-degree camera
+
+# clay [Drop Material]
+Clay (Monster Drop), organic monster-drop material, isometric low-poly 3D game item icon, single object centered, soft studio lighting, subtle ambient occlusion, clean flat background, transparent background, warm earthy fantasy palette, crisp edges, no text, no watermark, consistent 45-degree camera

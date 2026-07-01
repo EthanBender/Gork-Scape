@@ -99,3 +99,86 @@ Because the interface is identical, the UI (`panels.js` Exchange tab) and
 - The server re-runs `crafting.resolve` / `shops.buyFromShop` / GE matching itself;
   the client version is only a **prediction** for responsiveness.
 - Rate-limit GE spam; the order-id counter + `trader` identity are server-owned.
+
+---
+
+# Phase 4 concrete plan — updated after world-continuity (phases 1–3, 2026-06-30)
+
+The sketch above still holds. Since it was written, phases 1–3 shipped the
+**client-side** half of "hosted", which turns out to have built most of the seams
+Phase 4 needs. This section maps what exists to the server design so the migration
+is mechanical, and pins down what a real always-on server adds that the client
+version fundamentally cannot.
+
+## What phases 1–3 already gave us (the seams)
+
+| Client system (shipped) | What it becomes on the server |
+|---|---|
+| `engine/save.js` `serialize()/applySave()` | The player-record schema. localStorage key `goblin_empire:save:<acct>` → a DB row per account. Same shape over the wire. |
+| `engine/session.js` login/logout/idle/autosave | Connection lifecycle + real auth. `registerSaver()` hooks → server persistence cadence. 5-min idle logout → server disconnect/park. |
+| `engine/worldClock.js` (pure, absolute-time) | **Runs identically on server and every client with zero sync.** Day/night is a function of `Date.now()`, so nobody has to broadcast it — clients and server agree for free. |
+| `systems/worldEvents.js` (pure, deterministic calendar) | Same — the event schedule is a pure function of time. The server only broadcasts *stateful* consequences (a spawned boss), never "it's night now". |
+| `geActions.js` `serializeMarket()/restoreMarket()` + `goblin_empire:world_market` | **This is already the authoritative GE-state serialization.** The server loads it on boot, owns the one `Market`, and persists it. Clients stop saving it. |
+| `shops.js` `serializeShops()/restoreShops()` + `goblin_empire:world_shops` | Authoritative shop-stock state, same story. |
+| `advanceMarketOffline(elapsedMs)` / `restockShops(nowMs)` | **These ARE the server tick loop.** Today they fast-forward once at login; the server runs the same elapsed-time math continuously. No new economy code — just call it on an interval instead of on catch-up. |
+| `Game.playerFrozen` gate in `gameTick` | The server-side rule verbatim: a **disconnected player is frozen** (server stops simulating that character) while the world keeps ticking. Reconnect resumes from the saved record. |
+
+The upshot: the owner's rule — *nothing happens to the player offline, the world
+keeps going* — is already the architecture. Phase 4 moves **where** the world tick
+runs (a server that's always on) so it's genuinely shared and 24/7, instead of
+each client fast-forwarding its own copy at login.
+
+## What only the server delivers (why Phase 4 is real, not cosmetic)
+
+- **One shared world.** Two players see the same market, the same prices, each
+  other. The client version is single-world-per-browser.
+- **Actually always-on.** The world ticks even when *zero* players are connected
+  (a cron/daemon), not just "simulated on next login". Resting GE orders fill
+  against other real players while you sleep.
+- **Trust.** Prices, coins, drops are server-computed; the client is a prediction.
+
+## Server module layout (Node + `ws`, reuses the JS rules verbatim)
+
+```
+server/
+  index.js          // ws server, connection registry, auth handshake
+  worldLoop.js      // setInterval tick: market drift, restocks, spawns, event effects
+                    //   → calls the SAME advanceMarketOffline/restockShops/worldEvents
+  players.js        // account registry; load/save player records (save.js schema)
+  market.js         // owns the single Market (grandExchange.js), routes place/cancel
+  persistence.js    // DB adapter; boots world state from world_market/world_shops shapes
+  protocol.js       // intent + snapshot message contracts (shared with client/net/)
+```
+Client side: flip `marketTransport` from `LocalMarketTransport` to
+`NetworkMarketTransport` (already stubbed), and `session.js` swaps its localStorage
+calls for authenticated HTTP/WS. `worldClock`/`worldEvents` need **no** client change.
+
+## Refined migration path (each step shippable)
+
+1. **Route `geActions` through `marketTransport`** (await the calls) — already
+   sketched; makes the GE call sites async/server-shaped with no behaviour change.
+2. **Stand up `server/` with the world loop only** — no clients yet. It owns
+   `Market` + shop stock, ticks `advanceMarketOffline`/`restockShops` on a real
+   interval, and persists the `world_market`/`world_shops` snapshots. Proves the
+   "world runs with nobody watching" claim on real infra.
+3. **Connect clients to the server's GE** over WS (`NetworkMarketTransport`).
+   World still simulated locally; the *market* is now shared + authoritative.
+4. **Move player records server-side** — accounts + DB, `save.js` schema becomes
+   the row. Escrow/settlement authoritative. `session.js` → real auth.
+5. **Move the world sim** (positions/combat/skilling/drops) server-side with client
+   prediction + reconciliation. The big lift; the freeze rule + deterministic clock
+   make disconnect/reconnect clean.
+6. **Persistence & sharding** — as the original sketch.
+
+## Open decisions for the cross-team planning pass
+
+- **Hosting/runtime:** bare Node + `ws` (max code reuse) vs. Colyseus/Nakama
+  (rooms/matchmaking off the shelf). Ends the "no build step" rule either way.
+- **DB:** Postgres (players + GE history) + Redis (hot order books) vs. SQLite to
+  start. Snapshot cadence + crash recovery.
+- **World-day length** (`worldClock.DAY_MS`, currently 24 min) is a shared constant
+  that must be **server-authoritative** once networked — bake it into `protocol.js`.
+- **Instancing vs. one world:** single shard to start (population is tiny); region
+  sharding only if needed. GE stays global even if the map shards.
+- **Tick rate:** world-economy loop can be slow (seconds); combat/movement needs
+  the 600ms sim tick — decide whether they’re the same loop or separate.

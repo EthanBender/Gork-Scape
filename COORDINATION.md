@@ -271,6 +271,87 @@ Client-side until Phase 4; each phase keeps the player-freeze + world-continuity
   Rerouting would risk the legacy cook/smith branches; revisit with id migration.
 
 ## Change log
+- 2026-07-01 — Economy agent: **item-art pipeline + real-art seam (icons made
+  "workable").** (1) Dropped the per-item colour chip — icons now sit clean on the
+  recessed slot (`panels.js`, `index.html`). (2) `itemIcons.js` gained a real-art
+  layer: `loadItemArtManifest()` reads `assets/items/manifest.json`, and
+  `itemIconHTML(id)` returns `<img assets/items/<id>.png>` when present, else the
+  crafted SVG, else emoji — inventory/equipment use it. **Drop a PNG in + list it
+  in the manifest and it replaces the SVG game-wide, zero code changes.** Works for
+  Kenney CC0 art OR AI-generated sprites. (3) `tools/gen_assets.py` — batch
+  generator: reads `items.json`, builds ONE style-locked prompt per item, pluggable
+  backends (meshy/tripo/pixellab/local, stubbed), `--dry-run`/`--probe`/
+  `--manifest-only` run with no API. (4) `tools/README.md` — researched (6-agent
+  pass, sourced) tool/pricing decision: **Tripo text→3D low-poly → iso render
+  (~$60–90, best value)**, or local SDXL/FLUX-schnell+LoRA (~$10–30 compute), or
+  Kenney CC0 for a free partial start; ship only from PAID tiers (free = CC BY /
+  non-commercial). **↳ World-gen:** `itemIcon(id)` (emoji string) still there for
+  canvas ground items; same manifest can drive Phaser image loads later. Additive,
+  my lane + new `tools/`. Validated: files parse, CSS 210/210, pipeline dry-run/
+  probe/manifest all run.
+- 2026-07-01 — Economy agent: **region shopkeepers posted to their landmarks —
+  the spawn ring is now empty (0 keepers piled near town).** Added the 3 region
+  shops to `SHOP_POSTS` (`shops.js`) at world-verified walkable tiles: `miner_camp`
+  → Miners Lodge (606,206), `witch_hut` → Witch-Goblin Hut (250,801),
+  `rival_black_market` → rival camp / Captured Anvil (840,811). All 14 shopkeepers
+  now stand at a real building (11 in Gorkholm wards + 3 out in their regions).
+  Verified live on :5189 (0 near spawn, 0 console errors), server released.
+- 2026-07-01 — Economy agent: **weapon ladder is now PLAYABLE (statted + level-gated),
+  plus a combat roadmap all lanes should know about.** The 64 database weapons
+  (Crude→Meteor × dagger/sword/spear/club/mace/battle-axe/short&longbow) were
+  statless `slot:null` stubs; now `weaponStatsFromRecord()` in `equipment.js`
+  derives combat stats procedurally from **material tier** (power) × **weapon
+  class** (type/speed/reach/atk-vs-str split) and tags `reqSkill`/`reqLevel`.
+  `state.equipItem` now **level-gates** equipping ("You need Attack 80 to wield…").
+  Verified live: all classes equippable, gate fires, max hit scales by tier.
+  **Roadmap the owner locked (affects other lanes — heads up):**
+  • **Boss-forged weapons (next, my lane):** a strict-BiS capstone above Meteor.
+    Boss drops a rare *component* → smith with a top-tier bar → named weapon with
+    a **special attack** (needs a shared spec-energy bar). ⚠️ **World-gen:** I'll
+    need those components on boss `drop_table`s (Bog King / Meteor Sprite / Deep
+    Metal Golem / Cave Troll / Red-Ear Captain) — will add ids JSON-first and
+    ping before touching placement.
+  • **THIRD combat style = "Sapper / Tinkering"** (owner-chosen, NOT magic —
+    Alchemy is a separate skill another contributor owns, don't conflate). Goblin
+    bombs/hand-cannons/contraptions: armor-piercing burst/AoE fed by crafted
+    "charges" (a new ammo type). Completes the triangle (Sapper > armored Melee,
+    Ranged > slow Sapper, Melee > Ranged). Adds a new weapon-class line + a
+    combat-resolution branch; **JSON-first, will flag before shared edits.**
+- 2026-06-30 — Economy agent: **Gorkholm — central region rebuilt coherently
+  (owner: "narrative style, nothing random"). Verified in-browser.** Design spine
+  in **`CENTRAL_REGION_DESIGN.md`**. Every fixture now sits where its road/trade
+  supplies it: **N gate = Forge Ward** (furnace/anvil/weapon/armour, ore road),
+  **E gate = The Wharf** (fishing/cooking/fishmonger/bait, water road), **S gate =
+  Greengate** (farming/grocer/herbalist/general, farm road), **W gate = Timber
+  Row** (sawmill/crafting/fletcher/lumber, lumber road), **centre = the Keep**
+  (Chief's gatehouse w/ Bank vault + War Table rooms, the N avenue runs through
+  its passage) **+ fountain plaza + market stalls + Grand Exchange + Tavern**, with
+  a **Warren of back-alley goblin housing**, gatehouse towers, wells, and trees/
+  shrubs filling the gaps.
+  - `map.js buildTown()` rebuilt (tagged `[economy lane]` — **world-gen: this is
+    your file; ping me to rebalance**). Preserved spawn (500,462), the 4 gates,
+    and the training yard + its kept rats.
+  - **Shopkeeper placement fixed:** `shops.js` now exports `SHOP_POSTS` (shop→
+    building tile) and `shopkeeperSpawns()` returns a `post`; `main.js` stands each
+    ward keeper in its building instead of piling all 14 on the ring near spawn.
+    11 keepers relocated; 3 region shops (miner/witch/rival) still ring-fallback
+    (they belong in their regions — world-gen can post those later).
+  - **Economy content:** 6 new ward shops in `shops.json` (fishmonger, bait_tackle,
+    fletcher, lumber_stall, grocer, tavern), stock themed to each ward's trade.
+  - Verified live (logged in as BOB on :5189, server released after): new town +
+    all wards load, 11 keepers in buildings, fountain is water (5 tiles, off the
+    road origin), 0 console errors. **Also confirmed world-gen placed the higher
+    trees** — Dense Oak→Moonwillow (Lv 30–75) are live nodes, so the Firemaking
+    log ladder now has an in-world source.
+- 2026-06-30 — Economy agent: **item ICONS upgraded to hand-drawn SVG.**
+  `itemIcons.js` now classifies to a canonical icon KEY, then renders: **34
+  crafted inline `<svg>` icons** (weapons/armour/valuables/food/resources) via new
+  `itemIconSVG(id)`, with EMOJI as the long-tail fallback. Inventory + equipment
+  in `panels.js` switched to `itemIconSVG` (innerHTML); the SVG fills the slot.
+  `itemIcon(id)` still returns the emoji glyph — **use that for canvas ground
+  items** (world-gen) since it's a plain string; DOM surfaces use `itemIconSVG`.
+  Adding art = add keys to `ICON_SVG` (single seam). Validated: parses, CSS
+  210/210. Showed the full set to the owner via a render widget.
 - 2026-06-30 — Economy agent: **item ICONS — every item now has a glyph, not
   initials.** New `src/data/itemIcons.js` exports `itemIcon(idOrItem)` → a glyph,
   resolved by keyword → subcategory → category rules over the 1063-item DB.
@@ -328,15 +409,14 @@ Client-side until Phase 4; each phase keeps the player-freeze + world-continuity
   Behaviour unchanged until you wire it. (2) **Creature variation:** enemies get a
   stable tint+size variant (low lvl→6 looks, mid→4, high→3) — verified in
   `avatar_preview.html`. All render-path only, `[character-render lane]` tagged.
-  ⚠️ **HEADS-UP for World-Gen + Economy — the game currently boots BLANK.**
-  `create()` throws *before* the final `window.__GE` assignment, so a canvas
-  exists but no game state. My code only runs per-frame in `update()` (after
-  create), so this isn't the render lane. The throw is in the new boot chain —
-  `applyPendingSave()` / `restoreWorldMarket()` / `mountWorldClockHud()` /
-  `ensureRun()` (save/GE/world-clock/run systems). Suggest wrapping each new boot
-  step in try/catch (or guarding missing DOM/localStorage) so one failure can't
-  blank the whole game. I verified my work in the standalone preview since the
-  full game wouldn't boot; happy to re-verify live once the boot chain is stable.
+  ✅ **CORRECTION (later same day):** my earlier "game boots BLANK" was a FALSE
+  ALARM — I was landing on the new **login gate** (session.js) and checking
+  `window.__GE`, which by design only exists *after* you enter a character name
+  and click **Enter World**. Logged in as "Gork" → world boots fine, 135 NPCs,
+  my avatars + creature variations render, day/night + world events all live. No
+  crash, nothing for the boot chain to fix. Apologies for the noise. (The genuine
+  blank boots earlier in the day were the real `combat.js` import race, which the
+  new git + `scripts/smoke.mjs` gate now catches.)
 - 2026-06-30 — Economy agent: **NEW FEATURE — Goblin Treasury dragon-heist cycle
   (owner-designed). Economy core built; world + render seams open for the other
   lanes.** The GE 2% tax already pools into `geTax.balance` (the Treasury). New

@@ -6,12 +6,15 @@ import {
   Game, equipItem, unequipItem, removeAt, playerCombatLevel, totalBonuses,
   playerAttackRange, needsAmmo, ammoCount, playerProfile,
   grantXp, prayerLevel, togglePrayer,
+  bankDeposit, bankDepositAll, bankWithdraw,
+  weaponSpec, toggleSpec, forgeBossWeapon, SPEC_MAX,
 } from '../engine/state.js';
 import { unlockedPrayers } from '../engine/prayer.js';
 import { maxHit, maxAttackRoll } from '../engine/combat.js';
 import { SKILL_NAMES, levelProgress } from '../engine/skills.js';
 import { EQUIP_SLOTS, STAT_KEYS, itemView } from '../items/equipment.js';
 import { splitList, GameData } from '../data/gameData.js';
+import { itemIcon, itemIconHTML } from '../data/itemIcons.js';
 import { recipesForStation, craft, stationTypes } from '../systems/crafting.js';
 import { rollMonsterDrops } from '../systems/drops.js';
 import { gather, resolveNode } from '../systems/gathering.js';
@@ -23,6 +26,7 @@ import {
 import { checkHeist, heistView, resolveHeistVictory } from '../systems/treasuryHeist.js';
 import { shopStock, buyFromShop, sellToShop } from '../systems/shops.js';
 import { lightFireAt } from '../systems/firemaking.js'; // [economy lane] Firemaking
+import { renderAlchemy } from '../systems/alchemy.js'; // [economy lane] Alchemy skill
 
 // Tiny inline SVG sparkline of recent trade prices for the GE price chart.
 function sparkline(prices, w = 160, h = 34) {
@@ -121,7 +125,7 @@ const SKILL_COLORS = {
   Woodcutting: '#2e7d32', Fishing: '#4fa3c7', Mining: '#9c6b3a',
   Cooking: '#d2691e', Firemaking: '#c1440e', Smithing: '#777', Crafting: '#8b5a2b',
   Attack: '#b03030', Strength: '#2f7d4f', Defence: '#3d5a9e',
-  Ranged: '#5a8f3d', Prayer: '#c9b458',
+  Ranged: '#5a8f3d', Prayer: '#c9b458', Alchemy: '#8e5ea8',
 };
 
 const STYLES = ['Accurate', 'Aggressive', 'Defensive', 'Controlled'];
@@ -129,7 +133,7 @@ const STYLES = ['Accurate', 'Aggressive', 'Defensive', 'Controlled'];
 const SKILL_EMOJI = {
   Woodcutting: '🪓', Fishing: '🎣', Mining: '⛏️', Cooking: '🍳',
   Firemaking: '🔥', Smithing: '🔨', Crafting: '🧵', Attack: '⚔️', Strength: '💪',
-  Defence: '🛡️', Ranged: '🏹', Prayer: '🙏', Hitpoints: '❤️',
+  Defence: '🛡️', Ranged: '🏹', Prayer: '🙏', Alchemy: '⚗️', Hitpoints: '❤️',
 };
 
 // ---------- Progression flourishes (xp drops + level-up banner) ----------
@@ -199,8 +203,10 @@ export function initPanels() {
     renderCombat,
     renderTopBar,
     renderStations,
+    renderAlchemy: () => renderAlchemy(els.views.alchemy),
     renderGrandExchange,
     renderShop,
+    renderBank,
     onXp,
   };
   switchTab('skills');
@@ -218,8 +224,9 @@ function buildLayout() {
   const tabs = [
     ['skills', 'Skills', '📊'], ['inventory', 'Inventory', '🎒'],
     ['equipment', 'Equipment', '🛡️'], ['combat', 'Combat', '⚔️'],
-    ['stations', 'Stations', '🔨'], ['ge', 'Exchange', '💰'],
-    ['shop', 'Shop', '🏪'],
+    ['stations', 'Stations', '🔨'], ['alchemy', 'Alchemy', '⚗️'],
+    ['ge', 'Exchange', '💰'],
+    ['shop', 'Shop', '🏪'], ['bank', 'Bank', '🏦'],
   ];
   els.tabButtons = {};
   for (const [id, label, icon] of tabs) {
@@ -263,6 +270,19 @@ export function renderTopBar() {
   const gpEl = document.getElementById('tb-gp');
   if (gpEl) { const gp = playerCoins(); gpEl.textContent = gp.toLocaleString(); gpEl.style.color = qtyStyle(gp).color; }
   set('tb-tick', 'Tick ' + (Game.ticker ? Game.ticker.count : 0));
+
+  // Perf probe: live render FPS + active NPC count, so the "135 rigs at 60fps"
+  // claim is actually measured rather than asserted. Phaser tracks a smoothed
+  // actualFps on the game loop; pair it with the live NPC count (drive it up with
+  // window.__GE.stress(n) to stress-test). Colour: green ≥50, amber ≥30, red below.
+  const fpsEl = document.getElementById('tb-fps');
+  if (fpsEl) {
+    const loop = Game.scene && Game.scene.game && Game.scene.game.loop;
+    const fps = loop ? Math.round(loop.actualFps) : 0;
+    const npcs = Array.isArray(Game.npcs) ? Game.npcs.length : 0;
+    fpsEl.textContent = `${fps} fps · ${npcs} npc`;
+    fpsEl.style.color = fps >= 50 ? 'var(--accent, #7bbf4a)' : fps >= 30 ? 'var(--gold, #e8c65a)' : '#ff8a8a';
+  }
 }
 
 // ---------- Skills ----------
@@ -630,12 +650,16 @@ export function renderInventory() {
     const item = Game.inventory[i];
     const slot = document.createElement('div');
     slot.className = 'inv-slot' + (Game.selectedInv === i ? ' selected' : '');
+    // [economy lane] every slot is a drag target so items can be rearranged
+    // (drop onto an item = swap; drop onto an empty slot = move there).
+    slot.ondragover = (e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; slot.classList.add('drag-over'); };
+    slot.ondragleave = () => slot.classList.remove('drag-over');
+    slot.ondrop = (e) => { e.preventDefault(); slot.classList.remove('drag-over'); const from = parseInt(e.dataTransfer.getData('text/plain'), 10); if (!Number.isNaN(from)) moveInv(from, i); };
     if (item) {
       bindTip(slot, item.id, item.name);
       const sq = document.createElement('div');
       sq.className = 'item-sq';
-      sq.style.background = hex(item.color);
-      sq.textContent = item.name.split(' ').map((w) => w[0]).join('').slice(0, 2);
+      sq.innerHTML = itemIconHTML(item.id);
       slot.appendChild(sq);
       if (item.qty && item.qty > 1) {
         const q = document.createElement('span');
@@ -645,6 +669,9 @@ export function renderInventory() {
         q.style.color = qs.color;
         slot.appendChild(q);
       }
+      slot.draggable = true;
+      slot.ondragstart = (e) => { hideTip(); e.dataTransfer.setData('text/plain', String(i)); e.dataTransfer.effectAllowed = 'move'; slot.classList.add('dragging'); };
+      slot.ondragend = () => slot.classList.remove('dragging');
       slot.onclick = () => onInvClick(i);
       slot.oncontextmenu = (e) => { e.preventDefault(); onInvContext(e, i); };
     }
@@ -654,8 +681,21 @@ export function renderInventory() {
 
   const hint = document.createElement('div');
   hint.className = 'inv-hint';
-  hint.textContent = 'Click an item to equip/select · right-click for options';
+  hint.textContent = 'Click to equip/select · drag to rearrange · right-click for options';
   v.appendChild(hint);
+}
+
+// [economy lane] Rearrange the inventory: move the item from slot `from` to slot
+// `to`. Swaps if `to` holds an item, else relocates into the empty slot. Pure
+// UI-side reorder of Game.inventory - no items are created or destroyed.
+function moveInv(from, to) {
+  if (from === to || from == null || to == null) return;
+  const inv = Game.inventory;
+  if (from < 0 || to < 0 || from >= inv.length || to >= inv.length) return;
+  const tmp = inv[to]; inv[to] = inv[from]; inv[from] = tmp;
+  if (Game.selectedInv === from) Game.selectedInv = to;
+  else if (Game.selectedInv === to) Game.selectedInv = from;
+  Game.refresh();
 }
 
 function onInvClick(i) {
@@ -715,6 +755,16 @@ function onInvContext(e, i) {
   if (item.id !== 'coins') {
     opts.push(['Offer on Exchange', () => { hideTip(); geSelected = item.id; switchTab('ge'); }]);
   }
+  // Boss components can be forged into a legendary weapon (needs bars + Smithing).
+  if (item.forge) {
+    const out = itemView(item.forge.into);
+    const label = out && out.name ? out.name : item.forge.into;
+    opts.push([`Forge ${label}`, () => {
+      hideTip();
+      forgeBossWeapon(item.id);
+      Game.refresh();
+    }]);
+  }
   // Bones can be buried for Prayer XP (an altar gives more — see the world).
   if (item.buryXp) {
     opts.push([`Bury (+${item.buryXp} Prayer)`, () => {
@@ -769,8 +819,8 @@ export function renderEquipment() {
       const item = Game.equipment[slot];
       if (item) {
         bindTip(cell, item.id, item.name, 'Click to remove · right-click for options');
-        cell.style.background = hex(item.color);
-        cell.textContent = item.name.split(' ').map((w) => w[0]).join('').slice(0, 2);
+        cell.classList.add('doll-filled');
+        cell.innerHTML = itemIconHTML(item.id);
         // Stackable equipment (ammo) shows its remaining quantity, like inventory.
         if (item.qty && item.qty > 1) {
           const q = document.createElement('span');
@@ -864,6 +914,8 @@ export function renderCombat() {
   reach.innerHTML = reachHtml;
   v.appendChild(reach);
 
+  v.appendChild(renderSpec());
+
   // Combat summary — derived from the same formulas combat.js uses.
   const prof = playerProfile();
   const sum = document.createElement('div');
@@ -891,6 +943,47 @@ export function renderCombat() {
 
 // Prayer block for the Combat tab: a points bar + a toggle per unlocked prayer.
 // Points are trained by burying bones / offering them at the Bones Altar.
+// Human-readable summary of a weapon special's effects (for the button tooltip).
+function specDesc(spec) {
+  const bits = [];
+  if (spec.hits) bits.push(`${spec.hits} hits`);
+  if (spec.damageMult) bits.push(`${Math.round(spec.damageMult * 100)}% damage`);
+  if (spec.accuracyMult) bits.push(`${Math.round(spec.accuracyMult * 100)}% accuracy`);
+  if (spec.armorPierce) bits.push(`ignores ${Math.round(spec.armorPierce * 100)}% armour`);
+  return `${spec.name}: ${bits.join(', ')} · costs ${spec.cost}% energy`;
+}
+
+// Special-attack block: an energy bar + (if the weapon has one) an arm button.
+function renderSpec() {
+  const wrap = document.createElement('div');
+  wrap.style.marginTop = '10px';
+  const spec = weaponSpec();
+  const e = Math.round(Game.specEnergy);
+  const ratio = Math.max(0, Math.min(1, Game.specEnergy / SPEC_MAX));
+  wrap.innerHTML = `<div class="stat-title">Special attack — ${e}%</div>
+    <div class="hpbar"><div class="hpfill" style="width:${Math.round(ratio * 100)}%;background:#d08a4a"></div></div>`;
+  if (spec) {
+    const btn = document.createElement('button');
+    const armed = Game.specArmed;
+    const ready = Game.specEnergy >= spec.cost;
+    btn.className = 'style-btn' + (armed ? ' active' : '');
+    btn.style.marginTop = '6px';
+    btn.style.width = '100%';
+    btn.textContent = `${armed ? '▶ ' : ''}${spec.name} (${spec.cost}%)`;
+    btn.title = specDesc(spec);
+    btn.disabled = !ready && !armed;
+    btn.onclick = () => { toggleSpec(); renderCombat(); };
+    wrap.appendChild(btn);
+  } else {
+    const note = document.createElement('div');
+    note.className = 'tip-dim';
+    note.style.marginTop = '4px';
+    note.textContent = 'Equip a boss-forged weapon to use a special.';
+    wrap.appendChild(note);
+  }
+  return wrap;
+}
+
 function renderPrayer() {
   const wrap = document.createElement('div');
   wrap.style.marginTop = '12px';

@@ -174,3 +174,56 @@ function migrate(data) {
   if (!data.v) data.v = 1;
   return data;
 }
+
+// ---- portable backup (export / import) --------------------------------------
+// localStorage is the ONLY copy of a character today, so a browser cache-clear
+// or a switch to another machine wipes everything. These give the player a
+// portable escape hatch: a self-describing JSON blob they can download and
+// re-import anywhere. Same shape as the stored save, wrapped with a format tag
+// so an import can be validated instead of blindly trusted. This is also the
+// natural seam for a future server sync (upload the same blob).
+const BACKUP_FORMAT = 'goblin_empire_save';
+
+// Serialize an account's stored save into a portable, human-readable JSON string.
+// Uses the on-disk save when present, else a live serialize() of the current
+// character. Returns null if there's nothing to export.
+export function exportSaveString(account, pretty = true) {
+  const data = loadSave(account) || (Game.account === account ? serialize() : null);
+  if (!data) return null;
+  const blob = { format: BACKUP_FORMAT, exportedAt: Date.now(), account, save: data };
+  return JSON.stringify(blob, null, pretty ? 2 : 0);
+}
+
+// Parse + validate a backup blob. Returns { ok, account, save, error }. Accepts
+// either a wrapped backup (from exportSaveString) or a bare save object, so a
+// hand-edited or older export still restores.
+export function parseBackup(text) {
+  let obj;
+  try { obj = JSON.parse(text); } catch { return { ok: false, error: 'Not valid JSON.' }; }
+  if (!obj || typeof obj !== 'object') return { ok: false, error: 'Empty or malformed backup.' };
+  const save = obj.format === BACKUP_FORMAT && obj.save ? obj.save : obj;
+  // A real save has a schema version and at least a skills map — cheap sanity
+  // check so we don't overwrite a good character with unrelated JSON.
+  if (typeof save.v !== 'number' || typeof save.skills !== 'object' || !save.skills) {
+    return { ok: false, error: 'This file is not a Goblin Empire save.' };
+  }
+  const account = (obj.account && typeof obj.account === 'string') ? obj.account : null;
+  return { ok: true, account, save: migrate(save) };
+}
+
+// Import a backup into an account's storage slot (does NOT touch the live game;
+// the player loads it from the login screen afterward). `account` overrides the
+// destination name (e.g. importing under a new name). Returns { ok, account, error }.
+export function importSaveString(text, account = null) {
+  const parsed = parseBackup(text);
+  if (!parsed.ok) return { ok: false, error: parsed.error };
+  const dest = account || parsed.account;
+  if (!dest) return { ok: false, error: 'No character name for this import — provide one.' };
+  try {
+    localStorage.setItem(saveKey(dest), JSON.stringify(parsed.save));
+    rememberAccount(dest);
+    return { ok: true, account: dest };
+  } catch {
+    return { ok: false, error: 'Could not write the save (storage full or disabled).' };
+  }
+}

@@ -2088,6 +2088,15 @@
     "drop_role": "rare"
   },
   {
+    "drop_table_id": "meteor_sprite_drops",
+    "monster_id": "meteor_sprite",
+    "item_id": "meteor_core",
+    "chance_percent": 5,
+    "qty_min": 1,
+    "qty_max": 1,
+    "drop_role": "rare"
+  },
+  {
     "drop_table_id": "old_guardian_drops",
     "monster_id": "old_guardian",
     "item_id": "goblin_jade",
@@ -2713,6 +2722,15 @@
     "monster_id": "bog_king",
     "item_id": "bog_king_trophy",
     "chance_percent": 3,
+    "qty_min": 1,
+    "qty_max": 1,
+    "drop_role": "rare"
+  },
+  {
+    "drop_table_id": "bog_king_drops",
+    "monster_id": "bog_king",
+    "item_id": "bog_king_heart",
+    "chance_percent": 5,
     "qty_min": 1,
     "qty_max": 1,
     "drop_role": "rare"

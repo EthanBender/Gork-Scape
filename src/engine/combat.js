@@ -92,6 +92,27 @@ export function resolveAttack(attacker, defender) {
   return { hit: false, damage: 0, max: maxHit(attacker) };
 }
 
+// Resolve a WEAPON SPECIAL ATTACK — returns an array of per-hit results.
+// spec fields (all optional): hits (default 1), accuracyMult, damageMult,
+// armorPierce (0..1, fraction of the defender's armour ignored). Boss-forged
+// weapons carry these; see equipment.js. Pure — energy is spent by the caller.
+export function resolveSpecial(attacker, defender, spec) {
+  const n = Math.max(1, spec.hits || 1);
+  const accMult = spec.accuracyMult || 1;
+  const dmgMult = spec.damageMult || 1;
+  const pierce = Math.min(0.95, Math.max(0, spec.armorPierce || 0));
+  const results = [];
+  for (let i = 0; i < n; i++) {
+    const atkRoll = Math.round(maxAttackRoll(attacker) * accMult);
+    const defRoll = Math.round(maxDefenceRoll(defender, attacker.weaponType) * (1 - pierce));
+    const a = randInt(0, atkRoll);
+    const d = randInt(0, defRoll);
+    const max = Math.max(1, Math.round(maxHit(attacker) * dmgMult));
+    results.push(a > d ? { hit: true, damage: randInt(0, max), max } : { hit: false, damage: 0, max });
+  }
+  return results;
+}
+
 // Combat level per the spec:
 //   base = 1/4; melee = 13/40*(att+str); ranged = 13/40*1.5*ranged
 //   combat = floor(base*(def+hp) + max(melee, ranged))

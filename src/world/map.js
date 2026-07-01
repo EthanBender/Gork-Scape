@@ -141,35 +141,87 @@ export function generateWorld(seed = DEFAULT_SEED) {
   const TB = { x0: 450, y0: 405, x1: 555, y1: 510, cx: 500, cy: 455 };
   (function buildTown() {
     const { x0, y0, x1, y1, cx, cy } = TB;
+    // [economy lane] Gorkholm coherence pass — see CENTRAL_REGION_DESIGN.md.
+    // A goblin keep-town at the great crossroads: a fountain plaza at the heart,
+    // the Chief's gatehouse-keep guarding the north approach, four gate-WARDS each
+    // themed to the road/trade that feeds it (N=ore→forge, E=water→wharf,
+    // S=farm→greengate, W=timber→craft), and a warren of back-alley housing in the
+    // gaps. Every fixture sits where its raw materials arrive. Nothing is random.
     for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) setT(x, y, T.GRASS);
-    for (let y = cy - 2; y <= cy + 2; y++) for (let x = x0 + 1; x <= x1 - 1; x++) setT(x, y, T.ROAD); // E-W avenue
-    for (let x = cx - 2; x <= cx + 2; x++) for (let y = y0 + 1; y <= y1 - 1; y++) setT(x, y, T.ROAD); // N-S avenue
-    disc(cx, cy, 7, (x, y) => setT(x, y, T.FLOOR)); // main square
+    for (let y = cy - 1; y <= cy + 1; y++) for (let x = x0 + 1; x <= x1 - 1; x++) setT(x, y, T.ROAD); // E-W avenue
+    for (let x = cx - 1; x <= cx + 1; x++) for (let y = y0 + 1; y <= y1 - 1; y++) setT(x, y, T.ROAD); // N-S avenue
+    disc(cx, cy, 8, (x, y) => setT(x, y, T.FLOOR)); // plaza
+    // Fountain sits off the exact crossroads (the 4 main roads originate at cx,cy
+    // and would otherwise bridge over it); this spot stays water in the plaza.
+    const fx = cx + 4, fy = cy - 3;
+    disc(fx, fy, 1, (x, y) => setT(x, y, T.WATER)); // fountain pool
+    for (const [dx, dy] of [[2, 0], [-2, 0], [0, 2], [0, -2]]) decor(fx + dx, fy + dy, 0x8a8a7a, 4, 'rect'); // fountain rim
+    // perimeter wall + 4 road gates + gatehouse towers
     for (let x = x0; x <= x1; x++) { setT(x, y0, T.WALL); setT(x, y1, T.WALL); }
     for (let y = y0; y <= y1; y++) { setT(x0, y, T.WALL); setT(x1, y, T.WALL); }
-    for (const g of [-2, -1, 0, 1, 2]) { setT(cx + g, y0, T.ROAD); setT(cx + g, y1, T.ROAD); setT(x0, cy + g, T.ROAD); setT(x1, cy + g, T.ROAD); }
+    for (const g of [-1, 0, 1]) { setT(cx + g, y0, T.ROAD); setT(cx + g, y1, T.ROAD); setT(x0, cy + g, T.ROAD); setT(x1, cy + g, T.ROAD); }
+    for (const [gx, gy] of [[cx, y0], [cx, y1]]) for (const dx of [-2, 2]) decor(gx + dx, gy, 0x555046, 6, 'rect');
+    for (const [gx, gy] of [[x0, cy], [x1, cy]]) for (const dy of [-2, 2]) decor(gx, gy + dy, 0x555046, 6, 'rect');
     TB.gates = { N: [cx, y0 - 1], S: [cx, y1 + 1], W: [x0 - 1, cy], E: [x1 + 1, cy] };
-    // Walkable buildings (walls + door + floor; stations at ~landmark coords).
-    building(484, 447, 2, 1, 'Bank', 0xc9a24a, null, 'S');
-    building(472, 441, 2, 1, 'General Store', 0x9a7a4a, null, 'S');
-    building(492, 428, 2, 1, 'Chief Hall', 0x7a5a8a, null, 'S');
-    building(480, 434, 1, 1, 'Quest Board', 0x8a6a3a, null, 'S');
-    building(468, 460, 2, 1, 'Inn', 0x8a6a4a, null, 'E');
-    building(516, 441, 2, 1, 'Weapon Shop', 0x9a5a4a, null, 'S');
-    building(530, 447, 2, 1, 'Armour Shop', 0x6a7a9a, null, 'S');
-    building(516, 467, 2, 1, 'Town Furnace', 0x7a3a2a, 'Smithing', 'N');
-    building(528, 467, 2, 1, 'Town Anvil', 0x3a3a3a, 'Smithing', 'N');
-    building(486, 469, 2, 1, 'Cooking Range', 0xd2691e, 'Cooking', 'N');
-    building(472, 477, 2, 1, 'Crafting Bench', 0x8b5a2b, 'Crafting', 'N');
-    building(486, 486, 2, 1, 'Fishing Shack', 0x4f8fae, null, 'N');
-    building(532, 461, 2, 1, 'Farming Shed', 0x6a8a3a, null, 'W');
-    building(534, 477, 1, 1, 'Prayer Idol', 0xc0b070, null, 'N');
-    for (const [x, y, d] of [[460, 432, 'S'], [540, 432, 'S'], [460, 484, 'N'], [540, 486, 'N'], [466, 471, 'W'], [536, 486, 'N']]) building(x, y, 1, 1, 'Goblin House', 0x6a5240, null, d);
-    // open market stalls (single props) around the square
-    for (const [x, y] of [[494, 448], [506, 448], [494, 463], [506, 463]]) structure(x, y, 'Market Stall', 0xbf9a5a);
-    // training yard around (515,485)
-    const tx = 515, ty = 487;
-    for (let y = ty - 6; y <= ty + 6; y++) for (let x = tx - 7; x <= tx + 7; x++) { if (!inB(x, y)) continue; if (x === tx - 7 || x === tx + 7 || y === ty - 6 || y === ty + 6) { if (!(x === tx && y === ty - 6)) setT(x, y, T.WALL); } else if (getT(x, y) === T.GRASS) setT(x, y, T.DIRT); }
+
+    // ---- THE KEEP: Chief's gatehouse guarding the north approach to the plaza.
+    // The N avenue passes through its central FLOOR passage; Bank/Chief in the
+    // west wing (the guarded vault), War Table/Quest Board in the east wing. ----
+    (function keep() {
+      const a0 = 489, b0 = 419, a1 = 511, b1 = 434;
+      for (let y = b0; y <= b1; y++) for (let x = a0; x <= a1; x++) setT(x, y, T.FLOOR);
+      for (let x = a0 - 1; x <= a1 + 1; x++) { setT(x, b0 - 1, T.WALL); setT(x, b1 + 1, T.WALL); }
+      for (let y = b0 - 1; y <= b1 + 1; y++) { setT(a0 - 1, y, T.WALL); setT(a1 + 1, y, T.WALL); }
+      for (const g of [-1, 0, 1]) { setT(cx + g, b0 - 1, T.ROAD); setT(cx + g, b1 + 1, T.ROAD); } // N+S passage openings
+      for (let y = b0; y <= b1; y++) { setT(497, y, T.WALL); setT(503, y, T.WALL); } // passage walls (x499-501 open)
+      setT(497, 427, T.FLOOR); setT(503, 427, T.FLOOR); // wing doors off the passage
+      structure(493, 424, 'Chief Hall', 0x7a5a8a); structure(493, 431, 'Bank', 0xc9a24a);   // west wing
+      structure(507, 424, 'War Table', 0x9a5a4a); structure(507, 431, 'Quest Board', 0x8a6a3a); // east wing
+    })();
+
+    // ---- FORGE WARD (N gate ↔ ore road): metal from the northern mines ----
+    building(485, 412, 2, 1, 'Town Furnace', 0x7a3a2a, 'Smithing', 'S');
+    building(515, 412, 2, 1, 'Town Anvil', 0x3a3a3a, 'Smithing', 'S');
+    building(477, 412, 1, 1, 'Weapon Shop', 0x9a5a4a, null, 'S');
+    building(523, 412, 1, 1, 'Armour Shop', 0x6a7a9a, null, 'S');
+
+    // ---- THE WHARF (E gate ↔ water road): fish from Grublake to the east ----
+    building(540, 448, 2, 1, 'Fishing Shack', 0x4f8fae, null, 'W');
+    building(540, 462, 2, 1, 'Cooking Range', 0xd2691e, 'Cooking', 'W');
+    building(548, 455, 1, 1, 'Fishmonger', 0x5a9ab0, null, 'W');
+    building(531, 468, 1, 1, 'Bait & Tackle', 0x3f8fb5, null, 'N');
+
+    // ---- GREENGATE (S gate ↔ farm road): crops from the southern farms ----
+    building(486, 499, 2, 1, 'Farming Shed', 0x6a8a3a, null, 'N');
+    building(472, 499, 2, 1, 'Grocer', 0x9a7a4a, null, 'N');
+    building(514, 499, 1, 1, 'Herbalist', 0x7a9a5a, null, 'N');
+    building(500, 501, 2, 1, 'General Store', 0x9a7a4a, null, 'N');
+
+    // ---- TIMBER ROW (W gate ↔ lumber road): logs from Chopper's Hollow west ----
+    building(460, 448, 2, 1, 'Sawmill', 0x8b6a3b, null, 'E');
+    building(460, 462, 2, 1, 'Crafting Bench', 0x8b5a2b, 'Crafting', 'E');
+    building(468, 455, 1, 1, 'Fletcher', 0xa98b5a, null, 'E');
+    building(452, 468, 1, 1, 'Lumber Stall', 0x8b6a3b, null, 'N');
+
+    // ---- MARKET SQUARE (the plaza ring): trade, rest, prayer ----
+    building(482, 468, 2, 1, 'Crossroads Tavern', 0x8a6a4a, null, 'N');
+    building(516, 468, 1, 1, 'Prayer Idol', 0xc0b070, null, 'N');
+    for (const [x, y] of [[494, 449], [506, 449], [494, 461], [506, 461]]) structure(x, y, 'Market Stall', 0xbf9a5a);
+    structure(490, 452, 'Grand Exchange', 0xe3c45a);
+
+    // ---- THE WARREN (back alleys): cramped goblin housing fills the gaps ----
+    const alley = (ax, ay, bx, by) => { const dx = Math.sign(bx - ax), dy = Math.sign(by - ay); let x = ax, y = ay; for (let i = 0; i < 40 && (x !== bx || y !== by); i++) { if (getT(x, y) === T.GRASS) setT(x, y, T.DIRT); if (x !== bx) x += dx; if (y !== by) y += dy; } };
+    for (const [x, y, d] of [[463, 428, 'S'], [537, 428, 'S'], [460, 483, 'N'], [468, 489, 'E'], [524, 483, 'N'], [532, 489, 'W']]) building(x, y, 1, 1, 'Goblin House', 0x6a5240, null, d);
+    alley(456, 478, 472, 478); alley(464, 483, 464, 494); alley(524, 478, 540, 478);
+
+    // ---- GREENERY: trees, shrubs, wells so it reads lived-in, not paved ----
+    for (const [x, y] of [[458, 410], [542, 410], [458, 505], [542, 505], [470, 440], [530, 440], [476, 485], [524, 458]]) decor(x, y, 0x2f6b25, 6, 'circle');
+    for (const [x, y] of [[464, 420], [536, 420], [464, 490], [536, 494], [485, 445], [515, 445]]) decor(x, y, 0x3a7a3a, 4, 'circle');
+    for (const [x, y] of [[470, 458], [530, 448]]) { setT(x, y, T.WATER); for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) decor(x + dx, y + dy, 0x8a8a7a, 3, 'rect'); }
+
+    // ---- TRAINING YARD (SE corner, kept): dummies + starter rats ----
+    const tx = 520, ty = 490;
+    for (let y = ty - 5; y <= ty + 5; y++) for (let x = tx - 6; x <= tx + 6; x++) { if (!inB(x, y)) continue; if (x === tx - 6 || x === tx + 6 || y === ty - 5 || y === ty + 5) { if (!(x === tx && y === ty - 5)) setT(x, y, T.WALL); } else if (getT(x, y) === T.GRASS) setT(x, y, T.DIRT); }
     structure(tx - 3, ty, 'Combat Dummy', 0x9a7a4a); structure(tx + 3, ty, 'Combat Dummy', 0x9a7a4a); structure(tx, ty + 3, 'Combat Dummy', 0x9a7a4a);
     enemySpawns.push({ type: 'rat', x: tx, y: ty - 3, name: 'Training Rat', _keep: true }, { type: 'rat', x: tx + 4, y: ty + 3, name: 'Training Rat', _keep: true });
   })();
@@ -682,6 +734,50 @@ export function generateWorld(seed = DEFAULT_SEED) {
           }
         }
       }
+    }
+  })();
+
+  // ---- AUTHORED WONDERS: one-of-a-kind landmarks in the in-between wild ----
+  // Hand-placed points of interest in the wilderness gaps and region edges, each
+  // shaped from terrain + labeled objects/decor so exploring the space between
+  // named regions is rewarding.
+  (function authoredWonders() {
+    const S = (x, y, label, color, blocking = true) => { if (inB(x, y) && !occupied.has(okey(x, y))) placeObj({ x, y, type: 'structure', label, color, skill: null, blocking, depleted: false }); };
+    const ringWall = (cx, cy, r, step) => { for (let a = 0; a < 360; a += step) { const x = Math.round(cx + r * Math.cos(a * Math.PI / 180)), y = Math.round(cy + r * Math.sin(a * Math.PI / 180)); if (getT(x, y) === T.GRASS) setT(x, y, T.WALL); } };
+    const ringDecor = (cx, cy, r, step, color, size, shape) => { for (let a = 0; a < 360; a += step) { const x = Math.round(cx + r * Math.cos(a * Math.PI / 180)), y = Math.round(cy + r * Math.sin(a * Math.PI / 180)); if (getT(x, y) === T.GRASS && !occupied.has(okey(x, y))) decor(x, y, color, size, shape); } };
+    const box = (x0, y0, x1, y1) => { for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) { if (getT(x, y) !== T.GRASS) continue; setT(x, y, (x === x0 || x === x1 || y === y0 || y === y1) ? T.WALL : T.FLOOR); } };
+
+    ringWall(205, 485, 4, 45); S(205, 485, 'Ancient Stone Circle', 0x9a9aa0);                                    // stone circle (W wilds)
+    for (let i = -5; i <= 5; i++) if (getT(600 + i, 360) === T.GRASS) setT(600 + i, 360, T.WALL); setT(594, 359, T.WALL); setT(594, 361, T.WALL); S(600, 358, 'The Fallen Colossus', 0x8a8a7a); // toppled statue (N plains)
+    disc(420, 560, 4, (x, y) => { if (getT(x, y) === T.GRASS && !occupied.has(okey(x, y)) && rng() < 0.55) resObj(x, y, 'tree_oak'); }); S(420, 560, 'The Great Oak', 0x1f5c1f); // giant lone oak
+    ringWall(725, 175, 6, 20); ringWall(725, 175, 5, 30); disc(725, 175, 4, (x, y) => { if (getT(x, y) === T.GRASS) setT(x, y, T.DIRT); }); S(725, 175, 'Meteor Crater', 0x6a6a6a); S(723, 176, 'Meteor Shard', 0x5ad0d0); // crater (troll foothills)
+    disc(648, 236, 3, (x, y) => { if (getT(x, y) === T.GRASS) setT(x, y, T.WATER); }); disc(648, 236, 5, (x, y) => { if (getT(x, y) === T.GRASS) setT(x, y, T.SAND); }); ringDecor(648, 236, 4, 40, 0xbfe0e0, 4, 'circle'); S(644, 236, 'Steaming Spring', 0x9ad0d0, false); // hot spring (mine hills)
+    box(298, 502, 303, 508); S(300, 505, 'Abandoned Watermill', 0x7a6a4a); S(297, 505, 'Rotting Waterwheel', 0x6a5a3a); // watermill (willow river)
+    for (let i = 0; i < 6; i++) { const x = 700 + i, y = 632 + (i % 2); if (getT(x, y) === T.GRASS || getT(x, y) === T.SAND) setT(x, y, T.WALL); } S(702, 631, 'Wrecked Fishing Boat', 0x6a5a4a); // shipwreck (lake shore)
+    ringWall(620, 700, 3, 90); S(620, 700, 'Goblin War Memorial', 0x8a8a7a); ringDecor(620, 700, 5, 60, 0xe8e2cf, 3, 'rect'); // memorial + bones (bog edge)
+    for (let r = 0; r < 4; r++) for (let c = 0; c < 5; c++) { const x = 300 + c * 2, y = 205 + r * 2; if (getT(x, y) === T.GRASS) setT(x, y, T.WALL); } S(304, 210, 'Old Graveyard', 0x7a7a7a); // graveyard (near ruins)
+    setT(150, 344, T.WALL); setT(150, 346, T.WALL); setT(150, 348, T.WALL); setT(156, 344, T.WALL); setT(156, 348, T.WALL); S(153, 346, 'Weathered Stone Arch', 0x8a8a7a); // stone arch (far W)
+    ringDecor(400, 762, 4, 40, 0xc44a6a, 5, 'circle'); ringDecor(400, 762, 4, 90, 0xd08040, 4, 'circle'); S(400, 762, 'Wild Fairy Ring', 0xc060c0, false); // fairy ring (SW)
+    ringWall(478, 382, 4, 30); disc(478, 382, 3, (x, y) => { if (getT(x, y) === T.GRASS) setT(x, y, T.DIRT); }); S(478, 382, 'Yawning Sinkhole', 0x2a2a2a); // sinkhole (town↔quarry wilds)
+    box(148, 648, 152, 652); S(150, 650, 'Hermit Hut', 0x6a5a3a); friendlies.push({ name: 'Old Hermit', x: 150, y: 653, color: 0x7a6a5a, dialog: 'Few come this far. The wilds hide more than mobs — old stones, sunken things, and worse.' }); // hermit (far SW)
+    // Waterfall where the north river spills off the hills into the lowlands
+    for (let y = 314; y <= 322; y++) { for (const x of [684, 685, 686]) { const t = getT(x, y); if (t === T.GRASS || t === T.ROCK) setT(x, y, T.WATER); } }
+    ringDecor(685, 324, 3, 40, 0xdfefff, 3, 'circle'); disc(685, 326, 2, (x, y) => { if (getT(x, y) === T.GRASS) setT(x, y, T.WATER); }); S(688, 318, 'Waterfall', 0x9ecfe0, false);
+  })();
+
+  // ---- POLISH: terrain texture variants (FINAL, visual-only recolor) ----
+  // Runs after ALL placement so no T.GRASS-based logic is affected. Variants
+  // share their base tile's walkability, so collision/pathfinding is unchanged.
+  (function texturePass() {
+    const isWater = (t) => t === T.WATER || t === T.WATER_DEEP || t === T.WATER_SHALLOW;
+    const grassy = (t) => t === T.GRASS || t === T.GRASS2 || t === T.GRASS3 || t === T.DIRT || t === T.SAND || t === T.WET_SAND;
+    for (let y = 3; y < WORLD_H - 3; y++) for (let x = 3; x < WORLD_W - 3; x++) {
+      const i = idx(x, y), t = terrain[i];
+      if (t === T.WATER) { const land = [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([a, b]) => !isWater(getT(x + a, y + b))); terrain[i] = land ? T.WATER_SHALLOW : T.WATER_DEEP; }
+      else if (t === T.ROCK) { const face = [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([a, b]) => grassy(getT(x + a, y + b))); terrain[i] = face ? T.CLIFF : (vnoise(x / 6, y / 6, Sr + 63) > 0.52 ? T.ROCK2 : T.ROCK); }
+      else if (t === T.SAND) { if ([[1, 0], [-1, 0], [0, 1], [0, -1]].some(([a, b]) => isWater(getT(x + a, y + b)))) terrain[i] = T.WET_SAND; }
+      else if (t === T.GRASS) { const n = vnoise(x / 7, y / 7, Sr + 61) * 0.6 + vnoise(x / 23, y / 23, Sr + 61) * 0.4; if (n > 0.60) terrain[i] = T.GRASS3; else if (n < 0.40) terrain[i] = T.GRASS2; }
+      else if (t === T.SWAMP) { if (vnoise(x / 9, y / 9, Sg + 7) > 0.55) terrain[i] = T.MUD; }
     }
   })();
 

@@ -1,0 +1,5 @@
+# Cloudflare Pages / Netlify _headers — the game is a fast-moving dev build, so
+# don't let browsers hard-cache modules/JSON (this also avoids the stale-module
+# problem we hit locally). Cloudflare's CDN edge cache still applies.
+/*
+  Cache-Control: no-cache

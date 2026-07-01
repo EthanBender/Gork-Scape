@@ -15,6 +15,9 @@ export const DEFAULT_SEED = 1337;
 export const T = {
   GRASS: 0, WATER: 1, ROCK: 2, ROAD: 3, SWAMP: 4, SAND: 5,
   BRIDGE: 6, DIRT: 7, FIELD: 8, FLOOR: 9, WALL: 10,
+  // --- visual texture variants (walkability matches their base tile) ---
+  GRASS2: 11, GRASS3: 12, WATER_DEEP: 13, WATER_SHALLOW: 14,
+  ROCK2: 15, CLIFF: 16, MUD: 17, WET_SAND: 18,
 };
 export const TERRAIN_DEFS = [
   { id: 'grass',  color: 0x4a7c3a, walkable: true },
@@ -28,6 +31,15 @@ export const TERRAIN_DEFS = [
   { id: 'field',  color: 0x6e5a2e, walkable: true },  // tilled farmland
   { id: 'floor',  color: 0x8a7a58, walkable: true },  // building / town floor
   { id: 'wall',   color: 0x4a3f30, walkable: false }, // palisade / fences
+  // texture variants (indices 11-18) — visual only, appended so base ids 0-10 stay stable
+  { id: 'grass2', color: 0x54864a, walkable: true },  // lighter grass patch
+  { id: 'grass3', color: 0x3f6b30, walkable: true },  // darker grass patch
+  { id: 'water_deep',    color: 0x244f78, walkable: false },
+  { id: 'water_shallow', color: 0x3f77a6, walkable: false },
+  { id: 'rock2',  color: 0x6d6d6d, walkable: false }, // lighter rock
+  { id: 'cliff',  color: 0x484848, walkable: false }, // shaded cliff face
+  { id: 'mud',    color: 0x554b30, walkable: true },  // swamp mud
+  { id: 'wet_sand', color: 0xa89a6a, walkable: true }, // sand at the waterline
 ];
 
 // --- Regions (reverse-engineered from the approved image pack: exact centers,

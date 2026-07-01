@@ -55,7 +55,23 @@ classic "monsters mint infinite gold" inflation).
 4. **When multiplayer lands,** the GE tax rate becomes the main macro dial for
    controlling the money supply — keep it adjustable server-side.
 
-## How to re-run
-The analysis is a standalone script over `src/data/*.json` (see the economy-lane
-change log in COORDINATION.md). Key metrics to watch each balance pass: avg
-coins/kill, terminal-cosmetic count, and the add-value vs destroy-value recipe split.
+## How to re-run — now an executable validator
+Every claim above is checked by **`node scripts/economy_sim.mjs`** (add
+`--verbose` for per-check detail). It is a real test, not a report: it exits
+non-zero if the economy drifts outside the asserted bands, so a bad drop-table /
+recipe / gp change is caught before it ships. It:
+
+- **re-derives the static faucet/sink shape** straight from `src/data/*.json`
+  (avg coins/kill ≈ 20, all cmb-≥70 bosses drop 0 coins, the +38,947 / −29,419 gp
+  crafting value split over material-only recipes) and asserts each stays in band;
+- **stress-tests GE stability with the REAL engine** (`src/systems/grandExchange.js`):
+  4,000 trades under a 40-trader population — net selling pressure first (tests the
+  price-collapse floor), net buying pressure second (tests the runaway-inflation
+  ceiling) — and asserts no guide moves beyond 3× / ⅓ of its seed. This validates
+  the ±5%/trade guide clamp actually holds under load (measured worst case: +3% /
+  −8%), which is the concrete form of "the GE won't runaway-inflate";
+- **models the new-player money loop** (risk #1 above): a gather→sell starter loop
+  must clear a survival wage (≥ 300 coins/hr) without being a firehose (≤ 20k/hr).
+
+Watch these each balance pass; if a change is intentional, move the band in the
+script (with a note) rather than deleting the check.

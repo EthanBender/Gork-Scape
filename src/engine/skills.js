@@ -9,7 +9,7 @@ export const MAX_LEVEL = 99;
 // also the player's max prayer points. See src/engine/prayer.js.
 export const SKILL_NAMES = [
   'Woodcutting', 'Fishing', 'Mining', 'Cooking', 'Firemaking', 'Smithing',
-  'Crafting', 'Attack', 'Strength', 'Defence', 'Ranged', 'Prayer',
+  'Crafting', 'Alchemy', 'Attack', 'Strength', 'Defence', 'Ranged', 'Prayer',
 ];
 
 // totalXPForLevel(L) = floor( sum_{l=1}^{L-1} floor(l + 300 * 2^(l/7)) / 4 )

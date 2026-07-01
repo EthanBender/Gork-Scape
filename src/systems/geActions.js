@@ -8,6 +8,7 @@ import { market } from './grandExchange.js';
 import { GameData } from '../data/gameData.js';
 import { canonicalId } from '../data/idAliases.js';
 import { Game, addItem, firstFreeSlot } from '../engine/state.js';
+import { marketBias } from './worldEvents.js'; // [world-continuity] event-driven demand
 
 const COINS = 'coins';
 
@@ -289,6 +290,14 @@ export function cancelOffer(orderId) {
 
 function itemName(id) { const it = GameData.item(id); return (it && it.display_name) || id; }
 
+// Searchable text for an item (category + name), used to match world-event
+// demand filters against — mirrors driveMarketEvents' matcher.
+function matchText(id) {
+  const it = GameData.item(id) || GameData.item(canonicalId(id));
+  if (!it) return String(id);
+  return `${it.category || ''} ${it.subcategory || ''} ${it.display_name || id}`;
+}
+
 // ---- world-market persistence + offline drift (Phase 3, world-continuity) -----
 // The Grand Exchange is part of the WORLD, not the player: its guide prices,
 // recent trades, market-maker stock, active demand event and treasury persist
@@ -338,7 +347,7 @@ export function restoreMarket(data) {
 // mean-revert toward their base value plus a bounded random walk (drift grows
 // with, but saturates over, time away). Returns the top movers for a login
 // summary. Player orders are never filled here.
-export function advanceMarketOffline(elapsedMs) {
+export function advanceMarketOffline(elapsedMs, bias = marketBias()) {
   const movers = [];
   const hours = (elapsedMs > 0 ? elapsedMs : 0) / 3600000;
   if (hours < 0.01) return movers; // < ~36s away: nothing meaningful moved
@@ -348,7 +357,10 @@ export function advanceMarketOffline(elapsedMs) {
 
   for (const [id, g] of market.guide.entries()) {
     if (!(g > 0)) continue;
-    const base = basePrice(id) || g;
+    // A live world event (e.g. Ore Rush) shifts the equilibrium for the items it
+    // touches, so offline prices drift toward that biased base while it runs.
+    let base = basePrice(id) || g;
+    if (bias && bias.match.test(matchText(id))) base *= bias.mult;
     let ng = g + (base - g) * revert * 0.6;
     ng *= 1 + (Math.random() * 2 - 1) * noiseAmp;
     ng = Math.max(g * 0.55, Math.min(g * 1.8, ng));     // cap the move vs the old price
