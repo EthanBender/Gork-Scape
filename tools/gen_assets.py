@@ -30,10 +30,12 @@ for whichever tool the research pass picks. Everything else (prompting, batching
 skip-existing, retries, manifest, post-processing hook) is done.
 """
 import argparse
+import base64
 import json
 import os
 import sys
 import time
+import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -109,9 +111,43 @@ def backend_pixellab(item_id, prompt, out_path):
     raise NotImplementedError("Plug in the PixelLab endpoint (see tools/README.md).")
 
 
+# Negatives + size for the local SD backend (override via env).
+SD_NEG = os.environ.get(
+    "SD_NEG",
+    "text, watermark, blurry, multiple objects, cropped, extra objects, "
+    "background clutter, jpeg artifacts, low quality",
+)
+
+
 def backend_local(item_id, prompt, out_path):
-    # TODO: local ComfyUI / Stable Diffusion + style LoRA over HTTP (127.0.0.1:8188).
-    raise NotImplementedError("Point this at your local ComfyUI API.")
+    """Stable-Diffusion-WebUI-compatible txt2img — works with Automatic1111, Forge,
+    SD.Next, and Draw Things' API server. Uses only the Python stdlib (no pip installs).
+    Configure via env: SD_API_URL (default http://127.0.0.1:7860), SD_SIZE, SD_STEPS,
+    SD_CFG, SD_SAMPLER. A style LoRA loaded in the server (or a <lora:...> tag in the
+    prompt) is what locks the look across the whole batch."""
+    base = os.environ.get("SD_API_URL", "http://127.0.0.1:7860").rstrip("/")
+    size = int(os.environ.get("SD_SIZE", "512"))
+    payload = {
+        "prompt": prompt,
+        "negative_prompt": SD_NEG,
+        "width": size, "height": size,
+        "steps": int(os.environ.get("SD_STEPS", "26")),
+        "cfg_scale": float(os.environ.get("SD_CFG", "7")),
+        "sampler_name": os.environ.get("SD_SAMPLER", "DPM++ 2M Karras"),
+    }
+    req = urllib.request.Request(
+        base + "/sdapi/v1/txt2img",
+        data=json.dumps(payload).encode(),
+        headers={"Content-Type": "application/json"},
+    )
+    with urllib.request.urlopen(req, timeout=300) as r:
+        data = json.loads(r.read())
+    imgs = data.get("images") or []
+    if not imgs:
+        raise RuntimeError("server returned no image")
+    png = base64.b64decode(imgs[0].split(",", 1)[-1])
+    out_path.write_bytes(png)
+    return True
 
 
 BACKENDS = {

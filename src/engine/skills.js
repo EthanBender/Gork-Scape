@@ -8,7 +8,7 @@ export const MAX_LEVEL = 99;
 // Prayer is trained by burying bones / offering them at an altar; its level is
 // also the player's max prayer points. See src/engine/prayer.js.
 export const SKILL_NAMES = [
-  'Woodcutting', 'Fishing', 'Mining', 'Cooking', 'Firemaking', 'Smithing',
+  'Woodcutting', 'Fishing', 'Mining', 'Farming', 'Cooking', 'Firemaking', 'Smithing',
   'Crafting', 'Alchemy', 'Attack', 'Strength', 'Defence', 'Ranged', 'Prayer',
 ];
 

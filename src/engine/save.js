@@ -12,8 +12,9 @@
 
 import { Game, INVENTORY_SIZE } from './state.js';
 import { ITEMS } from '../items/equipment.js';
+import { serializeQuests, applyQuests } from '../systems/quests.js';
 
-export const SAVE_VERSION = 2;
+export const SAVE_VERSION = 3;
 const KEY_PREFIX = 'goblin_empire:save:';
 const ACCOUNTS_KEY = 'goblin_empire:accounts';
 
@@ -97,6 +98,7 @@ export function serialize() {
     inventory: Game.inventory.map(serItem),
     equipment,
     pos: p ? { x: p.tileX, y: p.tileY } : null,
+    quests: serializeQuests(), // quest status + kill tallies (obtain/level recompute live)
   };
 }
 
@@ -139,6 +141,9 @@ export function applySave(data) {
     Game.player.tileX = data.pos.x;
     Game.player.tileY = data.pos.y;
   }
+  // Quest progress. applyQuests tolerates undefined (pre-v3 saves) by starting
+  // everyone on a clean locked slate and re-deriving availability.
+  applyQuests(data.quests);
   Game.selectedInv = null;
 }
 

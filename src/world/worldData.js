@@ -18,6 +18,8 @@ export const T = {
   // --- visual texture variants (walkability matches their base tile) ---
   GRASS2: 11, GRASS3: 12, WATER_DEEP: 13, WATER_SHALLOW: 14,
   ROCK2: 15, CLIFF: 16, MUD: 17, WET_SAND: 18,
+  // --- shade variants cast south of tall features (2.5D depth) ---
+  GRASS_SHADOW: 19, DIRT_SHADOW: 20, SAND_SHADOW: 21,
 };
 export const TERRAIN_DEFS = [
   { id: 'grass',  color: 0x4a7c3a, walkable: true },
@@ -40,6 +42,10 @@ export const TERRAIN_DEFS = [
   { id: 'cliff',  color: 0x484848, walkable: false }, // shaded cliff face
   { id: 'mud',    color: 0x554b30, walkable: true },  // swamp mud
   { id: 'wet_sand', color: 0xa89a6a, walkable: true }, // sand at the waterline
+  // shade variants (indices 19-21) — cast in the lee of tall terrain for depth
+  { id: 'grass_shadow', color: 0x35552a, walkable: true },
+  { id: 'dirt_shadow',  color: 0x5c4f34, walkable: true },
+  { id: 'sand_shadow',  color: 0x9a8d64, walkable: true },
 ];
 
 // --- Regions (reverse-engineered from the approved image pack: exact centers,

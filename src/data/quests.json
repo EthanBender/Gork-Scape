@@ -1,0 +1,81 @@
+[
+  {
+    "id": "tutorial_first_scrap",
+    "name": "A Goblin's First Scrap",
+    "act": 1,
+    "giver": "Goblin Elder",
+    "autoStart": true,
+    "summary": "The Elder wants to see if you can hold your own. Batter a Training Rat in the yard, then help yourself to whatever's left of it.",
+    "requires": {},
+    "steps": [
+      { "id": "kill_rat", "type": "kill", "target": "training_rat", "count": 1, "text": "Defeat a Training Rat" },
+      { "id": "get_bones", "type": "obtain", "target": "bones", "count": 1, "text": "Pick up a set of Bones" }
+    ],
+    "rewards": { "coins": 20, "xp": [{ "skill": "Attack", "amount": 60 }], "items": [] }
+  },
+  {
+    "id": "goblin_pointy_stick",
+    "name": "Goblin Needs Pointy Stick",
+    "act": 1,
+    "giver": "Weapon Shop Keeper",
+    "autoStart": false,
+    "summary": "A goblin without a proper blade is just a snack with legs. Get yourself a Bronze Dagger — buy one, smith one, or take one off something.",
+    "requires": { "quests": ["tutorial_first_scrap"] },
+    "steps": [
+      { "id": "have_dagger", "type": "obtain", "target": "bronze_dagger", "count": 1, "text": "Obtain a Bronze Dagger" }
+    ],
+    "rewards": { "coins": 40, "xp": [{ "skill": "Attack", "amount": 120 }], "items": [] }
+  },
+  {
+    "id": "fish_for_chief",
+    "name": "Fish for the Chief",
+    "act": 1,
+    "giver": "Fishmonger Keeper",
+    "autoStart": false,
+    "summary": "The Chief is hungry and the Chief being hungry is everyone's problem. Net some shrimp from the Wharf.",
+    "requires": { "quests": ["tutorial_first_scrap"] },
+    "steps": [
+      { "id": "catch_shrimp", "type": "obtain", "target": "raw_shrimp", "count": 3, "text": "Catch 3 Raw Shrimp" }
+    ],
+    "rewards": { "coins": 35, "xp": [{ "skill": "Fishing", "amount": 150 }, { "skill": "Cooking", "amount": 60 }], "items": [] }
+  },
+  {
+    "id": "first_pickaxe",
+    "name": "First Pickaxe",
+    "act": 1,
+    "giver": "Miner Keeper",
+    "autoStart": false,
+    "summary": "There's copper in the hills and a goblin who won't mine it. Swing your pickaxe and bring back some ore.",
+    "requires": { "quests": ["tutorial_first_scrap"] },
+    "steps": [
+      { "id": "mine_copper", "type": "obtain", "target": "copper_ore", "count": 5, "text": "Mine 5 Copper Ore" }
+    ],
+    "rewards": { "coins": 45, "xp": [{ "skill": "Mining", "amount": 180 }], "items": [] }
+  },
+  {
+    "id": "cabbage_for_cowards",
+    "name": "Cabbage for Cowards",
+    "act": 1,
+    "giver": "Grocer Keeper",
+    "autoStart": false,
+    "summary": "Cabbage makes a goblin brave. That's not true, but the Grocer swears by it. Gather three heads from Greengate.",
+    "requires": { "quests": ["tutorial_first_scrap"] },
+    "steps": [
+      { "id": "get_cabbage", "type": "obtain", "target": "cabbage", "count": 3, "text": "Gather 3 Cabbage" }
+    ],
+    "rewards": { "coins": 30, "xp": [{ "skill": "Cooking", "amount": 90 }], "items": [] }
+  },
+  {
+    "id": "rats_in_the_storehouse",
+    "name": "Rats in the Storehouse",
+    "act": 1,
+    "giver": "General Store Keeper",
+    "autoStart": false,
+    "summary": "The storehouse is overrun. Clear out five Training Rats and the Keeper will make it worth your while.",
+    "requires": { "quests": ["tutorial_first_scrap"], "level": { "skill": "Attack", "level": 3 } },
+    "steps": [
+      { "id": "cull_rats", "type": "kill", "target": "training_rat", "count": 5, "text": "Defeat 5 Training Rats" }
+    ],
+    "rewards": { "coins": 60, "xp": [{ "skill": "Strength", "amount": 200 }, { "skill": "Hitpoints", "amount": 80 }], "items": [] }
+  }
+]

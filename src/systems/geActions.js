@@ -8,7 +8,7 @@ import { market } from './grandExchange.js';
 import { GameData } from '../data/gameData.js';
 import { canonicalId } from '../data/idAliases.js';
 import { Game, addItem, firstFreeSlot } from '../engine/state.js';
-import { marketBias } from './worldEvents.js'; // [world-continuity] event-driven demand
+import { marketBias, activeEvent } from './worldEvents.js'; // [world-continuity] event-driven demand
 
 const COINS = 'coins';
 
@@ -119,52 +119,38 @@ export function mmInfo(itemId) {
   return { stock: Math.round(s.stock), target: MM_TARGET };
 }
 
-// ---- Market events (demand shocks that make the economy feel alive) -----------
-const MARKET_EVENTS = [
-  { id: 'war', name: '⚔️ Goblin War', mult: 1.35,
-    match: /weapon|sword|axe|mace|dagger|scimitar|spear|bow|arrow|armou?r|shield|helm|plate/i,
-    msg: 'A goblin war erupts — weapons, armour and ammo are in demand!' },
-  { id: 'feast', name: '🍖 Great Feast', mult: 1.30,
-    match: /food|fish|cook|meat|fruit|bread|stew/i,
-    msg: 'The clan calls a great feast — food prices climb.' },
-  { id: 'glut', name: '🪵 Timber Glut', mult: 0.70,
-    match: /log|wood|plank|timber/i,
-    msg: 'A timber glut floods the market — wood prices crash.' },
-  { id: 'rush', name: '⛏️ Ore Rush', mult: 1.25,
-    match: /ore|bar|coal|metal|ingot|rock/i,
-    msg: 'An ore rush grips the mines — metal prices rise.' },
-];
-export const marketEvent = { active: null }; // { ...event, until, nudged:Set }
-let lastEventTick = 0, lastDriveTick = -1;
+// ---- Market events (unified with the world calendar) --------------------------
+// The live GE now reflects the SAME deterministic world-event calendar as the
+// topbar chip and offline drift (worldEvents.js) — one source of truth instead of
+// a second random scheduler. `marketEvent.active` is the panel-facing banner
+// (panels.js reads `.name`/`.msg`); it's rebuilt from the live world event.
+export const marketEvent = { active: null };
+let _liveEventId = null;
 
 function driveMarketEvents(itemId) {
-  const t = Game.ticker ? Game.ticker.count : 0;
-  // Global scheduler runs once per tick (first item queried that tick).
-  if (t !== lastDriveTick) {
-    lastDriveTick = t;
-    if (marketEvent.active && t >= marketEvent.active.until) {
-      Game.log(`📉 ${marketEvent.active.name} has passed; prices settle.`);
-      marketEvent.active = null;
-    }
-    if (!marketEvent.active && t - lastEventTick > 250) {
-      lastEventTick = t;
-      if (Math.random() < 0.45) {
-        const ev = MARKET_EVENTS[Math.floor(Math.random() * MARKET_EVENTS.length)];
-        marketEvent.active = { ...ev, until: t + 180, nudged: new Set() };
-        Game.log(`📣 ${ev.name}: ${ev.msg}`);
-      }
-    }
+  // Sync the banner to whatever the world calendar says is live right now.
+  const ev = activeEvent();
+  const id = ev ? ev.id : null;
+  if (id !== _liveEventId) {
+    _liveEventId = id;
+    marketEvent.active = ev
+      ? { id: ev.id, name: ev.name, msg: ev.blurb,
+          mult: (ev.effect && ev.effect.geMult) || 1,
+          match: (ev.effect && ev.effect.geMatch) || null,
+          nudged: new Set() }
+      : null;
   }
-  // One-time guide shock per affected item the first time it's quoted during the
-  // event; normal trading re-equilibrates afterward (no permanent distortion).
-  const ev = marketEvent.active;
-  if (!ev || ev.nudged.has(itemId)) return;
-  const it = GameData.item(itemId);
-  if (!it) return;
-  const hay = `${it.category || ''} ${it.subcategory || ''} ${it.display_name || itemId}`;
-  if (ev.match.test(hay)) {
-    ev.nudged.add(itemId);
-    market.setGuide(itemId, market.guidePrice(itemId) * ev.mult);
+  // One-time nudge per affected item: pull its guide halfway to the event's
+  // equilibrium (base × mult) — the SAME equilibrium offline drift targets, so
+  // live play and a returning player see a consistent market (no compounding).
+  const a = marketEvent.active;
+  if (!a || !a.match || a.nudged.has(itemId)) return;
+  if (!GameData.item(itemId)) return;
+  if (a.match.test(matchText(itemId))) {
+    a.nudged.add(itemId);
+    const base = basePrice(itemId) || market.guidePrice(itemId);
+    const g = market.guidePrice(itemId);
+    market.setGuide(itemId, g + (base * a.mult - g) * 0.5);
   }
 }
 
@@ -313,7 +299,8 @@ const WORLD_MARKET_KEY = 'goblin_empire:world_market';
 const WM_VERSION = 1;
 
 export function serializeMarket() {
-  const ev = marketEvent.active;
+  // The active event is NOT persisted — it's derived deterministically from the
+  // world calendar (worldEvents.js) on the next quote, so there's nothing to save.
   return {
     v: WM_VERSION,
     savedAt: Date.now(),
@@ -321,9 +308,6 @@ export function serializeMarket() {
     guide: [...market.guide.entries()],
     trades: market.trades.slice(-300),
     mm: [...mmState.entries()].map(([id, s]) => [id, { stock: Math.round(s.stock), lastTick: s.lastTick }]),
-    event: ev ? { id: ev.id, name: ev.name, mult: ev.mult, msg: ev.msg, until: ev.until,
-                  match: ev.match.source, nudged: [...ev.nudged] } : null,
-    lastEventTick,
     treasury: { totalSunk: geTax.totalSunk, balance: geTax.balance },
   };
 }
@@ -336,10 +320,10 @@ export function restoreMarket(data) {
   mmState.clear();
   for (const [id, s] of (data.mm || [])) mmState.set(id, { stock: s.stock, lastTick: s.lastTick });
   if (data.treasury) { geTax.totalSunk = data.treasury.totalSunk || 0; geTax.balance = data.treasury.balance || 0; }
-  lastEventTick = data.lastEventTick || 0;
-  marketEvent.active = data.event
-    ? { ...data.event, match: new RegExp(data.event.match, 'i'), nudged: new Set(data.event.nudged || []) }
-    : null;
+  // marketEvent.active is re-derived from the world calendar on the next quote;
+  // no need to restore it (and old snapshots' `event`/`lastEventTick` are ignored).
+  marketEvent.active = null;
+  _liveEventId = null;
   return true;
 }
 
@@ -377,9 +361,8 @@ export function advanceMarketOffline(elapsedMs, bias = marketBias()) {
     s.stock += (MM_TARGET * 0.6 - s.stock) * revert;
     s.stock = Math.max(0, s.stock);
   }
-  // Any demand event that was running has long since passed if we were away more
-  // than a few minutes (events last ~180 ticks ≈ a couple of minutes).
-  if (marketEvent.active && hours * 60 > 3) marketEvent.active = null;
+  // (The demand-event banner is derived from the world calendar on the next
+  // quote, so there's nothing to expire here.)
 
   movers.sort((a, b) => Math.abs(b.pct) - Math.abs(a.pct));
   return movers.slice(0, 3);

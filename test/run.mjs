@@ -47,16 +47,23 @@ export function installFetchShim() {
   if (globalThis.__geFetchShim) return;
   globalThis.__geFetchShim = true;
   globalThis.fetch = async (url) => {
-    // Accept 'src/data/x.json', './data/x.json', '/src/data/x.json', etc.
-    let rel = String(url).replace(/^https?:\/\/[^/]+/, '').replace(/^\.?\//, '');
-    if (!rel.startsWith('src/')) rel = rel.replace(/^data\//, 'src/data/');
-    const body = readFileSync(join(ROOT, rel), 'utf8');
+    const s = String(url);
+    let path;
+    if (s.startsWith('file:')) {
+      path = fileURLToPath(s);                                   // gameData uses new URL(..., import.meta.url)
+    } else {
+      let rel = s.replace(/^https?:\/\/[^/]+/, '').replace(/^\.?\//, '');
+      if (!rel.startsWith('src/')) rel = rel.replace(/^data\//, 'src/data/');
+      path = join(ROOT, rel);
+    }
+    const body = readFileSync(path, 'utf8');
     return { ok: true, status: 200, async json() { return JSON.parse(body); }, async text() { return body; } };
   };
 }
 
 // ---- runner ---------------------------------------------------------------
 async function main() {
+  installFetchShim(); // before test files import gameData (top-level-await fetch)
   const here = dirname(fileURLToPath(import.meta.url));
   const files = readdirSync(here).filter((f) => f.endsWith('.test.mjs')).sort();
   for (const f of files) await import(pathToFileURL(join(here, f)).href);

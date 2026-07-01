@@ -15,11 +15,16 @@ The repo is now under **git** (owner-approved 2026-06-30). Baseline commit exist
 1. **Work in your own git worktree** so live edits don't collide in one tree:
    `git worktree add ../ge-<lane> -b <lane>/<feature>` → edit there → the shared
    preview still serves `master`. (If you must edit the shared tree, commit often.)
-2. **Before you call anything done, run the gate:** `node scripts/smoke.mjs`
-   It statically checks every `src/**/*.js` for syntax + **import/export mismatches**
-   — the #1 cause of the black-screen boots (e.g. importing `{ weaponRange }` a lane
-   hasn't exported yet). Exit 0 = safe. Runs in ~1s, no browser needed.
-3. **Only merge to `master` when smoke passes** (and ideally it boots) — keeps
+2. **Before you call anything done, run BOTH gates:**
+   - `node scripts/smoke.mjs` — static syntax + **import/export mismatch** check over
+     `src/**/*.js` (the #1 cause of black-screen boots, e.g. importing `{ weaponRange }`
+     a lane hasn't exported yet). ~1s, no browser.
+   - `node test/run.mjs` — **functional unit tests** (35 and counting): XP curve,
+     combat math, Grand Exchange matching/settlement, gear classification, and the
+     economy data layer (drop tables via a Node `fetch` shim). Catches *logic*
+     regressions smoke can't — it already caught a pickaxe-drawn-as-an-axe bug.
+     Add a `<area>.test.mjs` when you add a system; see `test/run.mjs` for helpers.
+3. **Only merge to `master` when smoke + tests pass** (and ideally it boots) — keeps
    `master` deployable, which is what a live host will serve.
 4. **Live host** (planned): deploy `master` on green → one URL for everyone, which
    also ends the shared 5-preview-server contention. See docs/MULTIPLAYER_ARCHITECTURE.md.
@@ -220,9 +225,24 @@ Client-side until Phase 4; each phase keeps the player-freeze + world-continuity
   events is a follow-up — currently the existing random `driveMarketEvents` handles live
   play and worldEvents drives the offline/login path + display.
 
-  Remaining Phase-3 ideas: merchant restocks, wire event drop/XP bonuses into combat/
-  skilling, farming/growth timers. World-gen: day/night tint via
-  `worldClock.daylight(now)`/`phase(now)` + ambient, theme by `worldEvents.activeEvent()`.
+  **Also landed (2026-06-30) — event effects + restocks + GE unification + farming engine:**
+  event `effect.xpBonus` multiplies XP in `state.js grantXp`; `effect.dropBonus` scales
+  combat drop qty in `main.js dropLoot`. `shops.js` restocks toward max on world-time
+  (`goblin_empire:world_shops`, offline too). **GE events UNIFIED:** `geActions.driveMarketEvents`
+  now derives `marketEvent.active` from `worldEvents.activeEvent()` — one calendar for the
+  Exchange banner, topbar chip, live nudges (half-step to base×mult) and offline drift.
+  ⚠️ **panels.js still reads `marketEvent.active.{name,msg}` — contract preserved, no change
+  needed**; but `MARKET_EVENTS` + the random scheduler are GONE (removed) and the market
+  snapshot no longer persists the event. **Farming growth engine:** new pure `src/systems/farming.js`
+  (`Game.farming`) grows crops on the world clock (offline too), persisted
+  `goblin_empire:world_farms`. ⚠️ **The plant/harvest interaction + a `Farming` skill are
+  UNWIRED** — `crop_patch` nodes in `world_nodes.json` are placed by map.js as non-interactive
+  labels, and `Farming` isn't in `SKILL_NAMES`. Wiring it (use seed on patch → plant → harvest,
+  add the skill) is the next farming step; the growth/persistence half is done.
+
+  Remaining Phase-3 ideas: wire the farming plant/harvest interaction + `Farming` skill,
+  unify the *runtime* GE event scheduler fully into `ensureLiquidity`. World-gen: day/night
+  tint via `worldClock.daylight(now)`/`phase(now)` + ambient, theme by `worldEvents.activeEvent()`.
 - **Phase 4 — authoritative server (the real "always-on" world).** Node + WebSocket
   owns the tick loop and world state 24/7; `main.js` becomes a thin client sending
   intents + rendering snapshots. Swap the local GE `market` singleton for a network
@@ -271,6 +291,130 @@ Client-side until Phase 4; each phase keeps the player-freeze + world-continuity
   Rerouting would risk the legacy cook/smith branches; revisit with id migration.
 
 ## Change log
+- 2026-07-01 — Economy/items lane: **fast travel (carts + magic portal), owner-
+  requested for testing/getting around.** NEW self-contained `src/systems/travel.js`
+  + one import & `initTravel()` call in `main.js create()` (next to the run wiring).
+  A `🧭 TRAVEL` HUD button (below the run bar) opens a menu with 5 destinations
+  (coords = REGION_ANCHORS centres): 🏠 Goblin Settlement, 🛒 Northern Mine Hills
+  (Mining), 🛒 Chopper's Hollow (Woodcutting), 🛒 Grublake (Fishing), 🌀 Mushroom
+  Forest (portal). `travelTo(id)` snaps to the nearest walkable tile (spiral search),
+  clears path/targets, recenters the camera, updates `Game.location`. Builds its own
+  DOM + injected CSS → **no panels.js dependency** (dodges that contested file).
+  Verified in-preview: all 5 land on walkable tiles with correct region labels;
+  screenshot shows the menu + arrival in the Mushroom Forest. Server stopped after.
+  ⚠️ **Intentionally OP for now** (instant/free/always-on) per owner — nerf later:
+  gate behind fares/unlocks/cooldowns + physical boarding points (cart stations,
+  a portal tile) placed by world-gen. `DESTINATIONS` is a plain export, easy to
+  retune/extend.
+- 2026-07-01 — Economy agent: **three "is this actually a game / does the balance
+  hold / can it survive a cache-clear" gaps closed — QUEST SYSTEM, economy VALIDATOR,
+  persistence backup + perf probe. All verified in-browser (logged in as GorkTester
+  on :5194, then server released).**
+  - **NEW quest system (first real GOAL loop).** Quests were only names in
+    `worldData.js QUEST_ACTS`; now they're real. `src/data/quests.json` (tutorial +
+    Act 1's 5 quests, data-driven objectives+rewards) + `src/systems/quests.js`
+    (PURE, event-driven engine: kill/obtain/level objectives, prerequisite chain,
+    auto-start tutorial, reward payout via addItem/grantXp, save/load). Objectives:
+    kills are tallied at the kill site; obtain/level recompute LIVE against
+    inventory/skills via a once-per-tick `evaluate()` — no per-event plumbing.
+    ⚠️ **Shared edits, all tagged `[economy lane]`:** `main.js` (import + `initQuests()`
+    after applyPendingSave + `questOnKill(npc.monsterId)` at the kill site + `tickQuests()`
+    in gameTick), `state.js` (`u.renderQuests` in `Game.refresh`), `save.js`
+    (`quests: serializeQuests()` in serialize + `applyQuests(data.quests)` in applySave,
+    SAVE_VERSION→3, tolerant of pre-v3 saves), `panels.js` (Quest Journal tab + render),
+    `index.html` (quest-journal CSS). Verified live: tutorial auto-active, killing a
+    rat + looting bones → complete → +20 coins/+60 Attack xp → banner → 3 follow-ups
+    unlock to "available". Headless `node scripts/quest_test.mjs` = 20/20.
+  - **Economy balance is now an EXECUTABLE test, not just a doc.** `scripts/economy_sim.mjs`
+    re-derives the `docs/ECONOMY_BALANCE.md` faucet/sink numbers from `src/data/*.json`
+    AND stress-tests the REAL `grandExchange.js` engine (4k trades, net-sell then
+    net-buy pressure) to prove the ±5%/trade guide clamp holds (no runaway inflation:
+    worst +3%/−8%). Exits non-zero if balance drifts out of band → run it after any
+    drop-table/recipe/gp change. 10/10 pass; doc updated with a "how to re-run" section.
+  - **Persistence escape hatch (#cache-clear-wipes-everything).** `save.js` gained
+    `exportSaveString`/`parseBackup`/`importSaveString`; `session.js` login screen now
+    has a per-character **⬇ backup** (downloads a portable JSON) and **Restore from
+    backup…** (file import, validates + rejects junk). Same shape → future server-sync seam.
+  - **Perf probe (#135-rigs-at-60fps-unverified).** `panels.js renderTopBar` shows a
+    live **`fps · npc`** readout (`game.loop.actualFps`, colour-coded); `window.__GE.stress(n)`
+    / `stressClear()` (tagged in `main.js`) spawn/remove dummy NPCs to MEASURE it.
+    Verified: 138 npc = 45fps, held 45fps at 258 npc under load.
+- 2026-07-01 — Economy agent: **living WORLD CHAT + AI chatter (owner: fill the
+  world so it feels like an MMO).** New `src/systems/worldChat.js`: ~12 "online"
+  named players chatter on a timer (skilling brags, GE trades, help Qs, banter —
+  templated, no deps), **reply when you talk** (keyword-matched), and **gz your
+  level-ups**. `panels.js`: new `postChat()` (per-name colour hash, self-highlight)
+  into `#chatlog` + an injected **"Press Enter to chat" input** whose key events
+  `stopPropagation` so typing never triggers world-gen movement/camera keys. CSS in
+  `index.html`. Additive, my lane. Validated: parse, CSS 247/247. Optional later:
+  route replies through local Ollama (templated fallback stays).
+  **↳ SEAM (World-Gen + Character-Render, VISIBLE bots):** `worldChat.roster` →
+  `[{name, activity}]` is the ready-made population. Spawn an NPC per entry, path via
+  `map.js` BFS on the `main.js` tick, draw with existing `drawAvatar`. I own the
+  brain/intent, you own movement/render — ping me for `intentFor(bot)` and bots reuse
+  my gathering/combat systems. Did NOT touch map.js/main.js/render.
+- 2026-07-01 — Economy agent: **boss-forged weapons + special-attack system (Tier 9).**
+  Two BiS boss weapons hand-authored in `equipment.js`: **Grubmaw Maul** (crush,
+  spec *Swamp Crush* = 1.5× dmg / 1.3× acc) and **Starfall Longbow** (ranged, spec
+  *Meteor Shower* = 3 hits). Forged from rare boss **components** (`bog_king_heart`
+  from Bog King, `meteor_core` from Meteor Sprite — added to those drop tables in
+  `drop_tables.json`, ~5%) + 3 Meteor Bars at high Smithing via a right-click
+  **Forge** action (`onInvContext`). New **spec-energy** system: `Game.specEnergy`
+  0–100 (regen +2/tick in `gameTick`), `weaponSpec/toggleSpec/consumeSpec/regenSpec`
+  in `state.js`, pure `resolveSpecial()` in `combat.js` (multi-hit / damageMult /
+  accuracyMult / armorPierce), a spec bar + arm button in the Combat panel, and
+  `playerAttack` fires the special when armed. Weapons are level-gated on equip
+  (`reqSkill/reqLevel`). Verified via live module imports: forge is Smithing-gated
+  and consumes exactly 3 bars (fixed a stackable-bar counting bug — bars stack, so
+  count qty not slots), equip is level-gated, spec arms/costs 50%/regens, and
+  Swamp Crush hits 32 vs 21 normal max.
+  ⚠️ **Transient cross-lane breakage seen while verifying (NOT my code):** during
+  my turn `create()` briefly failed to complete boot (halted after `initPanels()`,
+  before the final `Game.refresh()`/`window.__GE`), then later `floatText()` threw
+  `AV_FEET is not defined` on every hit (`main.js` imports `AV_FEET/AV_SCALE/AV_TOP`
+  from `render/characters.js` — character-render lane, mid-refactor), which breaks
+  ALL combat while it's undefined. Both looked like in-flight edits from other lanes;
+  boot was working again by end of my turn. Because of the `AV_FEET` throw I verified
+  the spec SWING via live module imports (resolveSpecial vs the archer's real defence,
+  forge, equip-gate, spec energy) — all passed — rather than an on-screen hitsplat.
+  **character-render: please ensure `characters.js` exports `AV_FEET`/`AV_SCALE`/`AV_TOP`.**
+- 2026-07-01 — Economy agent: **"Drop" now places the item on the ground (was
+  deleting it).** The inventory right-click Drop option (`onInvContext`, `panels.js`)
+  now calls `spawnGroundItem(id, qty, player.tileX, player.tileY, tick)` after
+  `removeAt`, so a dropped item lands on your tile and can be picked back up (same
+  ground-item/despawn path as monster loot). Verified live on :5189 — dropped bones
+  appeared at the player tile with a despawn timer, slot emptied, 0 errors.
+- 2026-07-01 — Economy agent: **inventory is now rearrangeable (drag & drop).**
+  `renderInventory` (`panels.js`) makes every item slot `draggable` and every slot
+  a drop target; dropping onto an empty slot moves the item, onto an occupied slot
+  swaps them, via a new `moveInv(from,to)` helper (pure reorder of `Game.inventory`,
+  no items created/destroyed; keeps `selectedInv` on the moved item). CSS feedback
+  in `index.html` (`.inv-slot.dragging`/`.drag-over`, grab cursor). Verified live on
+  :5189 — move-to-empty and swap both work, 0 console errors, slot released.
+- 2026-07-01 — Economy/items lane: **NEW SKILL — Alchemy (mushroom-tonic brewing +
+  High-Alch), owner-requested.** New self-contained system `src/systems/alchemy.js`:
+  a goblin blend of Magic (alching) + Herblore (potions). Two branches — (1)
+  **Brewing** via experimentation: combine reagents in the cauldron; a matching
+  hidden recipe is DISCOVERED (permanent, bonus xp, persisted to localStorage per
+  account), a non-match curdles to sludge; (2) **Transmute/High-Alch**: dissolve any
+  item → coins + xp (GE coin source / item sink). Ingredients cross-pollinate: caps
+  & spores foraged (Mushroom Forest — the existing Potion Station / Strange Garden /
+  Witch-Goblin Vex hooks), **bones** (combat/prayer) is a reagent, and tonics buff
+  back — **Stamina Tonic restores run energy**, Restore heals HP, Antidote cures
+  poison. Additive shared-file edits (minimal): `skills.js` SKILL_NAMES +Alchemy;
+  `state.js` refresh() +`renderAlchemy`; `panels.js` import + Alchemy tab + Game.ui
+  wrapper + skill colour/emoji. Registers its own items into `ITEMS` at import time
+  (guarded, won't clobber). Verified functionally on the live singleton (foraging
+  xp, discover Stamina Tonic + Antidote, sludge on bad combo, drink→+40 run energy,
+  dissolve→coins). Server stopped after. FOLLOW-UPS: gate the Cauldron to the world
+  Potion Station; source caps/spores as real world nodes (world-gen); weight-reducing
+  & skill-boost tonics; tie regen to Alchemy later. **Swap** run.js's weight
+  heuristic for real `item.weight` when added.
+  ⚠️ **BOOT BROKEN RIGHT NOW (not Alchemy):** `panels.js:~209` throws
+  `renderBank is not defined` — the Game.ui object + a 'bank' tab reference
+  `renderBank` but the function isn't defined/imported yet (Bank feature mid-build).
+  This crashes `initPanels()` → the whole game fails to boot. Whoever owns the Bank
+  work: define/import `renderBank` (or drop it from `Game.ui`/tabs until ready).
 - 2026-07-01 — Economy agent: **item-art pipeline + real-art seam (icons made
   "workable").** (1) Dropped the per-item colour chip — icons now sit clean on the
   recessed slot (`panels.js`, `index.html`). (2) `itemIcons.js` gained a real-art

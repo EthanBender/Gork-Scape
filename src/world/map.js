@@ -765,6 +765,35 @@ export function generateWorld(seed = DEFAULT_SEED) {
     ringDecor(685, 324, 3, 40, 0xdfefff, 3, 'circle'); disc(685, 326, 2, (x, y) => { if (getT(x, y) === T.GRASS) setT(x, y, T.WATER); }); S(688, 318, 'Waterfall', 0x9ecfe0, false);
   })();
 
+  // ---- POLISH (Phase D): ecotone transition content at biome edges ----
+  // Reeds/cattails where grass meets water or swamp; scree/boulders where grass
+  // meets mountain rock — so region borders blend through mixed content, not a
+  // hard line. Decor only (non-blocking), so collision/pathing are untouched.
+  (function ecotones() {
+    for (let y = 5; y < WORLD_H - 5; y++) for (let x = 5; x < WORLD_W - 5; x++) {
+      const i = idx(x, y); if (terrain[i] !== T.GRASS || occupied.has(okey(x, y))) continue;
+      const l = terrain[i - 1], r = terrain[i + 1], u = terrain[i - WORLD_W], d = terrain[i + WORLD_W];
+      const nearW = l === T.WATER || r === T.WATER || u === T.WATER || d === T.WATER || l === T.SWAMP || r === T.SWAMP || u === T.SWAMP || d === T.SWAMP;
+      const nearR = l === T.ROCK || r === T.ROCK || u === T.ROCK || d === T.ROCK;
+      if (nearW) { if (rng() < 0.12) decor(x, y, rng() < 0.5 ? 0x5f7d3c : 0x7bb489, 5, 'rect'); }                                             // cattails / marsh reeds
+      else if (nearR && rng() < 0.10) { decor(x, y, 0x6a6a6a, 5, 'rect'); if (rng() < 0.35) decor(x + (rng() < 0.5 ? 1 : -1), y, 0x7c7c7c, 4, 'rect'); } // foothill scree/boulders
+    }
+  })();
+
+  // ---- POLISH (Phase E): ambient wildlife + environmental FX ----
+  // Region-flavoured particles (fireflies, mist, pollen, dust) and a scatter of
+  // resident critters, so the empty stretches feel alive. Decor only.
+  (function ambientLife() {
+    const spray = (cx, cy, rad, n, pick) => { for (let i = 0; i < n; i++) { const x = Math.round(cx + (rng() * 2 - 1) * rad), y = Math.round(cy + (rng() * 2 - 1) * rad); const t = getT(x, y); if ((t === T.GRASS || t === T.SWAMP) && !occupied.has(okey(x, y))) pick(x, y); } };
+    spray(250, 800, 130, 150, (x, y) => decor(x, y, rng() < 0.5 ? 0xf2e85a : 0xcfe04a, 2, 'circle'));                 // fireflies / spores — mushroom forest
+    spray(690, 712, 120, 130, (x, y) => decor(x, y, rng() < 0.5 ? 0xb4c4b4 : 0x9fb39f, 3, 'circle'));                 // mist wisps — bog
+    spray(505, 640, 95, 90, (x, y) => decor(x, y, rng() < 0.5 ? 0xf0d85a : 0xf09ab8, 2, 'circle'));                   // pollen / butterflies — farmland
+    spray(455, 285, 60, 45, (x, y) => decor(x, y, 0xa89a78, 2, 'rect'));                                              // dust motes — quarry
+    spray(500, 555, 120, 16, (x, y) => decor(x, y, 0xb3a488, 4, 'circle'));                                          // rabbits — town commons
+    spray(420, 560, 85, 9, (x, y) => decor(x, y, 0x8a6a4a, 5, 'circle'));                                            // deer — near the Great Oak
+    spray(566, 520, 60, 12, (x, y) => decor(x, y, 0x4f7a3a, 3, 'circle'));                                           // frogs — lakeshore
+  })();
+
   // ---- POLISH: terrain texture variants (FINAL, visual-only recolor) ----
   // Runs after ALL placement so no T.GRASS-based logic is affected. Variants
   // share their base tile's walkability, so collision/pathfinding is unchanged.
@@ -781,6 +810,67 @@ export function generateWorld(seed = DEFAULT_SEED) {
     }
   })();
 
+  // ---- POLISH (Phase G): coherent rule-based elevation model ----
+  // A semantic heightfield with real-world rules: rivers/water sit lowest (valley
+  // floors), mountains rise highest with foothills ramping up toward the peaks,
+  // grassland gently rolls, and settlement ramparts/floors stand a little proud of
+  // the plain. Seeded per-terrain targets are relaxed (blurred) into a continuous
+  // field, with mountain peaks and water valleys re-pinned each pass so the ramps
+  // form around them instead of averaging flat. Exported for the render lane's
+  // height-shading, and drives the terrace + shadow relief below.
+  const elevation = new Uint8Array(WORLD_W * WORLD_H);
+  (function elevationModel() {
+    const N = WORLD_W * WORLD_H;
+    const roll = (x, y) => vnoise(x / 42, y / 42, Sr + 91) * 0.62 + vnoise(x / 13, y / 13, Sr + 92) * 0.38; // 0..1 rolling swell
+    const target = (t, x, y) => {
+      switch (t) {
+        case T.WATER_DEEP: return 6;
+        case T.WATER: return 12;
+        case T.WATER_SHALLOW: return 20;
+        case T.SWAMP: case T.MUD: return 30;
+        case T.WET_SAND: return 46;
+        case T.SAND: case T.SAND_SHADOW: return 52;
+        case T.BRIDGE: return 60; case T.ROAD: return 66;
+        case T.DIRT: case T.DIRT_SHADOW: case T.FIELD: return 68;
+        case T.FLOOR: return 92; case T.WALL: return 98;              // settlement built up on a slight platform
+        case T.CLIFF: return 132; case T.ROCK2: return 166; case T.ROCK: return 196;
+        default: return 66 + roll(x, y) * 26;                          // grass variants: rolling 66..92
+      }
+    };
+    let a = new Float32Array(N), b = new Float32Array(N);
+    for (let y = 0; y < WORLD_H; y++) for (let x = 0; x < WORLD_W; x++) { const i = idx(x, y); a[i] = target(terrain[i], x, y); }
+    const hiPin = (t) => t === T.ROCK ? 190 : t === T.ROCK2 ? 158 : t === T.CLIFF ? 122 : -1;
+    const loPin = (t) => t === T.WATER_DEEP ? 8 : (t === T.WATER || t === T.WATER_SHALLOW) ? 20 : -1;
+    for (let pass = 0; pass < 4; pass++) {
+      for (let y = 1; y < WORLD_H - 1; y++) for (let x = 1; x < WORLD_W - 1; x++) { const i = idx(x, y); b[i] = (a[i] + a[i - 1] + a[i + 1] + a[i - WORLD_W] + a[i + WORLD_W]) * 0.2; }
+      for (let x = 0; x < WORLD_W; x++) { b[idx(x, 0)] = a[idx(x, 0)]; b[idx(x, WORLD_H - 1)] = a[idx(x, WORLD_H - 1)]; }
+      for (let y = 0; y < WORLD_H; y++) { b[idx(0, y)] = a[idx(0, y)]; b[idx(WORLD_W - 1, y)] = a[idx(WORLD_W - 1, y)]; }
+      for (let i = 0; i < N; i++) { const hp = hiPin(terrain[i]); if (hp >= 0 && b[i] < hp) b[i] = hp; const lp = loPin(terrain[i]); if (lp >= 0 && b[i] > lp) b[i] = lp; }
+      const tmp = a; a = b; b = tmp;
+    }
+    for (let i = 0; i < N; i++) elevation[i] = a[i] < 0 ? 0 : a[i] > 255 ? 255 : a[i];
+  })();
+
+  // ---- POLISH (Phase G): relief — terrace lips + elevation-driven drop shadows ----
+  // Light reads from the south: ground sitting well below its northern neighbour
+  // falls into shadow (a soft 2-tile band at real steps). On high rock, each drop
+  // to a lower elevation band gets a cliff "lip", so mountains read as climbable
+  // terraces stacking up to the peak rather than one smooth dome.
+  (function reliefPass() {
+    const shade = { [T.GRASS]: T.GRASS_SHADOW, [T.GRASS2]: T.GRASS_SHADOW, [T.GRASS3]: T.GRASS_SHADOW, [T.DIRT]: T.DIRT_SHADOW, [T.FIELD]: T.DIRT_SHADOW, [T.SAND]: T.SAND_SHADOW, [T.WET_SAND]: T.SAND_SHADOW };
+    const BAND = 18;
+    for (let y = 3; y < WORLD_H - 3; y++) for (let x = 3; x < WORLD_W - 3; x++) {
+      const i = idx(x, y), t = terrain[i];
+      if (t === T.ROCK || t === T.ROCK2 || t === T.CLIFF) {
+        if ((elevation[i] / BAND | 0) > (elevation[i + WORLD_W] / BAND | 0)) terrain[i] = T.CLIFF; // terrace lip on the downhill (south) face
+        continue;
+      }
+      const s = shade[t]; if (s === undefined) continue;
+      const e = elevation[i];
+      if (elevation[i - WORLD_W] - e >= 14 || elevation[i - 2 * WORLD_W] - e >= 22) terrain[i] = s;
+    }
+  })();
+
   // ---- collision + chunk buckets ----
   const collision = new Uint8Array(WORLD_W * WORLD_H);
   for (let i = 0; i < collision.length; i++) collision[i] = TERRAIN_DEFS[terrain[i]].walkable ? 0 : 1;
@@ -788,7 +878,7 @@ export function generateWorld(seed = DEFAULT_SEED) {
   const objectsByChunk = new Map();
   for (const o of objects) { const k = chunkKey(o.x, o.y); if (!objectsByChunk.has(k)) objectsByChunk.set(k, []); objectsByChunk.get(k).push(o); }
 
-  return { W: WORLD_W, H: WORLD_H, seed, terrain, collision, objects, objectAt, objectsByChunk, enemySpawns, friendlies, ENEMY_TYPES, spawn };
+  return { W: WORLD_W, H: WORLD_H, seed, terrain, collision, elevation, objects, objectAt, objectsByChunk, enemySpawns, friendlies, ENEMY_TYPES, spawn };
 }
 
 // ============================================================ queries
