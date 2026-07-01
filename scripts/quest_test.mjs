@@ -1,18 +1,15 @@
 // scripts/quest_test.mjs
-// Headless end-to-end test of the quest engine (src/systems/quests.js). The game
-// can't be click-tested past the login gate in this environment, so this drives
-// the REAL engine against the REAL data + game state to prove the whole loop:
-// auto-start → objective tracking (kill / obtain / level) → reward payout →
-// prerequisite unlock → save/load roundtrip.
+// Headless end-to-end test of the quest engine v2 (src/systems/quests.js). Drives
+// the REAL engine against REAL data + game state to prove the full story flow:
+// talk-to-giver → ORDERED steps (goto / kill / obtain / talk) → dialogue → reward
+// → prerequisite unlock → map markers → save/load roundtrip.
 //
-// Uses the repo's standard file:// fetch polyfill so gameData.js and quests.js
-// load their JSON in Node (they fetch over HTTP in the browser). Run:
-//   node scripts/quest_test.mjs
+// Uses the repo's file:// fetch polyfill so gameData.js + quests.json load in Node.
+// Run: node scripts/quest_test.mjs
 
 import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
-// --- polyfill fetch for file:// URLs (must be set before importing the graph) --
 const realFetch = globalThis.fetch;
 globalThis.fetch = async (url, opts) => {
   const u = url instanceof URL ? url : new URL(url);
@@ -23,108 +20,109 @@ globalThis.fetch = async (url, opts) => {
   return realFetch(url, opts);
 };
 
-// Import AFTER the polyfill so top-level-await data loads succeed.
 const { Game, initState, addItem, grantXp } = await import('../src/engine/state.js');
 const q = await import('../src/systems/quests.js');
 
-// --- tiny assert harness -----------------------------------------------------
 let pass = 0, fail = 0;
 function ok(name, cond, detail) {
   if (cond) { pass++; console.log(`  ✅ ${name}`); }
   else { fail++; console.log(`  ❌ ${name}${detail ? ` — ${detail}` : ''}`); }
 }
 const statusOf = (id) => Game.questState[id] && Game.questState[id].status;
-const board = () => q.questBoard();
+const stepOf = (id) => Game.questState[id] && Game.questState[id].step;
 
-// --- boot --------------------------------------------------------------------
-console.log('Quest engine — headless end-to-end test\n');
-initState();          // fresh skills/inventory/hitpoints
+console.log('Quest engine v2 — headless end-to-end test\n');
+initState();
 Game.ui = {};
-q.initQuests();       // build slate + auto-start tutorial
+q.initQuests();
 
-ok('quests loaded from quests.json', q.allQuests().length >= 6, `${q.allQuests().length} quests`);
-ok('tutorial auto-started (active)', statusOf('tutorial_first_scrap') === 'active');
-ok('follow-up quests locked behind the tutorial',
-  statusOf('goblin_pointy_stick') === 'locked' && statusOf('first_pickaxe') === 'locked');
+// --- boot state --------------------------------------------------------------
+ok('quests loaded (Act 1 + Act 2)', q.allQuests().length >= 11, `${q.allQuests().length} quests`);
+ok('tutorial is AVAILABLE at spawn (not auto-started)', statusOf('tutorial_first_scrap') === 'available');
+ok('follow-ups locked behind the tutorial', statusOf('first_pickaxe') === 'locked');
+ok('an available quest exposes a giver marker',
+  q.questMarkers().some((m) => m.kind === 'available' && m.npc === 'elder'));
 
-// --- complete the tutorial: kill a rat + obtain bones ------------------------
-q.onKill('training_rat');
-ok('tutorial not complete on kill alone (bones objective outstanding)',
-  statusOf('tutorial_first_scrap') === 'active');
-addItem('bones', 1);
+// --- start by talking to the giver -------------------------------------------
+const handled = q.onTalk('elder');
+ok('talking to the giver starts the quest', handled && statusOf('tutorial_first_scrap') === 'active');
+ok('quest begins on step 0 (goto Training Yard)', stepOf('tutorial_first_scrap') === 0);
+
+// --- ORDERED steps: later objectives do nothing until their step is active ----
+addItem('bones', 1);            // step 2's item — but we're on step 0
 q.evaluate();
-ok('tutorial completes when both objectives met', statusOf('tutorial_first_scrap') === 'complete');
-ok('tutorial paid its XP reward (+60 Attack)', Game.skills.Attack.xp >= 60,
-  `Attack xp=${Game.skills.Attack.xp}`);
-ok('tutorial paid its coin reward', q.questBoard() && Game.inventory.some((s) => s && s.id === 'coins'));
+ok('out-of-order progress is ignored (still on goto step)', stepOf('tutorial_first_scrap') === 0);
+
+// step 0: goto Training Yard (515,485)
+q.onArrive('settlement', 515, 485);
+ok('arriving at the target advances the goto step', stepOf('tutorial_first_scrap') === 1);
+
+// step 1: kill a training rat
+q.onKill('training_rat');
+ok('killing the target advances the kill step', stepOf('tutorial_first_scrap') === 2);
+
+// step 2: obtain bones (already in inventory from earlier) → auto-advances on tick
+q.evaluate();
+ok('obtain step clears from live inventory', stepOf('tutorial_first_scrap') === 3);
+
+// step 3: talk back to the Elder (turn-in) → completes
+const before = Game.skills.Attack.xp;
+q.onTalk('elder');
+ok('talking to the giver again turns in + completes', statusOf('tutorial_first_scrap') === 'complete');
+ok('completion paid the XP reward', Game.skills.Attack.xp >= before + 70);
+ok('completion paid coins', Game.inventory.some((s) => s && s.id === 'coins'));
 
 // --- prerequisite unlock -----------------------------------------------------
 ok('completing the tutorial unlocks its dependants',
-  statusOf('first_pickaxe') === 'available' && statusOf('fish_for_chief') === 'available');
-ok('level-gated quest still locked (Attack < 3)',
-  statusOf('rats_in_the_storehouse') === 'locked', `Attack lvl ${Game.skills.Attack.level}`);
+  statusOf('first_pickaxe') === 'available' && statusOf('goblin_pointy_stick') === 'available');
 
-// --- obtain objective: mine 5 copper ore -------------------------------------
-q.startQuest('first_pickaxe');
-ok('starting an available quest activates it', statusOf('first_pickaxe') === 'active');
-for (let i = 0; i < 4; i++) addItem('copper_ore', 1);
+// --- a goto + obtain quest: First Pickaxe -------------------------------------
+q.onTalk('shopkeeper_general_store'); // starts first_pickaxe (its giver)
+ok('First Pickaxe starts from its own giver', statusOf('first_pickaxe') === 'active');
+for (let i = 0; i < 5; i++) addItem('copper_ore', 1); // mined BEFORE arriving
 q.evaluate();
-ok('obtain objective not met at 4/5', statusOf('first_pickaxe') === 'active');
-const beforeMining = Game.skills.Mining.xp;
-addItem('copper_ore', 1);
+ok('obtain is gated behind the earlier goto step', stepOf('first_pickaxe') === 0);
+q.onArrive('grubpit', 455, 285);
 q.evaluate();
-ok('obtain objective completes at 5/5', statusOf('first_pickaxe') === 'complete');
-ok('obtain quest paid Mining xp', Game.skills.Mining.xp >= beforeMining + 180);
+ok('after arriving, the already-held ore satisfies the obtain step', stepOf('first_pickaxe') === 2);
+q.onTalk('shopkeeper_general_store');
+ok('First Pickaxe completes on turn-in', statusOf('first_pickaxe') === 'complete');
 
-// --- level objective/gate: reach Attack 3 unlocks the rat cull ---------------
-grantXp('Attack', 500); // push Attack past level 3
+// --- level gate + kill quest: Rats in the Storehouse -------------------------
+ok('level-gated quest locked below the requirement',
+  statusOf('rats_in_the_storehouse') === 'locked', `Attack ${Game.skills.Attack.level}`);
+grantXp('Attack', 600);
 q.refreshAvailability();
-ok('reaching the level requirement unlocks the gated quest',
-  Game.skills.Attack.level >= 3 && statusOf('rats_in_the_storehouse') === 'available',
-  `Attack lvl ${Game.skills.Attack.level}`);
-
-// --- kill-count objective: cull 5 rats ---------------------------------------
-q.startQuest('rats_in_the_storehouse');
+ok('reaching the level requirement unlocks it',
+  statusOf('rats_in_the_storehouse') === 'available');
+q.onTalk('shopkeeper_general_store');
 for (let i = 0; i < 4; i++) q.onKill('training_rat');
-ok('kill objective tracks partial progress (4/5 not complete)',
-  statusOf('rats_in_the_storehouse') === 'active');
+ok('kill step tracks partial progress (4/5)', statusOf('rats_in_the_storehouse') === 'active');
 q.onKill('training_rat');
-ok('kill objective completes at 5/5', statusOf('rats_in_the_storehouse') === 'complete');
+q.onTalk('shopkeeper_general_store');
+ok('kill quest completes + turns in', statusOf('rats_in_the_storehouse') === 'complete');
 
-// --- Act 2: chained off Act 1 completions ------------------------------------
-// The Grubpit Problem requires rats_in_the_storehouse (just completed) → available.
-ok('Act 2 quest unlocks when its Act 1 prerequisite completes',
+// --- Act 2 chains off Act 1 --------------------------------------------------
+ok('Act 2 quest unlocks when its Act 1 prereq is done',
   statusOf('the_grubpit_problem') === 'available');
-// A still-gated Act 2 quest (needs an Act 1 quest we haven't done) stays locked.
 ok('Act 2 quest still locked behind an unfinished Act 1 quest',
   statusOf('grublake_fish_thieves') === 'locked');
-// Multi-objective kill quest: 8 cave bugs + 2 quarry imps.
-q.startQuest('the_grubpit_problem');
-for (let i = 0; i < 8; i++) q.onKill('cave_bug');
-ok('multi-objective quest not complete with only one objective met',
-  statusOf('the_grubpit_problem') === 'active');
-for (let i = 0; i < 2; i++) q.onKill('quarry_imp');
-ok('multi-objective quest completes when all objectives met',
-  statusOf('the_grubpit_problem') === 'complete');
 
-// --- progress view sanity ----------------------------------------------------
-const b = board();
-ok('board reports the right completed count', b.completedCount === 4, `${b.completedCount}/4`);
-ok('board exposes both acts', q.allQuests().some(x => x.act === 2) && q.allQuests().length >= 11,
-  `${q.allQuests().length} quests`);
+// --- active quest exposes a directional marker for its current step ----------
+q.onTalk('shopkeeper_miner_camp'); // start the_grubpit_problem
+ok('an active quest exposes a marker for its current step',
+  q.questMarkers().some((m) => m.kind === 'active'));
 
 // --- persistence roundtrip ---------------------------------------------------
-const saved = q.serializeQuests();
-const json = JSON.parse(JSON.stringify(saved)); // simulate localStorage stringify
-// Wipe live state, then restore from the "save".
+const saved = JSON.parse(JSON.stringify(q.serializeQuests()));
 Game.questState = {};
-q.applyQuests(json);
+q.applyQuests(saved);
 ok('save/load preserves completed quests', statusOf('first_pickaxe') === 'complete');
-ok('save/load preserves the kill tally', (Game.questState['rats_in_the_storehouse'].kills.training_rat || 0) === 5);
+ok('save/load preserves an in-progress quest + its step',
+  statusOf('the_grubpit_problem') === 'active' && typeof stepOf('the_grubpit_problem') === 'number');
 ok('save/load re-derives availability for unstarted quests',
   statusOf('cabbage_for_cowards') === 'available');
 
-// --- summary -----------------------------------------------------------------
-console.log(`\n${'─'.repeat(50)}\n${pass}/${pass + fail} quest checks passed.`);
+console.log(`\n${'─'.repeat(52)}\n${pass}/${pass + fail} quest checks passed.`);
 if (fail) { console.log(`❌ ${fail} FAILED`); process.exit(1); }
-console.log('✅ Quest engine works end-to-end.');
+console.log('✅ Quest engine v2 works end-to-end.');

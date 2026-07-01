@@ -3,152 +3,181 @@
     "id": "tutorial_first_scrap",
     "name": "A Goblin's First Scrap",
     "act": 1,
-    "giver": "Goblin Elder",
-    "autoStart": true,
-    "summary": "The Elder wants to see if you can hold your own. Batter a Training Rat in the yard, then help yourself to whatever's left of it.",
+    "giver": { "npc": "elder", "name": "Goblin Elder", "where": { "x": 492, "y": 448 } },
+    "summary": "The Goblin Elder wants to see if you can fight. Find him in the settlement to begin.",
+    "intro": "Ah — a fresh goblin, still smelling of the spawning pit! Good. Before you're any use, you must learn to scrap. Head EAST to the training yard and batter one of the rats. Click the ground to walk, click a rat to hit it.",
+    "outro": "Ha! Not bad for a first swing. You'll do. Here — a few coins to start you off, and my blessing. The settlement is yours to explore; folk here have work for a goblin with initiative. Look for the '!' markers.",
     "requires": {},
     "steps": [
-      { "id": "kill_rat", "type": "kill", "target": "training_rat", "count": 1, "text": "Defeat a Training Rat" },
-      { "id": "get_bones", "type": "obtain", "target": "bones", "count": 1, "text": "Pick up a set of Bones" }
+      { "type": "goto", "where": { "x": 515, "y": 485, "name": "Training Yard", "radius": 5 }, "text": "Walk to the Training Yard", "say": "Click the ground to send Gork walking. The yard is just east of me." },
+      { "type": "kill", "target": "training_rat", "count": 1, "text": "Defeat a Training Rat", "say": "There's the rat. Left-click it to attack — Gork will walk up and swing on his own." },
+      { "type": "obtain", "target": "bones", "count": 1, "text": "Pick up the Bones it dropped", "say": "It dropped some bones. Walk over them to pick them up — that's how you loot." },
+      { "type": "talk", "target": "elder", "name": "Goblin Elder", "text": "Return to the Goblin Elder", "say": "Now bring those bones back to me, back west in the settlement." }
     ],
-    "rewards": { "coins": 20, "xp": [{ "skill": "Attack", "amount": 60 }], "items": [] }
-  },
-  {
-    "id": "goblin_pointy_stick",
-    "name": "Goblin Needs Pointy Stick",
-    "act": 1,
-    "giver": "Weapon Shop Keeper",
-    "autoStart": false,
-    "summary": "A goblin without a proper blade is just a snack with legs. Get yourself a Bronze Dagger — buy one, smith one, or take one off something.",
-    "requires": { "quests": ["tutorial_first_scrap"] },
-    "steps": [
-      { "id": "have_dagger", "type": "obtain", "target": "bronze_dagger", "count": 1, "text": "Obtain a Bronze Dagger" }
-    ],
-    "rewards": { "coins": 40, "xp": [{ "skill": "Attack", "amount": 120 }], "items": [] }
-  },
-  {
-    "id": "fish_for_chief",
-    "name": "Fish for the Chief",
-    "act": 1,
-    "giver": "Fishmonger Keeper",
-    "autoStart": false,
-    "summary": "The Chief is hungry and the Chief being hungry is everyone's problem. Net some shrimp from the Wharf.",
-    "requires": { "quests": ["tutorial_first_scrap"] },
-    "steps": [
-      { "id": "catch_shrimp", "type": "obtain", "target": "raw_shrimp", "count": 3, "text": "Catch 3 Raw Shrimp" }
-    ],
-    "rewards": { "coins": 35, "xp": [{ "skill": "Fishing", "amount": 150 }, { "skill": "Cooking", "amount": 60 }], "items": [] }
+    "rewards": { "coins": 25, "xp": [ { "skill": "Attack", "amount": 70 } ], "items": [] }
   },
   {
     "id": "first_pickaxe",
     "name": "First Pickaxe",
     "act": 1,
-    "giver": "Miner Keeper",
-    "autoStart": false,
-    "summary": "There's copper in the hills and a goblin who won't mine it. Swing your pickaxe and bring back some ore.",
+    "giver": { "npc": "shopkeeper_general_store", "name": "General Store Keeper", "where": { "x": 499, "y": 501 } },
+    "summary": "The General Store Keeper needs copper from the quarry.",
+    "intro": "You've got arms on you — how about you use 'em? There's copper up in the Grubpit Quarry, NORTH of town. Take a pickaxe, bring me five copper ore. Simple.",
+    "outro": "Proper ore, that. Knew you had it in you. Here's your cut — and remember, anything you gather, you can sell. Try the Grand Exchange by the fountain.",
     "requires": { "quests": ["tutorial_first_scrap"] },
     "steps": [
-      { "id": "mine_copper", "type": "obtain", "target": "copper_ore", "count": 5, "text": "Mine 5 Copper Ore" }
+      { "type": "goto", "target": "grubpit", "where": { "x": 455, "y": 285, "name": "Grubpit Quarry", "radius": 40 }, "text": "Travel north to the Grubpit Quarry", "say": "Head north up the road. Watch for cave bugs — you can fight or run past them." },
+      { "type": "obtain", "target": "copper_ore", "count": 5, "text": "Mine 5 Copper Ore", "say": "Click the copper rocks with a pickaxe equipped or in your pack." },
+      { "type": "talk", "target": "shopkeeper_general_store", "name": "General Store Keeper", "text": "Bring the ore back to the Store Keeper", "say": "Good haul — now carry it back to me in the settlement." }
     ],
-    "rewards": { "coins": 45, "xp": [{ "skill": "Mining", "amount": 180 }], "items": [] }
+    "rewards": { "coins": 45, "xp": [ { "skill": "Mining", "amount": 180 } ], "items": [] }
+  },
+  {
+    "id": "fish_for_chief",
+    "name": "Fish for the Chief",
+    "act": 1,
+    "giver": { "npc": "shopkeeper_fishmonger", "name": "Fishmonger", "where": { "x": 547, "y": 455 } },
+    "summary": "The Wharf Fishmonger is short on shrimp for the Chief's supper.",
+    "intro": "Chief wants shrimp and the Chief being hungry is EVERYONE'S problem, understand? Grab a small net and pull three shrimp from the water here on the Wharf. Go on.",
+    "outro": "That'll keep the Chief off our backs. Cook 'em on a fire or range and they'll even heal you in a fight. Here's your pay, little fisher.",
+    "requires": { "quests": ["tutorial_first_scrap"] },
+    "steps": [
+      { "type": "obtain", "target": "raw_shrimp", "count": 3, "text": "Net 3 Raw Shrimp", "say": "Click the fishing spots along the Wharf with a small net to catch shrimp." },
+      { "type": "talk", "target": "shopkeeper_fishmonger", "name": "Fishmonger", "text": "Hand the shrimp to the Fishmonger", "say": "Bring those shrimp back to me here on the Wharf." }
+    ],
+    "rewards": { "coins": 35, "xp": [ { "skill": "Fishing", "amount": 160 }, { "skill": "Cooking", "amount": 60 } ], "items": [] }
+  },
+  {
+    "id": "goblin_pointy_stick",
+    "name": "Goblin Needs Pointy Stick",
+    "act": 1,
+    "giver": { "npc": "shopkeeper_weapon_shop", "name": "Weapon Shop Keeper", "where": { "x": 476, "y": 412 } },
+    "summary": "The Weapon Shop Keeper in the Forge Ward thinks you need a real blade.",
+    "intro": "That twig you're waving? Embarrassing. A proper goblin carries a Bronze Dagger. Buy one from me, smith one at the anvil, or take one off something — I don't care how. Just come back armed.",
+    "outro": "NOW you look like a warrior. Bronze today, iron tomorrow. Keep at the smithing and you'll out-fight the lot of them. Here — a little something for listening.",
+    "requires": { "quests": ["tutorial_first_scrap"] },
+    "steps": [
+      { "type": "obtain", "target": "bronze_dagger", "count": 1, "text": "Obtain a Bronze Dagger", "say": "Buy one from my shop, smith one from a bronze bar at the anvil, or loot one." },
+      { "type": "talk", "target": "shopkeeper_weapon_shop", "name": "Weapon Shop Keeper", "text": "Show the dagger to the Weapon Keeper", "say": "Bring it here and let me see it, back in the Forge Ward." }
+    ],
+    "rewards": { "coins": 40, "xp": [ { "skill": "Attack", "amount": 120 } ], "items": [] }
   },
   {
     "id": "cabbage_for_cowards",
     "name": "Cabbage for Cowards",
     "act": 1,
-    "giver": "Grocer Keeper",
-    "autoStart": false,
-    "summary": "Cabbage makes a goblin brave. That's not true, but the Grocer swears by it. Gather three heads from Greengate.",
+    "giver": { "npc": "shopkeeper_grocer", "name": "Grocer", "where": { "x": 471, "y": 499 } },
+    "summary": "The Greengate Grocer swears cabbage makes a goblin brave.",
+    "intro": "Cabbage! Cabbage makes a goblin BRAVE — that's science, that is. Get down to the farmlands SOUTH of the gate and bring me back three good heads.",
+    "outro": "Look at these beauties. You're braver already, I can tell. Don't argue. Take your coins and eat your greens.",
     "requires": { "quests": ["tutorial_first_scrap"] },
     "steps": [
-      { "id": "get_cabbage", "type": "obtain", "target": "cabbage", "count": 3, "text": "Gather 3 Cabbage" }
+      { "type": "goto", "target": "farmlands", "where": { "x": 510, "y": 640, "name": "Main Farmlands", "radius": 45 }, "text": "Head south to the Farmlands", "say": "Follow the south road out of Greengate to the farm plots." },
+      { "type": "obtain", "target": "cabbage", "count": 3, "text": "Gather 3 Cabbage", "say": "Pick cabbages from the farm patches." },
+      { "type": "talk", "target": "shopkeeper_grocer", "name": "Grocer", "text": "Bring the cabbage to the Grocer", "say": "Carry them back to my stall at Greengate." }
     ],
-    "rewards": { "coins": 30, "xp": [{ "skill": "Cooking", "amount": 90 }], "items": [] }
+    "rewards": { "coins": 30, "xp": [ { "skill": "Cooking", "amount": 90 } ], "items": [] }
   },
   {
     "id": "rats_in_the_storehouse",
     "name": "Rats in the Storehouse",
     "act": 1,
-    "giver": "General Store Keeper",
-    "autoStart": false,
-    "summary": "The storehouse is overrun. Clear out five Training Rats and the Keeper will make it worth your while.",
+    "giver": { "npc": "shopkeeper_general_store", "name": "General Store Keeper", "where": { "x": 499, "y": 501 } },
+    "summary": "The General Store Keeper has a rat problem — and needs a goblin who can fight.",
+    "intro": "Right, you can swing a blade now — prove it. My storehouse is overrun. Clear out FIVE of the rats in the training yard and I'll make it worth your while. Off you go.",
+    "outro": "Five rats, gone. You're handy in a scrap, I'll give you that. Here's your pay — and if you want a real challenge, the world beyond the gates is full of it.",
     "requires": { "quests": ["tutorial_first_scrap"], "level": { "skill": "Attack", "level": 3 } },
     "steps": [
-      { "id": "cull_rats", "type": "kill", "target": "training_rat", "count": 5, "text": "Defeat 5 Training Rats" }
+      { "type": "kill", "target": "training_rat", "count": 5, "text": "Defeat 5 Training Rats", "say": "The yard's east of town — thin them out." },
+      { "type": "talk", "target": "shopkeeper_general_store", "name": "General Store Keeper", "text": "Report back to the Store Keeper", "say": "Come tell me when the storehouse is clear." }
     ],
-    "rewards": { "coins": 60, "xp": [{ "skill": "Strength", "amount": 200 }, { "skill": "Hitpoints", "amount": 80 }], "items": [] }
+    "rewards": { "coins": 60, "xp": [ { "skill": "Strength", "amount": 200 }, { "skill": "Hitpoints", "amount": 80 } ], "items": [] }
   },
 
   {
     "id": "bridge_over_dumb_water",
     "name": "Bridge Over Dumb Water",
     "act": 2,
-    "giver": "Timber Row Foreman",
-    "autoStart": false,
-    "summary": "The river cuts the warren off from the willow lands, and a bandit's been squatting on the old crossing. Bring timber and nails to rebuild the West Bridge — and clear whoever's in the way.",
+    "giver": { "npc": "shopkeeper_lumber_stall", "name": "Timber Row Foreman", "where": { "x": 453, "y": 468 } },
+    "summary": "The Timber Row Foreman wants the West Bridge rebuilt — and a squatter cleared off it.",
+    "intro": "That river's been cutting us off from the willow lands for a season, and now some bandit's set up on the old crossing. Bring me timber and nails, then go clear the bridge yourself. Ten logs, five oak, three bronze nails.",
+    "outro": "A bridge AND one less bandit. The willow lands are open again — good work, goblin. This is more than pocket change; you've earned it.",
     "requires": { "quests": ["first_pickaxe"], "level": { "skill": "Woodcutting", "level": 10 } },
     "steps": [
-      { "id": "logs", "type": "obtain", "target": "normal_logs", "count": 10, "text": "Cut 10 Logs" },
-      { "id": "oak", "type": "obtain", "target": "oak_logs", "count": 5, "text": "Cut 5 Oak Logs" },
-      { "id": "nails", "type": "obtain", "target": "bronze_nails", "count": 3, "text": "Smith 3 Bronze Nails" },
-      { "id": "bandit", "type": "kill", "target": "bridge_bandit", "count": 1, "text": "Drive off the Bridge Bandit" }
+      { "type": "obtain", "target": "normal_logs", "count": 10, "text": "Cut 10 Logs", "say": "Chop the trees around town with a hatchet." },
+      { "type": "obtain", "target": "oak_logs", "count": 5, "text": "Cut 5 Oak Logs", "say": "Oak grows in Chopper's Hollow to the west — you'll need Woodcutting 15 for it." },
+      { "type": "obtain", "target": "bronze_nails", "count": 3, "text": "Smith 3 Bronze Nails", "say": "Hammer nails from a bronze bar at the anvil." },
+      { "type": "goto", "where": { "x": 340, "y": 435, "name": "West Bridge", "radius": 8 }, "text": "Go to the West Bridge", "say": "The crossing is west of town, at the river's edge." },
+      { "type": "kill", "target": "bridge_bandit", "count": 1, "text": "Drive off the Bridge Bandit", "say": "There's the squatter. Send him packing." },
+      { "type": "talk", "target": "shopkeeper_lumber_stall", "name": "Timber Row Foreman", "text": "Report back to the Foreman", "say": "Come tell me the bridge is ours again." }
     ],
-    "rewards": { "coins": 120, "xp": [{ "skill": "Crafting", "amount": 400 }, { "skill": "Woodcutting", "amount": 250 }], "items": [] }
+    "rewards": { "coins": 120, "xp": [ { "skill": "Crafting", "amount": 400 }, { "skill": "Woodcutting", "amount": 250 } ], "items": [] }
   },
   {
     "id": "the_grubpit_problem",
     "name": "The Grubpit Problem",
     "act": 2,
-    "giver": "Miner Keeper",
-    "autoStart": false,
-    "summary": "The Grubpit Quarry is crawling with cave bugs and the miners refuse to go down. Thin them out so a goblin can swing a pickaxe in peace.",
+    "giver": { "npc": "shopkeeper_miner_camp", "name": "Miner Camp Boss", "where": { "x": 606, "y": 206 } },
+    "summary": "The Miner Camp Boss can't work the quarry — it's crawling with bugs.",
+    "intro": "Can't get a lick of work done in that quarry — cave bugs everywhere and imps nicking the ore. You look like you can swing. Clear 'em out: eight bugs, two imps. Then the copper's ours again.",
+    "outro": "Quarry's quiet for the first time in weeks. The lads can mine again thanks to you. Take this — miners look after those who look after them.",
     "requires": { "quests": ["rats_in_the_storehouse"] },
     "steps": [
-      { "id": "bugs", "type": "kill", "target": "cave_bug", "count": 8, "text": "Exterminate 8 Cave Bugs" },
-      { "id": "imp", "type": "kill", "target": "quarry_imp", "count": 2, "text": "Banish 2 Quarry Imps" }
+      { "type": "goto", "target": "grubpit", "where": { "x": 455, "y": 285, "name": "Grubpit Quarry", "radius": 40 }, "text": "Go to the Grubpit Quarry", "say": "The quarry's in the hills — head there and get to work." },
+      { "type": "kill", "target": "cave_bug", "count": 8, "text": "Exterminate 8 Cave Bugs", "say": "Squash the bugs infesting the tunnels." },
+      { "type": "kill", "target": "quarry_imp", "count": 2, "text": "Banish 2 Quarry Imps", "say": "The imps are tougher — mind yourself." },
+      { "type": "talk", "target": "shopkeeper_miner_camp", "name": "Miner Camp Boss", "text": "Report to the Miner Camp Boss", "say": "Come back to the camp when the quarry's clear." }
     ],
-    "rewards": { "coins": 150, "xp": [{ "skill": "Strength", "amount": 450 }, { "skill": "Defence", "amount": 200 }], "items": [] }
+    "rewards": { "coins": 150, "xp": [ { "skill": "Strength", "amount": 450 }, { "skill": "Defence", "amount": 200 } ], "items": [] }
   },
   {
     "id": "a_proper_goblin_axe",
     "name": "A Proper Goblin Axe",
     "act": 2,
-    "giver": "Weapon Shop Keeper",
-    "autoStart": false,
-    "summary": "A rusty hatchet is no way to fell a war. Smelt iron and forge yourself a proper Iron Battle-Axe — the smith won't do it for you, that's the point.",
+    "giver": { "npc": "shopkeeper_weapon_shop", "name": "Weapon Shop Keeper", "where": { "x": 476, "y": 412 } },
+    "summary": "The Weapon Shop Keeper dares you to forge your own iron battle-axe.",
+    "intro": "Bronze was for the fledgling you were. Time for iron. But I'll not hand it to you — SMELT three iron bars and FORGE the battle-axe yourself. That's the only way it means anything.",
+    "outro": "You made that. With your own hands and your own fire. That's a real goblin's weapon. Wear it proud — you've earned every swing.",
     "requires": { "quests": ["goblin_pointy_stick"], "level": { "skill": "Smithing", "level": 15 } },
     "steps": [
-      { "id": "bars", "type": "obtain", "target": "iron_bar", "count": 3, "text": "Smelt 3 Iron Bars" },
-      { "id": "axe", "type": "obtain", "target": "iron_axe", "count": 1, "text": "Forge an Iron Battle-Axe" }
+      { "type": "obtain", "target": "iron_bar", "count": 3, "text": "Smelt 3 Iron Bars", "say": "Iron ore plus the furnace, at Smithing 15. Watch for failed smelts early on." },
+      { "type": "obtain", "target": "iron_axe", "count": 1, "text": "Forge an Iron Battle-Axe", "say": "Take the bars to the anvil and hammer out the axe." },
+      { "type": "talk", "target": "shopkeeper_weapon_shop", "name": "Weapon Shop Keeper", "text": "Show the axe to the Weapon Keeper", "say": "Bring it here so I can admire your handiwork." }
     ],
-    "rewards": { "coins": 180, "xp": [{ "skill": "Smithing", "amount": 500 }, { "skill": "Attack", "amount": 300 }], "items": [] }
+    "rewards": { "coins": 180, "xp": [ { "skill": "Smithing", "amount": 500 }, { "skill": "Attack", "amount": 300 } ], "items": [] }
   },
   {
     "id": "the_farmers_bad_smell",
     "name": "The Farmer's Bad Smell",
     "act": 2,
-    "giver": "Grocer Keeper",
-    "autoStart": false,
-    "summary": "Something's rotten in the farmlands — pests in the crops and a stink nobody will name. Cull the swarm and bring back onions; the Grocer insists the onions help. They do not.",
+    "giver": { "npc": "shopkeeper_farming_shed", "name": "Farmhand", "where": { "x": 485, "y": 499 } },
+    "summary": "Something is rotten in the farmlands — pests, and a smell nobody will name.",
+    "intro": "Crops are crawling with bug swarms and there's a stink over the whole field I won't describe to you. Clear four swarms and bring me five onions — Grocer swears the onions help with the smell. They don't. Do it anyway.",
+    "outro": "Fields are clearing and I've onions to spare. The smell? Still there. But the crops'll live, and that's down to you. Here's your wage, pest-hunter.",
     "requires": { "quests": ["cabbage_for_cowards"] },
     "steps": [
-      { "id": "swarm", "type": "kill", "target": "crop_bug_swarm", "count": 4, "text": "Wipe out 4 Crop Bug Swarms" },
-      { "id": "onions", "type": "obtain", "target": "onion", "count": 5, "text": "Harvest 5 Onions" }
+      { "type": "goto", "target": "farmlands", "where": { "x": 510, "y": 640, "name": "Main Farmlands", "radius": 45 }, "text": "Return to the Farmlands", "say": "Back down the south road to the plots." },
+      { "type": "kill", "target": "crop_bug_swarm", "count": 4, "text": "Wipe out 4 Crop Bug Swarms", "say": "The swarms move fast — corner them among the rows." },
+      { "type": "obtain", "target": "onion", "count": 5, "text": "Harvest 5 Onions", "say": "Pull onions from the farm patches while you're there." },
+      { "type": "talk", "target": "shopkeeper_farming_shed", "name": "Farmhand", "text": "Bring it all back to the Farmhand", "say": "Carry the onions up to the shed at Greengate." }
     ],
-    "rewards": { "coins": 130, "xp": [{ "skill": "Cooking", "amount": 300 }, { "skill": "Hitpoints", "amount": 200 }], "items": [] }
+    "rewards": { "coins": 130, "xp": [ { "skill": "Cooking", "amount": 300 }, { "skill": "Hitpoints", "amount": 200 } ], "items": [] }
   },
   {
     "id": "grublake_fish_thieves",
     "name": "Grublake Fish Thieves",
     "act": 2,
-    "giver": "Fishmonger Keeper",
-    "autoStart": false,
-    "summary": "Someone's been raiding the Grublake nets. Catch the crazed fishers red-handed, and land a few honest trout while you're there to prove the lake still gives.",
+    "giver": { "npc": "shopkeeper_fishmonger", "name": "Fishmonger", "where": { "x": 547, "y": 455 } },
+    "summary": "Someone is raiding the Grublake nets. The Fishmonger wants them caught.",
+    "intro": "Been losing fish off the Grublake nets every night — crazed fisher-goblins, gone feral. Head EAST to the lake, catch six of 'em in the act, and land three honest trout to prove the water's still good.",
+    "outro": "Six thieves and a fine string of trout. The nets are safe and the Chief eats well. You've come a long way from netting shrimp on my Wharf, goblin. Well earned.",
     "requires": { "quests": ["fish_for_chief"], "level": { "skill": "Fishing", "level": 10 } },
     "steps": [
-      { "id": "fishers", "type": "kill", "target": "crazed_fisher_gob", "count": 6, "text": "Catch 6 Crazed Fisher-goblins" },
-      { "id": "trout", "type": "obtain", "target": "raw_trout", "count": 3, "text": "Land 3 Raw Trout" }
+      { "type": "goto", "target": "grublake", "where": { "x": 735, "y": 495, "name": "Grublake", "radius": 50 }, "text": "Travel east to Grublake", "say": "Take the east road past the Oakwoods to the lake." },
+      { "type": "kill", "target": "crazed_fisher_gob", "count": 6, "text": "Catch 6 Crazed Fisher-goblins", "say": "They lurk by the water — deal with them." },
+      { "type": "obtain", "target": "raw_trout", "count": 3, "text": "Land 3 Raw Trout", "say": "Fish the lake spots for trout while you're here." },
+      { "type": "talk", "target": "shopkeeper_fishmonger", "name": "Fishmonger", "text": "Return to the Fishmonger", "say": "Bring the trout back to my Wharf." }
     ],
-    "rewards": { "coins": 140, "xp": [{ "skill": "Fishing", "amount": 400 }, { "skill": "Strength", "amount": 200 }], "items": [] }
+    "rewards": { "coins": 140, "xp": [ { "skill": "Fishing", "amount": 400 }, { "skill": "Strength", "amount": 200 } ], "items": [] }
   }
 ]
