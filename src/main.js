@@ -488,7 +488,10 @@ function create() {
   this.input.addPointer(3);
   const releaseStuckPointers = () => {
     const mgr = this.input && this.input.manager; if (!mgr || !mgr.pointers) return;
-    for (const pt of mgr.pointers) { if (pt && pt.isDown && pt.wasTouch) { pt.isDown = false; pt.primaryDown = false; pt.dirty = true; } }
+    // A finger just lifted somewhere on the page, so NO touch pointer should still be
+    // held. Fully release each one — clearing `active` is the key bit, since that's the
+    // flag Phaser checks to hand a fresh slot to the next touch. Mouse pointer untouched.
+    for (const pt of mgr.pointers) { if (pt && pt.pointerType !== 'mouse') { pt.isDown = false; pt.primaryDown = false; pt.active = false; pt.dirty = true; } }
   };
   for (const ev of ['touchend', 'touchcancel', 'pointerup', 'pointercancel']) window.addEventListener(ev, releaseStuckPointers, false);
   this.events.once('shutdown', () => { for (const ev of ['touchend', 'touchcancel', 'pointerup', 'pointercancel']) window.removeEventListener(ev, releaseStuckPointers, false); });

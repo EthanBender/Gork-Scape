@@ -123,6 +123,15 @@
         "5206"
       ],
       "port": 5206
+    },
+    {
+      "name": "goblin-empire-mptest",
+      "runtimeExecutable": "/bin/sh",
+      "runtimeArgs": [
+        "-c",
+        "ACCOUNTS_FILE=/tmp/gork-mptest-accounts.json STATE_FILE=/tmp/gork-mptest-world.json exec node server/index.mjs 5207"
+      ],
+      "port": 5207
     }
   ]
 }

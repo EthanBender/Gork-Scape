@@ -36,8 +36,10 @@ import { Presence } from './presence.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');            // repo root (serve the client from here)
-const STATE_FILE = join(__dirname, 'world-state.json');
-const ACCOUNTS_FILE = join(__dirname, 'accounts.json');
+// Paths default next to the server but can be overridden (isolated test runs, or
+// pointing at a persistent volume on a hosted deploy).
+const STATE_FILE = process.env.STATE_FILE || join(__dirname, 'world-state.json');
+const ACCOUNTS_FILE = process.env.ACCOUNTS_FILE || join(__dirname, 'accounts.json');
 const PORT = Number(process.env.PORT) || process.argv[2] || 5200;
 
 const LOOP_MS = 2000;        // world tick cadence (economy loop can be slow)
