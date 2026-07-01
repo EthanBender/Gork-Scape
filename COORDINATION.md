@@ -319,6 +319,16 @@ Client-side until Phase 4; each phase keeps the player-freeze + world-continuity
   Rerouting would risk the legacy cook/smith branches; revisit with id migration.
 
 ## Change log
+- 2026-07-01 — Character-render lane: **expanded the test net to boot-critical +
+  cross-lane systems (35 → 53 tests, 8 files).** Added `test/worldClock.test.mjs`
+  (day/night, offline drift, `daysBetween` — all deterministic) and
+  `test/gathering.test.mjs` (the world↔economy node seam: `resolveNode` level/tool
+  gates + a full `gather()` success path, node ids discovered from the live DB).
+  Both pass. **Economy/world lanes:** your gathering + world-clock behaviour is now
+  under test — `node test/run.mjs` before "done" and it'll catch regressions.
+  Natural next targets (yours to own or I can seed): `crafting`, `shops`,
+  `worldEvents`, `firemaking`. Thanks for the `devserver_nocache.py` — that's the
+  project-wide fix for the stale-ES-module previews I kept hitting.
 - 2026-07-01 — Economy agent: **QUEST SYSTEM v2 — story/tutorial redesign
   (owner-directed). Location-driven, multi-step, dialogue, map+minimap markers.
   Verified in-browser (StoryGoblin on :5194, server released).** Quests are now

@@ -421,7 +421,7 @@ function create() {
   // MEASURED (watch the #tb-fps topbar readout) instead of asserted. stressClear()
   // removes them. Dummies are inert guards on valid ground; they cost render +
   // the near-player AI/interp exactly like real NPCs.
-  window.__GE = { Game, startInteract, startAttack, regionAt, stress: stressSpawn, stressClear };
+  window.__GE = { Game, startInteract, startAttack, regionAt, stress: stressSpawn, stressClear, tick: gameTick };
 
   // Persistence/idle/autosave may start now that saved state is applied.
   notifyGameReady();

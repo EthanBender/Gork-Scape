@@ -108,13 +108,13 @@ for (const [id, d] of Object.entries(MATERIALS)) {
 // web robust against the legacy-vs-canonical id split (logs, coal_ore, …).
 function matchInput(inp, id) {
   if (inp.id) return inp.id === id;
-  if (inp.any === 'log') return /log/.test(id);
+  if (inp.any === 'log') return /(^|_)logs?$/.test(id);
   if (inp.any === 'bar') return /_bar$/.test(id);
-  if (inp.any === 'coal') return /coal/.test(id);
+  if (inp.any === 'coal') return id === 'coal' || id === 'coal_ore'; // NOT "charcoal"
   return false;
 }
+// Total UNITS held (sums stack quantities — not slots) matching a recipe input.
 export function countMaterial(inp) {
-  if (inp.id) return countItem(inp.id);
   return Game.inventory.reduce((n, s) => n + (s && matchInput(inp, s.id) ? (s.qty || 1) : 0), 0);
 }
 function spendMaterial(inp, qty) {
