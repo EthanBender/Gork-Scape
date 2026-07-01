@@ -131,6 +131,22 @@ const MATERIALS = {
   capacitor:    { name: 'Capacitor',      color: 0x6a5acf, value: 70 },
   ignition_coil:{ name: 'Ignition Coil',  color: 0xc9a24a, value: 55 },
   pressure_valve: { name: 'Pressure Valve', color: 0x9aa0a8, value: 52 },
+  // exotic end-game raws (rare high-level nodes/bosses)
+  prismite:     { name: 'Prismite',       color: 0x8ad0e0, value: 120 },
+  thunderquartz:{ name: 'Thunderquartz',  color: 0x9a6acf, value: 140 },
+  voidshard:    { name: 'Voidshard',      color: 0x2a2a3a, value: 200 },
+  deep_crystal: { name: 'Deep Crystal',   color: 0x5acfaa, value: 130 },
+  frostglass:   { name: 'Frostglass',     color: 0xbfe0ea, value: 110 },
+  magma_core:   { name: 'Magma Core',     color: 0xe0602a, value: 180 },
+  aether_dust:  { name: 'Aether Dust',    color: 0xe0c96a, value: 160 },
+  star_alloy:   { name: 'Star Alloy',     color: 0xc9c9e8, value: 240 },
+  // master (end-game) components crafted from exotics
+  reinforced_casing: { name: 'Reinforced Casing', color: 0xb0a070, value: 90 },
+  master_capacitor:  { name: 'Master Capacitor',  color: 0x8a6acf, value: 220 },
+  precision_barrel:  { name: 'Precision Barrel',  color: 0x9aa0b8, value: 160 },
+  hardened_piston:   { name: 'Hardened Piston',   color: 0xa0a6ae, value: 180 },
+  arc_core:          { name: 'Arc Core',          color: 0x6acfe0, value: 200 },
+  gyro_stabilizer:   { name: 'Gyro Stabilizer',   color: 0xc0c0cc, value: 150 },
   // components
   metal_casing: { name: 'Metal Casing',   color: 0xa08050, value: 20 },
   iron_barrel:  { name: 'Iron Barrel',    color: 0x8a8a94, value: 40 },
@@ -287,6 +303,13 @@ recipe('flywheel',       { output: 'flywheel',       outQty: 1, level: 26, xp: 3
 recipe('capacitor',      { output: 'capacitor',      outQty: 1, level: 52, xp: 80, unlock: 'tinkering_voltaic', inputs: [{ id: 'sparkstone', qty: 1 }, { id: 'conductive_gel', qty: 1 }, { id: 'metal_casing', qty: 1 }] });
 recipe('ignition_coil',  { output: 'ignition_coil',  outQty: 1, level: 44, xp: 62, inputs: [{ id: 'lodestone', qty: 1 }, { id: 'conductive_gel', qty: 1 }] });
 recipe('pressure_valve', { output: 'pressure_valve', outQty: 1, level: 36, xp: 50, inputs: [{ id: 'steel_bar', qty: 1 }, { id: 'coolant', qty: 1 }, { id: 'coil_spring', qty: 1 }] });
+// Master (end-game) components — consume the exotic raws; feed the best gadgets/mods.
+recipe('reinforced_casing', { output: 'reinforced_casing', outQty: 1, level: 60, xp: 110, unlock: 'tinkering_voltaic', inputs: [{ id: 'metal_casing', qty: 2 }, { id: 'star_alloy', qty: 1 }, { id: 'flux_paste', qty: 1 }] });
+recipe('master_capacitor',  { output: 'master_capacitor',  outQty: 1, level: 68, xp: 160, unlock: 'tinkering_voltaic', inputs: [{ id: 'capacitor', qty: 1 }, { id: 'thunderquartz', qty: 1 }, { id: 'aether_dust', qty: 1 }] });
+recipe('precision_barrel',  { output: 'precision_barrel',  outQty: 1, level: 62, xp: 130, unlock: 'tinkering_cannons', inputs: [{ id: 'iron_barrel', qty: 1 }, { id: 'prismite', qty: 1 }, { id: 'star_alloy', qty: 1 }] });
+recipe('hardened_piston',   { output: 'hardened_piston',   outQty: 1, level: 64, xp: 150, unlock: 'tinkering_voltaic', inputs: [{ id: 'steam_piston', qty: 1 }, { id: 'magma_core', qty: 1 }, { id: 'coolant', qty: 2 }] });
+recipe('arc_core',          { output: 'arc_core',          outQty: 1, level: 70, xp: 190, unlock: 'tinkering_voltaic', inputs: [{ id: 'conductive_gel', qty: 2 }, { id: 'voidshard', qty: 1 }, { id: 'deep_crystal', qty: 1 }] });
+recipe('gyro_stabilizer',   { output: 'gyro_stabilizer',   outQty: 1, level: 58, xp: 120, unlock: 'tinkering_tools', inputs: [{ id: 'flywheel', qty: 1 }, { id: 'frostglass', qty: 1 }, { id: 'quicksilver', qty: 1 }] });
 // Gadget mods / attachments (install into the rig; unlocked with the tools stage).
 recipe('mod_scope',        { output: 'mod_scope',        outQty: 1, level: 30, xp: 70, unlock: 'tinkering_tools', makes: 'mod', inputs: [{ id: 'amber', qty: 1 }, { id: 'brass_cog', qty: 1 }, { id: 'firing_pin', qty: 1 }] });
 recipe('mod_ap_core',      { output: 'mod_ap_core',      outQty: 1, level: 40, xp: 90, unlock: 'tinkering_tools', makes: 'mod', inputs: [{ id: 'obsidian_shard', qty: 1 }, { id: 'firing_pin', qty: 1 }] });

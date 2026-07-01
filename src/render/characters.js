@@ -19,7 +19,9 @@ const manhattan = (ax, ay, bx, by) => Math.abs(ax - bx) + Math.abs(ay - by);
 
 // avatar sizing. The rig is ~30 local px tall and bottom-anchored, so we drop
 // the feet a touch below the tile centre.
-export const AV_SCALE = TILE_SIZE / 26;
+export const AV_SCALE = TILE_SIZE / 29;   // ~10% smaller than /26: tucks the body
+// into its own tile so it doesn't visibly overhang the neighbouring water tile at
+// a shoreline (movement already blocks water; this is the visual "on-water" read).
 export const AV_FEET = TILE_SIZE * 0.34;
 export const AV_TOP = 30 * AV_SCALE + 6;   // head-top offset for HP bars / labels
 

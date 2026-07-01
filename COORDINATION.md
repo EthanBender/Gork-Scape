@@ -384,6 +384,19 @@ Client-side until Phase 4; each phase keeps the player-freeze + world-continuity
   Rerouting would risk the legacy cook/smith branches; revisit with id migration.
 
 ## Change log
+- 2026-07-01 — Economy agent: **Bank is now a full-screen MODAL (Bank | Inventory
+  side-by-side), not a cramped sidebar panel.** `openBank()` opens a
+  `.modal-overlay` popup (like the Tinker's Workbench) with two columns: Bank
+  (click withdraw 1 / right-click all) and Inventory (click to deposit), Deposit-
+  all + Buy-slots in the header, ✕/backdrop/Esc to close. Now uses the real
+  `itemIconHTML` SVG icons on both sides (was old letter-abbreviation squares).
+  Also fixed a latent bug: `renderBank` referenced `ITEMS` (never imported in
+  panels.js) — only survived before because the bank-item loop was empty; switched
+  to `itemView`. `renderBank` early-returns unless the modal is open, so the tick
+  refresh keeps it live. `openBank` no longer `switchTab('bank')` (the sidebar
+  bank view is now unused). Verified live: full-screen fixed modal, 2 columns, SVG
+  icons, deposit + withdraw both work by clicking between grids, 0 console errors.
+  `panels.js` + bank-modal CSS in `index.html`.
 - 2026-07-01 — Economy agent: **fixed INVISIBLE world objects + gave them art
   (blood portal, carts, Bones Altar, starter activities).** ⚠️ **GOTCHA all lanes
   must know:** `world.objectsByChunk` (the spatial index `drawObjects`/`objectsInView`

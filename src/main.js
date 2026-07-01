@@ -64,6 +64,7 @@ import './data/questItems.js'; // [economy lane] register unique quest items int
 import { drawAvatar } from './render/avatar.js';
 import { gearHints, weaponStyleFor, bodyTypeFor, footprintFor } from './render/gear.js';
 import { avatarStateFor, playerSkillTarget, drawSkillFx, AV_SCALE, AV_FEET, AV_TOP } from './render/characters.js';
+import { drawProp } from './render/props.js'; // [char-render] structure props (anvil/chest/stall/…) replace flat squares
 
 const tilePx = (t) => t * TILE_SIZE + TILE_SIZE / 2;
 const manhattan = (ax, ay, bx, by) => Math.abs(ax - bx) + Math.abs(ay - by);
@@ -705,7 +706,10 @@ function onPointerDown(pointer) {
   const ty = Math.floor(pointer.worldY / TILE_SIZE);
   if (tx < 0 || ty < 0 || tx >= WORLD_W || ty >= WORLD_H) return;
 
-  const npc = Game.npcs.find((n) => !n.dead && n.tileX === tx && n.tileY === ty);
+  // Prefer an exact-tile hit, but also let a click anywhere on a big monster's
+  // footprint select it (so you can attack a 3×3 troll by clicking any of it).
+  const npc = Game.npcs.find((n) => !n.dead && n.tileX === tx && n.tileY === ty)
+    || Game.npcs.find((n) => !n.dead && npcFR(n) > 0 && inFootprint(n, tx, ty));
   const obj = Game.world.objectAt.get(tx + ',' + ty);
   const usableObj = obj && !obj.depleted ? obj : null;
   const ground = Game.groundItems.filter((g) => g.x === tx && g.y === ty);
@@ -984,8 +988,13 @@ function gameTick(count, isLast = true) {
     // melee — and keeps closing (routing around walls) until it can see the
     // target when a wall blocks the shot.
     if (t.dead) { p.combatTarget = null; p.path = []; }
-    else if (canAttackFrom(world, p, t.tileX, t.tileY, playerAttackRange())) p.path = [];
-    else p.path = findPath(world, p.tileX, p.tileY, t.tileX, t.tileY, true);
+    else if (reachFP(world, t, p.tileX, p.tileY, playerAttackRange())) p.path = [];
+    else {
+      // Path toward the footprint tile nearest the player (for a big monster
+      // that's its edge, so we stop just outside instead of walking into it).
+      const nt = nearestFootprintTile(t, p.tileX, p.tileY);
+      p.path = findPath(world, p.tileX, p.tileY, nt.x, nt.y, true);
+    }
   } else if (p.interactTarget) {
     const o = p.interactTarget;
     if (o.depleted) p.interactTarget = null;
@@ -1123,7 +1132,8 @@ function gameTick(count, isLast = true) {
       // strike before closing to melee, but ranged enemies still need line-of-
       // sight (they'll advance around cover otherwise). Re-checked each tick.
       const nRange = weaponRange(n);
-      if (canAttackFrom(world, n, p.tileX, p.tileY, nRange)) {
+      // reachFP: a big monster strikes from its footprint edge (1-tile mobs unchanged).
+      if (reachFP(world, n, p.tileX, p.tileY, nRange)) {
         n.path = [];
         if (count - n.lastAttackTick >= n.attackSpeed) { n.lastAttackTick = count; npcAttack(n, count); }
       } else if (!snared) {
