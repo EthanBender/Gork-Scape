@@ -930,6 +930,8 @@ function bankerInRange() {
 }
 // --- Bank: a full-screen modal with Bank | Inventory side-by-side -----------
 let bankOverlay = null;
+let bankQty = 1; // active amount a left-click moves (a number, or Infinity for All)
+const bankQtyLabel = () => (bankQty === Infinity ? 'All' : bankQty);
 function buildBankOverlay() {
   bankOverlay = document.createElement('div');
   bankOverlay.className = 'modal-overlay'; bankOverlay.id = 'bank-overlay'; bankOverlay.hidden = true;
@@ -942,13 +944,24 @@ function buildBankOverlay() {
     + '<button class="modal-close" title="Close">✕</button></div>'
     + '<div class="bank-actions"><button class="ge-mini bank-depall">Deposit all</button>'
     + '<button class="ge-mini bank-buy"></button></div>'
+    + '<div class="bank-qty"><span>Move:</span>'
+    + '<button class="bank-q" data-q="1">1</button><button class="bank-q" data-q="5">5</button>'
+    + '<button class="bank-q" data-q="10">10</button><button class="bank-q" data-q="x">X</button>'
+    + '<button class="bank-q" data-q="all">All</button></div>'
     + '<div class="bank-cols">'
-    + '<div class="bank-col"><div class="bank-col-title">Bank — click withdraw 1 · right-click all</div><div class="inv-grid bank-store"></div></div>'
-    + '<div class="bank-col"><div class="bank-col-title">Inventory — click to deposit</div><div class="inv-grid bank-inv"></div></div>'
+    + '<div class="bank-col"><div class="bank-col-title store-title">Bank</div><div class="inv-grid bank-store"></div></div>'
+    + '<div class="bank-col"><div class="bank-col-title inv-title">Inventory</div><div class="inv-grid bank-inv"></div></div>'
     + '</div>';
   panel.querySelector('.modal-close').onclick = closeBank;
   panel.querySelector('.bank-depall').onclick = () => { bankDepositAll(); renderBank(); };
   panel.querySelector('.bank-buy').onclick = () => { buyBankSpace(); renderBank(); };
+  panel.querySelectorAll('.bank-q').forEach((b) => { b.onclick = () => {
+    const q = b.dataset.q;
+    if (q === 'all') bankQty = Infinity;
+    else if (q === 'x') { const n = parseInt(prompt('Move how many?', bankQty === Infinity ? '' : bankQty), 10); if (Number.isFinite(n) && n > 0) bankQty = n; }
+    else bankQty = parseInt(q, 10);
+    renderBank();
+  }; });
   bankOverlay.appendChild(panel);
   document.body.appendChild(bankOverlay);
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && bankOverlay && !bankOverlay.hidden) closeBank(); });
@@ -964,6 +977,13 @@ export function renderBank() {
   slots.style.color = used >= cap ? '#c9556a' : 'var(--gold)';
   const cost = nextBankSpaceCost();
   bankOverlay.querySelector('.bank-buy').textContent = `Buy +${BANK_SPACE_CHUNK} slots — ${cost.toLocaleString()} gp`;
+  bankOverlay.querySelectorAll('.bank-q').forEach((b) => b.classList.toggle('active',
+    (b.dataset.q === 'all' && bankQty === Infinity) ||
+    (b.dataset.q === 'x' && bankQty !== Infinity && ![1, 5, 10].includes(bankQty)) ||
+    String(bankQty) === b.dataset.q));
+  const stTitle = bankOverlay.querySelector('.store-title'), invTitle = bankOverlay.querySelector('.inv-title');
+  if (stTitle) stTitle.textContent = `Bank — left-click withdraw ${bankQtyLabel()} · right-click for options`;
+  if (invTitle) invTitle.textContent = `Inventory — left-click deposit ${bankQtyLabel()} · right-click for options`;
 
   const store = bankOverlay.querySelector('.bank-store');
   store.innerHTML = Game.bank.length ? '' : '<div class="xptext" style="grid-column:1/-1;padding:10px">Empty — deposit items from the right.</div>';
@@ -974,8 +994,14 @@ export function renderBank() {
     bindTip(slot, b.id, name, 'Click withdraw 1 · right-click withdraw all');
     const sq = document.createElement('div'); sq.className = 'item-sq'; sq.innerHTML = itemIconHTML(b.id); slot.appendChild(sq);
     const q = document.createElement('span'); q.className = 'item-qty'; const qs = qtyStyle(b.qty); q.textContent = qs.text; q.style.color = qs.color; slot.appendChild(q);
-    slot.onclick = () => { hideTip(); bankWithdraw(b.id, 1); renderBank(); };
-    slot.oncontextmenu = (e) => { e.preventDefault(); hideTip(); bankWithdraw(b.id, b.qty); renderBank(); };
+    slot.onclick = () => { hideTip(); bankWithdraw(b.id, bankQty); renderBank(); };
+    slot.oncontextmenu = (e) => { e.preventDefault(); hideTip(); showContextMenu(e.clientX, e.clientY, [
+      ['Withdraw 1', () => { bankWithdraw(b.id, 1); renderBank(); }],
+      ['Withdraw 5', () => { bankWithdraw(b.id, 5); renderBank(); }],
+      ['Withdraw 10', () => { bankWithdraw(b.id, 10); renderBank(); }],
+      ['Withdraw All', () => { bankWithdraw(b.id, b.qty); renderBank(); }],
+      ['Withdraw X…', () => { const n = parseInt(prompt('Withdraw how many?', '1'), 10); if (n > 0) { bankWithdraw(b.id, n); renderBank(); } }],
+    ]); };
     store.appendChild(slot);
   }
 
@@ -987,7 +1013,14 @@ export function renderBank() {
       bindTip(slot, item.id, item.name, 'Click to deposit');
       const sq = document.createElement('div'); sq.className = 'item-sq'; sq.innerHTML = itemIconHTML(item.id); slot.appendChild(sq);
       if (item.qty > 1) { const q = document.createElement('span'); q.className = 'item-qty'; const qs = qtyStyle(item.qty); q.textContent = qs.text; q.style.color = qs.color; slot.appendChild(q); }
-      slot.onclick = () => { hideTip(); bankDeposit(i); renderBank(); };
+      slot.onclick = () => { hideTip(); bankDeposit(i, bankQty); renderBank(); };
+      slot.oncontextmenu = (e) => { e.preventDefault(); hideTip(); showContextMenu(e.clientX, e.clientY, [
+        ['Deposit 1', () => { bankDeposit(i, 1); renderBank(); }],
+        ['Deposit 5', () => { bankDeposit(i, 5); renderBank(); }],
+        ['Deposit 10', () => { bankDeposit(i, 10); renderBank(); }],
+        ['Deposit All', () => { bankDeposit(i, Infinity); renderBank(); }],
+        ['Deposit X…', () => { const n = parseInt(prompt('Deposit how many?', '1'), 10); if (n > 0) { bankDeposit(i, n); renderBank(); } }],
+      ]); };
     }
     inv.appendChild(slot);
   }

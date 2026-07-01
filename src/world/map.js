@@ -868,6 +868,7 @@ export function generateWorld(seed = DEFAULT_SEED) {
     function sGrove(cx, cy, e) { sScatter(cx, cy, 3, 10, e.color, 4, 'circle', (x, y) => isGr(x, y)); sScatter(cx, cy, 4, 5, 0x3f6e2c, 3, 'circle'); wmarker(cx, cy, e); }
     function sCache(cx, cy, e) { patch(cx, cy, 1, T.DIRT); decor(cx, cy, 0x6a5a3a, 6, 'rect'); sScatter(cx, cy, 3, 3, 0x8a7a60, 3, 'rect'); wmarker(cx, cy, e); }
     function sDen(cx, cy, e) { patch(cx, cy, 1, T.DIRT); decor(cx, cy, 0x2a2018, 7, 'circle'); sScatter(cx, cy, 3, 4, 0x5a4a3a, 4, 'rect'); wmarker(cx, cy, e, 'explore'); garrison(cx, cy, 3, e.base || 'rat', e.n || 2, e.name); }
+    function sBurrow(cx, cy, e) { patch(cx, cy, 1, T.DIRT); decor(cx, cy, 0x2a2018, 6, 'circle'); sScatter(cx, cy, 3, 5, 0x5a4a3a, 3, 'rect'); sScatter(cx, cy, 4, 4, 0x3f6e2c, 4, 'circle'); wmarker(cx, cy, e); } // wildlife den/burrow — a hole in the earth, tracks, no stone walls
 
     function buildScene(e, cx, cy) {
       const id = e.id, k = e.kind;
@@ -881,7 +882,8 @@ export function generateWorld(seed = DEFAULT_SEED) {
       if (/statue|idol|obelisk|arch|sarcoph|coffin|milestone|signpost|graveyard|colossus|memorial/.test(id)) return sMonument(cx, cy, e);
       if (/camp|tent|bedroll|cart|wagon|cookpot|firepit|snare|blind|deserted/.test(id)) return sCamp(cx, cy, e);
       if (/well/.test(id)) return sCache(cx, cy, e);
-      const ruined = /ruin|collaps|derelict|charr|abandon|toppl|wreck|broken|sunk|weathered|old_|forgotten|hollow/.test(id);
+      if (/warren|burrow|sett|roost|nest|ledge|perch|wallow|rabbit|deer|owl|vulture|goat|badger|weasel|fox|toad|crow|hollow_stump/.test(id)) return sBurrow(cx, cy, e); // wildlife, not architecture
+      const ruined = /ruin|collaps|derelict|charr|abandon|toppl|wreck|broken|sunk|weathered|old_|forgotten/.test(id);
       return sBuilding(cx, cy, e, ruined);
     }
 

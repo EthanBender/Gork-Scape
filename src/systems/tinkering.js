@@ -147,6 +147,14 @@ const MATERIALS = {
   hardened_piston:   { name: 'Hardened Piston',   color: 0xa0a6ae, value: 180 },
   arc_core:          { name: 'Arc Core',          color: 0x6acfe0, value: 200 },
   gyro_stabilizer:   { name: 'Gyro Stabilizer',   color: 0xc0c0cc, value: 150 },
+  // automation consumables — the fuel/wear/repair SINKS the contraptions burn
+  // (see docs/TINKERING_AUTOMATION.md). Craftable now so automation plugs straight in.
+  fuel_cell:    { name: 'Fuel Cell',      color: 0x6acf8a, value: 40, automationFuel: true },
+  drill_bit:    { name: 'Drill Bit',      color: 0x9a9aa0, value: 30, automationWear: true },
+  chain_oil:    { name: 'Chain Oil',      color: 0x8a6a2a, value: 24, automationFuel: true },
+  repair_kit:   { name: 'Repair Kit',     color: 0xb08a4a, value: 80, automationRepair: true },
+  fertiliser:   { name: 'Alchemical Fertiliser', color: 0x6aa04a, value: 34, automationFuel: true },
+  bait_pellet:  { name: 'Bait Pellet',    color: 0x9a8a5a, value: 18, automationFuel: true },
   // components
   metal_casing: { name: 'Metal Casing',   color: 0xa08050, value: 20 },
   iron_barrel:  { name: 'Iron Barrel',    color: 0x8a8a94, value: 40 },
@@ -310,6 +318,13 @@ recipe('precision_barrel',  { output: 'precision_barrel',  outQty: 1, level: 62,
 recipe('hardened_piston',   { output: 'hardened_piston',   outQty: 1, level: 64, xp: 150, unlock: 'tinkering_voltaic', inputs: [{ id: 'steam_piston', qty: 1 }, { id: 'magma_core', qty: 1 }, { id: 'coolant', qty: 2 }] });
 recipe('arc_core',          { output: 'arc_core',          outQty: 1, level: 70, xp: 190, unlock: 'tinkering_voltaic', inputs: [{ id: 'conductive_gel', qty: 2 }, { id: 'voidshard', qty: 1 }, { id: 'deep_crystal', qty: 1 }] });
 recipe('gyro_stabilizer',   { output: 'gyro_stabilizer',   outQty: 1, level: 58, xp: 120, unlock: 'tinkering_tools', inputs: [{ id: 'flywheel', qty: 1 }, { id: 'frostglass', qty: 1 }, { id: 'quicksilver', qty: 1 }] });
+// Automation consumables (fuel / wear / repair) — the sinks contraptions burn.
+recipe('fuel_cell',   { output: 'fuel_cell',   outQty: 3, level: 30, xp: 30, unlock: 'tinkering_tools', inputs: [{ id: 'machine_oil', qty: 1 }, { id: 'metal_casing', qty: 1 }, { id: 'sulfur', qty: 1 }] });
+recipe('drill_bit',   { output: 'drill_bit',   outQty: 4, level: 25, xp: 24, unlock: 'tinkering_tools', inputs: [{ id: 'steel_bar', qty: 1 }, { id: 'flux_paste', qty: 1 }] });
+recipe('chain_oil',   { output: 'chain_oil',   outQty: 3, level: 20, xp: 18, unlock: 'tinkering_tools', inputs: [{ id: 'machine_oil', qty: 1 }, { id: 'tree_resin', qty: 1 }] });
+recipe('repair_kit',  { output: 'repair_kit',  outQty: 1, level: 35, xp: 44, unlock: 'tinkering_tools', inputs: [{ id: 'scrap_metal', qty: 3 }, { id: 'brass_cog', qty: 1 }, { id: 'machine_oil', qty: 1 }] });
+recipe('fertiliser',  { output: 'fertiliser',  outQty: 4, level: 22, xp: 20, unlock: 'tinkering_tools', inputs: [{ id: 'charcoal', qty: 1 }, { id: 'chalk', qty: 1 }, { id: 'sulfur', qty: 1 }] });
+recipe('bait_pellet', { output: 'bait_pellet', outQty: 6, level: 15, xp: 14, unlock: 'tinkering_tools', inputs: [{ id: 'oil_sac', qty: 1 }, { id: 'chalk', qty: 1 }] });
 // Gadget mods / attachments (install into the rig; unlocked with the tools stage).
 recipe('mod_scope',        { output: 'mod_scope',        outQty: 1, level: 30, xp: 70, unlock: 'tinkering_tools', makes: 'mod', inputs: [{ id: 'amber', qty: 1 }, { id: 'brass_cog', qty: 1 }, { id: 'firing_pin', qty: 1 }] });
 recipe('mod_ap_core',      { output: 'mod_ap_core',      outQty: 1, level: 40, xp: 90, unlock: 'tinkering_tools', makes: 'mod', inputs: [{ id: 'obsidian_shard', qty: 1 }, { id: 'firing_pin', qty: 1 }] });

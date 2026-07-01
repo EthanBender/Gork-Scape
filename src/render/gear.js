@@ -119,8 +119,10 @@ export function bodyTypeFor(name = '') {
 // like bodyTypeFor; the economy lane can later add `render.footprint` to override.
 export function footprintFor(name = '') {
   const n = name.toLowerCase();
+  // NOTE: no bare "giant" here — most mobs named "Giant X" (Giant Rat/Spider/Bug)
+  // are normal-size; only genuinely huge creature types get a footprint.
   if (/dragon|titan|colossus|behemoth|leviathan|world.?serpent/.test(n)) return 2; // 5×5 colossal
-  if (/king|boss|horror|golem|guardian|overlord|warlord|troll|ogre|\bgiant\b/.test(n)) return 1; // 3×3
+  if (/king|boss|horror|golem|guardian|overlord|warlord|troll|ogre|hill.?giant|frost.?giant|\bgiant$/.test(n)) return 1; // 3×3
   return 0;
 }
 

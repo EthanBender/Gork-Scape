@@ -59,6 +59,21 @@ function shape(r) {
   return { ok: false, error: (r.data && r.data.error) || 'Something went wrong.' };
 }
 
+// Cheap "is there an auth server here?" check with no token required — used at
+// boot to decide whether to show the password-gated login or the local fallback.
+export async function probe() {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 3000);
+  try {
+    const res = await fetch('/api/world', { signal: ctrl.signal, cache: 'no-store' });
+    return res.ok;
+  } catch {
+    return false;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 export async function register(username, password) {
   return shape(await post('/api/auth/register', { username, password }));
 }
@@ -92,4 +107,16 @@ export async function pushSave(save) {
   if (!token) return false;
   const r = await post('/api/auth/save', { token, save });
   return !!(r.ok && r.data && r.data.ok);
+}
+
+// Fire-and-forget save for the page-closing path, where an async fetch can't be
+// awaited. sendBeacon is queued by the browser and survives the unload.
+export function beaconSave(save) {
+  if (!token || !navigator.sendBeacon) return false;
+  try {
+    const blob = new Blob([JSON.stringify({ token, save })], { type: 'application/json' });
+    return navigator.sendBeacon('/api/auth/save', blob);
+  } catch {
+    return false;
+  }
 }
