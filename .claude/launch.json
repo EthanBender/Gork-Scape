@@ -96,6 +96,15 @@
         "5197"
       ],
       "port": 5197
+    },
+    {
+      "name": "goblin-empire-worldserver",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "server/index.mjs",
+        "5198"
+      ],
+      "port": 5198
     }
   ]
 }

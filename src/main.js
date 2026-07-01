@@ -343,6 +343,10 @@ function create() {
   restoreShopsOnLogin();
   // [economy lane] Restore planted crops; they kept growing on the world clock.
   restoreFarmsOnLogin();
+  // [economy lane] Connect to the authoritative world server if one is running:
+  // its live guide prices replace the local ones (shared, always-on market).
+  // Non-blocking and self-healing — no server → silently stays local.
+  connectServerLink();
   // [world-continuity] Tell the returning player what's happening in the world
   // right now and what's coming — events run on the world calendar regardless.
   announceWorldEvents();
