@@ -70,6 +70,24 @@ function seedGuides() {
   for (const [id, base] of basePrice) market.ensureGuide(id, base);
 }
 
+// Shared market-maker liquidity. Before matching an order we (re)post a deep
+// two-sided quote around the item's guide, so every player trades against the
+// same NPC liquidity pool at a realistic spread (buy above / sell below guide).
+// Deep quantities stand in for "infinite" NPC depth until real players supply the
+// book. Fills move the guide via the engine's EMA, so player demand is shared.
+const MM = 'mm';
+const MM_SPREAD = 0.05;
+const MM_DEPTH = 100000;
+function ensureServerLiquidity(itemId) {
+  const g = market.guidePrice(itemId) || basePrice.get(itemId) || 1;
+  const book = market.book(itemId);
+  for (const key of ['buys', 'sells']) {
+    for (let i = book[key].length - 1; i >= 0; i--) if (book[key][i].trader === MM) book[key].splice(i, 1);
+  }
+  market.place('sell', itemId, MM_DEPTH, Math.max(1, Math.round(g * (1 + MM_SPREAD))), MM);
+  market.place('buy', itemId, MM_DEPTH, Math.max(1, Math.round(g * (1 - MM_SPREAD))), MM);
+}
+
 // Authoritative price movement. Runs every loop with NO client required: guides
 // mean-revert toward their base value (biased by any live world event) plus a
 // small bounded random walk. Same shape as the client's offline drift — here it
@@ -221,8 +239,16 @@ const server = http.createServer(async (req, res) => {
       if (!['buy', 'sell'].includes(side) || !itemId || !(qty > 0) || !(limit > 0)) {
         return sendJson(res, 400, { error: 'need { side:"buy"|"sell", itemId, qty>0, limit>0 }' });
       }
+      ensureServerLiquidity(itemId);                         // shared market-maker depth
       const { order, fills } = market.place(side, itemId, qty, limit, trader || 'player');
-      return sendJson(res, 200, { order: { id: order.id, qty: order.qty, filled: order.filled }, fills });
+      // This step does not rest player orders server-side (distributed resting-order
+      // settlement is the next step): cancel any unfilled remainder so the client
+      // refunds it. What filled, filled against the SHARED book at authoritative prices.
+      if (order.qty > 0) market.cancel(order.id);
+      const gross = fills.reduce((s, f) => s + f.price * f.qty, 0);
+      return sendJson(res, 200, {
+        side, itemId, filled: order.filled, gross, fills, guide: market.guidePrice(itemId),
+      });
     } catch (e) { return sendJson(res, 400, { error: e.message }); }
   }
 

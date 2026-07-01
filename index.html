@@ -490,39 +490,33 @@
     100% { opacity: 0; transform: translate(-50%,-64%) scale(.95); } }
 
   /* World map button + overlay */
-  #map-btn { position: absolute; top: 190px; right: 12px; width: 168px; z-index: 6;
-    padding: 8px 0; color: var(--gold); border: 1px solid var(--gold-dk);
-    background: linear-gradient(180deg, var(--panel-hi), var(--panel2));
-    border-radius: 5px; cursor: pointer; font-size: 12px; font-weight: 700; letter-spacing: .5px;
-    box-shadow: var(--raise), 0 2px 6px rgba(0,0,0,.4); text-shadow: 0 1px 0 #000;
+  #map-btn { position: absolute; top: 190px; right: 12px; z-index: 6;
+    width: 42px; height: 42px; padding: 0; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; font-size: 19px; line-height: 1;
+    color: var(--gold); border: 1px solid var(--gold-dk);
+    background: linear-gradient(180deg, var(--panel-hi), var(--panel2)); cursor: pointer;
+    box-shadow: var(--raise), 0 2px 6px rgba(0,0,0,.4);
     transition: transform .08s, color .1s, background .1s; }
-  #map-btn:hover { color: #1a1710; background: linear-gradient(180deg, #f2d774, var(--gold-dk));
-    text-shadow: 0 1px 0 rgba(255,255,255,.3); }
+  #map-btn:hover { color: #1a1710; background: linear-gradient(180deg, #f2d774, var(--gold-dk)); }
   #map-btn:active { transform: translateY(1px); }
-  #cam-hint { position: absolute; top: 224px; right: 12px; width: 168px; z-index: 6;
+  #cam-hint { position: absolute; top: 240px; right: 12px; width: 168px; z-index: 6;
     box-sizing: border-box; padding: 5px 7px; background: rgba(20,18,14,.62);
     border: 1px solid var(--border); border-radius: 4px; color: #b9b096;
     font-size: 10px; line-height: 1.5; pointer-events: none; }
   #cam-hint b { color: var(--gold); font-weight: 700; }
   /* Run toggle + energy bar */
-  #run-btn { position: absolute; top: 272px; right: 12px; width: 168px; z-index: 6;
-    box-sizing: border-box; display: flex; align-items: center; gap: 7px;
-    padding: 6px 9px; color: var(--text); border: 1px solid var(--border);
-    background: linear-gradient(180deg, var(--panel-hi), var(--panel2));
-    border-radius: 5px; cursor: pointer; font-size: 12px; font-weight: 700;
-    box-shadow: var(--raise), 0 2px 6px rgba(0,0,0,.4); text-shadow: 0 1px 0 #000;
-    transition: transform .08s, color .1s, border-color .1s; }
+  #run-btn { position: absolute; top: 190px; right: 62px; z-index: 6; --run-pct: 100; --ring: var(--gold);
+    width: 42px; height: 42px; padding: 0; border: none; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text);
+    background: conic-gradient(var(--ring) calc(var(--run-pct) * 1%), var(--panel-lo) 0);
+    box-shadow: 0 2px 6px rgba(0,0,0,.4); transition: transform .08s; }
+  #run-btn::before { content: ''; position: absolute; inset: 3px; border-radius: 50%;
+    background: linear-gradient(180deg, var(--panel-hi), var(--panel2)); box-shadow: var(--sink); }
   #run-btn:active { transform: translateY(1px); }
-  #run-btn.on { color: var(--accent); border-color: var(--accent-dk); }
-  #run-btn.low { border-color: #c0553a; color: #e88a6a; }
-  #run-ico { font-size: 14px; }
-  #run-pct { min-width: 32px; }
-  #run-bar { flex: 1; height: 7px; background: var(--panel-lo); border-radius: 4px;
-    overflow: hidden; box-shadow: var(--sink); }
-  #run-fill { display: block; height: 100%; width: 100%;
-    background: linear-gradient(180deg, #f0d27a, var(--gold-dk)); transition: width .12s linear; }
-  #run-btn.on #run-fill { background: linear-gradient(180deg, #9cd86a, var(--accent-dk)); }
-  #run-btn.low #run-fill { background: linear-gradient(180deg, #e8916a, #a83a1e); }
+  #run-btn.on { --ring: var(--accent); color: var(--accent); }
+  #run-btn.low { --ring: #c0553a; color: #e88a6a; }
+  #run-ico { position: relative; z-index: 1; font-size: 18px; line-height: 1; text-shadow: 0 1px 0 #000; }
+  #run-pct, #run-bar { display: none; }
   #worldmap-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.72); z-index: 9998;
     display: flex; align-items: center; justify-content: center; }
   #worldmap-overlay[hidden] { display: none; }
@@ -568,10 +562,8 @@
     /* Canvas HUD controls: keyboard hints are useless on touch; shrink the
        buttons and split them to the top corners so they don't cover the map. */
     #cam-hint { display: none; }
-    #map-btn { top: calc(8px + env(safe-area-inset-top)); right: 8px; left: auto;
-      width: auto; padding: 8px 12px; font-size: 12px; }
-    #run-btn { top: calc(8px + env(safe-area-inset-top)); left: 8px; right: auto;
-      width: auto; min-width: 118px; }
+    #map-btn { top: calc(8px + env(safe-area-inset-top)); right: 8px; left: auto; }
+    #run-btn { top: calc(8px + env(safe-area-inset-top)); left: 8px; right: auto; }
 
     /* Chat: a touch shorter; input big enough that iOS won't zoom on focus. */
     #chatlog { flex-basis: 84px; height: 84px; padding: 6px 12px; }
@@ -625,7 +617,7 @@
   <div id="main">
     <div id="game-panel">
       <div id="game-canvas"></div>
-      <button id="map-btn" title="Open world map (M)">🗺 WORLD MAP</button>
+      <button id="map-btn" title="World map (M)">🗺</button>
       <div id="cam-hint">
         🖱 <b>click minimap</b> to travel<br>
         <b>scroll</b> / <b>↑ ↓</b> zoom · <b>← →</b> rotate · <b>0</b> reset

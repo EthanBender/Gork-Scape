@@ -91,6 +91,7 @@ export function updateRunHud(force) {
   if (ico) ico.textContent = r.on ? '🏃' : '🚶';
   if (txt) txt.textContent = pct + '%';
   if (fill) fill.style.width = pct + '%';
+  btn.style.setProperty('--run-pct', pct); // [economy lane] drives the bubble's energy ring
   btn.classList.toggle('on', r.on);
   btn.classList.toggle('low', pct <= 20);
 }

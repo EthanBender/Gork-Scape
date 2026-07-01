@@ -331,6 +331,16 @@ Client-side until Phase 4; each phase keeps the player-freeze + world-continuity
   Rerouting would risk the legacy cook/smith branches; revisit with id migration.
 
 ## Change log
+- 2026-07-01 — Economy agent: **HUD map + run controls shrunk to icon bubbles
+  (were wide 168px bars eating screen space).** `#map-btn` → a 42px round bubble
+  (🗺 icon only, no "WORLD MAP" text); `#run-btn` → a 42px round bubble (🚶/🏃 icon)
+  with the old energy BAR replaced by a **conic-gradient energy RING** around the
+  icon (gold walking / green running / red low, ring fill = energy %). Both sit
+  side-by-side under the minimap; `#run-pct`/`#run-bar` hidden (kept in DOM so
+  `run.js updateRunHud` doesn't break — it now also sets `--run-pct` to drive the
+  ring). Mobile overrides updated to keep them bubbles. All in `index.html` +1
+  line in `engine/run.js`. Verified live: both 42×42 round, map opens the overlay,
+  run toggles (ring → green), 0 console errors.
 - 2026-07-01 — Economy agent: **quests now PAY OFF in the world — gear, bank
   space, and shortcut-opening rewards + closed 2 persistence gaps.** Quest reward
   schema gained `items` (armour: bronze/iron sets), `bankSpace` (→ `grantBankSpace`),

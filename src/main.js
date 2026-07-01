@@ -1509,7 +1509,17 @@ function update(time, delta) {
   const cam = this.cameras.main;
   cam.zoom = Phaser.Math.Linear(cam.zoom, targetZoom, 0.18);
   cam.rotation = Phaser.Math.Linear(cam.rotation, targetRot, 0.18);
-  cam.centerOn(p.px, p.py);
+  // [economy lane] During a cutscene the camera drifts toward the beat's pan
+  // target (eased) instead of tracking the player; otherwise follow the player.
+  if (Game.cutsceneCam) {
+    const tx = tilePx(Game.cutsceneCam.x), ty = tilePx(Game.cutsceneCam.y);
+    csCamPx.x = csCamPx.x == null ? p.px : Phaser.Math.Linear(csCamPx.x, tx, 0.06);
+    csCamPx.y = csCamPx.y == null ? p.py : Phaser.Math.Linear(csCamPx.y, ty, 0.06);
+    cam.centerOn(csCamPx.x, csCamPx.y);
+  } else {
+    csCamPx.x = csCamPx.y = null;
+    cam.centerOn(p.px, p.py);
+  }
   drawTerrain();
   drawObjects();
   drawGround();

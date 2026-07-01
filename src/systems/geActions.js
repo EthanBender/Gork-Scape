@@ -9,6 +9,10 @@ import { GameData } from '../data/gameData.js';
 import { canonicalId } from '../data/idAliases.js';
 import { Game, addItem, firstFreeSlot } from '../engine/state.js';
 import { marketBias, activeEvent } from './worldEvents.js'; // [world-continuity] event-driven demand
+import { serverLinkStatus, postOrder } from '../net/serverLink.js'; // [Phase 4] shared-server execution
+
+const isOnline = () => serverLinkStatus() === 'online';
+const traderId = () => Game.account || 'player';
 
 const COINS = 'coins';
 
@@ -200,11 +204,56 @@ export function playerOffers() {
   }));
 }
 
+// [Phase 4] Online settlement. Coins/items were already escrowed synchronously;
+// here we reconcile against the server's authoritative fills and refund the rest.
+// This step executes against the shared server market-maker (fill-or-refund — no
+// distributed resting orders yet), so orders don't rest server-side.
+async function buyOnline(cid, qty, maxPrice, escrowed) {
+  try {
+    const r = await postOrder('buy', cid, qty, maxPrice, traderId());
+    if (!r) throw new Error('server unreachable');
+    const filled = r.filled || 0;
+    const spent = r.gross || 0;
+    if (filled > 0) addItem(cid, filled);
+    const refund = Math.max(0, escrowed - spent);
+    if (refund > 0) addCoins(refund);                 // savings + any unfilled coins
+    if (typeof r.guide === 'number') market.setGuide(cid, r.guide);
+    Game.log(`GE buy: ${filled}/${qty} ${itemName(cid)} filled on the shared market`
+      + (filled < qty ? `, ${qty - filled} unfilled (refunded)` : '') + '.');
+  } catch {
+    addCoins(escrowed);                               // reconcile: nothing executed
+    Game.log(`GE buy could not reach the shared market — your ${escrowed} coins were refunded.`);
+  }
+  Game.refresh();
+}
+
+async function sellOnline(cid, qty, minPrice) {
+  try {
+    const r = await postOrder('sell', cid, qty, minPrice, traderId());
+    if (!r) throw new Error('server unreachable');
+    const filled = r.filled || 0;
+    const gross = r.gross || 0;
+    const { net, tax } = gross > 0 ? creditSale(gross) : { net: 0, tax: 0 };
+    if (filled < qty) addItem(cid, qty - filled);     // return the unsold escrow
+    if (typeof r.guide === 'number') market.setGuide(cid, r.guide);
+    Game.log(`GE sell: ${filled}/${qty} ${itemName(cid)} → ${net} coins`
+      + (tax ? ` (−${tax} tax)` : '') + (filled < qty ? `, ${qty - filled} unsold (returned)` : '') + '.');
+  } catch {
+    addItem(cid, qty);                                // reconcile: return escrowed items
+    Game.log(`GE sell could not reach the shared market — your ${itemName(cid)} was returned.`);
+  }
+  Game.refresh();
+}
+
 // ---- place a BUY offer (escrow coins up to qty*maxPrice) ----------------------
 export function buyOffer(itemId, qty, maxPrice) {
   const cid = canonicalId(itemId);
   const cost = qty * maxPrice;
   if (playerCoins() < cost) return { ok: false, reason: `need ${cost} coins (have ${playerCoins()})` };
+  // [Phase 4] Online: execute against the SHARED server market. Escrow coins now
+  // (sync, so the UI's {ok} contract holds), then settle fills + refund the rest
+  // when the server responds. Offline falls through to the local path below.
+  if (isOnline()) { spendItem(COINS, cost); buyOnline(cid, qty, maxPrice, cost); return { ok: true, pending: true }; }
   ensureLiquidity(cid);
   spendItem(COINS, cost); // escrow
 
@@ -227,6 +276,12 @@ export function buyOffer(itemId, qty, maxPrice) {
 export function sellOffer(itemId, qty, minPrice) {
   const cid = canonicalId(itemId);
   if (countTotal(cid) < qty) return { ok: false, reason: `only have ${countTotal(cid)} ${itemName(cid)}` };
+  // [Phase 4] Online: escrow the items now, execute on the shared server, settle
+  // coins (with tax) + return any unsold when it responds. Offline → local path.
+  if (isOnline()) {
+    if (!spendItem(cid, qty)) return { ok: false, reason: 'could not escrow items' };
+    sellOnline(cid, qty, minPrice); return { ok: true, pending: true };
+  }
   ensureLiquidity(cid);
   if (!spendItem(cid, qty)) return { ok: false, reason: 'could not escrow items' }; // escrow
 

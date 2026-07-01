@@ -54,6 +54,26 @@ async function syncPrices() {
   return true;
 }
 
+// Send a GE order to the shared server for execution against the shared book.
+// Returns { side, itemId, filled, gross, fills, guide } or null if offline/failed.
+// Callers (geActions online path) escrow locally first and settle from this result.
+export async function postOrder(side, itemId, qty, limit, trader) {
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), FETCH_TIMEOUT_MS);
+  try {
+    const res = await fetch('/api/order', {
+      method: 'POST', signal: ctrl.signal, headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ side, itemId, qty, limit, trader }),
+    });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch {
+    return null;
+  } finally {
+    clearTimeout(t);
+  }
+}
+
 function setStatus(next) {
   if (next === status) return;
   status = next;

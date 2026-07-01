@@ -462,7 +462,7 @@ export function generateWorld(seed = DEFAULT_SEED) {
     const r = hash2(x, y, Sr + 7);
     if (r < p) resObj(x, y, f.kinds[(hash2(x, y, Sr + 11) * f.kinds.length) | 0]);
     else if (r < p + 0.02) decor(x, y, 0x4a3a28, 5, 'rect');
-    else if (f.mushroom && r > 0.94 && depth > -4) decor(x, y, 0xc44a6a, 4, 'circle');
+    else if (f.mushroom && r > 0.94 && depth > -4 && vnoise(x / 9, y / 9, Sg + 9) > 0.44) decor(x, y, 0xc44a6a, 4, 'circle'); // mushrooms grow in GROVES, not an even sprinkle
     else if (r > 0.97) decor(x, y, 0x2f5d24, 6, 'circle');
   });
 
