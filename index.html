@@ -65,7 +65,7 @@
   #main { flex: 1 1 auto; display: flex; min-height: 0; }
   #game-panel { flex: 7 1 0; min-width: 0; position: relative; background: #000; }
   #game-canvas { width: 100%; height: 100%; }
-  #side-panel { flex: 3 1 0; min-width: 280px; max-width: 420px; display: flex;
+  #side-panel { flex: 3 1 0; min-width: 258px; max-width: 360px; display: flex;
     flex-direction: column; min-height: 0; /* let panel-content scroll instead of overflowing into the chat (mobile stacked layout) */
     background:
       repeating-linear-gradient(45deg, rgba(255,255,255,.011) 0 1px, transparent 1px 4px),
@@ -358,7 +358,7 @@
   .ge-mini:hover { color: var(--text); }
 
   /* Chat log */
-  #chatlog { flex: 0 0 120px; height: 120px; overflow-y: auto; background: #0c0b08;
+  #chatlog { flex: 0 0 auto; height: clamp(58px, 13vh, 116px); overflow-y: auto; background: #0c0b08;
     border-top: 2px solid var(--bevel-lo); box-shadow: inset 0 2px 6px rgba(0,0,0,.6), inset 0 1px 0 var(--bevel-hi);
     padding: 7px 14px; font-size: 13px; font-family: "Consolas", "Menlo", monospace;
     color: #cfc6ad; line-height: 1.5; }
@@ -617,7 +617,7 @@
      panel, shrink chrome, finger-size the controls, fit overlays.
      Tablets/desktop keep the side-by-side layout.
      ============================================================ */
-  @media (max-width: 720px) {
+  @media (max-width: 560px) {
     /* Stack: game on top, tabbed panel below, chat at the bottom. */
     #main { flex-direction: column; }
     #game-panel { flex: 6 1 0; min-height: 180px; }
@@ -668,7 +668,7 @@
 
   /* Landscape phones (short height): trim the fixed bars so the game/panel
      still get room; keep the side-by-side layout, which reads well wide. */
-  @media (max-height: 500px) and (min-width: 721px) {
+  @media (max-height: 500px) and (min-width: 561px) {
     #topbar { height: 38px; flex-basis: 38px; }
     #chatlog { flex-basis: 62px; height: 62px; }
   }

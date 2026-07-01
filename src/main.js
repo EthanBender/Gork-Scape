@@ -41,6 +41,7 @@ import { emptyBonuses, ITEMS } from './items/equipment.js';
 import { rollLoot } from './world/loot.js';
 import { randInt } from './engine/rng.js';
 import { placeTransports, boardTransport } from './systems/travel.js'; // [economy lane] fast travel (carts/portal)
+import { drawTownDecor } from './systems/townDecor.js'; // [economy lane] settlement decoration layer
 import { initPanels, showContextMenu, openExchange, openShop, openBank, openStation, activePanel, closeWorldPanels } from './ui/panels.js'; // open* panels [economy lane]
 // [economy lane] — combat drops from the database drop tables. See COORDINATION.md.
 import { rollMonsterDrops } from './systems/drops.js';
@@ -75,7 +76,7 @@ const COOK_XP = { raw_fish: 30, raw_trout: 70, raw_pike: 90, raw_eel: 110 };
 const TOOL_NAME = { axe: 'an axe', pickaxe: 'a pickaxe', net: 'a fishing net', rod: 'a fishing rod', harpoon: 'a harpoon', cage: 'a fishing cage' };
 
 let scene;
-let terrainGfx, objectsGfx, groundGfx, entitiesGfx, miniGfx;
+let terrainGfx, objectsGfx, groundGfx, entitiesGfx, miniGfx, decorGfx;
 let uiCam; // dedicated HUD camera: keeps the minimap upright under main-cam zoom/rotation
 let compassN = null; // the "N" marker on the minimap compass
 let objLabelPool = [];
@@ -434,6 +435,7 @@ function create() {
 
   terrainGfx = this.add.graphics().setDepth(0);
   objectsGfx = this.add.graphics().setDepth(1);
+  decorGfx = this.add.graphics().setDepth(1.2); // [economy lane] town decoration, above structures
   groundGfx = this.add.graphics().setDepth(1.5);
   entitiesGfx = this.add.graphics().setDepth(2);
 
@@ -456,7 +458,7 @@ function create() {
   uiCam = this.cameras.add(0, 0, this.scale.width, this.scale.height);
   uiCam.setScroll(0, 0);
   this.cameras.main.ignore(miniGfx);
-  uiCam.ignore([terrainGfx, objectsGfx, groundGfx, entitiesGfx, playerLabel]); // pooled NPC labels get uiCam.ignore on creation (see updateLabels)
+  uiCam.ignore([terrainGfx, objectsGfx, decorGfx, groundGfx, entitiesGfx, playerLabel]); // pooled NPC labels get uiCam.ignore on creation (see updateLabels)
   this.scale.on('resize', (size) => uiCam.setSize(size.width, size.height));
 
   // Compass "N" marker — rides the HUD camera (screen-space, upright), repositioned
@@ -1813,6 +1815,7 @@ function update(time, delta) {
   }
   drawTerrain();
   drawObjects();
+  drawTownDecor(decorGfx);
   drawGround();
   drawEntities();
   updateLabels();
