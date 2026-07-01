@@ -15,8 +15,7 @@
       "name": "goblin-empire-econ",
       "runtimeExecutable": "python3",
       "runtimeArgs": [
-        "-m",
-        "http.server",
+        ".claude/devserver_nocache.py",
         "5189"
       ],
       "port": 5189

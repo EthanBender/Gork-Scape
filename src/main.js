@@ -46,6 +46,7 @@ import { monsterIdForSpawn } from './data/worldContract.js';
 import { GameData } from './data/gameData.js'; // [economy lane] crop-patch node lookups for farming
 import { shopkeeperSpawns, loadAndRestockShops, saveWorldShops, restockShops } from './systems/shops.js'; // [economy lane] shopkeeper NPCs + world-time restock
 import * as Farming from './systems/farming.js'; // [economy lane] crops grow on world time (offline too)
+import { connectServerLink } from './net/serverLink.js'; // [economy lane] shared-world GE price feed (Phase 4)
 // [economy lane] — Firemaking: temporary ground fires (lit from inventory in
 // panels.js) render here, expire on the global tick, and cook via performSkill.
 import { activeFires, tickFires, fireAt, fireLifeRatio } from './systems/firemaking.js';
