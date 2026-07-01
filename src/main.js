@@ -1841,23 +1841,84 @@ function elevLift(elev, i) { return elev ? (elev[i] - ELEV_BASE) * ELEV_K : 0; }
 function tileLiftXY(tx, ty) { const e = Game.world.elevation; return e ? (e[ty * Game.world.W + tx] - ELEV_BASE) * ELEV_K : 0; }
 function shadeColor(c, f) { const r = (c >> 16) & 255, g = (c >> 8) & 255, b = c & 255; return ((Math.min(255, r * f) | 0) << 16) | ((Math.min(255, g * f) | 0) << 8) | (Math.min(255, b * f) | 0); }
 
+// Deterministic per-tile hash (stable across frames) for texture variation.
+function tHash(x, y) {
+  let h = (Math.imul(x, 374761393) + Math.imul(y, 668265263)) ^ 0x9e3779b9;
+  h = Math.imul(h ^ (h >>> 13), 1274126177);
+  return ((h ^ (h >>> 16)) >>> 0) / 4294967295;
+}
+
+// ---- per-terrain texture detail (drawn over the flat base fill; all fillRect
+// for speed). Together these make walls read as capped stone, roads as cobble,
+// floors as flagstones, and grass/water/fields as varied ground. ----
+function detailWall(g, px, py, color, x, y) {
+  const TS = TILE_SIZE, mid = py + Math.round(TS * 0.55);
+  g.fillStyle(shadeColor(color, 1.5), 1); g.fillRect(px, py, TS + 1, 6);            // sunlit top cap
+  g.fillStyle(shadeColor(color, 1.95), 0.9); g.fillRect(px, py, TS + 1, 2);         // bright top edge
+  g.fillStyle(shadeColor(color, 0.4), 1); g.fillRect(px, py + TS - 3, TS + 1, 4);   // base shadow
+  g.fillStyle(shadeColor(color, 0.6), 0.85); g.fillRect(px, mid, TS + 1, 1);        // mortar course
+  const off = ((x + y) & 1) ? (TS >> 1) : 0;                                        // staggered brick joints
+  g.fillRect(px + off, py + 6, 1, mid - (py + 6));
+  g.fillRect(px + ((off + (TS >> 1)) % TS), mid, 1, py + TS - 3 - mid);
+}
+function detailFloor(g, px, py, color) {
+  const TS = TILE_SIZE;
+  g.fillStyle(shadeColor(color, 1.08), 0.28); g.fillRect(px + 2, py + 2, TS - 4, TS - 4); // lit stone face
+  g.fillStyle(shadeColor(color, 0.72), 0.6);                                              // flagstone grout grid
+  g.fillRect(px, py, TS + 1, 1); g.fillRect(px, py, 1, TS + 1);
+}
+function detailPath(g, px, py, color, x, y) {
+  const TS = TILE_SIZE;
+  for (let k = 0; k < 3; k++) {
+    const r = tHash(x * 5 + k * 31, y * 7 + k * 17);
+    g.fillStyle(shadeColor(color, r < 0.5 ? 0.8 : 1.14), 0.5);
+    g.fillRect(px + 3 + ((r * (TS - 8)) | 0), py + 3 + (((r * 613) % (TS - 8)) | 0), 3, 3);
+  }
+}
+function detailGrass(g, px, py, color, x, y) {
+  const TS = TILE_SIZE, r = tHash(x, y);
+  g.fillStyle(shadeColor(color, r < 0.5 ? 0.86 : 1.14), 0.42);
+  g.fillRect(px + ((r * (TS - 5)) | 0), py + (((r * 271) % (TS - 5)) | 0), 3, 3);
+  if (r > 0.66) { g.fillStyle(shadeColor(color, 1.2), 0.38); g.fillRect(px + (((r * 431) % (TS - 3)) | 0), py + (((r * 733) % (TS - 6)) | 0), 1, 4); }
+}
+function detailWater(g, px, py, color, x, y) {
+  const TS = TILE_SIZE, ph = Math.sin(Date.now() * 0.0016 + (x * 0.7 + y * 0.5)) * 0.5 + 0.5;
+  g.fillStyle(shadeColor(color, 1.4), 0.28); g.fillRect(px + 3, py + Math.round(4 + ph * (TS - 9)), TS - 6, 1.5);
+}
+function detailField(g, px, py, color) {
+  const TS = TILE_SIZE;
+  g.fillStyle(shadeColor(color, 0.8), 0.7);
+  for (let fy = py + 4; fy < py + TS - 1; fy += 6) g.fillRect(px, fy, TS + 1, 1);
+}
+
 function drawTerrain() {
   const g = terrainGfx; g.clear();
   const v = viewRange();
   const W = Game.world.W, H = Game.world.H, ter = Game.world.terrain, elev = Game.world.elevation;
+  const TS = TILE_SIZE;
   for (let y = v.y0; y <= v.y1; y++) {
     for (let x = v.x0; x <= v.x1; x++) {
       const i = y * W + x;
-      const color = TERRAIN_DEFS[ter[i]].color;
+      const t = ter[i];
+      const color = TERRAIN_DEFS[t].color;
       const lift = elevLift(elev, i);
-      const topY = y * TILE_SIZE - lift;
+      const px = x * TS, topY = y * TS - lift;
       if (elev) {
         const eSouth = (y < H - 1) ? elev[i + W] : elev[i];
         const side = lift - (eSouth - ELEV_BASE) * ELEV_K; // px of front face exposed above the tile in front
-        if (side > 0.5) { g.fillStyle(shadeColor(color, 0.5), 1); g.fillRect(x * TILE_SIZE, topY + TILE_SIZE - 1, TILE_SIZE + 1, side + 2); }
+        if (side > 0.5) { g.fillStyle(shadeColor(color, 0.5), 1); g.fillRect(px, topY + TS - 1, TS + 1, side + 2); }
       }
       g.fillStyle(color, 1);
-      g.fillRect(x * TILE_SIZE, topY, TILE_SIZE + 1, TILE_SIZE + 1);
+      g.fillRect(px, topY, TS + 1, TS + 1);
+      switch (t) {
+        case T.WALL: detailWall(g, px, topY, color, x, y); break;
+        case T.FLOOR: detailFloor(g, px, topY, color); break;
+        case T.ROAD: case T.BRIDGE: case T.DIRT: case T.DIRT_SHADOW: detailPath(g, px, topY, color, x, y); break;
+        case T.GRASS: case T.GRASS2: case T.GRASS3: case T.GRASS_SHADOW: detailGrass(g, px, topY, color, x, y); break;
+        case T.WATER: case T.WATER_DEEP: case T.WATER_SHALLOW: detailWater(g, px, topY, color, x, y); break;
+        case T.FIELD: detailField(g, px, topY, color); break;
+        default: break;
+      }
     }
   }
 }
