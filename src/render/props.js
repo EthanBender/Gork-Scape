@@ -217,3 +217,107 @@ export function drawProp(g, cx, cy, o) {
   g.fillStyle(0x000000, 0.22); g.fillEllipse(X, cy + 27, 22, 6);
   fn(g, X, Y, o.color);
 }
+
+// ============================================================================
+// SCENERY — small ambient decorations that dress the ~20 tiles around a
+// structure so the world reads as a lived-in place, not a square on grass.
+// Placed by src/render/scenery.js as { type:'decor', scenery:<kind>, … } and
+// routed here from drawObjects. Each draws centred at the tile (cx+16, cy+16).
+// ============================================================================
+const FLOWER_COLS = [0xd94f6a, 0xe0983f, 0x8a6fd0, 0xe8d84a, 0xe07fb0];
+
+function sLantern(g, X, Y) {
+  g.fillStyle(WOOD_D, 1); g.fillRect(X - 0.8, Y - 2, 1.6, 12);         // post
+  g.fillStyle(0x2a2a1e, 1); g.fillRect(X - 3, Y - 8, 6, 6);            // frame
+  g.fillStyle(0xffd66a, 0.95); g.fillRect(X - 2, Y - 7, 4, 4);         // glow
+  g.fillStyle(0xffef9e, 0.5); g.fillCircle(X, Y - 5, 4);
+}
+function sBarrel(g, X, Y) {
+  g.fillStyle(WOOD, 1); g.fillRect(X - 4, Y - 3, 8, 11);
+  g.fillStyle(shade(WOOD, 1.2), 1); g.fillEllipse(X, Y - 3, 8, 3);
+  g.fillStyle(0x3a2a18, 1); g.fillRect(X - 4, Y, 8, 1.2); g.fillRect(X - 4, Y + 5, 8, 1.2);
+}
+function sCrate(g, X, Y) {
+  g.fillStyle(WOOD, 1); g.fillRect(X - 5, Y - 3, 10, 10);
+  g.lineStyle(1, shade(WOOD, 0.65), 1); g.strokeRect(X - 5, Y - 3, 10, 10);
+  g.beginPath(); g.moveTo(X - 5, Y - 3); g.lineTo(X + 5, Y + 7); g.moveTo(X + 5, Y - 3); g.lineTo(X - 5, Y + 7); g.strokePath();
+}
+function sFlowerbed(g, X, Y, accent) {
+  g.fillStyle(0x3f5a2f, 1); g.fillEllipse(X, Y + 4, 18, 8);            // leafy bed
+  for (let i = 0; i < 5; i++) {
+    const a = (i / 5) * Math.PI * 2, r = 5;
+    g.fillStyle(accent && i === 0 ? accent : FLOWER_COLS[i % FLOWER_COLS.length], 1);
+    g.fillCircle(X + Math.cos(a) * r, Y + 2 + Math.sin(a) * r * 0.5, 1.7);
+  }
+}
+function sBush(g, X, Y, accent) {
+  const c = accent || 0x3f7a3a;
+  g.fillStyle(shade(c, 0.8), 1); g.fillCircle(X - 3, Y + 3, 5); g.fillCircle(X + 3, Y + 3, 5);
+  g.fillStyle(c, 1); g.fillCircle(X, Y, 6);
+  g.fillStyle(shade(c, 1.2), 1); g.fillCircle(X - 1.5, Y - 1.5, 2);
+}
+function sBench(g, X, Y) {
+  g.fillStyle(WOOD, 1); g.fillRect(X - 7, Y - 1, 14, 3);              // seat
+  g.fillStyle(shade(WOOD, 1.15), 1); g.fillRect(X - 7, Y - 4, 14, 2); // back
+  g.fillStyle(WOOD_D, 1); g.fillRect(X - 6, Y + 2, 2, 5); g.fillRect(X + 4, Y + 2, 2, 5); // legs
+}
+function sFence(g, X, Y) {
+  g.fillStyle(WOOD_D, 1); g.fillRect(X - 7, Y - 4, 1.6, 12); g.fillRect(X + 5.4, Y - 4, 1.6, 12); // posts
+  g.fillStyle(WOOD, 1); g.fillRect(X - 7, Y - 3, 14, 1.8); g.fillRect(X - 7, Y + 2, 14, 1.8);     // rails
+}
+function sSack(g, X, Y) {
+  g.fillStyle(0xcdb98a, 1); g.fillEllipse(X, Y + 3, 10, 12);
+  g.fillStyle(shade(0xcdb98a, 0.8), 1); g.fillEllipse(X, Y + 6, 10, 4);
+  g.fillStyle(0x9a8a5a, 1); g.fillRect(X - 2, Y - 4, 4, 2);           // tied top
+}
+function sHay(g, X, Y) {
+  g.fillStyle(0xd9c168, 1); g.fillRect(X - 7, Y - 3, 14, 10);
+  g.lineStyle(1, 0xb59a3a, 1); g.strokeRect(X - 7, Y - 3, 14, 10);
+  g.fillStyle(0xb59a3a, 1); g.fillRect(X - 4, Y - 3, 1.4, 10); g.fillRect(X + 3, Y - 3, 1.4, 10);
+}
+function sPlanter(g, X, Y) {
+  g.fillStyle(WOOD, 1); g.fillRect(X - 7, Y + 1, 14, 6);
+  for (let i = -5; i <= 5; i += 3) { g.fillStyle(0x4a8a3a, 1); g.fillCircle(X + i, Y, 2.4); g.fillStyle(0x7fd06a, 1); g.fillCircle(X + i, Y - 1, 1); }
+}
+function sStump(g, X, Y) {
+  g.fillStyle(WOOD_D, 1); g.fillRect(X - 4, Y + 1, 8, 6);
+  g.fillStyle(WOOD, 1); g.fillEllipse(X, Y, 9, 5);
+  g.fillStyle(0xcaa46a, 1); g.fillEllipse(X, Y, 5, 2.6);              // rings
+}
+function sMushrooms(g, X, Y, accent) {
+  const c = accent || 0xc44a4a;
+  for (const [dx, dy, s] of [[-3, 3, 1], [2, 4, 0.8], [0, 0, 1.2]]) {
+    g.fillStyle(0xe8e0cf, 1); g.fillRect(X + dx - 0.8 * s, Y + dy, 1.6 * s, 3 * s);
+    g.fillStyle(c, 1); g.fillCircle(X + dx, Y + dy, 2.4 * s);
+    g.fillStyle(0xffffff, 0.7); g.fillCircle(X + dx - 0.8, Y + dy - 0.6, 0.6 * s);
+  }
+}
+function sTallgrass(g, X, Y) {
+  g.lineStyle(1.4, 0x5a8a3a, 0.9);
+  for (const dx of [-4, -1.5, 1, 3.5]) { g.beginPath(); g.moveTo(X + dx, Y + 6); g.lineTo(X + dx + (dx < 0 ? -2 : 2), Y - 3); g.strokePath(); }
+}
+function sPebbles(g, X, Y) {
+  for (const [dx, dy, r] of [[-3, 2, 2], [2, 3, 2.4], [0, -1, 1.6], [4, -1, 1.4]]) {
+    g.fillStyle(0x8a857a, 1); g.fillCircle(X + dx, Y + dy, r);
+    g.fillStyle(0xa8a498, 0.7); g.fillCircle(X + dx - 0.5, Y + dy - 0.5, r * 0.5);
+  }
+}
+function sFirewood(g, X, Y) {
+  for (const [dx, dy] of [[-3, 4], [3, 4], [0, 0]]) { g.fillStyle(WOOD, 1); g.fillCircle(X + dx, Y + dy, 3); g.fillStyle(0xcaa46a, 1); g.fillCircle(X + dx, Y + dy, 1.4); }
+}
+function sCrops(g, X, Y, accent) {
+  const c = accent || 0x6aae3a;
+  for (let i = -5; i <= 5; i += 2.5) { g.fillStyle(c, 1); g.fillCircle(X + i, Y + 3, 2); g.fillStyle(shade(c, 1.25), 1); g.fillCircle(X + i, Y + 2, 0.9); }
+}
+
+const SCENERY = {
+  lantern: sLantern, barrel: sBarrel, crate: sCrate, flowerbed: sFlowerbed, bush: sBush,
+  bench: sBench, fence: sFence, sack: sSack, hay: sHay, planter: sPlanter, stump: sStump,
+  mushrooms: sMushrooms, tallgrass: sTallgrass, pebbles: sPebbles, firewood: sFirewood, crops: sCrops,
+};
+export const SCENERY_KINDS = Object.keys(SCENERY);
+
+// Route a decor object that carries a `scenery` kind. Falls back to a bush.
+export function drawScenery(g, cx, cy, o) {
+  (SCENERY[o.scenery] || sBush)(g, cx + 16, cy + 16, o.color);
+}
