@@ -169,7 +169,7 @@ const MAT = [
   // leather / cloth
   ['dragonhide', '#4a7a4a', '#2f5030'], ['snakeskin', '#7a8a4a', '#4f5a2e'],
   ['cowhide', '#9a7a5a', '#6a5238'], ['leather', '#8a5a34', '#5f3d1f'],
-  ['hide', '#8a5a34', '#5f3d1f'], ['wool', '#d8cbb0', '#a89b80'],
+  ['wool', '#d8cbb0', '#a89b80'],
 ];
 // Match materials on WORD boundaries (so 'tin' doesn't hit 'woodcutting', 'oak'
 // doesn't hit 'cloak', etc.). Underscores are normalised to spaces first.

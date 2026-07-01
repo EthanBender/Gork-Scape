@@ -91,6 +91,20 @@ drawing the green circle / NPC rects — **that one hook in `src/main.js`
 Facing/anim is inferred from data world-gen already updates (tile deltas, combat
 target, `attackStyle`) — no new fields required on the world side.
 
+> ⚠️ **Economy-lane agent worked in the character-render lane at the owner's
+> direction (2026-07-01) — heads up, reconcile if mid-edit:**
+> - **NEW per-creature feature system:** `gear.js` `creatureFeatures(name)` returns
+>   keyword-based visual hints (legPairs, eyes/eyeColor, abdomen, mark/markColor,
+>   gloss, fangs, pincers). Threaded through `characters.js` (`e._features`, passed
+>   as `state.features`) and the `drawAvatar` creature dispatch (all creature draws
+>   now take a `feat` arg). **`avatar.js drawInsectoid` rewritten to be feature-driven
+>   + prettier** — the **Giant Spider** is the first upgraded mob (bulbous glossy
+>   abdomen, red hourglass, bent legs, eye cluster, fangs). This is meant to continue
+>   **one mob at a time**; other body-type draws accept `feat` but don't use it yet.
+> - **Label de-overlap:** `main.js updateLabels` now collects visible head labels and
+>   `declutterLabels()` nudges colliding ones upward (player + combat target keep
+>   priority) — fixes name/level tags piling up in melee. All tagged `[labels]`.
+
 ### 🤝 Shared — announce before editing
 | File | Rule |
 |------|------|
