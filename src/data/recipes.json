@@ -7,7 +7,7 @@
     "level_requirement": 1,
     "inputs": "normal_logs:1",
     "output_qty": 1,
-    "xp_reward": 8,
+    "xp_reward": 35,
     "gp_cost": 0,
     "notes": "Log to plank, used in construction and shields."
   },
@@ -19,7 +19,7 @@
     "level_requirement": 1,
     "inputs": "normal_logs:1;knife:1",
     "output_qty": 1,
-    "xp_reward": 8,
+    "xp_reward": 35,
     "gp_cost": 0,
     "notes": ""
   },
@@ -31,7 +31,7 @@
     "level_requirement": 1,
     "inputs": "normal_logs:1;knife:1",
     "output_qty": 1,
-    "xp_reward": 8,
+    "xp_reward": 35,
     "gp_cost": 0,
     "notes": ""
   },
@@ -43,7 +43,7 @@
     "level_requirement": 1,
     "inputs": "normal_logs:1;knife:1",
     "output_qty": 15,
-    "xp_reward": 8,
+    "xp_reward": 35,
     "gp_cost": 0,
     "notes": ""
   },
@@ -487,7 +487,7 @@
     "level_requirement": 1,
     "inputs": "copper_ore:1",
     "output_qty": 1,
-    "xp_reward": 8,
+    "xp_reward": 35,
     "gp_cost": 0,
     "notes": "Ore to bar smelting."
   },
@@ -499,7 +499,7 @@
     "level_requirement": 1,
     "inputs": "tin_ore:1",
     "output_qty": 1,
-    "xp_reward": 8,
+    "xp_reward": 35,
     "gp_cost": 0,
     "notes": "Ore to bar smelting."
   },
@@ -547,7 +547,7 @@
     "level_requirement": 50,
     "inputs": "black_iron_ore:1;coal_ore:2",
     "output_qty": 1,
-    "xp_reward": 400,
+    "xp_reward": 490,
     "gp_cost": 0,
     "notes": "Ore to bar smelting."
   },
@@ -559,7 +559,7 @@
     "level_requirement": 70,
     "inputs": "deep_metal_ore:1;coal_ore:2",
     "output_qty": 1,
-    "xp_reward": 560,
+    "xp_reward": 630,
     "gp_cost": 0,
     "notes": "Ore to bar smelting."
   },
@@ -571,7 +571,7 @@
     "level_requirement": 80,
     "inputs": "meteor_ore:1;coal_ore:2",
     "output_qty": 1,
-    "xp_reward": 640,
+    "xp_reward": 700,
     "gp_cost": 0,
     "notes": "Ore to bar smelting."
   },
@@ -583,7 +583,7 @@
     "level_requirement": 1,
     "inputs": "copper_ore:1;tin_ore:1",
     "output_qty": 1,
-    "xp_reward": 8,
+    "xp_reward": 70,
     "gp_cost": 0,
     "notes": ""
   },
@@ -595,7 +595,7 @@
     "level_requirement": 1,
     "inputs": "normal_logs:1;normal_tool_handle:1",
     "output_qty": 1,
-    "xp_reward": 8,
+    "xp_reward": 35,
     "gp_cost": 0,
     "notes": ""
   },
@@ -607,7 +607,7 @@
     "level_requirement": 1,
     "inputs": "normal_logs:1;normal_tool_handle:1",
     "output_qty": 1,
-    "xp_reward": 8,
+    "xp_reward": 35,
     "gp_cost": 0,
     "notes": ""
   },
@@ -619,7 +619,7 @@
     "level_requirement": 1,
     "inputs": "normal_logs:1;normal_tool_handle:1",
     "output_qty": 1,
-    "xp_reward": 8,
+    "xp_reward": 35,
     "gp_cost": 0,
     "notes": ""
   },
@@ -631,7 +631,7 @@
     "level_requirement": 1,
     "inputs": "normal_logs:1;normal_tool_handle:1",
     "output_qty": 1,
-    "xp_reward": 8,
+    "xp_reward": 35,
     "gp_cost": 0,
     "notes": ""
   },
@@ -643,7 +643,7 @@
     "level_requirement": 1,
     "inputs": "normal_logs:1;normal_tool_handle:1",
     "output_qty": 1,
-    "xp_reward": 8,
+    "xp_reward": 35,
     "gp_cost": 0,
     "notes": ""
   },
@@ -655,7 +655,7 @@
     "level_requirement": 1,
     "inputs": "normal_logs:1;normal_tool_handle:1",
     "output_qty": 1,
-    "xp_reward": 8,
+    "xp_reward": 35,
     "gp_cost": 0,
     "notes": ""
   },
@@ -667,7 +667,7 @@
     "level_requirement": 1,
     "inputs": "normal_logs:1;normal_tool_handle:1",
     "output_qty": 1,
-    "xp_reward": 8,
+    "xp_reward": 35,
     "gp_cost": 0,
     "notes": ""
   },
@@ -679,7 +679,7 @@
     "level_requirement": 1,
     "inputs": "normal_logs:1;normal_tool_handle:1",
     "output_qty": 1,
-    "xp_reward": 8,
+    "xp_reward": 35,
     "gp_cost": 0,
     "notes": ""
   },
@@ -691,7 +691,7 @@
     "level_requirement": 1,
     "inputs": "normal_logs:1;normal_tool_handle:1",
     "output_qty": 1,
-    "xp_reward": 8,
+    "xp_reward": 35,
     "gp_cost": 0,
     "notes": ""
   },
@@ -703,7 +703,7 @@
     "level_requirement": 1,
     "inputs": "normal_logs:1;normal_tool_handle:1",
     "output_qty": 1,
-    "xp_reward": 8,
+    "xp_reward": 35,
     "gp_cost": 0,
     "notes": ""
   },
@@ -715,7 +715,7 @@
     "level_requirement": 1,
     "inputs": "normal_logs:1;normal_tool_handle:1",
     "output_qty": 1,
-    "xp_reward": 8,
+    "xp_reward": 35,
     "gp_cost": 0,
     "notes": ""
   },
@@ -727,7 +727,7 @@
     "level_requirement": 1,
     "inputs": "normal_logs:1;normal_tool_handle:1",
     "output_qty": 1,
-    "xp_reward": 8,
+    "xp_reward": 35,
     "gp_cost": 0,
     "notes": ""
   },
@@ -1747,7 +1747,7 @@
     "level_requirement": 1,
     "inputs": "normal_logs:1",
     "output_qty": 1,
-    "xp_reward": 8,
+    "xp_reward": 35,
     "gp_cost": 0,
     "notes": ""
   },
@@ -1783,7 +1783,7 @@
     "level_requirement": 1,
     "inputs": "normal_logs:1",
     "output_qty": 1,
-    "xp_reward": 8,
+    "xp_reward": 35,
     "gp_cost": 0,
     "notes": ""
   },
@@ -1819,7 +1819,7 @@
     "level_requirement": 1,
     "inputs": "normal_logs:1",
     "output_qty": 1,
-    "xp_reward": 8,
+    "xp_reward": 35,
     "gp_cost": 0,
     "notes": ""
   },
@@ -2515,7 +2515,7 @@
     "level_requirement": 1,
     "inputs": "torn_hide:2",
     "output_qty": 1,
-    "xp_reward": 8,
+    "xp_reward": 14,
     "gp_cost": 0,
     "notes": ""
   },
@@ -2527,7 +2527,7 @@
     "level_requirement": 1,
     "inputs": "torn_hide:2",
     "output_qty": 1,
-    "xp_reward": 8,
+    "xp_reward": 14,
     "gp_cost": 0,
     "notes": ""
   },
@@ -2539,7 +2539,7 @@
     "level_requirement": 1,
     "inputs": "torn_hide:2",
     "output_qty": 1,
-    "xp_reward": 8,
+    "xp_reward": 14,
     "gp_cost": 0,
     "notes": ""
   },
@@ -2551,7 +2551,7 @@
     "level_requirement": 1,
     "inputs": "torn_hide:2",
     "output_qty": 1,
-    "xp_reward": 8,
+    "xp_reward": 14,
     "gp_cost": 0,
     "notes": ""
   },
@@ -2563,7 +2563,7 @@
     "level_requirement": 1,
     "inputs": "torn_hide:2",
     "output_qty": 1,
-    "xp_reward": 8,
+    "xp_reward": 14,
     "gp_cost": 0,
     "notes": ""
   },
@@ -2575,7 +2575,7 @@
     "level_requirement": 1,
     "inputs": "torn_hide:2",
     "output_qty": 1,
-    "xp_reward": 8,
+    "xp_reward": 14,
     "gp_cost": 0,
     "notes": ""
   },
@@ -2587,7 +2587,7 @@
     "level_requirement": 5,
     "inputs": "tough_hide:1",
     "output_qty": 1,
-    "xp_reward": 40,
+    "xp_reward": 126,
     "gp_cost": 0,
     "notes": ""
   },
@@ -2599,7 +2599,7 @@
     "level_requirement": 5,
     "inputs": "tough_hide:1",
     "output_qty": 1,
-    "xp_reward": 40,
+    "xp_reward": 126,
     "gp_cost": 0,
     "notes": ""
   },
@@ -2611,7 +2611,7 @@
     "level_requirement": 5,
     "inputs": "tough_hide:1",
     "output_qty": 1,
-    "xp_reward": 40,
+    "xp_reward": 126,
     "gp_cost": 0,
     "notes": ""
   },
@@ -2623,7 +2623,7 @@
     "level_requirement": 5,
     "inputs": "tough_hide:1",
     "output_qty": 1,
-    "xp_reward": 40,
+    "xp_reward": 126,
     "gp_cost": 0,
     "notes": ""
   },
@@ -2635,7 +2635,7 @@
     "level_requirement": 5,
     "inputs": "tough_hide:1",
     "output_qty": 1,
-    "xp_reward": 40,
+    "xp_reward": 126,
     "gp_cost": 0,
     "notes": ""
   },
@@ -2647,7 +2647,7 @@
     "level_requirement": 5,
     "inputs": "tough_hide:1",
     "output_qty": 1,
-    "xp_reward": 40,
+    "xp_reward": 126,
     "gp_cost": 0,
     "notes": ""
   },
@@ -2803,7 +2803,7 @@
     "level_requirement": 25,
     "inputs": "bug_shell:1;snapper_shell:1",
     "output_qty": 1,
-    "xp_reward": 200,
+    "xp_reward": 301,
     "gp_cost": 0,
     "notes": ""
   },
@@ -2815,7 +2815,7 @@
     "level_requirement": 25,
     "inputs": "bug_shell:1;snapper_shell:1",
     "output_qty": 1,
-    "xp_reward": 200,
+    "xp_reward": 301,
     "gp_cost": 0,
     "notes": ""
   },
@@ -2827,7 +2827,7 @@
     "level_requirement": 25,
     "inputs": "bug_shell:1;snapper_shell:1",
     "output_qty": 1,
-    "xp_reward": 200,
+    "xp_reward": 301,
     "gp_cost": 0,
     "notes": ""
   },
@@ -2839,7 +2839,7 @@
     "level_requirement": 25,
     "inputs": "bug_shell:1;snapper_shell:1",
     "output_qty": 1,
-    "xp_reward": 200,
+    "xp_reward": 301,
     "gp_cost": 0,
     "notes": ""
   },
@@ -2851,7 +2851,7 @@
     "level_requirement": 25,
     "inputs": "bug_shell:1;snapper_shell:1",
     "output_qty": 1,
-    "xp_reward": 200,
+    "xp_reward": 301,
     "gp_cost": 0,
     "notes": ""
   },
@@ -2863,7 +2863,7 @@
     "level_requirement": 25,
     "inputs": "bug_shell:1;snapper_shell:1",
     "output_qty": 1,
-    "xp_reward": 200,
+    "xp_reward": 301,
     "gp_cost": 0,
     "notes": ""
   },
@@ -3091,7 +3091,7 @@
     "level_requirement": 60,
     "inputs": "bog_horror_hide:1;slime_core:1",
     "output_qty": 1,
-    "xp_reward": 480,
+    "xp_reward": 525,
     "gp_cost": 0,
     "notes": ""
   },
@@ -3103,7 +3103,7 @@
     "level_requirement": 60,
     "inputs": "bog_horror_hide:1;slime_core:1",
     "output_qty": 1,
-    "xp_reward": 480,
+    "xp_reward": 525,
     "gp_cost": 0,
     "notes": ""
   },
@@ -3115,7 +3115,7 @@
     "level_requirement": 60,
     "inputs": "bog_horror_hide:1;slime_core:1",
     "output_qty": 1,
-    "xp_reward": 480,
+    "xp_reward": 525,
     "gp_cost": 0,
     "notes": ""
   },
@@ -3127,7 +3127,7 @@
     "level_requirement": 60,
     "inputs": "bog_horror_hide:1;slime_core:1",
     "output_qty": 1,
-    "xp_reward": 480,
+    "xp_reward": 525,
     "gp_cost": 0,
     "notes": ""
   },
@@ -3139,7 +3139,7 @@
     "level_requirement": 60,
     "inputs": "bog_horror_hide:1;slime_core:1",
     "output_qty": 1,
-    "xp_reward": 480,
+    "xp_reward": 525,
     "gp_cost": 0,
     "notes": ""
   },
@@ -3151,7 +3151,7 @@
     "level_requirement": 60,
     "inputs": "bog_horror_hide:1;slime_core:1",
     "output_qty": 1,
-    "xp_reward": 480,
+    "xp_reward": 525,
     "gp_cost": 0,
     "notes": ""
   },
@@ -3163,7 +3163,7 @@
     "level_requirement": 65,
     "inputs": "troll_hide:1;big_bones:1",
     "output_qty": 1,
-    "xp_reward": 520,
+    "xp_reward": 651,
     "gp_cost": 0,
     "notes": ""
   },
@@ -3175,7 +3175,7 @@
     "level_requirement": 65,
     "inputs": "troll_hide:1;big_bones:1",
     "output_qty": 1,
-    "xp_reward": 520,
+    "xp_reward": 651,
     "gp_cost": 0,
     "notes": ""
   },
@@ -3187,7 +3187,7 @@
     "level_requirement": 65,
     "inputs": "troll_hide:1;big_bones:1",
     "output_qty": 1,
-    "xp_reward": 520,
+    "xp_reward": 651,
     "gp_cost": 0,
     "notes": ""
   },
@@ -3199,7 +3199,7 @@
     "level_requirement": 65,
     "inputs": "troll_hide:1;big_bones:1",
     "output_qty": 1,
-    "xp_reward": 520,
+    "xp_reward": 651,
     "gp_cost": 0,
     "notes": ""
   },
@@ -3211,7 +3211,7 @@
     "level_requirement": 65,
     "inputs": "troll_hide:1;big_bones:1",
     "output_qty": 1,
-    "xp_reward": 520,
+    "xp_reward": 651,
     "gp_cost": 0,
     "notes": ""
   },
@@ -3223,7 +3223,7 @@
     "level_requirement": 65,
     "inputs": "troll_hide:1;big_bones:1",
     "output_qty": 1,
-    "xp_reward": 520,
+    "xp_reward": 651,
     "gp_cost": 0,
     "notes": ""
   },
@@ -3307,7 +3307,7 @@
     "level_requirement": 1,
     "inputs": "raw_shrimp:1",
     "output_qty": 1,
-    "xp_reward": 8,
+    "xp_reward": 14,
     "gp_cost": 0,
     "notes": "Heals 3."
   },
@@ -3715,7 +3715,7 @@
     "level_requirement": 25,
     "inputs": "swamp_herb:1;poison_gland:1",
     "output_qty": 1,
-    "xp_reward": 200,
+    "xp_reward": 231,
     "gp_cost": 0,
     "notes": ""
   },
@@ -3727,7 +3727,7 @@
     "level_requirement": 30,
     "inputs": "mossmint:1;boar_meat:1",
     "output_qty": 1,
-    "xp_reward": 240,
+    "xp_reward": 336,
     "gp_cost": 0,
     "notes": ""
   },
@@ -3739,7 +3739,7 @@
     "level_requirement": 35,
     "inputs": "fungal_sage:1;glowshroom:1",
     "output_qty": 1,
-    "xp_reward": 280,
+    "xp_reward": 420,
     "gp_cost": 0,
     "notes": ""
   },
@@ -3751,7 +3751,7 @@
     "level_requirement": 45,
     "inputs": "blackcap_spore:1;poison_gland:1",
     "output_qty": 1,
-    "xp_reward": 360,
+    "xp_reward": 371,
     "gp_cost": 0,
     "notes": ""
   },
@@ -3763,7 +3763,7 @@
     "level_requirement": 60,
     "inputs": "troll_thistle:1;troll_hide:1",
     "output_qty": 1,
-    "xp_reward": 480,
+    "xp_reward": 826,
     "gp_cost": 0,
     "notes": ""
   },
@@ -3775,7 +3775,7 @@
     "level_requirement": 80,
     "inputs": "meteor_bloom:1;horror_heart:1",
     "output_qty": 1,
-    "xp_reward": 640,
+    "xp_reward": 1085,
     "gp_cost": 0,
     "notes": ""
   },
@@ -4567,7 +4567,7 @@
     "level_requirement": 25,
     "inputs": "bones:1;swamp_herb:1;deadwood_logs:1",
     "output_qty": 1,
-    "xp_reward": 200,
+    "xp_reward": 357,
     "gp_cost": 0,
     "notes": ""
   },
@@ -4591,7 +4591,7 @@
     "level_requirement": 40,
     "inputs": "snapper_shell:1;river_opal:1",
     "output_qty": 1,
-    "xp_reward": 320,
+    "xp_reward": 455,
     "gp_cost": 0,
     "notes": ""
   },
@@ -6091,7 +6091,7 @@
     "level_requirement": 40,
     "inputs": "grubstone_ore:1;coal_ore:2",
     "output_qty": 1,
-    "xp_reward": 300,
+    "xp_reward": 385,
     "gp_cost": 0,
     "notes": "Ore to bar smelting."
   },
