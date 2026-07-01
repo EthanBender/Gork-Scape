@@ -1511,9 +1511,9 @@ function collectCharacters(time) {
       if (!n._wasDead) { n._wasDead = true; n._deathAt = time; }
       if ((time - n._deathAt) / 700 >= 1) continue; // topple finished; hidden until respawn
     } else if (n._wasDead) { n._wasDead = false; n._deathAt = null; } // revived
-    list.push({ ent: n, y: n.py + AV_FEET });
+    list.push({ ent: n, y: n.py + AV_FEET - tileLiftXY(n.tileX, n.tileY) });
   }
-  list.push({ ent: p, y: p.py + AV_FEET });
+  list.push({ ent: p, y: p.py + AV_FEET - tileLiftXY(p.tileX, p.tileY) });
   list.sort((a, b) => a.y - b.y); // farther (smaller y) first, nearer on top
   return list;
 }
@@ -1615,7 +1615,7 @@ function syncGroundLabels() {
   for (const gi of Game.groundItems) {
     if (gi._text) continue;
     const def = ITEMS[gi.id];
-    gi._text = scene.add.text(gi.x * TILE_SIZE + 16, gi.y * TILE_SIZE - 1,
+    gi._text = scene.add.text(gi.x * TILE_SIZE + 16, gi.y * TILE_SIZE - 1 - tileLiftXY(gi.x, gi.y),
       def.name + (gi.qty > 1 ? ' x' + gi.qty : ''), { fontFamily: 'monospace', fontSize: '10px', color: '#f2e3a0' })
       .setOrigin(0.5, 1).setDepth(41).setRotation(rot);
     gi._text.setStroke('#000', 3); gi._text.__g = gi;

@@ -12,6 +12,7 @@
 
 import { Game } from '../engine/state.js';
 import { isWalkable, regionAt, TILE_SIZE, WORLD_W, WORLD_H } from '../world/map.js';
+import { placeStarterActivities } from './spawnActivities.js';
 
 const tilePx = (t) => t * TILE_SIZE + TILE_SIZE / 2;
 const SPAWN = { x: 500, y: 462 };
@@ -62,7 +63,10 @@ function findOpen(world, cx, cy, radius) {
 }
 
 // Place all transport objects into the world. Called from main.js buildWorld().
+// Also seeds the starter money-making nodes near spawn + hubs (piggybacked here so
+// it runs from the same single buildWorld hook without another main.js edit).
 export function placeTransports(world) {
+  placeStarterActivities(world);
   for (const pl of PLACEMENTS) {
     const spot = findOpen(world, pl.at[0], pl.at[1], 14);
     if (!spot) continue;

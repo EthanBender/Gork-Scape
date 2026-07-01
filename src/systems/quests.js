@@ -1,29 +1,30 @@
 // src/systems/quests.js
-// The quest engine — the first thing that ties the skills, items, combat and
-// economy into GOALS. Previously quests existed only as names in worldData.js
-// (`QUEST_ACTS`); this makes them real: data-driven objectives that track live
-// game state, unlock in a prerequisite chain, and pay out coins/xp on completion.
+// The quest engine (v2) — the game's onboarding + goal layer. Quests are the
+// tutorial: you find a marked quest-giver, TALK to them to start, and they send
+// you somewhere ("head east to the training yard"), teaching movement, combat,
+// gathering, the Grand Exchange, etc. one step at a time.
 //
 // Design:
-//  • Quest DEFINITIONS are data (`src/data/quests.json`) — objectives + rewards.
-//  • Quest PROGRESS is a tiny serializable blob on `Game.questState`, saved with
-//    the character (see save.js). Kills are tallied (loot can be dropped, so we
-//    can't recount them); obtain/level objectives are evaluated LIVE against the
-//    inventory / skills, so they need no per-event plumbing — a once-per-tick
-//    evaluate() picks them up.
+//  • Quest DEFINITIONS are data (src/data/quests.json): a giver, intro/outro
+//    dialogue, and an ORDERED list of steps. Only the current step is active —
+//    finishing it reveals the next, so quests read like a story, not a checklist.
+//  • Step types: 'talk' (converse with an NPC), 'goto' (reach a place/region),
+//    'kill', 'obtain', 'level'. Each step carries `text` (the objective), `say`
+//    (dialogue/narration shown when it becomes active) and optional `where`
+//    ({x,y,name}) used for the map + minimap marker.
+//  • Quest PROGRESS is a small serializable blob on Game.questState (status +
+//    active step index + a per-step counter), saved with the character.
 //  • Rewards route through the same addItem/grantXp the rest of the game uses.
 //
-// The pure predicates (stepStatus / isComplete) take an explicit context object
-// so they can be unit-tested headless without a browser (see scripts/, tests).
+// Pure predicates are exported for headless tests. Talk/goto are event-driven
+// (onTalk/onArrive); kill is tallied at the kill site; obtain/level are checked
+// live by a once-per-tick evaluate().
 
 import { Game, addItem, grantXp } from '../engine/state.js';
 
-let QUESTS = [];                 // ordered quest definitions
+let QUESTS = [];
 const Q_BY_ID = new Map();
 
-// Resilient loader (same rationale as gameData.js): a missing/broken quests.json
-// degrades to "no quests" rather than bricking boot. `no-store` dodges the
-// stale-ES-module/JSON cache trap under the no-build workflow.
 async function loadQuestDefs() {
   try {
     const url = new URL('../data/quests.json', import.meta.url);
@@ -36,19 +37,15 @@ async function loadQuestDefs() {
   }
 }
 
-// Register a set of quest definitions (called at boot; also the injection point
-// for headless tests, which pass their own list instead of fetching).
 export function registerQuests(defs) {
   QUESTS = Array.isArray(defs) ? defs : [];
   Q_BY_ID.clear();
   for (const q of QUESTS) Q_BY_ID.set(q.id, q);
 }
-
 export function allQuests() { return QUESTS; }
 export function questById(id) { return Q_BY_ID.get(id); }
 
-// ---- live game-state context -----------------------------------------------
-// How many of an item the player holds (qty-aware for stackables).
+// ---- live game-state helpers ------------------------------------------------
 function haveItem(id) {
   let n = 0;
   for (const s of Game.inventory) if (s && s.id === id) n += (s.qty === undefined ? 1 : s.qty);
@@ -59,28 +56,29 @@ function skillLevel(name) {
   return Game.skills && Game.skills[name] ? Game.skills[name].level : 1;
 }
 
-// Build the evaluation context for a quest (kills come from its own tally).
-function contextFor(id) {
-  const st = Game.questState[id] || {};
-  return { have: haveItem, skill: skillLevel, kills: st.kills || {} };
+// ---- step model -------------------------------------------------------------
+// The one step a quest is currently working on (or null if not active / done).
+export function activeStep(id) {
+  const q = Q_BY_ID.get(id);
+  const st = Game.questState && Game.questState[id];
+  if (!q || !st || st.status !== 'active') return null;
+  return q.steps[st.step] || null;
 }
 
-// ---- pure predicates (unit-testable) ---------------------------------------
-// Progress on one objective. `ctx` = { have(id), skill(name), kills{target:n} }.
-export function stepStatus(step, ctx) {
+// Progress {have, need, done} for a step, given the quest's stored counter.
+export function stepProgress(step, st) {
+  if (!step) return { have: 0, need: 1, done: true };
   const need = step.count || 1;
   let have = 0;
   switch (step.type) {
-    case 'kill':   have = ctx.kills[step.target] || 0; break;
-    case 'obtain': have = ctx.have(step.target); break;
-    case 'level':  have = ctx.skill(step.target); break;
+    case 'kill':   have = st.prog || 0; break;         // tallied at kill site
+    case 'obtain': have = haveItem(step.target); break; // live inventory
+    case 'level':  have = skillLevel(step.target); break;
+    case 'talk':   have = st.prog || 0; break;          // 0 until the talk happens
+    case 'goto':   have = st.prog || 0; break;          // 0 until arrival
     default:       have = 0;
   }
   return { have: Math.min(have, need), need, done: have >= need };
-}
-
-export function isComplete(quest, ctx) {
-  return quest.steps.every((s) => stepStatus(s, ctx).done);
 }
 
 function prereqsMet(quest) {
@@ -91,9 +89,7 @@ function prereqsMet(quest) {
       if (!st || st.status !== 'complete') return false;
     }
   }
-  if (req.level && req.level.skill) {
-    if (skillLevel(req.level.skill) < req.level.level) return false;
-  }
+  if (req.level && req.level.skill && skillLevel(req.level.skill) < req.level.level) return false;
   return true;
 }
 
@@ -101,21 +97,12 @@ function prereqsMet(quest) {
 export function initQuests() {
   if (!Game.questState) Game.questState = {};
   for (const q of QUESTS) {
-    if (!Game.questState[q.id]) {
-      Game.questState[q.id] = { status: 'locked', kills: {} };
-    }
+    if (!Game.questState[q.id]) Game.questState[q.id] = { status: 'locked', step: 0, prog: 0 };
   }
   refreshAvailability();
-  // Auto-start the opening quest(s) once their prerequisites are met.
-  for (const q of QUESTS) {
-    const st = Game.questState[q.id];
-    if (q.autoStart && st.status === 'available') startQuest(q.id, true);
-  }
   evaluate(true);
 }
 
-// Recompute locked -> available as prerequisites come true. Never downgrades an
-// active/complete quest.
 export function refreshAvailability() {
   if (!Game.questState) return;
   for (const q of QUESTS) {
@@ -125,46 +112,58 @@ export function refreshAvailability() {
   }
 }
 
-export function startQuest(id, silent = false) {
-  const st = Game.questState[id];
+// Short "what to do next" line for a step (objective + destination).
+function directionOf(step) {
+  if (!step) return '';
+  const where = step.where && step.where.name ? ` — ${step.where.name}` : '';
+  return `${step.text}${where}`;
+}
+
+// Fire the dialogue/narration for entering `step` (chat log + optional box UI).
+function announceStep(quest, stepIndex, speaker) {
+  const step = quest.steps[stepIndex];
+  if (!step) return;
+  const lines = [];
+  if (step.say) lines.push(step.say);
+  lines.push(`Objective: ${directionOf(step)}`);
+  emitDialogue(speaker || quest.giver?.name || 'Quest', lines);
+}
+
+// Start an available quest (usually via talking to its giver). Fires the giver's
+// intro + the first step's directions.
+export function startQuest(id) {
   const q = Q_BY_ID.get(id);
-  if (!st || !q || st.status !== 'available') return false;
+  const st = Game.questState[id];
+  if (!q || !st || st.status !== 'available') return false;
   st.status = 'active';
-  if (!st.kills) st.kills = {};
-  if (!silent) Game.log(`Quest started: ${q.name}.`);
+  st.step = 0;
+  st.prog = 0;
+  Game.log(`Quest started: ${q.name}.`);
+  const intro = q.intro ? [q.intro] : [];
+  const step0 = q.steps[0];
+  if (step0) {
+    if (step0.say) intro.push(step0.say);
+    intro.push(`Objective: ${directionOf(step0)}`);
+  }
+  emitDialogue(q.giver?.name || q.name, intro);
   syncUI();
   return true;
 }
 
-// Tally a kill for every active quest that wants this monster, then evaluate.
-export function onKill(monsterId) {
-  if (!monsterId || !Game.questState) return;
-  for (const q of QUESTS) {
-    const st = Game.questState[q.id];
-    if (!st || st.status !== 'active') continue;
-    const wants = q.steps.some((s) => s.type === 'kill' && s.target === monsterId);
-    if (!wants) continue;
-    st.kills[monsterId] = (st.kills[monsterId] || 0) + 1;
-  }
-  evaluate();
+// Advance the active quest past its current (satisfied) step. Fires the next
+// step's dialogue, or completes the quest if that was the last step.
+function advance(id, speaker) {
+  const q = Q_BY_ID.get(id);
+  const st = Game.questState[id];
+  if (!q || !st || st.status !== 'active') return;
+  st.step += 1;
+  st.prog = 0;
+  if (st.step >= q.steps.length) { completeQuest(id, speaker); return; }
+  announceStep(q, st.step, speaker);
+  syncUI();
 }
 
-// Evaluate all active quests; auto-complete any whose objectives are all met.
-// Called once per game tick (cheap: a handful of active quests) so obtain/level
-// objectives are detected without per-event wiring. `silent` suppresses logs on
-// the initial boot pass.
-export function evaluate(silent = false) {
-  if (!Game.questState) return;
-  let changed = false;
-  for (const q of QUESTS) {
-    const st = Game.questState[q.id];
-    if (!st || st.status !== 'active') continue;
-    if (isComplete(q, contextFor(q.id))) { completeQuest(q.id, silent); changed = true; }
-  }
-  if (changed) refreshAvailability();
-}
-
-function completeQuest(id, silent) {
+function completeQuest(id, speaker) {
   const q = Q_BY_ID.get(id);
   const st = Game.questState[id];
   if (!q || !st) return;
@@ -173,30 +172,134 @@ function completeQuest(id, silent) {
   if (r.coins) addItem('coins', r.coins);
   if (Array.isArray(r.items)) for (const it of r.items) addItem(it.id, it.qty || 1);
   if (Array.isArray(r.xp)) for (const x of r.xp) grantXp(x.skill, x.amount);
-  if (!silent) {
-    Game.log(`✅ Quest complete: ${q.name}!`);
-    const bits = [];
-    if (r.coins) bits.push(`${r.coins} coins`);
-    if (Array.isArray(r.xp)) for (const x of r.xp) bits.push(`${x.amount} ${x.skill} xp`);
-    if (bits.length) Game.log(`Reward: ${bits.join(', ')}.`);
-    if (Game.ui.onQuestComplete) Game.ui.onQuestComplete(q);
-  }
+  const lines = [];
+  if (q.outro) lines.push(q.outro);
+  const bits = [];
+  if (r.coins) bits.push(`${r.coins} coins`);
+  if (Array.isArray(r.xp)) for (const x of r.xp) bits.push(`${x.amount} ${x.skill} xp`);
+  if (Array.isArray(r.items)) for (const it of r.items) bits.push(`${it.qty || 1}× ${it.id}`);
+  if (bits.length) lines.push(`Reward: ${bits.join(', ')}.`);
+  emitDialogue(speaker || q.giver?.name || q.name, lines);
+  Game.log(`✅ Quest complete: ${q.name}!`);
+  if (Game.ui.onQuestComplete) Game.ui.onQuestComplete(q);
+  refreshAvailability();
   syncUI();
 }
 
-// ---- views for the journal UI ----------------------------------------------
-// A quest annotated with its live status + per-step progress, ready to render.
+// ---- event entry points -----------------------------------------------------
+// Talking to an NPC: starts an available quest whose giver is this NPC, or
+// advances an active quest whose current step is `talk` this NPC. Returns true if
+// it handled a quest interaction (so the caller can skip the generic greeting).
+export function onTalk(npcId) {
+  if (!npcId || !Game.questState) return false;
+  // Advance an active talk-step first (turn-ins / mid-quest conversations).
+  for (const q of QUESTS) {
+    const st = Game.questState[q.id];
+    if (!st || st.status !== 'active') continue;
+    const step = q.steps[st.step];
+    if (step && step.type === 'talk' && step.target === npcId) {
+      st.prog = step.count || 1;
+      advance(q.id, step.speaker || npcNameFor(npcId, q));
+      return true;
+    }
+  }
+  // Otherwise, start an available quest given by this NPC.
+  for (const q of QUESTS) {
+    const st = Game.questState[q.id];
+    if (st && st.status === 'available' && q.giver && q.giver.npc === npcId) {
+      startQuest(q.id);
+      return true;
+    }
+  }
+  return false;
+}
+
+// Player reached tile (x,y) in region `regionId`: satisfy any active goto step
+// that targets this region or a nearby point.
+export function onArrive(regionId, x, y) {
+  if (!Game.questState) return;
+  let changed = false;
+  for (const q of QUESTS) {
+    const st = Game.questState[q.id];
+    if (!st || st.status !== 'active') continue;
+    const step = q.steps[st.step];
+    if (!step || step.type !== 'goto') continue;
+    let hit = false;
+    if (step.target && step.target === regionId) hit = true;
+    if (!hit && step.where) {
+      const r = step.where.radius || 4;
+      if (Math.abs(x - step.where.x) <= r && Math.abs(y - step.where.y) <= r) hit = true;
+    }
+    if (hit) { st.prog = 1; advance(q.id); changed = true; }
+  }
+  if (changed) syncUI();
+}
+
+// A kill: advance any active kill-step for this monster.
+export function onKill(monsterId) {
+  if (!monsterId || !Game.questState) return;
+  for (const q of QUESTS) {
+    const st = Game.questState[q.id];
+    if (!st || st.status !== 'active') continue;
+    const step = q.steps[st.step];
+    if (step && step.type === 'kill' && step.target === monsterId) {
+      st.prog = (st.prog || 0) + 1;
+      if (st.prog >= (step.count || 1)) advance(q.id);
+      else syncUI();
+    }
+  }
+}
+
+// Per-tick: advance active obtain/level steps (checked live). Cheap.
+export function evaluate(silent = false) {
+  if (!Game.questState) return;
+  let changed = false;
+  for (const q of QUESTS) {
+    const st = Game.questState[q.id];
+    if (!st || st.status !== 'active') continue;
+    const step = q.steps[st.step];
+    if (!step || (step.type !== 'obtain' && step.type !== 'level')) continue;
+    if (stepProgress(step, st).done) { advance(q.id); changed = true; }
+  }
+  if (!silent && changed) syncUI();
+}
+
+// ---- dialogue plumbing ------------------------------------------------------
+function npcNameFor(npcId, quest) {
+  if (quest && quest.giver && quest.giver.npc === npcId) return quest.giver.name;
+  return 'Goblin';
+}
+// Route a spoken exchange to the chat log AND (if wired) a dialogue box.
+function emitDialogue(speaker, lines) {
+  const clean = (lines || []).filter(Boolean);
+  if (!clean.length) return;
+  for (const l of clean) Game.log(`💬 ${speaker}: ${l}`);
+  if (Game.ui && Game.ui.showDialogue) Game.ui.showDialogue(speaker, clean);
+}
+
+// ---- views for the journal + markers ----------------------------------------
 export function questView(id) {
-  if (!Game.questState) return null; // UI can render before initQuests() runs
+  if (!Game.questState) return null;
   const q = Q_BY_ID.get(id);
   const st = Game.questState[id];
   if (!q || !st) return null;
-  const ctx = contextFor(id);
-  const steps = q.steps.map((s) => ({ text: s.text, ...stepStatus(s, ctx) }));
-  const total = steps.length;
-  const done = steps.filter((s) => s.done).length;
-  return { id, name: q.name, act: q.act, giver: q.giver, summary: q.summary,
-    status: st.status, steps, done, total, rewards: q.rewards };
+  // Per-step display: done for steps before the active one, current = active.
+  const steps = q.steps.map((s, i) => {
+    let done = false, current = false, prog = { have: 0, need: s.count || 1 };
+    if (st.status === 'complete' || i < st.step) done = true;
+    else if (st.status === 'active' && i === st.step) { current = true; prog = stepProgress(s, st); }
+    return { text: s.text, where: s.where || null, type: s.type, done, current,
+      have: done ? (s.count || 1) : prog.have, need: s.count || 1 };
+  });
+  const doneCount = steps.filter((s) => s.done).length;
+  const cur = st.status === 'active' ? q.steps[st.step] : null;
+  return {
+    id, name: q.name, act: q.act, status: st.status,
+    giver: q.giver || null, summary: q.summary || q.intro || '',
+    steps, done: doneCount, total: steps.length,
+    current: cur ? { text: cur.text, say: cur.say || '', where: cur.where || null } : null,
+    rewards: q.rewards,
+  };
 }
 
 export function questBoard() {
@@ -211,28 +314,51 @@ export function questBoard() {
   };
 }
 
-// ---- persistence (called by save.js) ---------------------------------------
+// Marker descriptors for the map/minimap. `npc` (id) means "wherever that NPC is
+// right now"; else use x/y. main.js resolves npc -> live tile.
+export function questMarkers() {
+  if (!Game.questState) return [];
+  const out = [];
+  for (const q of QUESTS) {
+    const st = Game.questState[q.id];
+    if (!st) continue;
+    if (st.status === 'available' && q.giver) {
+      out.push({ kind: 'available', npc: q.giver.npc || null,
+        x: q.giver.where?.x, y: q.giver.where?.y, label: q.name });
+    } else if (st.status === 'active') {
+      const step = q.steps[st.step];
+      if (!step) continue;
+      const m = { kind: 'active', label: step.text };
+      if (step.type === 'talk') m.npc = step.target;
+      if (step.where) { m.x = step.where.x; m.y = step.where.y; }
+      if (m.npc || (m.x !== undefined && m.y !== undefined)) out.push(m);
+    }
+  }
+  return out;
+}
+
+// ---- persistence ------------------------------------------------------------
 export function serializeQuests() {
   const out = {};
   if (!Game.questState) return out;
   for (const [id, st] of Object.entries(Game.questState)) {
-    out[id] = { status: st.status, kills: st.kills || {} };
+    out[id] = { status: st.status, step: st.step || 0, prog: st.prog || 0 };
   }
   return out;
 }
 
 export function applyQuests(data) {
   if (!Game.questState) Game.questState = {};
-  // Start from a clean locked slate for every known quest, then overlay the save
-  // (so a quest added since the save was written appears, correctly locked).
-  for (const q of QUESTS) Game.questState[q.id] = { status: 'locked', kills: {} };
+  for (const q of QUESTS) Game.questState[q.id] = { status: 'locked', step: 0, prog: 0 };
   if (data && typeof data === 'object') {
     for (const [id, st] of Object.entries(data)) {
-      if (!Q_BY_ID.has(id)) continue; // drop quests that no longer exist
-      Game.questState[id] = {
-        status: ['locked', 'available', 'active', 'complete'].includes(st.status) ? st.status : 'locked',
-        kills: (st && typeof st.kills === 'object') ? st.kills : {},
-      };
+      if (!Q_BY_ID.has(id) || !st) continue;
+      // v1 saves had {status, kills} with a parallel-step model; an in-progress
+      // v1 quest can't map onto ordered steps, so only 'complete' carries over —
+      // anything else re-derives from prereqs (may re-offer the quest). Clean.
+      const status = st.status === 'complete' ? 'complete'
+        : (['available', 'active', 'locked'].includes(st.status) && typeof st.step === 'number' ? st.status : 'locked');
+      Game.questState[id] = { status, step: status === 'active' ? (st.step || 0) : 0, prog: st.prog || 0 };
     }
   }
   refreshAvailability();
@@ -240,9 +366,4 @@ export function applyQuests(data) {
 
 function syncUI() { if (Game.ui && Game.ui.renderQuests) Game.ui.renderQuests(); }
 
-// Top-level await (same pattern as gameData.js): any module importing quests.js
-// waits until the definitions are loaded before its body runs, so QUESTS is
-// guaranteed populated before main.js create()/applyPendingSave touch quest
-// state. (In a headless test that lacks fetch, this degrades to no quests; the
-// test calls registerQuests() itself.)
 registerQuests(await loadQuestDefs());

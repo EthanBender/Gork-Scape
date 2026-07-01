@@ -71,12 +71,21 @@ The per-tile vertical extrusion is live in `drawTerrain()` / `drawObjects()`:
 Verified in-game: mine-hills / Troll Ridge render as stacked terraces with shaded
 faces, water sits in valleys, no gaps, no console errors.
 
-## The one remaining cross-lane item — avatar lift (character-render seam)
+## Avatars & everything else that stands on the ground — DONE
 
-The **player and NPC avatars are still drawn at flat height** in `drawEntities()`, which
-is the character-render lane's seam (`drawAvatar(...)`). On steep ground they'll read
-slightly off the lifted terrain. The fix is one line — offset the draw `y` by
-`elevLift(world.elevation, ty*W + tx)` for each entity — but it lives in the avatar
-draw call, so world-gen and character-render should sync on where it goes. On the flat
-playable areas (town, farmland, plains) the offset is ≤ a couple px, so this is polish,
-not a blocker.
+Everything that sits on a tile now lifts with it, via `tileLiftXY(tx, ty)`:
+
+- **Player + NPC avatars** (`drawCharacter` feet-y), their **HP bars** and **aggro
+  markers** (all derive from feet-y), and the **death topple**.
+- **Floating labels** — player name, NPC names, object labels, ground-item labels.
+- **Ground items**, the **walk-path** dots, and the **interact/combat target** outlines.
+- The **occlusion sort** uses lifted screen-y, so a character on lower ground correctly
+  paints over one standing on a rise behind it.
+
+Entity lift is sampled per-tile (`ent.tileX/tileY`), so on a steep slope there's a
+sub-tile "hop" as a character crosses a boundary — imperceptible on the flat playable
+areas (≤ a couple px between neighbours) and only noticeable deep in the mountains. If
+that ever matters, bilinear-sample the field at the entity's fractional px/py instead.
+
+Verified in-game: Gork stands on the raised Troll Ridge rock with his label tracking
+him, water sits lower, 60fps, no console errors.
