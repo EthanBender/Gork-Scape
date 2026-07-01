@@ -409,6 +409,47 @@ function drawBlob(ctx, skin, p, facing, t) {
   }
 }
 
+// A winged flier (bats, etc.). Hovers above its ground shadow; membranous wings
+// beat with time (and snap on an attack). Ears + glowing eyes read as "bat".
+function drawAvian(ctx, skin, p, facing, t) {
+  const dark = shade(skin, 0.7);
+  const bY = 9;                                   // body floats above the feet/shadow
+  const flap = Math.sin(t / 90) * 1.0 + (p.strike || 0) * 0.6;
+  // wings first (behind body): membrane quads whose tips rise/fall with the beat
+  const wy = bY + 1 + flap * 2.2;
+  poly(ctx, [[-2, bY + 1], [-9, wy + 2], [-8, wy - 2.5], [-2.5, bY - 1]], dark, 0.95);
+  poly(ctx, [[2, bY + 1], [9, wy + 2], [8, wy - 2.5], [2.5, bY - 1]], dark, 0.95);
+  // dangling feet
+  seg(ctx, -1, bY - 2, -1, bY - 4, 0.8, dark); seg(ctx, 1, bY - 2, 1, bY - 4, 0.8, dark);
+  // body + head
+  disc(ctx, 0, bY, 3.0, skin);
+  disc(ctx, 0, bY + 3, 2.2, skin);
+  poly(ctx, [[-1.4, bY + 5], [-2.6, bY + 8], [-0.5, bY + 5.5]], dark);  // ears
+  poly(ctx, [[1.4, bY + 5], [2.6, bY + 8], [0.5, bY + 5.5]], dark);
+  if (facing !== 'N') { disc(ctx, -1, bY + 3.2, 0.6, 0xffd23a); disc(ctx, 1, bY + 3.2, 0.6, 0xffd23a); }
+}
+
+// A legless serpent: a tapering chain of segments that undulates in a sine wave;
+// the head (front) lunges forward on a strike, tongue flicking.
+function drawSerpent(ctx, skin, p, facing, t) {
+  const dark = shade(skin, 0.75);
+  const SEGS = 8, baseY = 4, lunge = (p.strike || 0) * 3;
+  let hx = 0, hy = baseY;
+  for (let i = 0; i < SEGS; i++) {
+    const lx = -9 + i * 2.5 + lunge;
+    const ly = baseY + Math.sin(t / 150 + i * 0.8) * 2.4;
+    const r = 1.4 + i * 0.28;                     // taper: thin tail -> thick neck
+    disc(ctx, lx, ly, r, i % 2 ? shade(skin, 0.9) : skin);
+    hx = lx; hy = ly;
+  }
+  disc(ctx, hx + 1.5, hy, 3.1, skin);             // head at the front
+  if (facing !== 'N') disc(ctx, hx + 2.6, hy + 0.8, 0.6, 0x141414); // eye
+  if (Math.sin(t / 200) > 0.4) {                  // forked tongue flick
+    seg(ctx, hx + 4, hy, hx + 6.5, hy + 0.6, 0.5, 0xcf2b2b);
+    seg(ctx, hx + 4, hy, hx + 6.5, hy - 0.6, 0.5, 0xcf2b2b);
+  }
+}
+
 // ---------------------------------------------------------------------------
 // The main entry point.
 // ---------------------------------------------------------------------------
@@ -450,12 +491,26 @@ export function drawAvatar(g, cx, cy, state = {}) {
     : skilling ? skillAngle(state.skillType, p.strike, state.t || 0)
     : (p.armSwing || 0) * 0.4 - 0.2;
 
+  // ---- boss aura (all body types): a pulsing glow behind the rig ----------
+  if (state.boss) {
+    const tt = state.t || 0;
+    const pulse = 0.5 + 0.5 * Math.sin(tt / 300);
+    const [ax, ay] = ctx.P(0, 11);
+    const a = (p.fade == null ? 1 : p.fade);
+    g.fillStyle(0xffca3a, (0.09 + 0.09 * pulse) * a);
+    g.fillCircle(ax, ay, (17 + pulse * 4) * ctx.unit());
+    g.fillStyle(0xff7a2a, (0.07 + 0.07 * pulse) * a);
+    g.fillCircle(ax, ay, (11 + pulse * 3) * ctx.unit());
+  }
+
   // ---- non-humanoid silhouettes short-circuit here -----------------------
   const bodyType = state.bodyType || 'humanoid';
   if (bodyType !== 'humanoid') {
     const t = state.t || 0;
     if (bodyType === 'quadruped') drawQuadruped(ctx, skin, p, facing, t);
     else if (bodyType === 'insectoid') drawInsectoid(ctx, skin, p, facing, t);
+    else if (bodyType === 'avian') drawAvian(ctx, skin, p, facing, t);
+    else if (bodyType === 'serpent') drawSerpent(ctx, skin, p, facing, t);
     else drawBlob(ctx, skin, p, facing, t);
     if (p.flash > 0) {
       fill(ctx, 0xff4030, 0.5 * p.flash);

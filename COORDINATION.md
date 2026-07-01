@@ -306,6 +306,21 @@ Client-side until Phase 4; each phase keeps the player-freeze + world-continuity
   Rerouting would risk the legacy cook/smith branches; revisit with id migration.
 
 ## Change log
+- 2026-07-01 — Economy agent: **removed the Exchange + Stations tabs — you now
+  craft/trade at world assets (owner-directed).** Audited both first: Exchange was
+  already world-wired (talk to the Exchange Merchant → `openExchange`), but the
+  Stations crafting UI was tab-only. Now clicking a world station building
+  (`Town Furnace`/`Town Anvil`/`Cooking Range`/`Crafting Bench`/`Sawmill`) opens
+  the data-driven Stations UI for that station via a new `openStation(type)` +
+  a `STATION_OF` label→station map in `main.js performSkill` (firemaking fires
+  keep their own auto-cook path). `panels.js`: the `ge`/`stations` VIEWS still
+  exist and render, they just get **no tab button** (`NO_BUTTON` set in
+  `buildLayout`; `switchTab` guards missing buttons). Tabbar dropped 10→8
+  (Skills/Quests/Inventory/Equipment/Combat/Alchemy/Shop/Bank). Verified live on
+  :5189 — both tabs gone, `openStation('anvil')` shows 156 anvil recipes,
+  `openExchange` opens, all 5 station buildings + the merchant exist in-world,
+  0 console errors. **NOTE:** Shop + Bank are the same pattern (opened via
+  shopkeeper/banker yet still tabbed) — say the word and I'll drop those buttons too.
 - 2026-07-01 — Economy agent: **MOBILE / phone responsiveness pass (pre-public
   launch).** The layout was desktop-only side-by-side; on a phone the game got
   squeezed to a sliver. Added (all `index.html` CSS + `panels.js` touch JS, my
