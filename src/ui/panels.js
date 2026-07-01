@@ -352,6 +352,25 @@ export function renderTopBar() {
 }
 
 // ---------- Skills ----------
+// Compact skill tile: icon · name · level with a thin xp bar. The xp count and
+// next-unlock live in the hover title + the click-open guide, so all ~18 skills
+// fit at a glance without scrolling.
+function skillCell(name, sk, extra) {
+  const prog = levelProgress(sk.xp);
+  const cell = document.createElement('div');
+  cell.className = 'skill-cell';
+  cell.innerHTML =
+    `<span class="skill-icon" style="background:${SKILL_COLORS[name] || '#888'}"></span>`
+    + `<span class="skill-name">${name}</span>`
+    + `<span class="lvl">${prog.level}</span>`
+    + `<div class="xpbar"><div class="xpfill" style="width:${Math.round(prog.ratio * 100)}%"></div></div>`;
+  const next = GameData.nextSkillUnlock(name.toLowerCase(), prog.level);
+  cell.title = `${name} — level ${prog.level}/99 · ${Math.floor(sk.xp).toLocaleString()} xp`
+    + (next ? `\nNext: ${next.display_name} @ Lv ${next.level}` : '')
+    + (extra ? `\n${extra}` : '');
+  return cell;
+}
+
 export function renderSkills() {
   const v = els.views.skills;
   v.innerHTML = '';
@@ -359,51 +378,17 @@ export function renderSkills() {
   grid.className = 'skills-grid';
   let attackCell = null;
   for (const name of SKILL_NAMES) {
-    const sk = Game.skills[name];
-    const prog = levelProgress(sk.xp);
-    const cell = document.createElement('div');
-    cell.className = 'skill-cell';
-    const next = GameData.nextSkillUnlock(name.toLowerCase(), prog.level);
-    const nextLine = next
-      ? `<div class="skill-next">Next: ${next.display_name} @ Lv ${next.level}</div>`
-      : '';
-    cell.innerHTML = `
-      <span class="skill-icon" style="background:${SKILL_COLORS[name]}"></span>
-      <div class="skill-info">
-        <div class="skill-top"><span>${name}</span><span class="lvl">${prog.level}/99</span></div>
-        <div class="xpbar"><div class="xpfill" style="width:${Math.round(prog.ratio * 100)}%"></div></div>
-        <div class="xptext">${Math.floor(sk.xp).toLocaleString()} xp</div>
-        ${nextLine}
-      </div>`;
+    const cell = skillCell(name, Game.skills[name]);
     cell.classList.add('sg-clickable');
-    cell.title = 'View unlock guide';
+    cell.title += '\n(click for the unlock guide)';
     cell.onclick = () => showSkillGuide(name);
     grid.appendChild(cell);
     if (name === 'Attack') attackCell = cell;
   }
-
-  // Hitpoints (HP) — a first-class skill like OSRS: starts at level 10, is trained
-  // by dealing damage in combat (1.33 xp/damage across every style), and its level
-  // IS your maximum health. Rendered as its own tile in the combat block; the
-  // "now" line doubles as a live current-health readout.
-  {
-    const hpSk = Game.hitpoints;
-    const prog = levelProgress(hpSk.xp);
-    const cell = document.createElement('div');
-    cell.className = 'skill-cell';
-    cell.innerHTML = `
-      <span class="skill-icon" style="background:${SKILL_COLORS.Hitpoints}"></span>
-      <div class="skill-info">
-        <div class="skill-top"><span>Hitpoints</span><span class="lvl">${prog.level}/99</span></div>
-        <div class="xpbar"><div class="xpfill" style="width:${Math.round(prog.ratio * 100)}%"></div></div>
-        <div class="xptext">${Math.floor(hpSk.xp).toLocaleString()} xp</div>
-        <div class="skill-next">❤️ ${Game.hp}/${Game.maxHp} HP · max grows with your level</div>
-      </div>`;
-    cell.title = 'Hitpoints — your maximum health. Trained by dealing damage in combat (OSRS-style: 1.33 xp per damage).';
-    if (attackCell) grid.insertBefore(cell, attackCell); // sit at the head of the combat block
-    else grid.appendChild(cell);
-  }
-
+  // Hitpoints — first-class OSRS skill; level = max HP, trained by dealing damage.
+  const hpCell = skillCell('Hitpoints', Game.hitpoints, `❤️ ${Game.hp}/${Game.maxHp} HP — max grows with your level`);
+  if (attackCell) grid.insertBefore(hpCell, attackCell); // head of the combat block
+  else grid.appendChild(hpCell);
   v.appendChild(grid);
 }
 
