@@ -6082,5 +6082,113 @@
     "xp_reward": 360,
     "gp_cost": 0,
     "notes": ""
+  },
+  {
+    "recipe_id": "smelt_grubstone_bar",
+    "output_item_id": "grubstone_bar",
+    "station": "furnace",
+    "related_skill": "smithing",
+    "level_requirement": 40,
+    "inputs": "grubstone_ore:1;coal_ore:2",
+    "output_qty": 1,
+    "xp_reward": 300,
+    "gp_cost": 0,
+    "notes": "Ore to bar smelting."
+  },
+  {
+    "recipe_id": "craft_grubstone_dagger",
+    "output_item_id": "grubstone_dagger",
+    "station": "anvil",
+    "related_skill": "smithing",
+    "level_requirement": 40,
+    "inputs": "grubstone_bar:1",
+    "output_qty": 1,
+    "xp_reward": 320,
+    "gp_cost": 0,
+    "notes": ""
+  },
+  {
+    "recipe_id": "craft_grubstone_club",
+    "output_item_id": "grubstone_club",
+    "station": "anvil",
+    "related_skill": "smithing",
+    "level_requirement": 40,
+    "inputs": "grubstone_bar:1",
+    "output_qty": 1,
+    "xp_reward": 320,
+    "gp_cost": 0,
+    "notes": ""
+  },
+  {
+    "recipe_id": "craft_grubstone_shortbow",
+    "output_item_id": "grubstone_shortbow",
+    "station": "anvil",
+    "related_skill": "smithing",
+    "level_requirement": 40,
+    "inputs": "grubstone_bar:1",
+    "output_qty": 1,
+    "xp_reward": 320,
+    "gp_cost": 0,
+    "notes": ""
+  },
+  {
+    "recipe_id": "craft_grubstone_sword",
+    "output_item_id": "grubstone_sword",
+    "station": "anvil",
+    "related_skill": "smithing",
+    "level_requirement": 45,
+    "inputs": "grubstone_bar:1",
+    "output_qty": 1,
+    "xp_reward": 360,
+    "gp_cost": 0,
+    "notes": ""
+  },
+  {
+    "recipe_id": "craft_grubstone_spear",
+    "output_item_id": "grubstone_spear",
+    "station": "anvil",
+    "related_skill": "smithing",
+    "level_requirement": 45,
+    "inputs": "grubstone_bar:1",
+    "output_qty": 1,
+    "xp_reward": 360,
+    "gp_cost": 0,
+    "notes": ""
+  },
+  {
+    "recipe_id": "craft_grubstone_axe",
+    "output_item_id": "grubstone_axe",
+    "station": "anvil",
+    "related_skill": "smithing",
+    "level_requirement": 45,
+    "inputs": "grubstone_bar:1",
+    "output_qty": 1,
+    "xp_reward": 360,
+    "gp_cost": 0,
+    "notes": ""
+  },
+  {
+    "recipe_id": "craft_grubstone_mace",
+    "output_item_id": "grubstone_mace",
+    "station": "anvil",
+    "related_skill": "smithing",
+    "level_requirement": 45,
+    "inputs": "grubstone_bar:1",
+    "output_qty": 1,
+    "xp_reward": 360,
+    "gp_cost": 0,
+    "notes": ""
+  },
+  {
+    "recipe_id": "craft_grubstone_longbow",
+    "output_item_id": "grubstone_longbow",
+    "station": "anvil",
+    "related_skill": "smithing",
+    "level_requirement": 45,
+    "inputs": "grubstone_bar:1",
+    "output_qty": 1,
+    "xp_reward": 360,
+    "gp_cost": 0,
+    "notes": ""
   }
 ]

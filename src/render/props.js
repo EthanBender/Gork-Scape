@@ -29,8 +29,8 @@ export function propKind(label = '') {
   if (/banner|\bflag\b/.test(n)) return 'banner';
   if (/tower|watchtower/.test(n)) return 'tower';
   if (/\bwell\b/.test(n)) return 'well';
-  if (/shrine|chapel|altar|statue|totem/.test(n)) return 'shrine';
-  if (/potion|cauldron|witch|brew|alchemy/.test(n)) return 'cauldron';
+  if (/shrine|chapel|altar|statue|totem|idol/.test(n)) return 'shrine';
+  if (/potion|cauldron|witch|brew|alchemy|herb/.test(n)) return 'cauldron';
   if (/fire|campfire|hearth|range/.test(n)) return 'fire';
   if (/coal/.test(n)) return 'coalheap';
   if (/log|lumber|saw/.test(n)) return 'logpile';
@@ -42,6 +42,8 @@ export function propKind(label = '') {
   if (/gate|pass|entrance|\bcave\b|\bmine\b|tunnel|deep/.test(n)) return 'entrance';
   if (/bridge|boat|route|dock|pier/.test(n)) return 'sign';
   if (/arena|hall|chief|throne/.test(n)) return 'banner';
+  if (/house|hut|home|cottage|shed|barn|lodge|\btent\b/.test(n)) return 'hut';
+  if (/board|notice/.test(n)) return 'sign';
   return 'crate';
 }
 
@@ -191,10 +193,19 @@ function crate(g, X, Y, accent) {
   g.moveTo(X + 7, Y - 3); g.lineTo(X - 7, Y + 11); g.strokePath();
 }
 
+function hut(g, X, Y) {
+  g.fillStyle(0x8a6a44, 1); g.fillRect(X - 8, Y - 1, 16, 12);           // wattle wall
+  g.fillStyle(shade(0x8a6a44, 0.8), 1); g.fillRect(X - 8, Y - 1, 16, 1.6);
+  g.fillStyle(0x6a4a2a, 1); g.fillTriangle(X - 10, Y - 1, X + 10, Y - 1, X, Y - 10); // thatch roof
+  g.fillStyle(shade(0x6a4a2a, 1.2), 1); g.fillTriangle(X - 10, Y - 1, X - 2, Y - 1, X, Y - 10);
+  g.fillStyle(0x2a1c10, 1); g.fillRect(X - 2.5, Y + 3, 5, 8);           // doorway
+  g.fillStyle(0xd8b25a, 0.85); g.fillRect(X + 3.5, Y + 1.5, 3, 3);      // lit window
+}
+
 const DRAW = {
   anvil, chest, barrel, stall, exchange, weaponrack, dummy, banner, tower, well,
   shrine, cauldron, fire, coalheap, rockpile, logpile, cart, table, hiderack, bin,
-  entrance, sign, crate,
+  entrance, sign, crate, hut,
 };
 
 // Entry point: draw the prop for object `o` at tile top-left (cx,cy).

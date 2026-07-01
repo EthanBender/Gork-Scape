@@ -579,6 +579,25 @@
   #run-btn.low { --ring: #c0553a; color: #e88a6a; }
   #run-ico { position: relative; z-index: 1; font-size: 18px; line-height: 1; text-shadow: 0 1px 0 #000; }
   #run-pct, #run-bar { display: none; }
+  /* Home Teleport button — a progress ring like the run toggle (fills while
+     channelling, depletes while on cooldown). Sits below the button row. */
+  #home-btn { position: absolute; top: 240px; right: 12px; z-index: 6; --home-pct: 100; --ring: var(--gold);
+    width: 42px; height: 42px; padding: 0; border: none; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--gold);
+    background: conic-gradient(var(--ring) calc(var(--home-pct) * 1%), var(--panel-lo) 0);
+    box-shadow: 0 2px 6px rgba(0,0,0,.4); transition: transform .08s; }
+  #home-btn::before { content: ''; position: absolute; inset: 3px; border-radius: 50%;
+    background: linear-gradient(180deg, var(--panel-hi), var(--panel2)); box-shadow: var(--sink); }
+  #home-btn:hover { color: #f2d774; }
+  #home-btn:active { transform: translateY(1px); }
+  #home-btn.channeling { --ring: var(--accent); color: var(--accent);
+    animation: homePulse .9s ease-in-out infinite; }
+  #home-btn.cooldown { --ring: #7a5a3a; color: var(--muted); cursor: default; }
+  #home-ico { position: relative; z-index: 1; font-size: 18px; line-height: 1; text-shadow: 0 1px 0 #000; }
+  #home-state { position: absolute; bottom: 1px; z-index: 1; font-size: 9px; font-weight: 700;
+    color: var(--gold); text-shadow: 0 1px 0 #000, 0 0 2px #000; }
+  @keyframes homePulse { 0%,100% { box-shadow: 0 2px 6px rgba(0,0,0,.4); }
+    50% { box-shadow: 0 0 10px 2px rgba(123,191,74,.55); } }
   #worldmap-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.72); z-index: 9998;
     display: flex; align-items: center; justify-content: center; }
   #worldmap-overlay[hidden] { display: none; }
@@ -690,6 +709,9 @@
       <button id="run-btn" title="Toggle run / walk (R)">
         <span id="run-ico">🚶</span><span id="run-pct">100%</span>
         <span id="run-bar"><span id="run-fill"></span></span>
+      </button>
+      <button id="home-btn" title="Home Teleport — channel ~10s to return to the settlement (free)">
+        <span id="home-ico">🏠</span><span id="home-state"></span>
       </button>
     </div>
     <div id="side-panel">

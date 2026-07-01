@@ -100,6 +100,7 @@ export function serialize() {
     pos: p ? { x: p.tileX, y: p.tileY } : null,
     quests: serializeQuests(), // quest status + kill tallies (obtain/level recompute live)
     bankMax: Game.bankMax,     // [economy lane] bank capacity (quest / GP upgrades)
+    bank: Array.isArray(Game.bank) ? Game.bank.map((b) => ({ id: b.id, qty: b.qty })) : [], // [economy lane] stored items (tied to the account, must persist)
     openedShortcuts: Array.isArray(Game.openedShortcuts) ? Game.openedShortcuts.slice() : [], // opened bridges/gates
   };
 }

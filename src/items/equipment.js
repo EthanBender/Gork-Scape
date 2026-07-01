@@ -211,18 +211,32 @@ export function foodHealFromRecord(rec) {
 // WEAPON CLASS (dagger/sword/spear/club/mace/battle axe/shortbow/longbow) sets
 // the damage type, speed, reach, and the attack-vs-strength split. Boss-forged
 // weapons (a future tier) are hand-authored above this ladder. See COORDINATION.md.
-const TIER_LIST = ['crude', 'bronze', 'iron', 'steel', 'black iron', 'bogbone', 'trollbone', 'meteor'];
 const TIER_COLOR = {
   crude: 0x9a9186, bronze: 0xcd7f32, iron: 0x9a9a9a, steel: 0xc9c9d0,
-  'black iron': 0x33333c, bogbone: 0x8a8f6a, trollbone: 0xc9c1ad, meteor: 0x7a5acf,
+  grubstone: 0x6f7a55, 'black iron': 0x33333c, bogbone: 0x8a8f6a,
+  trollbone: 0xc9c1ad, meteor: 0x7a5acf,
 };
-function tierIndex(name) {
+// Raw power (the `t` in the stat formula) per material tier. Grubstone slots at
+// 3.5 — a real mid-game step between Steel (3) and Black Iron (4) that fills the
+// old L36–49 weapon dead zone — WITHOUT shifting any existing tier's stats,
+// since every other tier keeps its original integer power.
+const TIER_POWER = {
+  crude: 0, bronze: 1, iron: 2, steel: 3, grubstone: 3.5,
+  'black iron': 4, bogbone: 5, trollbone: 6, meteor: 7,
+};
+// Match a weapon's material tier by whole-name substring. "black iron" and
+// "grubstone" are checked before the shorter names ("iron", the rest) they'd
+// otherwise be shadowed by.
+function tierKey(name) {
   const n = name.toLowerCase();
-  if (n.includes('black iron')) return 4;               // check before plain "iron"
-  const order = [[7, 'meteor'], [6, 'trollbone'], [5, 'bogbone'], [3, 'steel'], [2, 'iron'], [1, 'bronze'], [0, 'crude']];
-  for (const [i, t] of order) if (n.includes(t)) return i;
-  return 0;
+  if (n.includes('black iron')) return 'black iron';
+  if (n.includes('grubstone')) return 'grubstone';
+  for (const t of ['meteor', 'trollbone', 'bogbone', 'steel', 'iron', 'bronze', 'crude']) {
+    if (n.includes(t)) return t;
+  }
+  return 'crude';
 }
+function tierIndex(name) { return TIER_POWER[tierKey(name)]; }
 
 // class key must be matched as a whole word within the name; "battle axe" has no
 // bare "axe" sibling in the ladder, and bows use their full "shortbow"/"longbow".
@@ -247,7 +261,7 @@ export function weaponStatsFromRecord(rec) {
   const b = emptyBonuses();
   const fields = {
     slot: 'weapon', weaponType: cls.type, attackSpeed: cls.speed,
-    color: TIER_COLOR[TIER_LIST[t]] || 0x8a8a8a, tier: t,
+    color: TIER_COLOR[tierKey(name)] || 0x8a8a8a, tier: t,
   };
   if (cls.twoHanded) fields.twoHanded = true;
   if (cls.range) fields.attackRange = cls.range;
