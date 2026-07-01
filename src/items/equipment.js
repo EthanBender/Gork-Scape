@@ -282,6 +282,96 @@ export function weaponStatsFromRecord(rec) {
   return fields;
 }
 
+// ----- Armor ladder hydration -----
+// The 66 database armor pieces (Equipment/Armor) shipped as names + level reqs
+// but no slot and no defensive stats — so equipItem() (which bails on a null
+// slot) silently refused to wear ANY of them. Like the weapon ladder, derive
+// everything from the two axes the name encodes: MATERIAL tier (cloth→meteor)
+// sets defence power + family, and the PIECE word (helm/body/legs/…) sets the
+// wear slot and how much of that power it carries. reqLevel comes from the
+// record's level_requirement (a Defence gate), same as weapons. See COORDINATION.md.
+const ARMOR_TIER = {
+  cloth:        { power: 0,  family: 'cloth' },
+  leather:      { power: 1,  family: 'hide' },
+  bronze:       { power: 2,  family: 'metal' },
+  iron:         { power: 3,  family: 'metal' },
+  shell:        { power: 4,  family: 'shell' },
+  steel:        { power: 5,  family: 'metal' },
+  sporehide:    { power: 6,  family: 'hide' },
+  'black iron': { power: 7,  family: 'metal' },
+  'bog horror': { power: 8,  family: 'hide' },
+  trollhide:    { power: 9,  family: 'hide' },
+  meteor:       { power: 11, family: 'metal' },
+};
+const ARMOR_TIER_COLOR = {
+  cloth: 0xcdc3a6, hide: 0x7a5a34, metal: 0x9aa0aa, shell: 0x9a7a5a,
+  bronze: 0xcd7f32, iron: 0x9a9a9a, steel: 0xc9c9d0, 'black iron': 0x33333c,
+  sporehide: 0x8a6a9a, 'bog horror': 0x5a6a4a, trollhide: 0xc9c1ad, meteor: 0x7a5acf,
+};
+// PIECE word -> { slot, weight }. Weight scales the piece's share of the tier's
+// defence power (a body plate protects far more than boots).
+const ARMOR_PIECE = [
+  { key: 'platebody', slot: 'body',   w: 1.0 },
+  { key: 'body',      slot: 'body',   w: 1.0 },
+  { key: 'platelegs', slot: 'legs',   w: 0.7 },
+  { key: 'legs',      slot: 'legs',   w: 0.7 },
+  { key: 'chaps',     slot: 'legs',   w: 0.55 },
+  { key: 'shield',    slot: 'shield', w: 0.8 },
+  { key: 'helm',      slot: 'head',   w: 0.5 },
+  { key: 'coif',      slot: 'head',   w: 0.4 },
+  { key: 'hat',       slot: 'head',   w: 0.35 },
+  { key: 'gauntlets', slot: 'hands',  w: 0.25 },
+  { key: 'gloves',    slot: 'hands',  w: 0.25 },
+  { key: 'boots',     slot: 'feet',   w: 0.25 },
+  { key: 'cape',      slot: 'cape',   w: 0.2 },
+];
+function armorTierKey(name) {
+  const n = name.toLowerCase();
+  if (n.includes('black iron')) return 'black iron';
+  if (n.includes('bog horror')) return 'bog horror';
+  for (const t of ['trollhide', 'sporehide', 'meteor', 'steel', 'iron', 'bronze', 'leather', 'shell', 'cloth']) {
+    if (n.includes(t)) return t;
+  }
+  return 'cloth';
+}
+// Split a total defence value across the six defence stats by material family,
+// echoing OSRS armour character: metal = strong melee def, weak to magic; hide
+// = lighter melee but breathes magic/range def; cloth = mage-leaning; shell =
+// crush-heavy. Returns a sparse {statKey: value} object (zeros omitted).
+function armorSplit(total, family) {
+  const r = (m) => Math.round(total * m);
+  switch (family) {
+    case 'hide':  return { stab_def: r(0.7), slash_def: r(0.7), crush_def: r(0.7), range_def: r(0.95), magic_def: r(0.4) };
+    case 'cloth': return { stab_def: r(0.4), slash_def: r(0.4), crush_def: r(0.4), range_def: r(0.5),  magic_def: r(0.85) };
+    case 'shell': return { stab_def: r(0.9), slash_def: r(0.95), crush_def: total, range_def: r(0.8),  magic_def: -r(0.2) };
+    default:      return { stab_def: r(0.95), slash_def: total, crush_def: r(0.9), range_def: r(0.85), magic_def: -r(0.25) }; // metal
+  }
+}
+export function armorStatsFromRecord(rec) {
+  if (rec.category !== 'Equipment' || rec.subcategory !== 'Armor') return null;
+  const name = rec.display_name || rec.item_id;
+  const piece = ARMOR_PIECE.find((p) => name.toLowerCase().includes(p.key)
+    || String(rec.item_id).toLowerCase().includes(p.key));
+  if (!piece) return null;
+  const tierName = armorTierKey(name);
+  const tier = ARMOR_TIER[tierName] || ARMOR_TIER.cloth;
+  // Defence value for this piece: base + tier power, scaled by the slot weight.
+  const total = Math.max(1, Math.round(piece.w * (3 + tier.power * 2.2)));
+  const b = emptyBonuses();
+  const split = armorSplit(total, tier.family);
+  for (const k of Object.keys(split)) b[k] = split[k];
+  const fields = {
+    slot: piece.slot,
+    color: ARMOR_TIER_COLOR[tierName] || ARMOR_TIER_COLOR[tier.family] || 0x8a8a8a,
+    bonuses: b,
+  };
+  if ((rec.level_requirement || 0) > 1) {
+    fields.reqSkill = 'Defence';
+    fields.reqLevel = rec.level_requirement;
+  }
+  return fields;
+}
+
 function hydrateFromDatabase() {
   if (!GameData || !GameData.items) return;
   for (const rec of GameData.items) {
@@ -290,6 +380,11 @@ function hydrateFromDatabase() {
     const wpn = weaponStatsFromRecord(rec);
     if (wpn) {
       ITEMS[id] = { id, name: rec.display_name || id, stackable: false, fromDatabase: true, ...wpn };
+      continue;
+    }
+    const arm = armorStatsFromRecord(rec);
+    if (arm) {
+      ITEMS[id] = { id, name: rec.display_name || id, stackable: false, fromDatabase: true, ...arm };
       continue;
     }
     const heal = foodHealFromRecord(rec);
