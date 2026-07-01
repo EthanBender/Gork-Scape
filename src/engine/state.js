@@ -66,6 +66,7 @@ export const Game = {
     u.renderAlchemy && u.renderAlchemy();
     u.renderGrandExchange && u.renderGrandExchange();
     u.renderShop && u.renderShop();
+    u.renderBank && u.renderBank(); // [economy lane] was missing -> Bank panel never rendered
   },
 };
 
