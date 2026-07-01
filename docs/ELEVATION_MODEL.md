@@ -55,20 +55,28 @@ Two visual passes already run *before* you get the world, using the elevation fi
 These are baked into `world.terrain` as ordinary variant ids (see `TERRAIN_DEFS` in
 `worldData.js`), so they render for free with the existing color-by-id draw.
 
-## Suggested next step for full 2.5D (render lane's call)
+## Full 2.5D draw — IMPLEMENTED (world-gen lane, `src/main.js`)
 
-The cheap, high-impact move is a **per-tile vertical draw offset + top/side shading**:
+The per-tile vertical extrusion is live in `drawTerrain()` / `drawObjects()`:
 
-```js
-const h = world.elevation[i];
-const yOffset = (h - 80) * 0.25;          // px; 80 ≈ plains baseline. tune the 0.25
-// draw the tile sprite at (screenY - yOffset)
-// optional: tint by slope — lighter when h > northNeighbourHeight (sunlit),
-//           darker when lower (in addition to the baked *_SHADOW tiles)
-```
+- `elevLift(elev, i) = (elev[i] - 80) * 0.34` px — plains (~80) barely move, mountains
+  (~196) lift ~40px, water (~6) sinks ~25px.
+- Each tile's top face is drawn at `y*TILE - lift`; the **south-facing gap** below a
+  raised tile is filled with a `shadeColor(color, 0.5)` side wall sized to the drop to
+  the tile in front, so steps read as solid faces with no seams.
+- Painter order (north→south) already draws front tiles last, so raised tiles occlude
+  what's behind them. Objects (trees, ore) lift by their own tile's height so they stay
+  planted. Collision / pathing / hit-testing are untouched — still the flat grid.
 
-Start subtle (0.2–0.3 px per height unit): plains barely move, mountains lift hard,
-water sinks. Because the field is smooth, adjacent tiles won't tear. Keep the draw
-order painter-style (top rows first) so raised tiles overlap the ones behind them.
+Verified in-game: mine-hills / Troll Ridge render as stacked terraces with shaded
+faces, water sits in valleys, no gaps, no console errors.
 
-Don't offset collision or hit-testing — those stay on the flat grid.
+## The one remaining cross-lane item — avatar lift (character-render seam)
+
+The **player and NPC avatars are still drawn at flat height** in `drawEntities()`, which
+is the character-render lane's seam (`drawAvatar(...)`). On steep ground they'll read
+slightly off the lifted terrain. The fix is one line — offset the draw `y` by
+`elevLift(world.elevation, ty*W + tx)` for each entity — but it lives in the avatar
+draw call, so world-gen and character-render should sync on where it goes. On the flat
+playable areas (town, farmland, plains) the offset is ≤ a couple px, so this is polish,
+not a blocker.
