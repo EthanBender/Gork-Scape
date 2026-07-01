@@ -446,6 +446,33 @@
     background: var(--accent-dk); border: 1px solid var(--accent); }
   .quest-start:hover { background: var(--accent); }
   .quest-empty { font-size: 11px; color: var(--muted); font-style: italic; padding: 4px 0; }
+  /* v2 quest journal: active highlight, current step, directions, giver-start */
+  .quest-card.quest-active { border-color: var(--gold-dk); box-shadow: var(--raise), 0 0 0 1px rgba(232,198,90,.25); }
+  .quest-step.qs-current { color: var(--gold); font-weight: 700; }
+  .quest-step.qs-current .qs-check { color: var(--gold); }
+  .quest-step.qs-todo { color: var(--muted); opacity: .8; }
+  .quest-step.qs-todo .qs-check { color: var(--muted); }
+  .quest-directions { margin: 6px 0; padding: 6px 8px; font-size: 11px; font-style: italic;
+    color: var(--text); background: rgba(232,198,90,.08); border-left: 2px solid var(--gold-dk);
+    border-radius: 0 4px 4px 0; line-height: 1.4; }
+  .quest-starthint { margin-top: 6px; font-size: 11px; color: var(--accent); line-height: 1.4; }
+  .quest-starthint b { color: var(--gold); }
+
+  /* Quest-giver speech box over the game view */
+  #dialogue-box { position: absolute; left: 50%; bottom: 18px; transform: translateX(-50%);
+    z-index: 40; width: min(560px, 82%); padding: 12px 16px 8px; cursor: pointer;
+    background: linear-gradient(180deg, rgba(40,36,26,.97), rgba(28,25,18,.97));
+    border: 1px solid var(--gold-dk); border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.6), var(--raise); color: var(--text);
+    font-size: 13.5px; line-height: 1.45; animation: dlgIn .18s ease-out; }
+  #dialogue-box[hidden] { display: none; }
+  #dialogue-box .dlg-speaker { font-weight: 800; color: var(--accent); font-size: 13px;
+    letter-spacing: .3px; margin-bottom: 4px; text-shadow: 0 1px 0 #000; }
+  #dialogue-box .dlg-line { margin: 2px 0; }
+  #dialogue-box .dlg-dismiss { margin-top: 6px; text-align: right; font-size: 10px;
+    color: var(--muted); }
+  @keyframes dlgIn { 0% { opacity: 0; transform: translate(-50%, 8px); }
+    100% { opacity: 1; transform: translate(-50%, 0); } }
 
   @keyframes luIn { 0% { opacity: 0; transform: translate(-50%,-50%) scale(.6); }
     100% { opacity: 1; transform: translate(-50%,-50%) scale(1); } }

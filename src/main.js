@@ -30,6 +30,9 @@ import {
 import { resolveAttack, resolveSpecial, combatLevel, weaponRange } from './engine/combat.js';
 import { RUN_TILES, ensureRun, wantsToRun, updateRunEnergy, toggleRun, updateRunHud } from './engine/run.js';
 import { styleOfWeapon, PROTECT_FACTOR } from './engine/prayer.js';
+// [economy lane] Tinkering — the sapper combat style. Importing registers its
+// generated item catalogue into ITEMS and exposes the gadget combat effects.
+import { isTinkerWeapon, tinkerEffect } from './systems/tinkering.js';
 import { rollSkillSuccess } from './engine/skills.js';
 import { emptyBonuses, ITEMS } from './items/equipment.js';
 import { rollLoot } from './world/loot.js';
@@ -1201,7 +1204,8 @@ function performSkill(o, count) {
 // ---------------------------------------------------------------- combat
 function grantCombatXp(dmg) {
   const weapon = Game.equipment.weapon;
-  if (weapon && weapon.weaponType === 'ranged') grantXp('Ranged', 4 * dmg);
+  if (weapon && weapon.weaponType === 'tinker') grantXp('Tinkering', 4 * dmg);
+  else if (weapon && weapon.weaponType === 'ranged') grantXp('Ranged', 4 * dmg);
   else switch (Game.attackStyle) {
     case 'Accurate': grantXp('Attack', 4 * dmg); break;
     case 'Defensive': grantXp('Defence', 4 * dmg); break;
