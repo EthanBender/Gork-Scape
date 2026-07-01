@@ -1058,6 +1058,9 @@ function updateCropLabels() {
 function performSkill(o, count) {
   const p = Game.player;
 
+  // Fast-travel transports: pay the fare (coins) or blood cost (HP) and teleport.
+  if (o.transport) { boardTransport(o); return; }
+
   // Crop patches: plant/harvest via the world-time growth engine.
   if (isCropPatch(o)) return performFarming(o);
 

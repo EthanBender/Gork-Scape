@@ -28,6 +28,17 @@ The repo is now under **git** (owner-approved 2026-06-30). Baseline commit exist
    `master` deployable, which is what a live host will serve.
 4. **Live host** (planned): deploy `master` on green → one URL for everyone, which
    also ends the shared 5-preview-server contention. See docs/MULTIPLAYER_ARCHITECTURE.md.
+5. **Two more gates now run in CI** (`.github/workflows/ci.yml` on every branch push/PR,
+   and the master deploy gate): `node scripts/economy_sim.mjs` (economy balance — faucet/
+   sink numbers + live Grand-Exchange price-stability under load; exits non-zero if
+   balance drifts) and `node scripts/quest_test.mjs` (quest engine end-to-end). Run them
+   locally before calling economy/quest work done.
+6. **Auto-commit safety net (NEW, affects ALL lanes in this shared tree):** a `Stop`
+   hook (`.claude/settings.json` → `scripts/autocommit.sh`) snapshots the working tree to
+   a `auto: green snapshot …` commit each time an agent finishes a turn — but ONLY when
+   `smoke.mjs` passes, and it NEVER pushes. So a broken tree is left dirty (visible), and
+   a green one is checkpointed so nobody's work is lost/clobbered. If you don't want your
+   in-progress edits snapshotted, work in a worktree (item 1).
 
 Root cause of the "fighting": 5 agents editing ONE working tree with no VCS. Git +
 worktrees give isolation; the smoke gate + green-`master` rule give integration.

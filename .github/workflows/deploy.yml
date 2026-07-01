@@ -34,6 +34,10 @@ jobs:
         with: { node-version: '20' }
       - name: Boot smoke-check (syntax + import/export consistency)
         run: node scripts/smoke.mjs
+      - name: Economy balance validator (faucet/sink + live GE stability)
+        run: node scripts/economy_sim.mjs
+      - name: Quest engine end-to-end test
+        run: node scripts/quest_test.mjs
 
   deploy:
     needs: smoke            # only deploy if the gate passed

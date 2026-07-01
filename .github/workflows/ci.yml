@@ -1,0 +1,25 @@
+# CI — runs the full local gate on EVERY branch push and pull request, so a
+# regression is caught where it's introduced, not only at the master deploy.
+# Same three checks the economy lane runs locally; all are pure Node, no browser,
+# no build (~2s total). deploy.yml re-runs them as the master deploy gate.
+name: CI
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+  workflow_dispatch: {}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+      - name: Boot smoke-check (syntax + import/export consistency)
+        run: node scripts/smoke.mjs
+      - name: Economy balance validator (faucet/sink + live GE stability)
+        run: node scripts/economy_sim.mjs
+      - name: Quest engine end-to-end test
+        run: node scripts/quest_test.mjs

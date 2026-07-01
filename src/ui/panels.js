@@ -124,6 +124,26 @@ function bindTip(el, id, name, hint) {
   el.onmouseleave = hideTip;
 }
 
+// Long-press → context menu on touch devices (no right-click on a phone). Fires
+// handler(x, y) after a stationary ~450ms press; cancels on move/lift; swallows
+// the trailing synthetic click so a long-press can't also equip the item.
+function bindLongPress(el, handler) {
+  let timer = null, fired = false, sx = 0, sy = 0;
+  const clear = () => { if (timer) { clearTimeout(timer); timer = null; } };
+  el.addEventListener('touchstart', (e) => {
+    if (e.touches.length !== 1) return;
+    const t = e.touches[0]; sx = t.clientX; sy = t.clientY; fired = false;
+    hideTip();
+    timer = setTimeout(() => { fired = true; handler(sx, sy); }, 450);
+  }, { passive: true });
+  el.addEventListener('touchmove', (e) => {
+    const t = e.touches[0];
+    if (t && (Math.abs(t.clientX - sx) > 10 || Math.abs(t.clientY - sy) > 10)) clear();
+  }, { passive: true });
+  el.addEventListener('touchend', (e) => { clear(); if (fired) e.preventDefault(); });
+  el.addEventListener('touchcancel', clear);
+}
+
 const SKILL_COLORS = {
   Woodcutting: '#2e7d32', Fishing: '#4fa3c7', Mining: '#9c6b3a',
   Cooking: '#d2691e', Firemaking: '#c1440e', Smithing: '#777', Crafting: '#8b5a2b',
@@ -926,6 +946,7 @@ export function renderInventory() {
       slot.ondragend = () => slot.classList.remove('dragging');
       slot.onclick = () => onInvClick(i);
       slot.oncontextmenu = (e) => { e.preventDefault(); onInvContext(e, i); };
+      bindLongPress(slot, (x, y) => onInvContext({ clientX: x, clientY: y, preventDefault() {} }, i));
     }
     grid.appendChild(slot);
   }
