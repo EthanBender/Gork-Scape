@@ -1879,6 +1879,16 @@ function drawObjects() {
   for (const o of objectsInView(Game.world, v.x0, v.y0, v.x1, v.y1)) {
     const cx = o.x * TILE_SIZE, cy = o.y * TILE_SIZE - elevLift(elevO, o.y * Wo + o.x);
     if (o.type === 'decor') {
+      if (o.mush === 'giant') { // giant toadstool: stem on this tile, cap overhangs the neighbours (drawn tree-style)
+        const s = o.size;
+        g.fillStyle(0x000000, 0.12); g.fillEllipse ? g.fillEllipse(cx + 16, cy + 26, s * 1.3, 6) : g.fillCircle(cx + 16, cy + 26, 6); // ground shadow
+        g.fillStyle(0xe6dcc4, 1); g.fillRect(cx + 13, cy + 8, 6, 18);                                   // pale stem
+        g.fillStyle(o.color, 1); g.fillCircle(cx + 16, cy + 2, s);                                       // big cap, lifted so it overhangs above/beside
+        g.fillStyle(0x000000, 0.14); g.fillCircle(cx + 16, cy + 2 + s * 0.55, s * 0.7);                  // underside shade
+        g.fillStyle(o.color, 1); g.fillCircle(cx + 16, cy - s * 0.15, s * 0.92);                         // cap dome over the shade
+        g.fillStyle(0xffffff, 0.55); g.fillCircle(cx + 16 - s * 0.4, cy - s * 0.1, s * 0.15); g.fillCircle(cx + 16 + s * 0.35, cy + 2, s * 0.12); g.fillCircle(cx + 16 + s * 0.05, cy - s * 0.45, s * 0.11); // spots
+        continue;
+      }
       g.fillStyle(o.color, 1);
       if (o.shape === 'circle') g.fillCircle(cx + 16, cy + 16, o.size);
       else g.fillRect(cx + 16 - o.size, cy + 16 - o.size, o.size * 2, o.size * 2);
