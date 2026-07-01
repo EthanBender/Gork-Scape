@@ -148,7 +148,7 @@ const SKILL_COLORS = {
   Woodcutting: '#2e7d32', Fishing: '#4fa3c7', Mining: '#9c6b3a',
   Cooking: '#d2691e', Firemaking: '#c1440e', Smithing: '#777', Crafting: '#8b5a2b',
   Attack: '#b03030', Strength: '#2f7d4f', Defence: '#3d5a9e',
-  Ranged: '#5a8f3d', Prayer: '#c9b458', Alchemy: '#8e5ea8',
+  Ranged: '#5a8f3d', Prayer: '#c9b458', Alchemy: '#8e5ea8', Tinkering: '#b8863a',
 };
 
 const STYLES = ['Accurate', 'Aggressive', 'Defensive', 'Controlled'];
@@ -156,7 +156,7 @@ const STYLES = ['Accurate', 'Aggressive', 'Defensive', 'Controlled'];
 const SKILL_EMOJI = {
   Woodcutting: '🪓', Fishing: '🎣', Mining: '⛏️', Cooking: '🍳',
   Firemaking: '🔥', Smithing: '🔨', Crafting: '🧵', Attack: '⚔️', Strength: '💪',
-  Defence: '🛡️', Ranged: '🏹', Prayer: '🙏', Alchemy: '⚗️', Hitpoints: '❤️',
+  Defence: '🛡️', Ranged: '🏹', Prayer: '🙏', Alchemy: '⚗️', Tinkering: '🔧', Hitpoints: '❤️',
 };
 
 // ---------- Progression flourishes (xp drops + level-up banner) ----------
