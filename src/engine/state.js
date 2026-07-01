@@ -384,6 +384,7 @@ function rawCombatLevels() {
     strength: Game.skills.Strength.level,
     defence: Game.skills.Defence.level,
     ranged: Game.skills.Ranged.level,
+    tinkering: Game.skills.Tinkering ? Game.skills.Tinkering.level : 1,
     hitpoints: Game.hitpoints.level,
   };
 }
@@ -400,6 +401,7 @@ export function playerProfile() {
       strength: Math.floor(lv.strength * prayerBoost('strength')),
       defence: Math.floor(lv.defence * prayerBoost('defence')),
       ranged: Math.floor(lv.ranged * prayerBoost('ranged')),
+      tinkering: lv.tinkering,
       hitpoints: lv.hitpoints,
     },
     bonuses: totalBonuses(),

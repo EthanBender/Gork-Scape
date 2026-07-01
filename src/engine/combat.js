@@ -86,9 +86,7 @@ export function maxDefenceRoll(profile, incomingWeaponType) {
 // without the +8 a level-1 attacker can never roll above 0 damage.
 export function maxHit(profile) {
   const style = STYLES[profile.style] || STYLES.Aggressive;
-  const isRanged = profile.weaponType === 'ranged';
-  const lvl = isRanged ? profile.levels.ranged : profile.levels.strength;
-  const eff = lvl + style.str + 8;
+  const eff = powerLevel(profile) + style.str + 8;
   const { strBonus } = offensiveBonuses(profile);
   return Math.floor(0.5 + (eff * (strBonus + 64)) / 640);
 }
