@@ -50,9 +50,22 @@ test('monster names map to the right body silhouette', () => {
   eq(type('Ruin Wisp'), 'amorphous');
   eq(type('Rival Goblin Warrior'), 'humanoid');
   eq(type('Goblin Elder'), 'humanoid');
+  eq(type('Cave Bat'), 'avian');
+  eq(type('Reed Snake'), 'serpent');
+  eq(type('Bog Eel'), 'serpent');
 });
 
 test('tougher creatures render larger (size multiplier)', () => {
   assert(bodyTypeFor('Cave Troll').size > bodyTypeFor('Training Rat').size, 'a troll dwarfs a rat');
-  assert(bodyTypeFor('Giant Spider').size >= bodyTypeFor('Cave Bug').size, 'giant ≥ regular bug');
+  assert(bodyTypeFor('Cave Troll').size >= 1.3, 'heavies scale up');
+});
+
+test('bosses carry the boss flag (aura) regardless of silhouette', () => {
+  const king = bodyTypeFor('Bog King');
+  assert(king.boss === true && king.type === 'humanoid', 'a king is a humanoid boss');
+  const horror = bodyTypeFor('Grub Bog Horror');
+  assert(horror.boss === true && horror.type === 'insectoid', 'an insectoid boss keeps its silhouette');
+  assert(bodyTypeFor('Deep Metal Golem').boss === true, 'golem boss');
+  assert(!bodyTypeFor('Training Rat').boss, 'a rat is not a boss');
+  assert(bodyTypeFor('Bog King').size >= 1.5, 'bosses are large');
 });

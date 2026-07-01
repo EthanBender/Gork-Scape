@@ -1356,6 +1356,9 @@ function approach(o, key, target, maxStep) {
 // pathing and hit-testing all stay on the flat grid.
 const ELEV_BASE = 80, ELEV_K = 0.34;
 function elevLift(elev, i) { return elev ? (elev[i] - ELEV_BASE) * ELEV_K : 0; }
+// Vertical lift (px) for anything standing on tile (tx,ty) — entities, their
+// labels, ground items, path/target highlights — so they ride the raised terrain.
+function tileLiftXY(tx, ty) { const e = Game.world.elevation; return e ? (e[ty * Game.world.W + tx] - ELEV_BASE) * ELEV_K : 0; }
 function shadeColor(c, f) { const r = (c >> 16) & 255, g = (c >> 8) & 255, b = c & 255; return ((Math.min(255, r * f) | 0) << 16) | ((Math.min(255, g * f) | 0) << 8) | (Math.min(255, b * f) | 0); }
 
 function drawTerrain() {
@@ -1427,14 +1430,14 @@ function drawObjects() {
 
   const p = Game.player;
   g.fillStyle(0xffffff, 0.18);
-  for (const [tx, ty] of p.path || []) g.fillRect(tx * TILE_SIZE + 8, ty * TILE_SIZE + 8, 16, 16);
+  for (const [tx, ty] of p.path || []) g.fillRect(tx * TILE_SIZE + 8, ty * TILE_SIZE + 8 - tileLiftXY(tx, ty), 16, 16);
   if (p.interactTarget && !p.interactTarget.depleted) {
     const o = p.interactTarget;
-    g.lineStyle(2, 0xffe14d, 0.9); g.strokeRect(o.x * TILE_SIZE + 1, o.y * TILE_SIZE + 1, TILE_SIZE - 2, TILE_SIZE - 2);
+    g.lineStyle(2, 0xffe14d, 0.9); g.strokeRect(o.x * TILE_SIZE + 1, o.y * TILE_SIZE + 1 - tileLiftXY(o.x, o.y), TILE_SIZE - 2, TILE_SIZE - 2);
   }
   if (p.combatTarget && !p.combatTarget.dead) {
     const t = p.combatTarget;
-    g.lineStyle(2, 0xff4d4d, 0.9); g.strokeRect(t.tileX * TILE_SIZE + 1, t.tileY * TILE_SIZE + 1, TILE_SIZE - 2, TILE_SIZE - 2);
+    g.lineStyle(2, 0xff4d4d, 0.9); g.strokeRect(t.tileX * TILE_SIZE + 1, t.tileY * TILE_SIZE + 1 - tileLiftXY(t.tileX, t.tileY), TILE_SIZE - 2, TILE_SIZE - 2);
   }
 }
 
@@ -1442,7 +1445,7 @@ function drawGround() {
   const g = groundGfx; g.clear();
   for (const it of Game.groundItems) {
     const def = ITEMS[it.id];
-    const cx = it.x * TILE_SIZE + 16, cy = it.y * TILE_SIZE + 16;
+    const cx = it.x * TILE_SIZE + 16, cy = it.y * TILE_SIZE + 16 - tileLiftXY(it.x, it.y);
     g.fillStyle(def.color, 1); g.fillRect(cx - 6, cy - 6, 12, 12);
     g.lineStyle(1, 0xffffff, 0.85); g.strokeRect(cx - 6, cy - 6, 12, 12);
   }
@@ -1517,7 +1520,7 @@ function collectCharacters(time) {
 
 function drawCharacter(g, ent, time) {
   const p = Game.player, isP = ent === p;
-  const feetY = ent.py + AV_FEET;
+  const feetY = ent.py + AV_FEET - tileLiftXY(ent.tileX, ent.tileY); // ride the raised terrain
   if (!isP && ent.dead) {
     const st = avatarStateFor(ent, false, time);
     st.anim = 'dead'; st.phase = (time - ent._deathAt) / 700;
@@ -1573,12 +1576,12 @@ function updateLabels() {
   const rot = -scene.cameras.main.rotation;
   // labels sit above the avatar head (feet + AV_FEET, up past the rig top)
   playerLabel.setText(`Gork (Lv ${playerCombatLevel()})`)
-    .setPosition(p.px, p.py + AV_FEET - AV_TOP - 4).setRotation(rot);
+    .setPosition(p.px, p.py + AV_FEET - AV_TOP - 4 - tileLiftXY(p.tileX, p.tileY)).setRotation(rot);
   for (const n of Game.npcs) {
     if (!n._label) continue;
     const near = !n.dead && manhattan(n.tileX, n.tileY, p.tileX, p.tileY) <= 18;
     n._label.setVisible(near);
-    if (near) n._label.setPosition(n.px, n.py + AV_FEET - AV_TOP - 2).setRotation(rot);
+    if (near) n._label.setPosition(n.px, n.py + AV_FEET - AV_TOP - 2 - tileLiftXY(n.tileX, n.tileY)).setRotation(rot);
   }
   // Object labels: nearest labeled visible objects, pooled.
   const v = viewRange();
@@ -1595,7 +1598,7 @@ function updateLabels() {
       if (uiCam) uiCam.ignore(t); // HUD camera must not double-draw world labels
     }
     const o = near[i];
-    t.setText(o.label).setPosition(o.x * TILE_SIZE + 16, o.y * TILE_SIZE + TILE_SIZE - 1)
+    t.setText(o.label).setPosition(o.x * TILE_SIZE + 16, o.y * TILE_SIZE + TILE_SIZE - 1 - tileLiftXY(o.x, o.y))
       .setRotation(rot).setVisible(true);
   }
   for (let i = near.length; i < objLabelPool.length; i++) objLabelPool[i].setVisible(false);

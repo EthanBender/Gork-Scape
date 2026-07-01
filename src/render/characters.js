@@ -160,6 +160,7 @@ export function avatarStateFor(e, isPlayer, time, skillObj = null) {
     phase: attacking ? (time - e._swingAt) / 420 : hit ? (time - e._hitAt) / 300 : 0,
     t,
     bodyType: body.type,
+    boss: !isPlayer && !!body.boss,
     weaponStyle: isPlayer ? weaponStyleFor(equip.weapon)
       : (elder ? 'unarmed' : (gear.weapon ? gear.weapon.style : 'crush')),
     gear,
