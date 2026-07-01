@@ -1104,14 +1104,15 @@ export function renderEquipment() {
           cell.appendChild(q);
         }
         cell.onclick = () => { hideTip(); unequipItem(slot); Game.refresh(); };
-        cell.oncontextmenu = (ev) => {
-          ev.preventDefault();
+        const equipMenu = (x, y) => {
           hideTip();
-          showContextMenu(ev.clientX, ev.clientY, [
+          showContextMenu(x, y, [
             ['Remove', () => { unequipItem(slot); Game.refresh(); }],
             ['Examine', () => Game.log(examineText(item.id, item.name))],
           ]);
         };
+        cell.oncontextmenu = (ev) => { ev.preventDefault(); equipMenu(ev.clientX, ev.clientY); };
+        bindLongPress(cell, equipMenu);
       } else {
         cell.classList.add('doll-vacant');
         cell.textContent = SLOT_ICON[slot] || slot.slice(0, 3);

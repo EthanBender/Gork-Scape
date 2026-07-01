@@ -20,6 +20,9 @@ function offensiveBonuses(profile) {
   if (profile.weaponType === 'ranged') {
     return { atkBonus: b.range_atk, strBonus: b.range_str };
   }
+  if (profile.weaponType === 'tinker') {
+    return { atkBonus: b.tinker_atk, strBonus: b.tinker_str };
+  }
   // Melee: choose the attack bonus matching the weapon's damage type.
   const byType = { stab: b.stab_atk, slash: b.slash_atk, crush: b.crush_atk };
   const atkBonus = byType[profile.weaponType] ?? b.slash_atk;
@@ -30,8 +33,21 @@ function offensiveBonuses(profile) {
 function defensiveBonus(profile, weaponType) {
   const b = profile.bonuses;
   if (weaponType === 'ranged') return b.range_def;
+  if (weaponType === 'tinker') return b.tinker_def;
   const byType = { stab: b.stab_def, slash: b.slash_def, crush: b.crush_def };
   return byType[weaponType] ?? b.slash_def;
+}
+
+// Which combat level drives a weapon type's accuracy & max hit.
+function attackLevel(profile) {
+  if (profile.weaponType === 'ranged') return profile.levels.ranged;
+  if (profile.weaponType === 'tinker') return profile.levels.tinkering || 1;
+  return profile.levels.attack;
+}
+function powerLevel(profile) {
+  if (profile.weaponType === 'ranged') return profile.levels.ranged;
+  if (profile.weaponType === 'tinker') return profile.levels.tinkering || 1;
+  return profile.levels.strength;
 }
 
 // ---- attack range (in tiles, manhattan) ----
