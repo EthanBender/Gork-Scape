@@ -96,13 +96,21 @@ function capeHint(item) {
 // add an authoritative `render.bodyType` on monsters.json to override this.
 export function bodyTypeFor(name = '') {
   const n = name.toLowerCase();
-  if (/slime|ooze|blob|jelly|wisp|spirit|sprite|mireling/.test(n)) return { type: 'amorphous', size: 0.95 };
-  if (/spider|\bbug\b|crab|crawler|mosquito|\bgrub\b|beetle|scorpion|mite|swarm|snapper/.test(n))
-    return { type: 'insectoid', size: /giant|deep|horror|swarm/.test(n) ? 1.05 : 0.85 };
-  if (/\brat\b|wolf|boar|hound|\bdog\b|bear|frog|\bbat\b|snake/.test(n))
-    return { type: 'quadruped', size: /wolf|boar|bear|dire/.test(n) ? 1.15 : 0.8 };
-  const size = /troll|golem|\bking\b|horror|berserker|brute|ogre|captain|guardian/.test(n) ? 1.4 : 1;
-  return { type: 'humanoid', size };
+  // `boss` is orthogonal to silhouette — a boss can be humanoid OR insectoid etc.
+  // It adds an aura + guarantees a large size. `big` covers non-boss heavies.
+  const boss = /\bking\b|\bboss\b|horror|golem|guardian|overlord|warlord|dragon|titan|elder\b.*\b(dragon|god)/.test(n);
+  const big = boss || /troll|ogre|berserker|brute|captain|\bgiant\b|great/.test(n);
+
+  let type, size;
+  if (/slime|ooze|blob|jelly|wisp|spirit|sprite|mireling/.test(n)) { type = 'amorphous'; size = 0.95; }
+  else if (/\bbat\b|moth|wasp|hornet|\bbird\b|raven|crow|harpy/.test(n)) { type = 'avian'; size = 0.8; }
+  else if (/snake|serpent|\beel\b|python|adder|viper|\bworm\b|slug/.test(n)) { type = 'serpent'; size = 0.95; }
+  else if (/spider|\bbug\b|crab|crawler|mosquito|\bgrub\b|beetle|scorpion|mite|swarm|snapper/.test(n)) { type = 'insectoid'; size = /giant|deep|swarm/.test(n) ? 1.05 : 0.85; }
+  else if (/\brat\b|wolf|boar|hound|\bdog\b|bear|frog|lizard/.test(n)) { type = 'quadruped'; size = /wolf|boar|bear|dire/.test(n) ? 1.15 : 0.8; }
+  else { type = 'humanoid'; size = 1; }
+
+  if (big) size = Math.max(size, boss ? 1.5 : 1.3);
+  return { type, size, boss };
 }
 
 // ---- top-level: whole-loadout hints --------------------------------------
