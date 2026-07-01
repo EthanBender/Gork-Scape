@@ -2289,10 +2289,70 @@ function drawWorldMap(canvas) {
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     ctx.fillText('!', x, y + 0.5);
   }
+  // [char-render] POI icons — same set as the minimap: coin = shop, wagon = cart/
+  // mine cart, red ring = blood portal. Clustered so the dense town shops don't
+  // pile into one gold blob (each town district collapses to one marker).
+  for (const c of clusterPOIs(collectPOIs(), 16)) {
+    drawWorldPOIIcon(ctx, c.tx * sx, c.ty * sy, c.kind);
+  }
+  drawWorldMapLegend(ctx);
   // player marker (white ring)
   ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2;
   ctx.beginPath(); ctx.arc(p.tileX * sx, p.tileY * sy, 5, 0, Math.PI * 2); ctx.stroke();
   ctx.fillStyle = '#ffffff'; ctx.fillRect(p.tileX * sx - 1, p.tileY * sy - 1, 2, 2);
+}
+
+// [char-render] Merge same-kind POIs within `thresh` tiles into one marker, so
+// clusters (e.g. all the town shops) read as a single icon on the world map.
+function clusterPOIs(pois, thresh) {
+  const out = [];
+  for (const poi of pois) {
+    let hit = null;
+    for (const c of out) {
+      if (c.kind === poi.kind && Math.abs(c.tx - poi.tx) <= thresh && Math.abs(c.ty - poi.ty) <= thresh) { hit = c; break; }
+    }
+    if (hit) { hit.tx = (hit.tx * hit.n + poi.tx) / (hit.n + 1); hit.ty = (hit.ty * hit.n + poi.ty) / (hit.n + 1); hit.n++; }
+    else out.push({ tx: poi.tx, ty: poi.ty, kind: poi.kind, n: 1 });
+  }
+  return out;
+}
+
+// Canvas-2D versions of the minimap POI icons (the world map uses a 2D context,
+// not Phaser graphics). Fixed pixel size so they stay legible at world scale.
+function drawWorldPOIIcon(ctx, x, y, kind) {
+  ctx.fillStyle = 'rgba(0,0,0,0.5)'; ctx.beginPath(); ctx.arc(x, y, 7, 0, Math.PI * 2); ctx.fill();
+  if (kind === 'portal') {
+    ctx.strokeStyle = '#ff6b7a'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(x, y, 5, 0, Math.PI * 2); ctx.stroke();
+    ctx.fillStyle = '#aa2233'; ctx.beginPath(); ctx.arc(x, y, 2.8, 0, Math.PI * 2); ctx.fill();
+  } else if (kind === 'cart' || kind === 'minecart') {
+    ctx.fillStyle = kind === 'minecart' ? '#b8b8b8' : '#c08a4a';
+    ctx.fillRect(x - 5, y - 3.2, 10, 5);
+    ctx.fillStyle = '#141414';
+    ctx.beginPath(); ctx.arc(x - 3, y + 2.6, 1.6, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(x + 3, y + 2.6, 1.6, 0, Math.PI * 2); ctx.fill();
+  } else { // shop coin
+    ctx.fillStyle = '#ffcf3f'; ctx.beginPath(); ctx.arc(x, y, 5, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = '#7a5a10'; ctx.lineWidth = 1.5; ctx.stroke();
+    ctx.fillStyle = '#7a5a10'; ctx.fillRect(x - 0.8, y - 2.6, 1.6, 5.2);
+  }
+}
+
+// A small legend in the world map's top-left so the icons make sense at a glance.
+function drawWorldMapLegend(ctx) {
+  const rows = [['shop', 'Shops'], ['cart', 'Cart / Mine cart'], ['portal', 'Blood portal'], ['quest', 'Quest']];
+  const x = 10, w = 148, rh = 19, top = 10;
+  ctx.fillStyle = 'rgba(10,10,8,0.72)'; ctx.strokeStyle = 'rgba(224,192,80,0.5)'; ctx.lineWidth = 1;
+  ctx.fillRect(x - 4, top - 4, w, rows.length * rh + 8); ctx.strokeRect(x - 4, top - 4, w, rows.length * rh + 8);
+  ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.font = 'bold 11px monospace';
+  let y = top + rh / 2;
+  for (const [kind, label] of rows) {
+    if (kind === 'quest') { // match economy's gold quest diamond
+      ctx.fillStyle = '#ffd23f'; ctx.strokeStyle = '#000'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(x + 6, y - 5); ctx.lineTo(x + 11, y); ctx.lineTo(x + 6, y + 5); ctx.lineTo(x + 1, y); ctx.closePath(); ctx.fill(); ctx.stroke();
+    } else { drawWorldPOIIcon(ctx, x + 6, y, kind); }
+    ctx.fillStyle = '#e9e2cf'; ctx.fillText(label, x + 20, y);
+    y += rh;
+  }
 }
 
 // ---------------------------------------------------------------- boot

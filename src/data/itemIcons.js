@@ -193,7 +193,7 @@ const TINT = {
 // Keys that should get a hash-hue when no known material matches (naturally
 // multi-coloured item groups). Metal/wood shapes stay their default otherwise.
 const HASH_KEYS = new Set(['gem', 'fish', 'herb', 'potion', 'cape', 'amulet', 'ring', 'charm', 'seed', 'book',
-  'cloth', 'tooth', 'scale', 'feather', 'box', 'bones']);
+  'cloth', 'tooth', 'scale', 'feather', 'box', 'bones', 'hide']);
 
 function hueFromString(str) {
   // djb2 over a 32-bit range then fold to hue — spreads similar names far apart
