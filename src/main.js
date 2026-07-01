@@ -58,6 +58,7 @@ import {
   onTalk as questOnTalk, onArrive as questOnArrive, questMarkers,
 } from './systems/quests.js'; // [economy lane] quest engine v2
 import { playCutscene } from './systems/cutscene.js'; // [economy lane] cinematic quest beats
+import './data/questItems.js'; // [economy lane] register unique quest items into ITEMS
 // [character-render lane] — the visible avatar. Pure rendering; reads state only.
 import { drawAvatar } from './render/avatar.js';
 import { gearHints, weaponStyleFor, bodyTypeFor } from './render/gear.js';

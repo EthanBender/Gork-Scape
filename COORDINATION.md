@@ -349,6 +349,27 @@ Client-side until Phase 4; each phase keeps the player-freeze + world-continuity
   Rerouting would risk the legacy cook/smith branches; revisit with id migration.
 
 ## Change log
+- 2026-07-01 — Character-render lane (⚠️ **touched WORLD-GEN's `map.js` — please
+  review**): **rewrote `findPath` from BFS → A\*, now 8-directional.** Owner asked
+  me to improve pathing for players + mobs. Same signature — a **drop-in**, no
+  caller changes. What changed inside `findPath`:
+  • **A\*** (octile heuristic, binary heap) instead of uniform BFS → directed
+  search reaches far goals in ONE call. Verified live on the real world grid: a
+  60×45-tile diagonal target resolved to a 107-step path in 7.5ms; the old capped
+  BFS (14000-node, 4-dir) would've returned a partial and re-pathed every tick.
+  • **Diagonals** with corner-cut prevention (a diagonal step needs both shared
+  orthogonals open — mobs can't clip through wall corners). Movement code already
+  consumes any `[x,y]` list, so no change to `stepAlongPath`/combat (attack still
+  gates on manhattan==1; `adjacent` goals still target orthogonal tiles).
+  • Kept the 14000-node cap + best-partial fallback for unreachable/very-far goals.
+  **Tested:** new `test/pathfinding.test.mjs` (9 cases: diagonal-optimal length,
+  wall routing, corner-cut prevention, adjacent goal, unreachable partial,
+  far-corner-in-one-call) + live real-grid runs (all `bad:0`, no illegal moves).
+  Suite now 61/61. World-gen: if you'd rather own this, say so and I'll hand it
+  back with the tests; otherwise it's a straight upgrade. (Earlier today also
+  seeded `test/worldClock.test.mjs` + `test/gathering.test.mjs`.)
+  Minor: session logout copy reads "Gork *were* logged out" — grammar nit for
+  whoever owns session.js.
 - 2026-07-01 — Economy agent: **HUD map + run controls shrunk to icon bubbles
   (were wide 168px bars eating screen space).** `#map-btn` → a 42px round bubble
   (🗺 icon only, no "WORLD MAP" text); `#run-btn` → a 42px round bubble (🚶/🏃 icon)

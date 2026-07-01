@@ -10,6 +10,7 @@
 import { Game } from '../engine/state.js';
 import { ITEMS } from '../items/equipment.js';
 import { recipeGroups, canAssemble, assemble, countMaterial } from './tinkering.js';
+import { hasUnlock } from './quests.js';
 
 let mounted = false;
 
@@ -49,6 +50,8 @@ function injectCss() {
   .tk-make { background:linear-gradient(180deg,#4d7a2f,#3a5f22); color:#efe8d4; font-weight:700;
     border:1px solid #0d0c08; border-radius:5px; padding:6px 10px; cursor:pointer; font-size:12px; white-space:nowrap; }
   .tk-make:disabled { filter:grayscale(1) brightness(.7); cursor:default; }
+  .tk-locked { padding:22px 18px; text-align:center; color:#c9b489; font-size:13px; line-height:1.5; }
+  .tk-locked b { color:#e8c65a; }
   `;
   document.head.appendChild(s);
 }
@@ -68,9 +71,17 @@ function render() {
   if (!overlay || overlay.hidden) return;
   const lvl = Game.skills.Tinkering ? Game.skills.Tinkering.level : 1;
   overlay.querySelector('.tk-lvl').textContent = `Tinkering ${lvl}`;
-  const groups = recipeGroups();
   const list = overlay.querySelector('.tk-list');
   list.innerHTML = '';
+  // Gate: the whole skill is locked until the intro quest grants it.
+  if (!hasUnlock('tinkering')) {
+    list.innerHTML = `<div class="tk-locked">🔒 You aren't a Tinkerer yet.<br><br>
+      Find <b>Sprocket the Tinker</b> near the settlement and complete
+      <b>"Sparks of Invention"</b> to learn the craft. Further gadgets unlock as you
+      progress <b>The Tinkerer's Path</b> quest line.</div>`;
+    return;
+  }
+  const groups = recipeGroups();
   for (const r of groups[activeTab]) {
     const chk = canAssemble(r.id);
     const row = document.createElement('div');
