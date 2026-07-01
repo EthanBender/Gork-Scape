@@ -23,3 +23,5 @@ jobs:
         run: node scripts/economy_sim.mjs
       - name: Quest engine end-to-end test
         run: node scripts/quest_test.mjs
+      - name: XP / progression pacing validator (equipment + gather↔process + combat)
+        run: node scripts/pacing_sim.mjs
