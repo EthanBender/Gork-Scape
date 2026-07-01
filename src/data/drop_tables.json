@@ -2932,5 +2932,86 @@
   "qty_min": 1,
   "qty_max": 1,
   "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "cave_troll_drops",
+  "monster_id": "cave_troll",
+  "item_id": "magma_core",
+  "chance_percent": 6,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "troll_miner_drops",
+  "monster_id": "troll_miner",
+  "item_id": "magma_core",
+  "chance_percent": 6,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "deep_metal_golem_drops",
+  "monster_id": "deep_metal_golem",
+  "item_id": "voidshard",
+  "chance_percent": 4,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "grub_bog_horror_drops",
+  "monster_id": "grub_bog_horror",
+  "item_id": "voidshard",
+  "chance_percent": 4,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "meteor_sprite_drops",
+  "monster_id": "meteor_sprite",
+  "item_id": "star_alloy",
+  "chance_percent": 5,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "red_ear_captain_drops",
+  "monster_id": "red_ear_captain",
+  "item_id": "star_alloy",
+  "chance_percent": 5,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "meteor_sprite_drops",
+  "monster_id": "meteor_sprite",
+  "item_id": "aether_dust",
+  "chance_percent": 7,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "bog_king_drops",
+  "monster_id": "bog_king",
+  "item_id": "aether_dust",
+  "chance_percent": 7,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
+ },
+ {
+  "drop_table_id": "deep_metal_golem_drops",
+  "monster_id": "deep_metal_golem",
+  "item_id": "thunderquartz",
+  "chance_percent": 6,
+  "qty_min": 1,
+  "qty_max": 1,
+  "drop_role": "rare"
  }
 ]
