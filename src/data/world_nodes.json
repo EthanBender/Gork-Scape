@@ -2065,5 +2065,70 @@
   "respawn_seconds": 0,
   "interaction": "dredge",
   "notes": "[Tinkering expansion] feeds the Tinkering skill; see docs/TINKERING_EXPANSION_PLAN.md."
+ },
+ {
+  "node_id": "prismite_shard_ruins",
+  "display_name": "Prismatic Ruin Shard",
+  "node_type": "mineral",
+  "related_skill": "mining",
+  "level_requirement": 64,
+  "region": "old_forest_ruins",
+  "outputs": "prismite",
+  "required_tool": "pickaxe",
+  "respawn_seconds": 50,
+  "interaction": "mine",
+  "notes": "[Tinkering expansion] feeds the Tinkering skill; see docs/TINKERING_EXPANSION_PLAN.md."
+ },
+ {
+  "node_id": "thunder_node_mush",
+  "display_name": "Thunder Node",
+  "node_type": "mineral",
+  "related_skill": "mining",
+  "level_requirement": 60,
+  "region": "mushroom_forest",
+  "outputs": "thunderquartz",
+  "required_tool": "pickaxe",
+  "respawn_seconds": 48,
+  "interaction": "mine",
+  "notes": "[Tinkering expansion] feeds the Tinkering skill; see docs/TINKERING_EXPANSION_PLAN.md."
+ },
+ {
+  "node_id": "frost_seep_bog",
+  "display_name": "Frost Seep",
+  "node_type": "vent",
+  "related_skill": "tinkering",
+  "level_requirement": 52,
+  "region": "bog_of_grub",
+  "outputs": "frostglass",
+  "required_tool": "chem_kit",
+  "respawn_seconds": 42,
+  "interaction": "vent",
+  "notes": "[Tinkering expansion] feeds the Tinkering skill; see docs/TINKERING_EXPANSION_PLAN.md."
+ },
+ {
+  "node_id": "aether_vent_troll",
+  "display_name": "Aether Vent",
+  "node_type": "vent",
+  "related_skill": "tinkering",
+  "level_requirement": 70,
+  "region": "troll_ridge",
+  "outputs": "aether_dust",
+  "required_tool": "heat_tongs",
+  "respawn_seconds": 56,
+  "interaction": "vent",
+  "notes": "[Tinkering expansion] feeds the Tinkering skill; see docs/TINKERING_EXPANSION_PLAN.md."
+ },
+ {
+  "node_id": "scrap_reef",
+  "display_name": "Scrap Reef",
+  "node_type": "salvage_water",
+  "related_skill": "fishing",
+  "level_requirement": 48,
+  "region": "grublake",
+  "outputs": "scrap_metal",
+  "required_tool": "harpoon",
+  "respawn_seconds": 0,
+  "interaction": "dredge",
+  "notes": "[Tinkering expansion] feeds the Tinkering skill; see docs/TINKERING_EXPANSION_PLAN.md."
  }
 ]

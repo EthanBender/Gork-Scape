@@ -204,6 +204,14 @@ const MODS = {
   mod_recoil_damper:{ name: 'Recoil Damper',      value: 110, effectMod: { accuracyMult: 1.1 },  blurb: '+10% accuracy' },
   mod_snare_barbs:  { name: 'Snare Barbs',        value: 120, effectMod: { snare: true },        blurb: 'roots the target' },
   mod_cryo_tip:     { name: 'Cryo Tip',           value: 170, effectMod: { armorPierce: 0.15, damageMult: 1.1 }, blurb: '+15% pierce, +10% dmg' },
+  mod_multibarrel:  { name: 'Multi-Barrel',       value: 210, effectMod: { hits: 1 },                          blurb: '+1 hit per attack' },
+  mod_thermobaric:  { name: 'Thermobaric Charge', value: 230, effectMod: { splash: 0.15, burn: 1 },            blurb: '+15% splash, +1 burn' },
+  mod_railgun_coil: { name: 'Railgun Coil',       value: 260, effectMod: { accuracyMult: 1.1, armorPierce: 0.2 }, blurb: '+10% acc, +20% pierce' },
+  mod_scattershot:  { name: 'Scattershot Choke',  value: 150, effectMod: { splash: 0.25 },                     blurb: '+25% splash' },
+  mod_stun_rounds:  { name: 'Stun Rounds',        value: 160, effectMod: { snare: true, damageMult: 1.05 },    blurb: 'roots + 5% dmg' },
+  mod_hollow_point: { name: 'Hollow Point',       value: 180, effectMod: { damageMult: 1.15 },                 blurb: '+15% damage' },
+  mod_arc_diffuser: { name: 'Arc Diffuser',       value: 240, effectMod: { chain: 1, accuracyMult: 1.05 },     blurb: '+1 chain, +5% acc' },
+  mod_focusing_lens:{ name: 'Focusing Lens',      value: 200, effectMod: { accuracyMult: 1.2 },                blurb: '+20% accuracy' },
 };
 for (const [id, d] of Object.entries(MODS)) {
   reg(id, { slot: null, stackable: false, value: d.value, gadgetMod: true, ...d });
@@ -336,6 +344,14 @@ recipe('mod_extended_mag', { output: 'mod_extended_mag', outQty: 1, level: 26, x
 recipe('mod_recoil_damper',{ output: 'mod_recoil_damper',outQty: 1, level: 24, xp: 50, unlock: 'tinkering_tools', makes: 'mod', inputs: [{ id: 'coil_spring', qty: 2 }, { id: 'rubber_sap', qty: 2 }] });
 recipe('mod_snare_barbs',  { output: 'mod_snare_barbs',  outQty: 1, level: 30, xp: 60, unlock: 'tinkering_tools', makes: 'mod', inputs: [{ id: 'sinew', qty: 2 }, { id: 'scrap_metal', qty: 3 }] });
 recipe('mod_cryo_tip',     { output: 'mod_cryo_tip',     outQty: 1, level: 44, xp: 100, unlock: 'tinkering_voltaic', makes: 'mod', inputs: [{ id: 'coolant', qty: 2 }, { id: 'obsidian_shard', qty: 1 }] });
+recipe('mod_multibarrel',  { output: 'mod_multibarrel',  outQty: 1, level: 48, xp: 110, unlock: 'tinkering_tools', makes: 'mod', inputs: [{ id: 'flywheel', qty: 1 }, { id: 'breech', qty: 1 }] });
+recipe('mod_thermobaric',  { output: 'mod_thermobaric',  outQty: 1, level: 50, xp: 120, unlock: 'tinkering_powder', makes: 'mod', inputs: [{ id: 'nitro_paste', qty: 1 }, { id: 'incendiary_gel', qty: 1 }, { id: 'firing_pin', qty: 1 }] });
+recipe('mod_railgun_coil', { output: 'mod_railgun_coil', outQty: 1, level: 66, xp: 170, unlock: 'tinkering_voltaic', makes: 'mod', inputs: [{ id: 'ignition_coil', qty: 1 }, { id: 'lodestone', qty: 2 }] });
+recipe('mod_scattershot',  { output: 'mod_scattershot',  outQty: 1, level: 34, xp: 74, unlock: 'tinkering_powder', makes: 'mod', inputs: [{ id: 'metal_casing', qty: 1 }, { id: 'scrap_metal', qty: 3 }] });
+recipe('mod_stun_rounds',  { output: 'mod_stun_rounds',  outQty: 1, level: 36, xp: 78, unlock: 'tinkering_tools', makes: 'mod', inputs: [{ id: 'sinew', qty: 1 }, { id: 'coil_spring', qty: 1 }, { id: 'chalk', qty: 1 }] });
+recipe('mod_hollow_point', { output: 'mod_hollow_point', outQty: 1, level: 42, xp: 92, unlock: 'tinkering_tools', makes: 'mod', inputs: [{ id: 'firing_pin', qty: 1 }, { id: 'quicksilver', qty: 1 }] });
+recipe('mod_arc_diffuser', { output: 'mod_arc_diffuser', outQty: 1, level: 62, xp: 150, unlock: 'tinkering_voltaic', makes: 'mod', inputs: [{ id: 'capacitor', qty: 1 }, { id: 'thunderquartz', qty: 1 }] });
+recipe('mod_focusing_lens',{ output: 'mod_focusing_lens',outQty: 1, level: 46, xp: 104, unlock: 'tinkering_tools', makes: 'mod', inputs: [{ id: 'prismite', qty: 1 }, { id: 'brass_cog', qty: 1 }] });
 recipe('metal_casing', { output: 'metal_casing', outQty: 2, level: 6,  xp: 14, inputs: [{ any: 'bar', qty: 1 }] });
 recipe('iron_barrel',  { output: 'iron_barrel',  outQty: 1, level: 15, xp: 30, inputs: [{ id: 'iron_bar', qty: 2 }] });
 recipe('coil_spring',  { output: 'coil_spring',  outQty: 2, level: 10, xp: 16, inputs: [{ any: 'bar', qty: 1 }, { id: 'scrap_metal', qty: 1 }] });
