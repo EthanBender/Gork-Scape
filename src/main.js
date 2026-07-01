@@ -133,6 +133,18 @@ function buildWorld() {
     levels: elderLevels, combatLevel: null, bonuses: emptyBonuses(),
   }));
 
+  // [economy lane] Sprocket the Tinker — quest-giver for the Tinkering skill and
+  // keeper of the Workbench (talk to open it). id 'sprocket' matches the quest
+  // giver + talkTo hook. world-gen: fine to relocate, keep the id.
+  const sproketPos = findOpenTileNear(world, world.spawn.x + 6, world.spawn.y + 4, 8) || { x: world.spawn.x + 6, y: world.spawn.y + 4 };
+  Game.npcs.push(new NPC({
+    id: 'sprocket', name: 'Sprocket the Tinker', type: 'elder',
+    tileX: sproketPos.x, tileY: sproketPos.y,
+    color: 0xb8863a, aggressive: false,
+    dialog: 'Bombs, cannons, contraptions — that\'s the goblin art! Talk to me to tinker.',
+    levels: elderLevels, combatLevel: null, bonuses: emptyBonuses(),
+  }));
+
   // [economy lane] Banker — gates the Bank panel. Placed near spawn provisionally
   // (points north toward the Bank building world-gen placed at ~493,431); world-gen:
   // relocate into the Bank building and keep id 'banker' so the proximity gate finds it.

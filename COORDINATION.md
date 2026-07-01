@@ -367,6 +367,18 @@ Client-side until Phase 4; each phase keeps the player-freeze + world-continuity
   Rerouting would risk the legacy cook/smith branches; revisit with id migration.
 
 ## Change log
+- 2026-07-01 — Economy agent: **Tinker's Workbench is now a WORLD NODE, not a
+  floating HUD button (matches the design doc's plan).** `docs/TINKERING_DESIGN.md`
+  always intended "a Tinker's Workbench station"; the `#tinker-btn` was a
+  placeholder. Changes: `tinkeringUI.js` — `openWorkbench()` now exported,
+  `initTinkerHud()` just readies the popup CSS (no button; dead `#tinker-btn` CSS
+  removed). `map.js buildTown` — a **Tinker's Workbench** structure in the Forge
+  Ward at (496,416), `skill:'Tinkering'` so a click routes through `performSkill`.
+  `main.js performSkill` — new hook: `o.label === "Tinker's Workbench"` →
+  `openWorkbench()` (+ imported it; the popup is modal so no walk-away anchor
+  needed). Verified live: no floating button, workbench in-world, walking to it
+  opens the "🔧 Tinker's Workbench — Tinkering 1" popup (correct level-1 locked
+  message pointing to the *Sparks of Invention* quest), 0 console errors.
 - 2026-07-01 — Economy agent (⚠️ CROSS-LANE edit at owner's direct request):
   **spears now held UPRIGHT at rest** in `src/render/avatar.js` (character-render
   lane — heads up). Spears were drawn along the arm angle, so at idle/walk they
