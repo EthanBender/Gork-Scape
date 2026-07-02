@@ -33,6 +33,7 @@ import * as WorldClock from '../src/engine/worldClock.js';
 import * as WorldEvents from '../src/systems/worldEvents.js';
 import { Accounts } from './accounts.mjs';
 import { Presence } from './presence.mjs';
+import { Mobs } from './mobs.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');            // repo root (serve the client from here)
@@ -76,6 +77,12 @@ const accounts = new Accounts(ACCOUNTS_FILE);
 // Live multiplayer presence + shared chat (who's online, where, recent chat).
 // Ephemeral — see server/presence.mjs.
 const presence = new Presence();
+
+// ---------------------------------------------------------------- mobs
+// Server-authoritative monsters in the shared central zone (Stage 1 of the shared
+// world). See server/mobs.mjs. Generated from the same seed the clients use.
+const mobs = new Mobs();
+const MOB_VIEW_RADIUS = 32; // tiles of mobs to send a client around its position
 
 // ---------------------------------------------------------------- world state
 const market = new Market();
@@ -215,6 +222,7 @@ loadState();
 setInterval(() => {
   loopCount++;
   driftStep();
+  mobs.step(loopCount); // shared-world mobs: wander + respawn
   if (loopCount % SAVE_EVERY === 0) saveState();
   broadcast();
 }, LOOP_MS);
@@ -317,7 +325,12 @@ const server = http.createServer(async (req, res) => {
     if (!body) return sendJson(res, 400, { error: 'Bad request.' });
     const rec = accounts.resolve(body.token);
     if (!rec) return sendJson(res, 401, { error: 'Session expired.' });
-    return sendJson(res, 200, presence.heartbeat(rec.username, body, body.sinceChat));
+    const view = presence.heartbeat(rec.username, body, body.sinceChat);
+    // Attach the shared mobs near this player (interest-managed) — Stage 1 of the
+    // shared world. Clients render these instead of their own local mobs (Stage 2).
+    const px = Number(body.x) || 0, py = Number(body.y) || 0;
+    view.mobs = mobs.snapshotNear(px, py, MOB_VIEW_RADIUS);
+    return sendJson(res, 200, view);
   }
 
   // Post a shared-chat line (seen by everyone online). Token-authed.
