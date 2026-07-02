@@ -28,6 +28,28 @@
     ['Lady Vex', 'nice'], ['MudFoot', 'where do i find iron ore?'], ['Grok99', 'gz on 99']]
     .map(([n, t]) => `<div class="chat-line chat-msg"><span class="chat-name" style="color:#8fbcff">${n}:</span> <span class="chat-text">${t}</span></div>`).join('');
 
+  // ?panel=skills|equipment|combat|stations — swap the panel content to eyeball each.
+  const panel = new URLSearchParams(location.search).get('panel') || 'skills';
+  const SLOTS = ['🪖', '', '', '🧣', '📿', '🎯', '', '⚔️', '', '🛡️', '👕', '', '', '👖', '', '🧤', '🥾', '💍'];
+  const doll = ['head', 'cape', 'neck', 'ammo', 'weapon', 'shield', 'body', 'legs', 'hands', 'feet', 'ring']
+    .map((s, i) => `<div class="doll-slot${SLOTS[i] ? '' : ' doll-vacant'}">${SLOTS[i] || '·'}</div>`).join('');
+  const stat = ['Slash attack +4', 'Slash defence +12', 'Magic defence −5', 'Ranged defence +6', 'Melee strength +2']
+    .map(r => { const neg = r.includes('−'); const [n, v] = [r.slice(0, r.lastIndexOf(' ')), r.slice(r.lastIndexOf(' ') + 1)];
+      return `<div class="stat-row${neg ? ' neg' : ''}"><span>${n}</span><span>${v}</span></div>`; }).join('');
+  const styleBtns = ['Accurate', 'Aggressive', 'Defensive', 'Controlled']
+    .map((s, i) => `<button class="style-btn${i === 1 ? ' active' : ''}">${s}</button>`).join('');
+  const recipes = ['Bronze bar', 'Bronze dagger', 'Bronze sword', 'Iron bar', 'Bronze platebody']
+    .map((r, i) => `<div class="recipe-row${i > 3 ? ' locked' : ''}"><div class="recipe-info"><div class="recipe-name">${r}</div><div class="recipe-meta">Smithing ${i * 3 + 1} · +${20 + i * 10} xp</div><div class="recipe-inputs">2× bronze bar ✓</div></div><button class="craft-btn">Craft</button></div>`).join('');
+  const CONTENT = {
+    skills: `<div class="skills-grid">${cells}</div>`,
+    equipment: `<div class="paperdoll">${doll}</div><div class="stat-summary"><div class="stat-title">Equipment bonuses</div>${stat}</div>`,
+    combat: `<div class="hp-wrap"><div class="hp-label">Hitpoints 10 / 10</div><div class="hpbar"><div class="hpfill" style="width:100%"></div></div></div>`
+      + `<div class="style-wrap"><div class="stat-title">Attack style</div>${styleBtns}</div>`
+      + `<div class="target-info"><div class="stat-title">Weapon</div><div>Bronze scimitar — Melee, reach 1 tile</div></div>`
+      + `<div class="stat-summary" style="margin-top:8px"><div class="stat-title">Combat summary</div><div class="stat-row"><span>Max hit</span><span>4</span></div><div class="stat-row"><span>Accuracy rating</span><span>1,240</span></div><div class="stat-row"><span>Combat level</span><span>3</span></div></div>`,
+    stations: `<div class="station-bar">${['Furnace', 'Anvil', 'Range', 'Bench', 'Sawmill'].map((s, i) => `<button class="station-btn${i === 0 ? ' active' : ''}">${s}</button>`).join('')}</div>${recipes}`,
+  };
+
   document.getElementById('mount').outerHTML = `
   <div id="app">
     <div id="topbar">
@@ -46,7 +68,7 @@
       </div>
       <div id="side-panel">
         <div id="tabbar">${tabs}</div>
-        <div id="panel-content"><div class="skills-grid">${cells}</div></div>
+        <div id="panel-content">${CONTENT[panel] || CONTENT.skills}</div>
       </div>
     </div>
     <div id="chatlog">${chat}</div>
