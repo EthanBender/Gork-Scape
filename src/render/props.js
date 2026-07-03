@@ -45,6 +45,8 @@ export function propKind(label = '') {
   if (/fire|campfire|hearth|range/.test(n)) return 'fire';
   if (/coal/.test(n)) return 'coalheap';
   if (/stump/.test(n)) return 'stump';
+  if (/\bboat\b|skiff|rowboat|dinghy|coracle|\bpunt\b/.test(n)) return 'boat';
+  if (/\bnet\b|fishing net|drying net|trawl/.test(n)) return 'net';
   if (/log|lumber|saw|timber/.test(n)) return 'logpile';
   if (/ore cart|cart|wagon/.test(n)) return 'cart';
   if (/rock|rubble|heap|pile/.test(n)) return 'rockpile';
@@ -184,6 +186,20 @@ function pile(g, X, Y, c, cd) {
   g.fillStyle(cd, 1); g.fillCircle(X - 4, Y + 6, 4); g.fillCircle(X + 4, Y + 6, 4);
   g.fillStyle(c, 1); g.fillCircle(X, Y + 3, 5); g.fillCircle(X - 5, Y + 5, 3); g.fillCircle(X + 5, Y + 5, 3);
   g.fillStyle(shade(c, 1.35), 1); g.fillCircle(X - 1, Y + 1, 1.6);
+}
+function boat(g, X, Y) {
+  g.fillStyle(WOOD_D, 1); g.fillEllipse(X, Y + 5, 21, 8);              // hull outer
+  g.fillStyle(WOOD, 1); g.fillEllipse(X, Y + 4, 18, 6);               // hull
+  g.fillStyle(shade(WOOD, 1.25), 1); g.fillEllipse(X, Y + 3, 12, 3.4); // interior
+  g.fillStyle(WOOD_D, 1); g.fillRect(X - 1, Y - 2, 2, 8);             // thwart bench
+  g.lineStyle(1.8, WOOD_D, 1); g.beginPath(); g.moveTo(X + 5, Y + 2); g.lineTo(X + 14, Y - 6); g.strokePath(); // oar
+}
+function net(g, X, Y) {
+  g.fillStyle(WOOD_D, 1); g.fillRect(X - 8, Y - 8, 1.6, 18); g.fillRect(X + 7, Y - 8, 1.6, 18); g.fillRect(X - 8, Y - 8, 16, 1.6); // frame
+  g.lineStyle(0.6, 0xcbb48a, 0.85);
+  for (let i = -6; i <= 6; i += 3) { g.beginPath(); g.moveTo(X + i, Y - 7); g.lineTo(X + i, Y + 8); g.strokePath(); }
+  for (let jj = -6; jj <= 7; jj += 3) { g.beginPath(); g.moveTo(X - 7, Y + jj); g.lineTo(X + 7, Y + jj); g.strokePath(); }
+  g.fillStyle(0x9a9a6a, 0.8); g.fillCircle(X - 3, Y + 2, 1.3); g.fillCircle(X + 3, Y - 1, 1.1); // floats
 }
 function stump(g, X, Y) {
   g.fillStyle(0x5a3a20, 1); g.fillEllipse(X, Y + 8, 15, 6);             // ground shadow/roots
@@ -325,7 +341,7 @@ function bush(g, X, Y, accent) {
 const DRAW = {
   anvil, chest, barrel, stall, exchange, weaponrack, dummy, banner, tower, throne, well,
   shrine, cauldron, fire, coalheap, rockpile, logpile, cart, table, hiderack, bin,
-  entrance, sign, crate, hut, ladder, lamp, fence, bush, monument, fountain, flowers, planter, bench, stump,
+  entrance, sign, crate, hut, ladder, lamp, fence, bush, monument, fountain, flowers, planter, bench, stump, boat, net,
 };
 
 // Entry point: draw the prop for object `o` at tile top-left (cx,cy).
