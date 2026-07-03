@@ -156,12 +156,13 @@ export function grantBankSpace(n) {
 }
 
 // ---- banking (used at the Bank; everything stacks, storage is unlimited) ----
-// Deposit from an inventory slot into the bank. Stackables move the whole stack
-// (or `qty`); non-stackables move one. Coins deposit like any other item.
+// Deposit from an inventory slot into the bank. Stackables move up to `qty` of
+// the clicked stack; non-stackables (which hold one per slot) move the clicked
+// item plus up to `qty`-1 more of the SAME id from other inventory slots — so
+// "Deposit 5/10/All" works on a bag full of logs, not just on coin stacks.
 export function bankDeposit(invIndex, qty = Infinity) {
   const it = Game.inventory[invIndex];
   if (!it) return false;
-  const amount = it.stackable ? Math.min(qty, it.qty || 1) : 1;
   let slot = Game.bank.find((b) => b.id === it.id);
   if (!slot) {
     // A new distinct item needs a free slot; existing items always stack.
@@ -171,9 +172,21 @@ export function bankDeposit(invIndex, qty = Infinity) {
     }
     slot = { id: it.id, qty: 0 }; Game.bank.push(slot);
   }
-  slot.qty += amount;
-  if (it.stackable) { it.qty -= amount; if (it.qty <= 0) Game.inventory[invIndex] = null; }
-  else Game.inventory[invIndex] = null;
+  if (it.stackable) {
+    const amount = Math.min(qty, it.qty || 1);
+    slot.qty += amount;
+    it.qty -= amount;
+    if (it.qty <= 0) Game.inventory[invIndex] = null;
+  } else {
+    // Deposit the clicked slot, then sweep up to `qty`-1 more matching singles.
+    slot.qty += 1;
+    Game.inventory[invIndex] = null;
+    let want = qty - 1;
+    for (let i = 0; i < Game.inventory.length && want > 0; i++) {
+      const s = Game.inventory[i];
+      if (s && s.id === it.id) { slot.qty += 1; Game.inventory[i] = null; want -= 1; }
+    }
+  }
   if (Game.selectedInv === invIndex && !Game.inventory[invIndex]) Game.selectedInv = null;
   return true;
 }
