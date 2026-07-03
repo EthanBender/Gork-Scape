@@ -38,6 +38,18 @@
    ]
   },
   {
+   "id": "wilds-fords-batch",
+   "why": "MACRO connectivity (owner-approved): six more wilderness regions were fully stranded from spawn, each cut off by a single narrow river/swamp channel. Each ford is the region's NARROWEST crossing (water-only, no rock carved) so it reads as a natural footbridge/ford, not a gash. Reclaims ~7045 tiles (2815+1282+1187+786+551+424). The 424 ford at (70,107) also clears c0,r1's dead_pocket (67,105). Skipped: a 225-tile SE-corner islet at (995,99x) that needs a 4-tile span to the map edge — left for review (may be an intentional offshore feature).",
+   "ops": [
+    { "op": "trail", "from": [174, 167], "to": [172, 167] },
+    { "op": "trail", "from": [502, 18], "to": [504, 18] },
+    { "op": "trail", "from": [336, 153], "to": [336, 151] },
+    { "op": "trail", "from": [553, 82], "to": [553, 84] },
+    { "op": "trail", "from": [926, 913], "to": [922, 913] },
+    { "op": "trail", "from": [71, 107], "to": [69, 107] }
+   ]
+  },
+  {
    "id": "c0r2-crag-courtyards",
    "why": "c0,r2 (Goblin Wilds mountain edge): 8 dead_pockets + 43 sealed trees. The pockets are tree-walled grass courtyards pinned between the crag and the Willow river; a Charred Homestead and a Dropped Coin Purse were sealed inside/on the rock. Fix = open the treelines so each courtyard (and its POI) becomes reachable, clear the ~20 trees stranded on the bare rock shoulder, and cut a dirt doorstep to the coin purse the earlier rock-fill had buried. Removal-only + one un-rock cell, so no new slivers/orphans possible.",
    "ops": [
