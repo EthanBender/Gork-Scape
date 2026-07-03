@@ -319,6 +319,9 @@ function switchTab(id, openSheet = true) {
   // [mobile] On phones the panel body is a slide-up sheet over the full-bleed
   // game; showing a panel (tab tap, or a world panel opening) raises it. No-op
   // on desktop (the .sheet-open class has no styling there). Boot passes false.
+  // Shows instantly — a slide-in (CSS transition/keyframe AND the Web Animations
+  // API) is perpetually restarted by the ~per-tick Game.refresh() and sticks the
+  // sheet off-screen, so it's deliberately omitted.
   if (openSheet) { const app = document.getElementById('app'); if (app) app.classList.add('sheet-open'); }
   Game.refresh();
 }
