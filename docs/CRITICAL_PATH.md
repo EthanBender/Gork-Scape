@@ -37,11 +37,13 @@ Ordered by (value ÷ risk). Each stream is independent; work them top-down.
 
 ### 1. Map design pass  ← START HERE
 The fully-tooled workstream. **[MAP_DESIGN_PASS.md](MAP_DESIGN_PASS.md) is the
-runbook — follow it exactly.** The loop:
+runbook — follow it exactly.** Crawl the whole map in a **center-out spiral**
+so nothing is missed, checking defects AND elevation on each chunk:
 
 ```
-node scripts/map_defects.mjs            # totals + worst chunks
-node scripts/map_defects.mjs 0 2        # per-chunk detail (col 0, row 2)
+node scripts/map_crawl.mjs              # spiral worklist → the NEXT chunk (defects + elevation)
+node scripts/map_defects.mjs 0 2        # per-chunk defect detail (col 0, row 2)
+node scripts/elevation_audit.mjs 0 2    # per-chunk elevation detail
 # → write a typed patch into src/data/map_patches.json
 node scripts/map_defects.mjs            # prove the number went DOWN
 # → ratchet the BUDGET in scripts/map_defects.mjs down to the new count
