@@ -26,6 +26,21 @@
      "to": "ROCK"
     }
    ]
+  },
+  {
+   "id": "c0r2-crag-courtyards",
+   "why": "c0,r2 (Goblin Wilds mountain edge): 8 dead_pockets + 43 sealed trees. The pockets are tree-walled grass courtyards pinned between the crag and the Willow river; a Charred Homestead and a Dropped Coin Purse were sealed inside/on the rock. Fix = open the treelines so each courtyard (and its POI) becomes reachable, clear the ~20 trees stranded on the bare rock shoulder, and cut a dirt doorstep to the coin purse the earlier rock-fill had buried. Removal-only + one un-rock cell, so no new slivers/orphans possible.",
+   "ops": [
+    { "op": "remove_objects", "rect": [78, 201, 88, 215], "types": ["resource"] },
+    { "op": "terrain", "cells": [[78, 214]], "to": "DIRT" },
+    { "op": "remove_objects", "rect": [77, 214, 77, 214], "types": ["resource", "decor"] },
+    { "op": "remove_objects", "rect": [77, 216, 79, 217], "types": ["resource"] },
+    { "op": "remove_objects", "rect": [82, 235, 87, 240], "types": ["resource"] },
+    { "op": "remove_objects", "rect": [81, 241, 85, 249], "types": ["resource"] },
+    { "op": "remove_objects", "rect": [87, 253, 90, 258], "types": ["resource"] },
+    { "op": "remove_objects", "rect": [91, 258, 93, 262], "types": ["resource"] },
+    { "op": "remove_objects", "rect": [96, 267, 98, 269], "types": ["resource", "decor"] }
+   ]
   }
  ]
 }
