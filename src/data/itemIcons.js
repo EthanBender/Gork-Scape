@@ -258,6 +258,20 @@ export function itemIconSVG(idOrItem) {
 // arrives (or if there's no manifest), everything falls back to the SVG/emoji.
 const ART = new Set();
 export function hasItemArt(id) { return ART.has(id); }
+
+// Per-KEY sprite layer (the single visual seam): a manifest lists icon-KEYS
+// that have a rendered PNG at assets/items/keys/<key>.png. One sprite reskins
+// every item that resolves to that key. Generated + imported from Voyra's Gork
+// console. Falls back to the SVG when a key has no sprite yet.
+const KEY_ART = new Set();
+export function hasKeyArt(key) { return KEY_ART.has(key); }
+export function loadKeyArtManifest(url = 'assets/items/keys/manifest.json') {
+  if (typeof fetch === 'undefined') return Promise.resolve();
+  return fetch(url)
+    .then((r) => (r.ok ? r.json() : []))
+    .then((keys) => { if (Array.isArray(keys)) for (const k of keys) KEY_ART.add(k); })
+    .catch(() => {}); // no key manifest yet is the normal case
+}
 export function loadItemArtManifest(url = 'assets/items/manifest.json') {
   if (typeof fetch === 'undefined') return Promise.resolve();
   return fetch(url)
@@ -273,8 +287,14 @@ export function itemIconHTML(idOrItem) {
     return `<img class="item-art" src="assets/items/${id}.png" alt="" loading="lazy" `
       + `onerror="this.remove()">`;
   }
+  const key = iconKey(idOrItem);
+  if (KEY_ART.has(key)) {
+    return `<img class="item-art" src="assets/items/keys/${key}.png" alt="" loading="lazy" `
+      + `onerror="this.remove()">`;
+  }
   return itemIconSVG(idOrItem);
 }
 
 // Auto-load the manifest on import; renders pick up real art on the next refresh.
 loadItemArtManifest();
+loadKeyArtManifest();
