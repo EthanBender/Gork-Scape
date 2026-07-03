@@ -335,9 +335,20 @@ function drawWeapon(ctx, hx, hy, ang, w) {
       seg(ctx, hx - s * 2, hy + c * 2, hx + s * 2, hy - c * 2, 1.4, 0x3a2a18); // crossguard
       break;
     case 'axe':
+      seg(ctx, hx - c * 3, hy - s * 3, tipX, tipY, 1.5, 0x6b4325);           // haft
+      poly(ctx, [[tipX, tipY], [tipX - s * 3.4, tipY + c * 3.4], [tipX + c * 3.4 - s * 2, tipY + s * 3.4 + c * 2], [tipX + c * 3, tipY + s * 3]], grip); // single side blade
+      break;
     case 'pick':
       seg(ctx, hx - c * 3, hy - s * 3, tipX, tipY, 1.5, 0x6b4325);           // haft
-      poly(ctx, [[tipX, tipY], [tipX - s * 3.4, tipY + c * 3.4], [tipX + c * 3.4 - s * 2, tipY + s * 3.4 + c * 2], [tipX + c * 3, tipY + s * 3]], grip); // blade
+      // double-ended head: spikes out BOTH sides of the tip (perpendicular to the
+      // haft) with a slight forward sweep — reads as a pick, not a one-sided axe
+      // blade and not a spear point. (see COORDINATION.md: pickaxe-vs-axe.)
+      poly(ctx, [
+        [tipX - s * 5, tipY + c * 5],           // one spike tip
+        [tipX + c * 1.6, tipY + s * 1.6],       // forward belly, ahead of the haft
+        [tipX + s * 5, tipY - c * 5],           // other spike tip
+        [tipX - c * 1.2, tipY - s * 1.2],       // back notch behind the tip
+      ], grip);
       break;
     case 'mace':
       seg(ctx, hx - c * 3, hy - s * 3, tipX, tipY, 1.6, 0x4a3420);
