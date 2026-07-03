@@ -36,6 +36,21 @@ show the same order for one signal each.)
 8. git add -A && git commit -m "map pass: <chunk> <what you fixed>"
 ```
 
+## Human-coherence — does it LOOK right?
+
+Reachability isn't the whole story. `scripts/coherence_audit.mjs` catches things
+that look **wrong to a person** even where everything is reachable: stray wall
+fragments (`wall_stub`), walls standing in a lake (`wall_in_water`), a tree/ore
+clipping through a wall (`obj_embedded`), two blockers stacked on one tile
+(`obj_stack`), a lone cliff in a meadow (`orphan_cliff`), a shadow with no slope
+to cast it (`orphan_shadow`), or a 1-tile elevation pillar/pit (`elev_spike`).
+Run it alongside the others; fix stray walls by dissolving the WHOLE component
+into its surroundings (never leave a fragment), and only where the result stays
+reachable (a grassed wall in an enclosed spot makes a new pocket). **Unreachable
+islands and walls that belong to authored ruins/camps are FINE** — a little
+imperfection makes the world feel real; this audit skips anything within 5 tiles
+of a labelled structure.
+
 ## Elevation — check it every chunk
 
 Elevation (the 2.5D height field) must read like real terrain: **water sits

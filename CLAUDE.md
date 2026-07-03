@@ -26,7 +26,8 @@ elevation for each); check elevation logic on every chunk.
    node scripts/smoke.mjs && node test/run.mjs && node scripts/economy_sim.mjs \
      && node scripts/quest_test.mjs && node scripts/pacing_sim.mjs \
      && node scripts/chain_audit.mjs && node scripts/audit_world.mjs \
-     && node scripts/map_defects.mjs && node scripts/elevation_audit.mjs
+     && node scripts/map_defects.mjs && node scripts/elevation_audit.mjs \
+     && node scripts/coherence_audit.mjs
    ```
    Never pipe gate output through `tail`/`grep` to check status — pipes mask
    exit codes.
