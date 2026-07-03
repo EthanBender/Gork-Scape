@@ -10595,64 +10595,7 @@
    "ops": [
     {
      "op": "terrain",
-     "cells": [
-      [
-       469,
-       601
-      ],
-      [
-       467,
-       602
-      ],
-      [
-       468,
-       602
-      ],
-      [
-       469,
-       602
-      ],
-      [
-       467,
-       603
-      ],
-      [
-       468,
-       603
-      ],
-      [
-       469,
-       603
-      ],
-      [
-       467,
-       604
-      ],
-      [
-       468,
-       604
-      ],
-      [
-       469,
-       604
-      ],
-      [
-       466,
-       605
-      ],
-      [
-       467,
-       605
-      ],
-      [
-       468,
-       605
-      ],
-      [
-       467,
-       606
-      ]
-     ],
+     "cells": [],
      "to": "BRIDGE"
     },
     {
@@ -10679,7 +10622,63 @@
        601
       ],
       [
+       469,
+       601
+      ],
+      [
+       467,
+       602
+      ],
+      [
+       468,
+       602
+      ],
+      [
+       469,
+       602
+      ],
+      [
+       467,
+       603
+      ],
+      [
+       468,
+       603
+      ],
+      [
+       469,
+       603
+      ],
+      [
+       467,
+       604
+      ],
+      [
+       468,
+       604
+      ],
+      [
+       469,
+       604
+      ],
+      [
        466,
+       605
+      ],
+      [
+       467,
+       605
+      ],
+      [
+       468,
+       605
+      ],
+      [
+       466,
+       606
+      ],
+      [
+       467,
        606
       ],
       [
@@ -11804,94 +11803,6 @@
       ]
      ],
      "to": "DIRT"
-    },
-    {
-     "op": "decor",
-     "x": 471,
-     "y": 601,
-     "color": 5929530,
-     "size": 4,
-     "shape": "rect"
-    },
-    {
-     "op": "decor",
-     "x": 470,
-     "y": 602,
-     "color": 5929530,
-     "size": 4,
-     "shape": "rect"
-    },
-    {
-     "op": "decor",
-     "x": 471,
-     "y": 602,
-     "color": 5929530,
-     "size": 4,
-     "shape": "rect"
-    },
-    {
-     "op": "decor",
-     "x": 466,
-     "y": 603,
-     "color": 5929530,
-     "size": 4,
-     "shape": "rect"
-    },
-    {
-     "op": "decor",
-     "x": 470,
-     "y": 603,
-     "color": 5929530,
-     "size": 4,
-     "shape": "rect"
-    },
-    {
-     "op": "decor",
-     "x": 471,
-     "y": 603,
-     "color": 5929530,
-     "size": 4,
-     "shape": "rect"
-    },
-    {
-     "op": "decor",
-     "x": 465,
-     "y": 604,
-     "color": 5929530,
-     "size": 4,
-     "shape": "rect"
-    },
-    {
-     "op": "decor",
-     "x": 466,
-     "y": 604,
-     "color": 5929530,
-     "size": 4,
-     "shape": "rect"
-    },
-    {
-     "op": "decor",
-     "x": 470,
-     "y": 604,
-     "color": 5929530,
-     "size": 4,
-     "shape": "rect"
-    },
-    {
-     "op": "decor",
-     "x": 464,
-     "y": 605,
-     "color": 5929530,
-     "size": 4,
-     "shape": "rect"
-    },
-    {
-     "op": "decor",
-     "x": 465,
-     "y": 605,
-     "color": 5929530,
-     "size": 4,
-     "shape": "rect"
     },
     {
      "op": "decor",
@@ -12022,22 +11933,6 @@
      "shape": "rect"
     },
     {
-     "op": "object",
-     "x": 466,
-     "y": 601,
-     "label": "Bog Lantern",
-     "color": 16765517,
-     "blocking": false
-    },
-    {
-     "op": "object",
-     "x": 472,
-     "y": 614,
-     "label": "Bog Lantern",
-     "color": 16765517,
-     "blocking": false
-    },
-    {
      "op": "decor",
      "x": 448,
      "y": 693,
@@ -12084,46 +11979,6 @@
      "color": 9078140,
      "size": 6,
      "shape": "rect"
-    },
-    {
-     "op": "object",
-     "x": 449,
-     "y": 693,
-     "label": "Wayshrine",
-     "color": 10132104,
-     "blocking": false
-    },
-    {
-     "op": "object",
-     "x": 451,
-     "y": 693,
-     "label": "Pilgrim Fire",
-     "color": 16742954,
-     "blocking": false
-    },
-    {
-     "op": "object",
-     "x": 448,
-     "y": 694,
-     "label": "Rest Bench",
-     "color": 8016432,
-     "blocking": false
-    },
-    {
-     "op": "object",
-     "x": 450,
-     "y": 694,
-     "label": "Bog Lantern",
-     "color": 16765517,
-     "blocking": false
-    },
-    {
-     "op": "object",
-     "x": 449,
-     "y": 692,
-     "label": "Notice Board",
-     "color": 9071162,
-     "blocking": false
     },
     {
      "op": "terrain",
@@ -12164,46 +12019,6 @@
      "shape": "rect"
     },
     {
-     "op": "object",
-     "x": 465,
-     "y": 645,
-     "label": "Bog Lantern",
-     "color": 16765517,
-     "blocking": false
-    },
-    {
-     "op": "object",
-     "x": 452,
-     "y": 670,
-     "label": "Broken Fence",
-     "color": 8016432,
-     "blocking": false
-    },
-    {
-     "op": "object",
-     "x": 449,
-     "y": 671,
-     "label": "Trade Crate",
-     "color": 8016432,
-     "blocking": false
-    },
-    {
-     "op": "object",
-     "x": 462,
-     "y": 634,
-     "label": "Wildflower Bed",
-     "color": 14729296,
-     "blocking": false
-    },
-    {
-     "op": "object",
-     "x": 458,
-     "y": 658,
-     "label": "Wildflower Bed",
-     "color": 14729296,
-     "blocking": false
-    },
-    {
      "op": "decor",
      "x": 460,
      "y": 630,
@@ -12218,22 +12033,6 @@
      "color": 6969914,
      "size": 4,
      "shape": "rect"
-    },
-    {
-     "op": "object",
-     "x": 470,
-     "y": 685,
-     "label": "Bramble Bush",
-     "color": 3103274,
-     "blocking": false
-    },
-    {
-     "op": "object",
-     "x": 438,
-     "y": 690,
-     "label": "Bramble Bush",
-     "color": 3103274,
-     "blocking": false
     }
    ]
   }
