@@ -61,6 +61,7 @@ import { loadAndAdvanceWorldMarket, saveWorldMarket } from './systems/geActions.
 import {
   initQuests, evaluate as tickQuests, onKill as questOnKill,
   onTalk as questOnTalk, onArrive as questOnArrive, questMarkers, ensureQuestBosses,
+  trackedQuestId, questById, activeStep,
 } from './systems/quests.js'; // [economy lane] quest engine v2
 import { playCutscene } from './systems/cutscene.js'; // [economy lane] cinematic quest beats
 import './data/questItems.js'; // [economy lane] register unique quest items into ITEMS
@@ -485,6 +486,18 @@ function create() {
   updateHomeHud();
 
   initTinkerHud(); // [economy lane] readies the Tinker's Workbench popup CSS (opened from the world node)
+
+  // "Next up" goal chip (M1): the tracked quest's current objective, always visible
+  // top-left of the world view — so a new player never wonders what to do next.
+  if (!document.getElementById('goal-chip')) {
+    const chip = document.createElement('div');
+    chip.id = 'goal-chip';
+    chip.style.cssText = 'position:absolute;left:10px;top:10px;z-index:30;max-width:46%;' +
+      'padding:6px 10px;font:600 11px monospace;color:#e8c65a;background:rgba(20,19,15,.82);' +
+      'border:1px solid #4a4331;border-radius:6px;box-shadow:0 2px 6px rgba(0,0,0,.4);' +
+      'pointer-events:none;display:none;text-shadow:0 1px 0 #000;line-height:1.35;';
+    (document.getElementById('game-panel') || document.body).appendChild(chip);
+  }
   initWiki(); // [economy lane] the item Codex/Wiki button
 
   this.input.mouse.disableContextMenu();
@@ -509,7 +522,7 @@ function create() {
   // MEASURED (watch the #tb-fps topbar readout) instead of asserted. stressClear()
   // removes them. Dummies are inert guards on valid ground; they cost render +
   // the near-player AI/interp exactly like real NPCs.
-  window.__GE = { Game, startInteract, startAttack, regionAt, stress: stressSpawn, stressClear, tick: gameTick };
+  window.__GE = { Game, startInteract, startAttack, regionAt, stress: stressSpawn, stressClear, tick: gameTick, goalChip: updateGoalChip };
 
   // Persistence/idle/autosave may start now that saved state is applied.
   notifyGameReady();
@@ -2208,8 +2221,34 @@ function npcLabelShown(n, p) {
   return hov || n === p.combatTarget || n.target === p;
 }
 
+// "Next up" chip: tracked quest's current objective (or its giver, if not yet
+// started). Cheap — only touches the DOM when the text actually changes.
+let goalChipText = '';
+function updateGoalChip() {
+  const chip = document.getElementById('goal-chip');
+  if (!chip) return;
+  let text = '';
+  const id = trackedQuestId();
+  const q = id && questById(id);
+  const st = q && Game.questState && Game.questState[id];
+  if (q && st) {
+    if (st.status === 'active') {
+      const step = activeStep(id);
+      if (step) text = `▶ ${q.name}: ${step.text}${step.where && step.where.name ? ' — ' + step.where.name : ''}`;
+    } else if (st.status === 'available' && q.giver) {
+      text = `▶ New quest: ${q.name} — talk to ${q.giver.name} (!)`;
+    }
+  }
+  if (text !== goalChipText) {
+    goalChipText = text;
+    chip.textContent = text;
+    chip.style.display = text ? 'block' : 'none';
+  }
+}
+
 function updateLabels() {
   const p = Game.player;
+  updateGoalChip();
   // World-space labels ride the rotating main camera; spin them back so the text
   // stays upright and readable at any camera angle (no-op when rotation is 0).
   const rot = -scene.cameras.main.rotation;

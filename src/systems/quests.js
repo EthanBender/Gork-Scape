@@ -21,9 +21,39 @@
 // live by a once-per-tick evaluate().
 
 import { Game, addItem, grantXp, grantBankSpace } from '../engine/state.js';
+import { REGION_ANCHORS, LEGACY_ANCHOR_POS } from '../world/worldData.js';
 
 let QUESTS = [];
 const Q_BY_ID = new Map();
+
+// ---- Geography 2.0 coordinate remap -----------------------------------------
+// quests.json was authored against the LEGACY map. Under Geo2 every region hub is
+// translated to a geographically-chosen site, so each quest coordinate (giver
+// posts, goto targets, cutscene pans) must shift through its region's delta:
+// nearest legacy anchor → (live anchor − legacy anchor). On the legacy map every
+// delta is zero, so this is a no-op there. Runs once per quest load.
+let coordsRemapped = false;
+function remapQuestCoords() {
+  if (coordsRemapped || !QUESTS.length) return;
+  coordsRemapped = true;
+  const live = new Map(REGION_ANCHORS.map((a) => [a.id, a]));
+  const deltaFor = (x, y) => {
+    let best = null, bd = Infinity;
+    for (const l of LEGACY_ANCHOR_POS) { const d = (x - l.x) * (x - l.x) + (y - l.y) * (y - l.y); if (d < bd) { bd = d; best = l; } }
+    const a = best && live.get(best.id);
+    return a ? { dx: a.x - best.x, dy: a.y - best.y } : { dx: 0, dy: 0 };
+  };
+  const walk = (o) => {
+    if (!o || typeof o !== 'object') return;
+    if (typeof o.x === 'number' && typeof o.y === 'number') {
+      const { dx, dy } = deltaFor(o.x, o.y);
+      o.x += dx; o.y += dy;
+      return; // a coordinate leaf — don't descend further
+    }
+    for (const k in o) walk(o[k]);
+  };
+  for (const q of QUESTS) walk(q);
+}
 
 async function loadQuestDefs() {
   try {
@@ -96,6 +126,7 @@ function prereqsMet(quest) {
 
 // ---- lifecycle --------------------------------------------------------------
 export function initQuests() {
+  remapQuestCoords(); // shift authored coords onto the (possibly relocated) live world
   if (!Game.questState) Game.questState = {};
   for (const q of QUESTS) {
     if (!Game.questState[q.id]) Game.questState[q.id] = { status: 'locked', step: 0, prog: 0 };

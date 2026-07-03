@@ -247,7 +247,10 @@ function serveStatic(req, res, pathname) {
   if (!filePath.startsWith(ROOT)) { res.writeHead(403); return res.end('forbidden'); } // no traversal
   readFile(filePath, (err, buf) => {
     if (err) { res.writeHead(404); return res.end('not found'); }
-    res.writeHead(200, { 'content-type': MIME[extname(filePath)] || 'application/octet-stream' });
+    // no-cache mirrors the production _headers policy: this is a fast-moving,
+    // no-build dev world — a heuristically-cached stale ES module is the #1
+    // "my change isn't in the game" trap. Revalidate every time.
+    res.writeHead(200, { 'content-type': MIME[extname(filePath)] || 'application/octet-stream', 'cache-control': 'no-cache' });
     res.end(buf);
   });
 }

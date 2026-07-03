@@ -67,6 +67,12 @@ export const REGION_ANCHORS = [
   { id: 'ruins',      name: 'Old Forest Ruins',    x: 245, y: 150, r: 150, bounds: [90, 40, 390, 260], level: '20-45', mobs: ['giant_spider', 'moss_wolf', 'fungal_goblin'] },
 ];
 
+// Snapshot of the LEGACY anchor positions, captured at module load — BEFORE
+// world-gen relocates the anchors under Geography 2.0. Anything holding legacy
+// map coordinates (quests.json, landmark packs) can be remapped to the live
+// world by shifting each point through its nearest legacy region's delta.
+export const LEGACY_ANCHOR_POS = REGION_ANCHORS.map((a) => ({ id: a.id, x: a.x, y: a.y }));
+
 // --- Landmarks / POIs (exact coordinates from landmarks.json) ---
 export const LANDMARKS = [
   { id: 'town_bank', name: 'Bank', x: 485, y: 455, kind: 'service' },
