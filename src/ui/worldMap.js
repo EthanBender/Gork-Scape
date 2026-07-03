@@ -135,6 +135,19 @@ function buildMarkers() {
   return out;
 }
 
+// Facility POIs for the MINIMAP (main.js drawMinimap) — same categories as the
+// world map, so the two agree. Excludes resource clusters and shops/transports
+// (the minimap already draws those). Cached per world. [{ tx, ty, kind, color }].
+let _facPOI = null, _facPOIWorld = null;
+export function facilityPOIs() {
+  if (_facPOI && _facPOIWorld === (Game.world || null)) return _facPOI;
+  _facPOI = buildMarkers()
+    .filter((m) => !m.count && !(CAT[m.cat] && CAT[m.cat].res) && m.cat !== 'shop' && m.cat !== 'transport')
+    .map((m) => { const c = CAT[m.cat] || CAT.landmark; return { tx: m.x, ty: m.y, kind: m.cat, color: parseInt(c.color.slice(1), 16) }; });
+  _facPOIWorld = Game.world || null;
+  return _facPOI;
+}
+
 // ---- terrain buffer: rasterize the whole world once at 1px/tile -------------
 let terrainBuf = null;   // offscreen canvas, WORLD_W x WORLD_H
 function buildTerrainBuffer() {

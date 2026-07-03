@@ -39,6 +39,7 @@ import { styleOfWeapon, PROTECT_FACTOR } from './engine/prayer.js';
 import { isTinkerWeapon, effectiveGadgetEffect } from './systems/tinkering.js';
 import { initTinkerHud, openWorkbench } from './systems/tinkeringUI.js';
 import { initWiki } from './ui/wiki.js'; // [economy lane] item Codex/Wiki button + overlay
+import { facilityPOIs } from './ui/worldMap.js'; // [economy lane] facility POIs for minimap (same set as the world map)
 import { gather as gatherNode, rollGatherByproduct, hasRequiredTool } from './systems/gathering.js'; // [economy lane] data-driven world-node gathering + byproducts
 import { rollSkillSuccess } from './engine/skills.js';
 import { emptyBonuses, ITEMS } from './items/equipment.js';
@@ -2650,6 +2651,19 @@ function drawMinimap() {
       const mag2 = Math.max(Math.abs(dx2), Math.abs(dy2)) || 1;
       const k2 = (half - 5) / mag2;
       drawQuestArrow(g, cx + dx2 * k2, cy + dy2 * k2, Math.atan2(dy2, dx2), poiColor(poi.kind));
+    }
+  }
+  // [world-map parity] facility icons — bank/cooking range/furnace/anvil/altar/
+  // exchange/quest board etc. as colored pips (same categories + colours as the
+  // world map's legend). Shown at default zoom+; hidden only when fully zoomed
+  // out (declutter). Shops/transports are drawn above.
+  const showFacilities = MINI_SPT >= 3;
+  if (showFacilities) {
+    for (const f of facilityPOIs()) {
+      const mx = toMiniX(f.tx * TILE_SIZE + 16), my = toMiniY(f.ty * TILE_SIZE + 16);
+      if (!inMini(mx, my)) continue;
+      g.fillStyle(0x000000, 0.5); g.fillCircle(mx, my, 3.6);
+      g.fillStyle(f.color, 1); g.fillCircle(mx, my, 2.3);
     }
   }
   // player at center
