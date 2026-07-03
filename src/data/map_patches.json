@@ -6113,6 +6113,1558 @@
      "shape": "circle"
     }
    ]
+  },
+  {
+   "id": "city-densify-1-depth",
+   "why": "City re-authoring Stage 1 (patch-only, no map reshuffle): grandify Gorkholm's Great Hall (banners, entrance torches, a stone colonnade up the approach, a throne dais), turn the central plaza into a real bazaar (extra market stalls, awnings, crates, grain sacks, barrels), lamplight down both grand avenues, plaza benches + planters, and fill the empty NW/NE quadrants + gaps with purposeful garden plots, corner groves, and wells. Decor + walkable FIELD only (no walls) so nothing can seal a room or strand a tile. 124 decor, 133 garden tiles, 2 stalls.",
+   "ops": [
+    {
+     "op": "object",
+     "x": 456,
+     "y": 392,
+     "label": "Market Stall",
+     "color": 12556890,
+     "blocking": true
+    },
+    {
+     "op": "object",
+     "x": 458,
+     "y": 402,
+     "label": "Market Stall",
+     "color": 12556890,
+     "blocking": true
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       431,
+       356
+      ],
+      [
+       432,
+       356
+      ],
+      [
+       430,
+       357
+      ],
+      [
+       431,
+       357
+      ],
+      [
+       432,
+       357
+      ],
+      [
+       430,
+       358
+      ],
+      [
+       431,
+       358
+      ],
+      [
+       440,
+       352
+      ],
+      [
+       441,
+       352
+      ],
+      [
+       442,
+       352
+      ],
+      [
+       440,
+       353
+      ],
+      [
+       442,
+       353
+      ],
+      [
+       440,
+       354
+      ],
+      [
+       441,
+       354
+      ],
+      [
+       442,
+       354
+      ],
+      [
+       448,
+       362
+      ],
+      [
+       449,
+       362
+      ],
+      [
+       450,
+       362
+      ],
+      [
+       449,
+       363
+      ],
+      [
+       450,
+       363
+      ],
+      [
+       449,
+       364
+      ],
+      [
+       450,
+       364
+      ],
+      [
+       426,
+       372
+      ],
+      [
+       427,
+       372
+      ],
+      [
+       426,
+       373
+      ],
+      [
+       427,
+       373
+      ],
+      [
+       428,
+       373
+      ],
+      [
+       426,
+       374
+      ],
+      [
+       427,
+       374
+      ],
+      [
+       436,
+       380
+      ],
+      [
+       437,
+       380
+      ],
+      [
+       438,
+       380
+      ],
+      [
+       436,
+       381
+      ],
+      [
+       437,
+       381
+      ],
+      [
+       438,
+       381
+      ],
+      [
+       436,
+       382
+      ],
+      [
+       437,
+       382
+      ],
+      [
+       438,
+       382
+      ],
+      [
+       446,
+       376
+      ],
+      [
+       447,
+       376
+      ],
+      [
+       448,
+       376
+      ],
+      [
+       446,
+       377
+      ],
+      [
+       447,
+       377
+      ],
+      [
+       448,
+       377
+      ],
+      [
+       446,
+       378
+      ],
+      [
+       448,
+       378
+      ],
+      [
+       500,
+       352
+      ],
+      [
+       501,
+       352
+      ],
+      [
+       502,
+       352
+      ],
+      [
+       500,
+       353
+      ],
+      [
+       501,
+       353
+      ],
+      [
+       502,
+       353
+      ],
+      [
+       500,
+       354
+      ],
+      [
+       501,
+       354
+      ],
+      [
+       502,
+       354
+      ],
+      [
+       510,
+       356
+      ],
+      [
+       511,
+       356
+      ],
+      [
+       510,
+       357
+      ],
+      [
+       511,
+       357
+      ],
+      [
+       512,
+       357
+      ],
+      [
+       510,
+       358
+      ],
+      [
+       511,
+       358
+      ],
+      [
+       512,
+       358
+      ],
+      [
+       520,
+       362
+      ],
+      [
+       521,
+       362
+      ],
+      [
+       522,
+       362
+      ],
+      [
+       520,
+       363
+      ],
+      [
+       521,
+       363
+      ],
+      [
+       522,
+       363
+      ],
+      [
+       520,
+       364
+      ],
+      [
+       521,
+       364
+      ],
+      [
+       522,
+       364
+      ],
+      [
+       504,
+       372
+      ],
+      [
+       504,
+       373
+      ],
+      [
+       504,
+       374
+      ],
+      [
+       505,
+       374
+      ],
+      [
+       506,
+       374
+      ],
+      [
+       515,
+       378
+      ],
+      [
+       516,
+       378
+      ],
+      [
+       515,
+       379
+      ],
+      [
+       516,
+       379
+      ],
+      [
+       514,
+       380
+      ],
+      [
+       515,
+       380
+      ],
+      [
+       516,
+       380
+      ],
+      [
+       522,
+       352
+      ],
+      [
+       523,
+       352
+      ],
+      [
+       524,
+       352
+      ],
+      [
+       522,
+       353
+      ],
+      [
+       523,
+       353
+      ],
+      [
+       524,
+       353
+      ],
+      [
+       523,
+       354
+      ],
+      [
+       524,
+       354
+      ],
+      [
+       500,
+       420
+      ],
+      [
+       501,
+       420
+      ],
+      [
+       502,
+       420
+      ],
+      [
+       500,
+       422
+      ],
+      [
+       501,
+       422
+      ],
+      [
+       502,
+       422
+      ],
+      [
+       512,
+       426
+      ],
+      [
+       513,
+       426
+      ],
+      [
+       514,
+       426
+      ],
+      [
+       512,
+       427
+      ],
+      [
+       513,
+       427
+      ],
+      [
+       514,
+       427
+      ],
+      [
+       512,
+       428
+      ],
+      [
+       513,
+       428
+      ],
+      [
+       514,
+       428
+      ],
+      [
+       522,
+       432
+      ],
+      [
+       523,
+       432
+      ],
+      [
+       524,
+       432
+      ],
+      [
+       522,
+       433
+      ],
+      [
+       523,
+       433
+      ],
+      [
+       524,
+       433
+      ],
+      [
+       524,
+       434
+      ],
+      [
+       431,
+       430
+      ],
+      [
+       430,
+       431
+      ],
+      [
+       431,
+       431
+      ],
+      [
+       432,
+       431
+      ],
+      [
+       430,
+       432
+      ],
+      [
+       431,
+       432
+      ],
+      [
+       432,
+       432
+      ],
+      [
+       424,
+       446
+      ],
+      [
+       424,
+       447
+      ],
+      [
+       424,
+       448
+      ],
+      [
+       436,
+       448
+      ],
+      [
+       437,
+       448
+      ],
+      [
+       438,
+       448
+      ],
+      [
+       436,
+       449
+      ],
+      [
+       437,
+       449
+      ],
+      [
+       438,
+       449
+      ],
+      [
+       436,
+       450
+      ],
+      [
+       437,
+       450
+      ],
+      [
+       438,
+       450
+      ]
+     ],
+     "to": "FIELD"
+    },
+    {
+     "op": "decor",
+     "x": 460,
+     "y": 363,
+     "color": 10107434,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 480,
+     "y": 363,
+     "color": 10107434,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 460,
+     "y": 376,
+     "color": 10107434,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 480,
+     "y": 376,
+     "color": 10107434,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 463,
+     "y": 362,
+     "color": 10107434,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 477,
+     "y": 362,
+     "color": 10107434,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 467,
+     "y": 379,
+     "color": 15245898,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 471,
+     "y": 379,
+     "color": 15245898,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 465,
+     "y": 381,
+     "color": 9079418,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 473,
+     "y": 381,
+     "color": 9079418,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 465,
+     "y": 384,
+     "color": 9079418,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 473,
+     "y": 384,
+     "color": 9079418,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 465,
+     "y": 387,
+     "color": 9079418,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 473,
+     "y": 387,
+     "color": 9079418,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 465,
+     "y": 390,
+     "color": 9079418,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 473,
+     "y": 390,
+     "color": 9079418,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 465,
+     "y": 393,
+     "color": 9079418,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 473,
+     "y": 393,
+     "color": 9079418,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 465,
+     "y": 396,
+     "color": 9079418,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 473,
+     "y": 396,
+     "color": 9079418,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 462,
+     "y": 366,
+     "color": 8018570,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 456,
+     "y": 391,
+     "color": 11553338,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 464,
+     "y": 397,
+     "color": 11553338,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 452,
+     "y": 399,
+     "color": 11553338,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 468,
+     "y": 391,
+     "color": 11553338,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 458,
+     "y": 401,
+     "color": 11553338,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 462,
+     "y": 392,
+     "color": 9071162,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 466,
+     "y": 400,
+     "color": 9071162,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 470,
+     "y": 396,
+     "color": 9071162,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 458,
+     "y": 398,
+     "color": 9071162,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 453,
+     "y": 396,
+     "color": 9071162,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 469,
+     "y": 402,
+     "color": 9071162,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 455,
+     "y": 398,
+     "color": 13220234,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 463,
+     "y": 394,
+     "color": 13220234,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 467,
+     "y": 392,
+     "color": 13220234,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 471,
+     "y": 400,
+     "color": 13220234,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 451,
+     "y": 392,
+     "color": 6969914,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 473,
+     "y": 392,
+     "color": 6969914,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 473,
+     "y": 404,
+     "color": 6969914,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 467,
+     "y": 350,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 471,
+     "y": 350,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 467,
+     "y": 356,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 471,
+     "y": 356,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 471,
+     "y": 362,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 471,
+     "y": 368,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 471,
+     "y": 374,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 467,
+     "y": 380,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 471,
+     "y": 380,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 467,
+     "y": 386,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 471,
+     "y": 386,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 471,
+     "y": 392,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 467,
+     "y": 398,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 471,
+     "y": 398,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 467,
+     "y": 404,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 471,
+     "y": 404,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 467,
+     "y": 410,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 471,
+     "y": 410,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 467,
+     "y": 416,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 471,
+     "y": 416,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 471,
+     "y": 422,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 467,
+     "y": 428,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 471,
+     "y": 428,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 467,
+     "y": 434,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 471,
+     "y": 434,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 467,
+     "y": 440,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 471,
+     "y": 440,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 471,
+     "y": 452,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 422,
+     "y": 396,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 422,
+     "y": 400,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 428,
+     "y": 396,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 434,
+     "y": 400,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 446,
+     "y": 400,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 458,
+     "y": 396,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 458,
+     "y": 400,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 464,
+     "y": 396,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 464,
+     "y": 400,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 470,
+     "y": 400,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 476,
+     "y": 396,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 476,
+     "y": 400,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 482,
+     "y": 396,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 482,
+     "y": 400,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 488,
+     "y": 396,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 488,
+     "y": 400,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 500,
+     "y": 396,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 500,
+     "y": 400,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 506,
+     "y": 396,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 506,
+     "y": 400,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 512,
+     "y": 396,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 512,
+     "y": 400,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 524,
+     "y": 396,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 524,
+     "y": 400,
+     "color": 15255130,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 453,
+     "y": 406,
+     "color": 8018490,
+     "size": 3,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 473,
+     "y": 406,
+     "color": 8018490,
+     "size": 3,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 471,
+     "y": 388,
+     "color": 3832378,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 501,
+     "y": 421,
+     "color": 6982202,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 423,
+     "y": 350,
+     "color": 3107621,
+     "size": 6,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 425,
+     "y": 351,
+     "color": 3107621,
+     "size": 6,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 424,
+     "y": 352,
+     "color": 3107621,
+     "size": 6,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 426,
+     "y": 350,
+     "color": 3107621,
+     "size": 6,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 423,
+     "y": 353,
+     "color": 3107621,
+     "size": 6,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 527,
+     "y": 351,
+     "color": 3107621,
+     "size": 6,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 526,
+     "y": 352,
+     "color": 3107621,
+     "size": 6,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 528,
+     "y": 350,
+     "color": 3107621,
+     "size": 6,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 527,
+     "y": 353,
+     "color": 3107621,
+     "size": 6,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 423,
+     "y": 388,
+     "color": 3107621,
+     "size": 6,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 425,
+     "y": 389,
+     "color": 3107621,
+     "size": 6,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 424,
+     "y": 390,
+     "color": 3107621,
+     "size": 6,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 426,
+     "y": 388,
+     "color": 3107621,
+     "size": 6,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 423,
+     "y": 391,
+     "color": 3107621,
+     "size": 6,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 425,
+     "y": 391,
+     "color": 3107621,
+     "size": 6,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 526,
+     "y": 390,
+     "color": 3107621,
+     "size": 6,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 528,
+     "y": 388,
+     "color": 3107621,
+     "size": 6,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 527,
+     "y": 391,
+     "color": 3107621,
+     "size": 6,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 436,
+     "y": 367,
+     "color": 3107621,
+     "size": 6,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 435,
+     "y": 368,
+     "color": 3107621,
+     "size": 6,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 437,
+     "y": 366,
+     "color": 3107621,
+     "size": 6,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 436,
+     "y": 369,
+     "color": 3107621,
+     "size": 6,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 514,
+     "y": 369,
+     "color": 3107621,
+     "size": 6,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 513,
+     "y": 370,
+     "color": 3107621,
+     "size": 6,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 515,
+     "y": 368,
+     "color": 3107621,
+     "size": 6,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 512,
+     "y": 371,
+     "color": 3107621,
+     "size": 6,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 439,
+     "y": 358,
+     "color": 6974058,
+     "size": 3,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 508,
+     "y": 360,
+     "color": 9079418,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 509,
+     "y": 360,
+     "color": 6974058,
+     "size": 3,
+     "shape": "rect"
+    }
+   ]
   }
  ]
 }
