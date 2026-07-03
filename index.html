@@ -744,11 +744,12 @@
       background: linear-gradient(#2b2117, #211910);
       border-top: 1px solid #4a3927; border-radius: 20px 20px 0 0;
       box-shadow: 0 -14px 40px rgba(0,0,0,.55);
-      transform: translateY(116%); }
+      transform: translateY(100dvh); }
     #panel-content::before { content: ''; display: block; width: 42px; height: 4px;
       margin: -6px auto 12px; border-radius: 99px; background: #6b5a44; }
-    /* Instant show/hide (no transition): the world tick re-renders the panel
-       body ~every game tick, which perpetually restarted a transform animation. */
+    /* Instant show/hide — a transform transition here is perpetually restarted by
+       the ~per-tick Game.refresh() and gets stuck. Slide-in is a TODO (would need
+       the Web Animations API or a wrapper the tick render never touches). */
     #app.sheet-open #panel-content { transform: translateY(0); }
     #sheet-backdrop { position: fixed; inset: 0; z-index: 59; background: rgba(0,0,0,.45);
       opacity: 0; pointer-events: none; transition: opacity .28s ease; }
