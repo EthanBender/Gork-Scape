@@ -19,7 +19,11 @@ also CI), `scripts/audit_world.mjs` (map invariants), `scripts/pacing_sim.mjs` (
 
 ## Done (playable today)
 
-- 1000×1000 handcrafted world: geography-first generation, region progression rings,
+- **Geography 2.0 (flipped live 2026-07-03)**: process-derived continent — heightfield →
+  priority-flood hydrology (rivers provably drain, emergent lake + delta bog, fractal
+  coast) → moisture biomes; town translated to a river ford, slope-aware roads that
+  bridge rivers, all hubs/regions relocated geographically (`src/world/geo2.js`;
+  legacy map still reachable via `?geo2=0`). Plus region progression rings,
   authored hubs (settlement, quarry, farmlands, lake dock, bog, mushroom forest…)
 - Terrain texture variants, ecotones, coherent elevation model + 2.5D render
   (terraces, cliff shadows, per-tile lift; `docs/ELEVATION_MODEL.md`)

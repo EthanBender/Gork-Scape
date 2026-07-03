@@ -12,18 +12,21 @@
 
 import { Game } from '../engine/state.js';
 import { isWalkable, regionAt, TILE_SIZE, WORLD_W, WORLD_H, addWorldObject } from '../world/map.js';
+import { REGION_ANCHORS } from '../world/worldData.js';
 import { placeStarterActivities } from './spawnActivities.js';
 
 const tilePx = (t) => t * TILE_SIZE + TILE_SIZE / 2;
 const SPAWN = { x: 500, y: 462 };
 
-// Destinations (x/y = region centre from worldData REGION_ANCHORS).
+// Destinations follow the LIVE region anchors (world-gen relocates them under
+// Geography 2.0), so cart stops always land in the real relocated regions.
+const anchorOf = (id, fx, fy) => { const a = REGION_ANCHORS.find((r) => r.id === id); return a ? { x: a.x, y: a.y } : { x: fx, y: fy }; };
 export const DESTINATIONS = [
-  { id: 'hub',       name: 'Goblin Settlement',   x: 500, y: 462 },
-  { id: 'minehills', name: 'Northern Mine Hills',  x: 610, y: 190 },
-  { id: 'choppers',  name: "Chopper's Hollow",     x: 335, y: 370 },
-  { id: 'grublake',  name: 'Grublake',             x: 735, y: 495 },
-  { id: 'mushroom',  name: 'Mushroom Forest',      x: 250, y: 800 },
+  { id: 'hub', name: 'Goblin Settlement', ...anchorOf('settlement', 500, 462) },
+  { id: 'minehills', name: 'Northern Mine Hills', ...anchorOf('minehills', 610, 190) },
+  { id: 'choppers', name: "Chopper's Hollow", ...anchorOf('choppers', 335, 370) },
+  { id: 'grublake', name: 'Grublake', ...anchorOf('grublake', 735, 495) },
+  { id: 'mushroom', name: 'Mushroom Forest', ...anchorOf('mushroom', 250, 800) },
 ];
 const DEST = Object.fromEntries(DESTINATIONS.map((d) => [d.id, d]));
 
@@ -69,14 +72,15 @@ function raiseSettlement(world) {
   const e = world.elevation;
   if (!e) return;
   const W = world.W;
+  const { dx, dy } = world.townOffset || { dx: 0, dy: 0 }; // follow the relocated town
   const bump = (x0, y0, x1, y1, amt) => {
-    for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
+    for (let y = Math.max(0, y0 + dy); y <= Math.min(world.H - 1, y1 + dy); y++) for (let x = Math.max(0, x0 + dx); x <= Math.min(W - 1, x1 + dx); x++) {
       const i = y * W + x; e[i] = Math.min(255, e[i] + amt);
     }
   };
   bump(449, 404, 556, 511, 7);   // the town on a raised platform above the fields
   bump(489, 417, 511, 436, 15);  // the keep steps up above the plaza
-  const cx = 500, cy = 455, r = 9; // plaza mound
+  const cx = 500 + dx, cy = 455 + dy, r = 9; // plaza mound
   for (let y = cy - r; y <= cy + r; y++) for (let x = cx - r; x <= cx + r; x++) {
     if ((x - cx) * (x - cx) + (y - cy) * (y - cy) <= r * r) { const i = y * W + x; e[i] = Math.min(255, e[i] + 6); }
   }
@@ -86,8 +90,24 @@ function raiseSettlement(world) {
 // Also seeds the starter money-making nodes near spawn + hubs (piggybacked here so
 // it runs from the same single buildWorld hook without another main.js edit).
 export function placeTransports(world) {
+  // Re-read the (possibly relocated) region anchors NOW — world-gen mutates them
+  // under Geography 2.0, and this runs after generation, so stops land correctly.
+  for (const d of DESTINATIONS) {
+    if (d.id === 'hub') { d.x = world.spawn.x; d.y = world.spawn.y; continue; }
+    const a = REGION_ANCHORS.find((r) => r.id === d.id);
+    if (a) { d.x = a.x; d.y = a.y; }
+  }
   placeStarterActivities(world);
   raiseSettlement(world);
+  // outbound stops cluster near the LIVE spawn; each return sits at the live dest
+  PLACEMENTS[0].at = [world.spawn.x - 6, world.spawn.y - 5];
+  PLACEMENTS[1].at = [world.spawn.x - 6, world.spawn.y + 5];
+  PLACEMENTS[2].at = [world.spawn.x + 7, world.spawn.y + 5];
+  PLACEMENTS[3].at = [world.spawn.x + 7, world.spawn.y - 5];
+  PLACEMENTS[4].at = [DEST.minehills.x, DEST.minehills.y];
+  PLACEMENTS[5].at = [DEST.choppers.x, DEST.choppers.y];
+  PLACEMENTS[6].at = [DEST.grublake.x, DEST.grublake.y];
+  PLACEMENTS[7].at = [DEST.mushroom.x, DEST.mushroom.y];
   for (const pl of PLACEMENTS) {
     const spot = findOpen(world, pl.at[0], pl.at[1], 14);
     if (!spot) continue;

@@ -145,6 +145,15 @@ export function applySave(data) {
   if (data.pos && Game.player) {
     Game.player.tileX = data.pos.x;
     Game.player.tileY = data.pos.y;
+    // World-migration guard: if a saved position is no longer walkable (the map
+    // was regenerated — e.g. the Geography 2.0 flip), wake up at spawn instead of
+    // inside a mountain or under a lake. Everything else in the save is intact.
+    const w = Game.world;
+    if (w && w.collision && (data.pos.x < 0 || data.pos.y < 0 || data.pos.x >= w.W || data.pos.y >= w.H ||
+        w.collision[data.pos.y * w.W + data.pos.x] === 1)) {
+      Game.player.tileX = w.spawn.x; Game.player.tileY = w.spawn.y;
+      if (Game.log) Game.log('The world has shifted since you last slept — you wake at the town square.');
+    }
   }
   // Quest progress. applyQuests tolerates undefined (pre-v3 saves) by starting
   // everyone on a clean locked slate and re-deriving availability.

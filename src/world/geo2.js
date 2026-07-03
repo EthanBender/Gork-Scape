@@ -47,7 +47,7 @@ function ridged(x, y, s, oct = 4) {
 }
 
 // ---- tiny binary min-heap (for priority-flood) --------------------------------
-class Heap {
+export class Heap {
   constructor() { this.k = []; this.v = []; }
   push(key, val) { const k = this.k, v = this.v; let i = k.length; k.push(key); v.push(val);
     while (i > 0) { const p = (i - 1) >> 1; if (k[p] <= k[i]) break; [k[p], k[i]] = [k[i], k[p]]; [v[p], v[i]] = [v[i], v[p]]; i = p; } }

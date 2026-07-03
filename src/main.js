@@ -121,10 +121,13 @@ function buildWorld() {
 
   Game.npcs = [];
   Game.activeNpcs = [];   // near-player subset, rebuilt each tick; all per-frame NPC work iterates THIS, not Game.npcs
+  // Under Geography 2.0 the whole town is translated to its river-ford site;
+  // hand-placed town NPCs ride along via this offset (zero under the legacy map).
+  const TD = world.townOffset || { dx: 0, dy: 0 };
   // Elder in town.
   const elderLevels = { attack: 1, strength: 1, defence: 1, ranged: 1, hitpoints: 20 };
   Game.npcs.push(new NPC({
-    id: 'elder', name: 'Goblin Elder', type: 'elder', tileX: 492, tileY: 448,
+    id: 'elder', name: 'Goblin Elder', type: 'elder', tileX: 492 + TD.dx, tileY: 448 + TD.dy,
     color: 0x8a6fbf, aggressive: false, dialog: 'Welcome to the Goblin Empire, young Gork!',
     levels: elderLevels, combatLevel: combatLevel(elderLevels), bonuses: emptyBonuses(),
   }));
@@ -158,7 +161,7 @@ function buildWorld() {
   // proximity gate finds it.
   Game.npcs.push(new NPC({
     id: 'banker', name: 'Banker', type: 'elder',
-    tileX: 493, tileY: 432,
+    tileX: 493 + TD.dx, tileY: 432 + TD.dy,
     color: 0xc9a24a, aggressive: false,
     dialog: 'Welcome to the Bank of Gorkholm. Deposit and withdraw your goods here.',
     levels: elderLevels, combatLevel: null, bonuses: emptyBonuses(),
@@ -172,7 +175,7 @@ function buildWorld() {
     // [economy lane] Stand ward keepers at their building post; region shops with
     // no town building fall back to the provisional ring west of spawn.
     const ang = (k / arr.length) * Math.PI * 2;
-    const [tileX, tileY] = sk.post || [
+    const [tileX, tileY] = sk.post ? [sk.post[0] + TD.dx, sk.post[1] + TD.dy] : [
       world.spawn.x - 4 + Math.round(Math.cos(ang) * 3),
       world.spawn.y + Math.round(Math.sin(ang) * 3),
     ];
