@@ -1,7 +1,10 @@
 {
  "_readme": "Map patches: small, typed fixes applied as the FINAL world-gen step. Each entry: {id, why, ops:[...]}. Ops: {op:'terrain', rect:[x0,y0,x1,y1]|cells:[[x,y]..], to:'GRASS'} | {op:'trail', from:[x,y], to:[x,y]} | {op:'remove_objects', rect:[x0,y0,x1,y1], types:['decor','resource','structure']} | {op:'object', x,y, label, color, examine} | {op:'decor', x,y, color, size, shape}. Terrain names must exist in worldData T. See docs/MAP_DESIGN_PASS.md.",
  "_notes": [
-  "MACRO-BLOCKED CHUNKS (do NOT force these defect counts down with the local patch loop — they need the macro connectivity/bridge pass, CRITICAL_PATH.md Steps 4-5): The whole NW 'Goblin Wilds' north of the Willow river is a large region stranded from spawn (audit_world warns ~7642-tile pocket near 72,106). Because of it: c0,r1 has dead_pocket (67,105) size 424 — reachable across a single river channel at (58,124)→(58,125), so ONE authored footbridge/ford reclaims all 424 tiles; and sealed_room (80,129) sits INSIDE the stranded region, so punching a door won't un-seal it until the region connects. The treeline slivers at x70-74 / x78-79 y135-199 are a dense 2-3-deep wall on the river's west bank; their sealed trees only un-seal by punching multiple gaps, low value until the bridge lands. RECOMMEND: the macro pass decides where the Wilds bridge goes (a ford near x58,y124 is the natural spot), then the local loop mops up the slivers. Until then leave c0,r1 as-is."
+  "HARD/INTENTIONAL TAIL (2026-07-03, after the automated spiral sweep took defects 396->13). The remaining 13 are deliberately left — forcing them risks worse artifacts:",
+  "sealed_obj x8 — the dense NW Willow-bank treeline (x71-78 y135-198 + one at 148,273). These unreachable trees sit 2-3 deep; pulling any one exposes a fresh sliver behind it (verified: removing all 8 ADDED 4 dead_pockets). Leave them as bank scenery; they are visible, just not choppable.",
+  "dead_pocket x5 — (585,293) a 12-tile grass sliver boxed by cliff+shallow-water (no clean ford); (457,442) a 2-tile floor fragment; (692,554) a 42-tile SAND sandbar island in a lake; (766,998)+(772,999) the SE-corner landmass. The sandbar + SE corner are intentional water features (islands read as islands, not bugs). All five have NO POI/content, so nothing is stranded.",
+  "If a future pass wants these to zero: bridge the sandbar/SE corner as reachable island content, and fill the two slivers to match neighbours. Not worth premium tokens."
  ],
  "patches": [
   {
@@ -3218,6 +3221,44 @@
      "types": [
       "decor"
      ]
+    }
+   ]
+  },
+  {
+   "id": "crawl-tail-cleanup",
+   "why": "Final spiral-tail cleanup: ford 2 water-cut grass pockets (504,3 north-edge meadow; 682,117 bridge-pocket) and grass a WALL-ring pocket at (408,106). Remaining defects are the documented hard/intentional tail (see _notes): the dense NW Willow-bank treeline sealed trees, a rock+water-locked sliver at (585,293), a stray floor fragment at (457,442), the 42-tile sandbar island at (692,554), and the SE-corner landmass.",
+   "ops": [
+    {
+     "op": "trail",
+     "from": [
+      504,
+      3
+     ],
+     "to": [
+      500,
+      3
+     ]
+    },
+    {
+     "op": "trail",
+     "from": [
+      685,
+      134
+     ],
+     "to": [
+      685,
+      136
+     ]
+    },
+    {
+     "op": "terrain",
+     "rect": [
+      406,
+      105,
+      410,
+      109
+     ],
+     "to": "GRASS"
     }
    ]
   }
