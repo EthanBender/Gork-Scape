@@ -7,9 +7,14 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Goblin Empire</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js"></script>
 <style>
   :root {
+    --font-display: "Baloo 2", "Segoe UI", Tahoma, sans-serif;
+    --font-ui: "Segoe UI", Tahoma, sans-serif;
     --bg: #14130f;
     --panel: #26221a;
     --panel2: #322d21;
@@ -50,21 +55,24 @@
   ::-webkit-scrollbar-thumb:hover { background: var(--bevel-hi); }
 
   /* Top bar */
-  #topbar { height: 42px; flex: 0 0 42px; display: flex; align-items: center; gap: 0;
+  #topbar { height: 44px; flex: 0 0 44px; display: flex; align-items: center; gap: 0;
     padding: 0 8px; background: linear-gradient(180deg, var(--panel-hi), var(--panel2));
     border-bottom: 2px solid var(--bevel-lo);
     box-shadow: inset 0 1px 0 var(--bevel-hi), 0 2px 6px rgba(0,0,0,.4);
     font-size: 14px; }
-  #topbar .tb { color: var(--muted); padding: 0 18px; position: relative; }
+  #topbar .tb { color: var(--muted); padding: 0 16px; position: relative;
+    display: inline-flex; align-items: center; gap: 6px; }
   #topbar .tb + .tb::before { content: ''; position: absolute; left: 0; top: 50%;
     transform: translateY(-50%); width: 1px; height: 18px;
     background: linear-gradient(180deg, transparent, var(--border), transparent); }
   #topbar .tb b { color: var(--gold); font-weight: 700; text-shadow: 0 1px 0 #000; }
-  #topbar #tb-name { font-weight: 800; color: var(--accent); font-size: 17px; padding: 0 12px;
-    letter-spacing: .5px; text-shadow: 0 1px 0 #000, 0 0 8px rgba(123,191,74,.25); }
+  #topbar .tb-ico { display: inline-flex; width: 15px; height: 15px; flex: 0 0 15px;
+    filter: drop-shadow(0 1px 1px rgba(0,0,0,.5)); }
+  #topbar .tb-ico svg { width: 100%; height: 100%; }
+  #topbar #tb-name { font-family: var(--font-display); font-weight: 800; color: var(--accent);
+    font-size: 18px; padding: 0 12px; letter-spacing: .4px;
+    text-shadow: 0 1px 0 #000, 0 0 10px rgba(123,191,74,.3); }
   #topbar .tb-gp b { color: var(--gold); }
-  #topbar .tb-gp .gp-coin { color: #f2d774; font-size: 12px;
-    text-shadow: 0 0 4px rgba(232,198,90,.6), 0 1px 0 #000; }
 
   /* Main split */
   #main { flex: 1 1 auto; display: flex; min-height: 0; }
@@ -83,13 +91,18 @@
     overflow-x: auto; scrollbar-width: none; } /* world panels add up to 10 tabs — scroll, don't clip */
   #tabbar::-webkit-scrollbar { display: none; }
   .tab-btn { flex: 1 0 auto; min-width: 52px; padding: 7px 2px 5px; color: var(--muted);
-    display: flex; flex-direction: column; align-items: center; gap: 2px;
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
     background: linear-gradient(180deg, var(--panel2), var(--panel));
     border: none; border-right: 1px solid var(--bevel-lo); border-bottom: 2px solid transparent;
     cursor: pointer; transition: color .12s, background .12s; }
-  .tab-btn .tab-icon { font-size: 16px; line-height: 1; filter: saturate(.85) brightness(.95); }
-  .tab-btn .tab-label { font-size: 10px; font-weight: 600; letter-spacing: .2px; }
-  .tab-btn.active .tab-icon { filter: none; }
+  .tab-btn .tab-icon { width: 20px; height: 20px; line-height: 1;
+    filter: saturate(.8) brightness(.92) drop-shadow(0 1px 1px rgba(0,0,0,.5));
+    transition: filter .15s, transform .15s; }
+  .tab-btn .tab-icon svg { width: 100%; height: 100%; display: block; }
+  .tab-btn .tab-label { font-size: 10px; font-weight: 700; letter-spacing: .2px;
+    font-family: var(--font-display); }
+  .tab-btn.active .tab-icon { filter: drop-shadow(0 1px 1px rgba(0,0,0,.5)) drop-shadow(0 0 5px rgba(232,198,90,.45));
+    transform: translateY(-1px) scale(1.08); }
   .tab-btn:last-child { border-right: none; }
   .tab-btn:hover { color: var(--text); background: linear-gradient(180deg, var(--panel-hi), var(--panel2)); }
   .tab-btn.active { color: var(--gold); border-bottom-color: var(--gold);
@@ -101,14 +114,15 @@
   /* Skills */
   /* Compact skill tiles: icon · name · level + a thin xp bar. All ~18 fit without scrolling. */
   .skills-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
-  .skill-cell { display: grid; grid-template-columns: 16px 1fr auto; align-items: center; column-gap: 6px;
+  .skill-cell { display: grid; grid-template-columns: 17px 1fr auto; align-items: center; column-gap: 6px;
     padding: 5px 7px 6px;
     background: linear-gradient(180deg, var(--panel2), var(--panel));
     border: 1px solid var(--bevel-lo); border-radius: 4px; box-shadow: var(--raise);
     transition: box-shadow .1s; }
   .skill-cell:hover { box-shadow: var(--raise), inset 0 0 0 1px rgba(232,198,90,.35); }
-  .skill-icon { width: 16px; height: 16px; border-radius: 3px; border: 1px solid var(--bevel-lo);
-    box-shadow: inset 0 1px 1px rgba(255,255,255,.3), inset 0 -1px 2px rgba(0,0,0,.4); }
+  .skill-icon { width: 17px; height: 17px; display: inline-flex;
+    filter: drop-shadow(0 1px 1px rgba(0,0,0,.5)); }
+  .skill-icon svg { width: 100%; height: 100%; display: block; }
   .skill-name { font-size: 11px; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .skill-cell .lvl { font-size: 12px; font-weight: 700; color: var(--gold); text-shadow: 0 1px 0 #000; }
   .skill-cell .xpbar { grid-column: 1 / -1; height: 3px; margin: 4px 0 0; }
@@ -155,7 +169,8 @@
     box-shadow: var(--raise), 0 10px 34px rgba(0,0,0,.6); }
   .modal-head { display: flex; align-items: center; justify-content: space-between;
     padding: 10px 12px; border-bottom: 1px solid var(--bevel-lo); }
-  .modal-title { color: var(--gold); font-weight: 700; text-shadow: 0 1px 0 #000; }
+  .modal-title { color: var(--gold); font-weight: 700; text-shadow: 0 1px 0 #000;
+    font-family: var(--font-display); font-size: 15px; }
   .modal-close { width: 26px; height: 26px; cursor: pointer; color: var(--muted);
     background: var(--panel2); border: 1px solid var(--bevel-lo); border-radius: 4px; }
   .modal-close:hover { color: var(--text); background: var(--panel-hi); }
@@ -195,7 +210,9 @@
     margin: -12px -12px 10px; padding: 8px 12px;
     background: linear-gradient(180deg, var(--panel-hi), var(--panel2));
     border-bottom: 1px solid var(--bevel-lo); box-shadow: 0 2px 5px rgba(0,0,0,.35); }
-  .wp-title { color: var(--gold); font-weight: 700; font-size: 14px; text-shadow: 0 1px 0 #000; }
+  .wp-title { color: var(--gold); font-weight: 700; font-size: 15px; text-shadow: 0 1px 0 #000;
+    font-family: var(--font-display); display: inline-flex; align-items: center; gap: 7px; }
+  .wp-title svg { width: 18px; height: 18px; filter: drop-shadow(0 1px 1px rgba(0,0,0,.5)); }
   .wp-close { width: 24px; height: 24px; flex: 0 0 24px; cursor: pointer; color: var(--muted);
     background: var(--panel2); border: 1px solid var(--bevel-lo); border-radius: 4px;
     box-shadow: var(--raise); line-height: 1; }
@@ -214,9 +231,9 @@
     line-height: 1; background: rgba(0,0,0,.22); border: 1px solid var(--bevel-lo); cursor: pointer;
     box-shadow: var(--sink); filter: drop-shadow(0 1px 1px rgba(0,0,0,.35)); transition: box-shadow .1s; }
   .doll-slot:hover:not(.doll-vacant) { box-shadow: var(--sink), inset 0 0 0 1px rgba(232,198,90,.5); }
-  .doll-vacant { background: rgba(0,0,0,.22); cursor: default; font-size: 19px;
-    box-shadow: var(--sink); text-shadow: none; opacity: .82;
-    filter: grayscale(.35) brightness(.9); }
+  .doll-vacant { background: rgba(0,0,0,.22); cursor: default; font-size: 8.5px;
+    font-weight: 700; letter-spacing: .6px; text-transform: uppercase;
+    color: rgba(168,156,125,.55); box-shadow: var(--sink); text-shadow: none; }
   .stat-summary { background: linear-gradient(180deg, var(--panel2), var(--panel));
     border: 1px solid var(--bevel-lo); border-radius: 5px; padding: 8px; box-shadow: var(--raise); }
   .stat-title { color: var(--gold); font-size: 11px; font-weight: 700; margin-bottom: 6px;
@@ -310,7 +327,10 @@
     border-radius: 6px; box-shadow: var(--raise), 0 0 16px rgba(200,70,40,.25);
     animation: luIn .4s ease-out both; }
   .ge-raid-title { color: #f0a24a; font-weight: 800; font-size: 14px; letter-spacing: .3px;
-    text-shadow: 0 1px 0 #000, 0 0 10px rgba(240,120,50,.4); }
+    text-shadow: 0 1px 0 #000, 0 0 10px rgba(240,120,50,.4);
+    display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-display); }
+  .ge-raid-title svg { width: 18px; height: 18px; }
+  .ge-hoard-dragon svg { width: 12px; height: 12px; display: block; }
   .ge-raid-body { font-size: 11px; color: var(--text); margin: 5px 0 8px; line-height: 1.5; }
   .ge-raid-body b { color: var(--gold); }
   .ge-raid-btn { width: 100%; padding: 9px; border: 1px solid #6e2a18; border-radius: 5px;
@@ -418,9 +438,10 @@
     font-size: 13px; font-weight: 700; color: var(--text); white-space: nowrap;
     text-shadow: 0 1px 2px #000; box-shadow: 0 2px 8px rgba(0,0,0,.5);
     animation: xpRise 1.5s ease-out forwards; }
-  .xp-drop .xp-dot { width: 10px; height: 10px; border-radius: 50%;
-    box-shadow: inset 0 1px 1px rgba(255,255,255,.5), 0 0 4px rgba(0,0,0,.6); }
-  .xp-drop .xp-amt { color: var(--gold); }
+  .xp-drop .xp-ico { width: 15px; height: 15px; display: inline-flex;
+    filter: drop-shadow(0 1px 1px rgba(0,0,0,.6)); }
+  .xp-drop .xp-ico svg { width: 100%; height: 100%; display: block; }
+  .xp-drop .xp-amt { color: var(--gold); font-family: var(--font-display); }
   .xp-drop .xp-skill { color: var(--muted); font-weight: 600; font-size: 11px; }
   @keyframes xpRise {
     0%   { opacity: 0; transform: translate(-50%, 8px); }
@@ -435,9 +456,13 @@
     box-shadow: 0 0 0 1px var(--bevel-lo), 0 10px 40px rgba(0,0,0,.7), 0 0 30px rgba(232,198,90,.35);
     animation: luIn .5s cubic-bezier(.2,1.4,.4,1) both; }
   .levelup-banner.out { animation: luOut .5s ease-in forwards; }
-  .levelup-banner .lu-icon { font-size: 40px; filter: drop-shadow(0 2px 4px rgba(0,0,0,.6)); }
+  .levelup-banner .lu-icon { width: 44px; height: 44px; font-size: 40px; line-height: 1;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,.6)); animation: luSpin .6s cubic-bezier(.2,1.4,.4,1) both; }
+  .levelup-banner .lu-icon svg { width: 100%; height: 100%; display: block; }
+  @keyframes luSpin { 0% { transform: scale(.3) rotate(-30deg); } 100% { transform: none; } }
   .levelup-banner .lu-text { display: flex; flex-direction: column; }
-  .levelup-banner .lu-text b { color: var(--gold); font-size: 20px; letter-spacing: .5px;
+  .levelup-banner .lu-text b { color: var(--gold); font-size: 21px; letter-spacing: .5px;
+    font-family: var(--font-display);
     text-shadow: 0 2px 0 #000, 0 0 12px rgba(232,198,90,.5); }
   .levelup-banner .lu-text span { color: var(--muted); font-size: 12px; margin-top: 2px; }
   .quest-banner .lu-text b { color: var(--accent); }
@@ -446,7 +471,9 @@
   .quest-header { display: flex; justify-content: space-between; align-items: baseline;
     margin-bottom: 10px; }
   .quest-header .qh-title { font-size: 15px; font-weight: 700; color: var(--gold);
-    text-shadow: 0 1px 0 #000; }
+    text-shadow: 0 1px 0 #000; font-family: var(--font-display);
+    display: inline-flex; align-items: center; gap: 6px; }
+  .quest-header .qh-title svg { width: 17px; height: 17px; }
   .quest-header .qh-count { font-size: 11px; color: var(--muted); }
   .quest-section-label { margin: 12px 0 6px; font-size: 10px; text-transform: uppercase;
     letter-spacing: 1px; color: var(--muted); }
@@ -558,12 +585,14 @@
   /* World map button + overlay */
   #map-btn { position: absolute; top: 190px; right: 12px; z-index: 6;
     width: 42px; height: 42px; padding: 0; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center; font-size: 19px; line-height: 1;
+    display: flex; align-items: center; justify-content: center; line-height: 1;
     color: var(--gold); border: 1px solid var(--gold-dk);
     background: linear-gradient(180deg, var(--panel-hi), var(--panel2)); cursor: pointer;
     box-shadow: var(--raise), 0 2px 6px rgba(0,0,0,.4);
     transition: transform .08s, color .1s, background .1s; }
-  #map-btn:hover { color: #1a1710; background: linear-gradient(180deg, #f2d774, var(--gold-dk)); }
+  #map-btn svg { width: 23px; height: 23px; filter: drop-shadow(0 1px 1px rgba(0,0,0,.5)); }
+  #map-btn:hover { background: linear-gradient(180deg, #4a4331, var(--panel-hi)); }
+  #map-btn:hover svg { filter: drop-shadow(0 1px 1px rgba(0,0,0,.5)) drop-shadow(0 0 5px rgba(232,198,90,.5)); }
   #map-btn:active { transform: translateY(1px); }
   #cam-hint { position: absolute; top: 190px; right: 112px; z-index: 6;
     width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center;
@@ -588,7 +617,10 @@
   #run-btn:active { transform: translateY(1px); }
   #run-btn.on { --ring: var(--accent); color: var(--accent); }
   #run-btn.low { --ring: #c0553a; color: #e88a6a; }
-  #run-ico { position: relative; z-index: 1; font-size: 18px; line-height: 1; text-shadow: 0 1px 0 #000; }
+  #run-ico { position: relative; z-index: 1; width: 21px; height: 21px; line-height: 1;
+    display: inline-flex; filter: drop-shadow(0 1px 1px rgba(0,0,0,.5)); }
+  #run-ico svg { width: 100%; height: 100%; }
+  #run-btn.on #run-ico { filter: drop-shadow(0 1px 1px rgba(0,0,0,.5)) drop-shadow(0 0 5px rgba(123,191,74,.55)); }
   #run-pct, #run-bar { display: none; }
   /* Home Teleport button — a progress ring like the run toggle (fills while
      channelling, depletes while on cooldown). Sits below the button row. */
@@ -604,7 +636,10 @@
   #home-btn.channeling { --ring: var(--accent); color: var(--accent);
     animation: homePulse .9s ease-in-out infinite; }
   #home-btn.cooldown { --ring: #7a5a3a; color: var(--muted); cursor: default; }
-  #home-ico { position: relative; z-index: 1; font-size: 18px; line-height: 1; text-shadow: 0 1px 0 #000; }
+  #home-ico { position: relative; z-index: 1; width: 21px; height: 21px; line-height: 1;
+    display: inline-flex; filter: drop-shadow(0 1px 1px rgba(0,0,0,.5)); }
+  #home-ico svg { width: 100%; height: 100%; }
+  #home-btn.channeling #home-ico { filter: drop-shadow(0 1px 1px rgba(0,0,0,.5)) drop-shadow(0 0 5px rgba(123,191,74,.55)); }
   #home-state { position: absolute; bottom: 1px; z-index: 1; font-size: 9px; font-weight: 700;
     color: var(--gold); text-shadow: 0 1px 0 #000, 0 0 2px #000; }
   @keyframes homePulse { 0%,100% { box-shadow: 0 2px 6px rgba(0,0,0,.4); }
@@ -622,6 +657,8 @@
   #worldmap-canvas { display: block; background: #0c0c0a; border: 1px solid var(--border);
     cursor: crosshair; max-width: 88vh; max-height: 88vh; }
   .wm-hint { color: var(--muted); font-size: 11px; margin-top: 6px; text-align: center; }
+  .wm-dot { display: inline-block; width: 8px; height: 8px; border-radius: 2px;
+    vertical-align: baseline; box-shadow: 0 0 3px rgba(0,0,0,.6); }
 
   /* ============================================================
      MOBILE — portrait phones (≤720px wide): stack the game over the
@@ -700,29 +737,29 @@
 <div id="app">
   <div id="topbar">
     <span id="tb-name">Gork</span>
-    <span class="tb"><b id="tb-combat">Combat Lv 3</b></span>
-    <span class="tb">📍 <span id="tb-location">Goblin Settlement</span></span>
-    <span class="tb tb-gp"><span class="gp-coin">●</span> <b id="tb-gp">0</b> gp</span>
+    <span class="tb"><span class="tb-ico"><svg viewBox="0 0 24 24"><polygon points="4,3 7,3 18,15 16,18" fill="#c7cfd8"/><polygon points="4,3 4,6 15,17 16,18" fill="#8d99a6"/><polygon points="20,3 17,3 6,15 8,18" fill="#c7cfd8"/><polygon points="20,3 20,6 9,17 8,18" fill="#8d99a6"/></svg></span><b id="tb-combat">Combat Lv 3</b></span>
+    <span class="tb"><span class="tb-ico"><svg viewBox="0 0 24 24"><path d="M12 2 C7.5 2 4.5 5.4 4.5 9.4 C4.5 14.4 12 22 12 22 S19.5 14.4 19.5 9.4 C19.5 5.4 16.5 2 12 2 Z" fill="#e0655c"/><path d="M12 2 C7.5 2 4.5 5.4 4.5 9.4 C4.5 14.4 12 22 12 22 L12 2 Z" fill="#a03028"/><circle cx="12" cy="9.2" r="3" fill="#efe8d4"/></svg></span><span id="tb-location">Goblin Settlement</span></span>
+    <span class="tb tb-gp"><span class="tb-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5" fill="#c49b3a"/><circle cx="12" cy="12" r="7.6" fill="#f2d774"/><polygon points="7,9 12,5.4 13.8,7.8 8.6,11.4" fill="#fbeeb8" opacity=".9"/></svg></span><b id="tb-gp">0</b> gp</span>
     <span class="tb" id="tb-tick">Tick 0</span>
     <span class="tb" id="tb-fps" title="Render FPS · NPC count (perf probe)">–</span>
   </div>
   <div id="main">
     <div id="game-panel">
       <div id="game-canvas"></div>
-      <button id="map-btn" title="World map (M)">🗺</button>
+      <button id="map-btn" title="World map (M)"><svg viewBox="0 0 24 24"><polygon points="3,5 9,3 9,19 3,21" fill="#d8ecc0"/><polygon points="9,3 15,5 15,21 9,19" fill="#c2dba6"/><polygon points="15,5 21,3 21,19 15,21" fill="#d8ecc0"/><path d="M5.5 16 Q9 12 12 12 T18.5 7" fill="none" stroke="#a03028" stroke-width="1.4" stroke-dasharray="2.2 1.6"/><circle cx="18.5" cy="7" r="1.5" fill="#e0655c"/></svg></button>
       <div id="cam-hint" title="Controls">
         <span class="ch-ico">?</span>
         <div class="ch-pop">
-          🖱 <b>click minimap</b> to travel<br>
+          <b>click minimap</b> to travel<br>
           <b>scroll</b> / <b>↑ ↓</b> zoom · <b>← →</b> rotate · <b>0</b> reset
         </div>
       </div>
       <button id="run-btn" title="Toggle run / walk (R)">
-        <span id="run-ico">🚶</span><span id="run-pct">100%</span>
+        <span id="run-ico"><svg viewBox="0 0 24 24"><polygon points="7,3 12,3 12,13 18,15 18,19 12,19 7,17" fill="#8a5a2e"/><polygon points="7,3 9.5,3 9.5,17 7,17" fill="#5f3c1c"/><rect x="6" y="18" width="13" height="3" rx="1.4" fill="#5f3c1c"/><line x1="2" y1="8" x2="5.4" y2="8" stroke="#efe8d4" stroke-width="1.6"/><line x1="1" y1="11.5" x2="4.6" y2="11.5" stroke="#efe8d4" stroke-width="1.6"/><line x1="2" y1="15" x2="4.4" y2="15" stroke="#efe8d4" stroke-width="1.6"/></svg></span><span id="run-pct">100%</span>
         <span id="run-bar"><span id="run-fill"></span></span>
       </button>
       <button id="home-btn" title="Home Teleport — channel ~10s to return to the settlement (free)">
-        <span id="home-ico">🏠</span><span id="home-state"></span>
+        <span id="home-ico"><svg viewBox="0 0 24 24"><polygon points="12,2 22,11 19,11 19,21 5,21 5,11 2,11" fill="#8a5a2e"/><polygon points="12,2 2,11 5,11 12,4.8" fill="#5f3c1c"/><polygon points="12,2 22,11 19,11 12,4.8" fill="#9a693a"/><rect x="9.6" y="13" width="4.8" height="8" rx="1" fill="#5f3c1c"/><circle cx="13.2" cy="17" r=".9" fill="#f2d774"/></svg></span><span id="home-state"></span>
       </button>
     </div>
     <div id="side-panel">
@@ -739,7 +776,7 @@
       <button id="wm-close" title="Close (Esc)">✕</button>
     </div>
     <canvas id="worldmap-canvas" width="720" height="720"></canvas>
-    <div class="wm-hint">⬜ you · 🟡 landmarks · 🔴 enemies nearby — click anywhere to set a walk route</div>
+    <div class="wm-hint"><span class="wm-dot" style="background:#efe8d4"></span> you · <span class="wm-dot" style="background:#e8c65a"></span> landmarks · <span class="wm-dot" style="background:#e0655c"></span> enemies nearby — click anywhere to set a walk route</div>
   </div>
 </div>
 <script type="module" src="src/main.js"></script>

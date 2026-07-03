@@ -54,8 +54,8 @@ test('daylight is 0 at midnight, peaks at midday, symmetric', () => {
 });
 
 test('label reads "Day N · HH:MM <glyph>"', () => {
-  eq(label(E), 'Day 1 · 00:00 🌙');
-  eq(label(at(0.5, 11)), 'Day 12 · 12:00 ☀️');
+  eq(label(E), 'Day 1 · 00:00 Night');
+  eq(label(at(0.5, 11)), 'Day 12 · 12:00 Day');
 });
 
 test('daysBetween counts whole world-days crossed', () => {

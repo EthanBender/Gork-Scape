@@ -209,7 +209,7 @@ export function bankWithdraw(id, qty = 1) {
 export function grantXp(skillName, amount) {
   const sk = (skillName === 'Hitpoints') ? Game.hitpoints : Game.skills[skillName];
   if (!sk) return;
-  // [world-continuity] A live world event (e.g. 🎉 Goblin Festival) can boost XP
+  // [world-continuity] A live world event (e.g.  Goblin Festival) can boost XP
   // gain. Reads the runtime-exposed calendar defensively; no-op when calm or
   // before the world clock is wired.
   const ev = Game.worldEvents && Game.worldEvents.activeEvent && Game.worldEvents.activeEvent();

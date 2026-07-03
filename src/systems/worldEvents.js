@@ -22,32 +22,32 @@ import { dayNumber, isNight, timeOfDay, DAY_MS, worldElapsedMs, clockHHMM } from
 // and XP bonuses). This module applies none of it itself.
 export const EVENTS = [
   {
-    id: 'blood_moon', name: '🌑 Blood Moon', window: 'night',
+    id: 'blood_moon', name: 'Blood Moon', window: 'night',
     blurb: 'Monsters grow bolder and hit harder beneath the blood moon — but drop more.',
     effect: { dropBonus: 1.25, geMatch: /potion|food|fish|cooked|arrow|bolt|rune/i, geMult: 1.15 },
   },
   {
-    id: 'merchant_caravan', name: '🐫 Merchant Caravan', window: 'day',
+    id: 'merchant_caravan', name: 'Merchant Caravan', window: 'day',
     blurb: 'A merchant caravan rolls through — the market is flush and prices soften.',
     effect: { geMatch: /.*/, geMult: 0.93 },
   },
   {
-    id: 'goblin_festival', name: '🎉 Goblin Festival', window: 'all',
+    id: 'goblin_festival', name: 'Goblin Festival', window: 'all',
     blurb: 'The clans feast and brawl for sport — experience flows a little freer today.',
     effect: { xpBonus: 1.10 },
   },
   {
-    id: 'ore_rush', name: '⛏️ Ore Rush', window: 'day',
+    id: 'ore_rush', name: 'Ore Rush', window: 'day',
     blurb: 'Rich seams surface across the mines — ore and metal are in high demand.',
     effect: { geMatch: /ore|bar|coal|metal|ingot|rock/i, geMult: 1.18 },
   },
   {
-    id: 'timber_glut', name: '🪵 Timber Glut', window: 'all',
+    id: 'timber_glut', name: 'Timber Glut', window: 'all',
     blurb: 'Loggers flood the market with wood — timber prices sag.',
     effect: { geMatch: /log|plank|wood|timber/i, geMult: 0.78 },
   },
   {
-    id: 'wandering_horde', name: '👹 Wandering Horde', window: 'night',
+    id: 'wandering_horde', name: 'Wandering Horde', window: 'night',
     blurb: 'A horde roams the wilds after dark — dangerous, but rich pickings.',
     effect: { dropBonus: 1.4, geMatch: /weapon|armou?r|shield|helm|sword|axe|mace|spear|bow/i, geMult: 1.1 },
   },

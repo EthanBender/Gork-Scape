@@ -67,7 +67,7 @@ export function daylight(now = Date.now()) {
 // Human-readable HUD/log label, e.g. "Day 12 · 14:30 ☀️".
 export function label(now = Date.now()) {
   const p = phase(now);
-  const glyph = p === 'night' ? '🌙' : p === 'dawn' ? '🌅' : p === 'dusk' ? '🌇' : '☀️';
+  const glyph = p === 'night' ? 'Night' : p === 'dawn' ? 'Dawn' : p === 'dusk' ? 'Dusk' : 'Day';
   return `Day ${dayNumber(now)} · ${clockHHMM(now)} ${glyph}`;
 }
 

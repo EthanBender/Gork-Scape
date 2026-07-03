@@ -74,7 +74,7 @@ function render() {
   list.innerHTML = '';
   // Gate: the whole skill is locked until the intro quest grants it.
   if (!hasUnlock('tinkering')) {
-    list.innerHTML = `<div class="tk-locked">🔒 You aren't a Tinkerer yet.<br><br>
+    list.innerHTML = `<div class="tk-locked">You aren't a Tinkerer yet.<br><br>
       Find <b>Sprocket the Tinker</b> near the settlement and complete
       <b>"Sparks of Invention"</b> to learn the craft. Further gadgets unlock as you
       progress <b>The Tinkerer's Path</b> quest line.</div>`;
@@ -139,7 +139,7 @@ export function openWorkbench() {
     overlay = document.createElement('div');
     overlay.id = 'tinker-overlay';
     overlay.innerHTML = `<div class="tk-panel">
-      <div class="tk-head"><h2>🔧 Tinker's Workbench <span class="tk-lvl"></span></h2>
+      <div class="tk-head"><h2>Tinker's Workbench <span class="tk-lvl"></span></h2>
         <button class="tk-x" title="Close">✕</button></div>
       <div class="tk-tabs"></div>
       <div class="tk-list"></div>

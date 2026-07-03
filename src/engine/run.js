@@ -85,10 +85,10 @@ export function updateRunHud(force) {
   const key = (r.on ? 1 : 0) + ':' + pct;
   if (!force && key === _lastHud) return;
   _lastHud = key;
-  const ico = document.getElementById('run-ico');
   const txt = document.getElementById('run-pct');
   const fill = document.getElementById('run-fill');
-  if (ico) ico.textContent = r.on ? '🏃' : '🚶';
+  // The boot SVG lives in index.html; run-vs-walk reads through the .on class
+  // (green glow + ring color), so the icon itself never needs swapping.
   if (txt) txt.textContent = pct + '%';
   if (fill) fill.style.width = pct + '%';
   btn.style.setProperty('--run-pct', pct); // [economy lane] drives the bubble's energy ring

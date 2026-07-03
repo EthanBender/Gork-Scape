@@ -171,13 +171,13 @@ function renderDetail(overlay, id) {
 
   // --- how to get it ---
   const getRows = [];
-  for (const dr of (idx.dropsByItem.get(id) || [])) getRows.push(`<div class="wk-row">🗡 Dropped by ${link(dr.monster)}${dr.chance != null ? ` <span class="wk-none">(${dr.chance}%)</span>` : ''}</div>`);
-  for (const n of (idx.nodesByItem.get(id) || [])) getRows.push(`<div class="wk-row">⛏ Gather at <b>${esc(n.display_name)}</b> <span class="wk-none">(${esc(n.related_skill)} Lv ${n.level_requirement}${n.required_tool ? `, ${esc(n.required_tool)}` : ''} · ${esc(String(n.region).split(';')[0])})</span></div>`);
-  for (const r of (idx.madeBy.get(id) || [])) getRows.push(`<div class="wk-row">🔨 Craft at <b>${esc(r.station || '?')}</b> <span class="wk-none">(${esc(r.skill || '?')} Lv ${r.level || 1})</span>: ${(r.inputs || []).map((i) => `${i.id ? link(i.id) : 'any ' + i.any} ×${i.qty}`).join(' + ') || '—'}${r.outQty > 1 ? ` → ×${r.outQty}` : ''}</div>`);
-  for (const s of (idx.shopsByItem.get(id) || [])) getRows.push(`<div class="wk-row">🛒 Buy at <b>${esc(s.shop)}</b> <span class="wk-none">(${esc(s.region || '?')})${s.buy != null ? ` — ${s.buy} gp` : ''}</span></div>`);
+  for (const dr of (idx.dropsByItem.get(id) || [])) getRows.push(`<div class="wk-row">Dropped by ${link(dr.monster)}${dr.chance != null ? ` <span class="wk-none">(${dr.chance}%)</span>` : ''}</div>`);
+  for (const n of (idx.nodesByItem.get(id) || [])) getRows.push(`<div class="wk-row">Gather at <b>${esc(n.display_name)}</b> <span class="wk-none">(${esc(n.related_skill)} Lv ${n.level_requirement}${n.required_tool ? `, ${esc(n.required_tool)}` : ''} · ${esc(String(n.region).split(';')[0])})</span></div>`);
+  for (const r of (idx.madeBy.get(id) || [])) getRows.push(`<div class="wk-row">Craft at <b>${esc(r.station || '?')}</b> <span class="wk-none">(${esc(r.skill || '?')} Lv ${r.level || 1})</span>: ${(r.inputs || []).map((i) => `${i.id ? link(i.id) : 'any ' + i.any} ×${i.qty}`).join(' + ') || '—'}${r.outQty > 1 ? ` → ×${r.outQty}` : ''}</div>`);
+  for (const s of (idx.shopsByItem.get(id) || [])) getRows.push(`<div class="wk-row">Buy at <b>${esc(s.shop)}</b> <span class="wk-none">(${esc(s.region || '?')})${s.buy != null ? ` — ${s.buy} gp` : ''}</span></div>`);
   if (!getRows.length && meta) {
     if (meta.source_type) getRows.push(`<div class="wk-row">${esc(meta.source_type.replace(/;/g, ', '))}${meta.primary_source ? ` — from ${esc(meta.primary_source)}` : ''}</div>`);
-    if (meta.dropped_by) getRows.push(`<div class="wk-row">🗡 Dropped by ${splitList(meta.dropped_by).map(link).join(', ')}</div>`);
+    if (meta.dropped_by) getRows.push(`<div class="wk-row">Dropped by ${splitList(meta.dropped_by).map(link).join(', ')}</div>`);
   }
 
   // --- what it's for ---
@@ -185,14 +185,14 @@ function renderDetail(overlay, id) {
   const uses = idx.usedIn.get(id) || [];
   if (uses.length) {
     const byOut = uses.slice(0, 40).map((r) => link(r.output));
-    useRows.push(`<div class="wk-row">🔧 Used to make: ${byOut.join(', ')}</div>`);
+    useRows.push(`<div class="wk-row">Used to make: ${byOut.join(', ')}</div>`);
   }
-  if (it.slot && it.slot !== null) useRows.push(`<div class="wk-row">⚔ Equips in the <b>${esc(it.slot)}</b> slot</div>`);
-  if (it.heal) useRows.push(`<div class="wk-row">🍖 Eat to heal <b>${it.heal} HP</b></div>`);
-  if (it.buryXp) useRows.push(`<div class="wk-row">🙏 Bury / offer at an altar for Prayer xp</div>`);
-  if (it.tool) useRows.push(`<div class="wk-row">🛠 Used as a <b>${esc(it.tool)}</b> tool when gathering</div>`);
-  if (it.ammoFamily) useRows.push(`<div class="wk-row">🎯 Ammo for <b>${esc(it.ammoFamily)}</b>-family tinker gadgets</div>`);
-  if (it.gadgetMod) useRows.push(`<div class="wk-row">🔩 Install on your tinker rig to buff gadgets</div>`);
+  if (it.slot && it.slot !== null) useRows.push(`<div class="wk-row">Equips in the <b>${esc(it.slot)}</b> slot</div>`);
+  if (it.heal) useRows.push(`<div class="wk-row">Eat to heal <b>${it.heal} HP</b></div>`);
+  if (it.buryXp) useRows.push(`<div class="wk-row">Bury / offer at an altar for Prayer xp</div>`);
+  if (it.tool) useRows.push(`<div class="wk-row">Used as a <b>${esc(it.tool)}</b> tool when gathering</div>`);
+  if (it.ammoFamily) useRows.push(`<div class="wk-row">Ammo for <b>${esc(it.ammoFamily)}</b>-family tinker gadgets</div>`);
+  if (it.gadgetMod) useRows.push(`<div class="wk-row">Install on your tinker rig to buff gadgets</div>`);
   if (meta && meta.used_in_recipes && !uses.length) useRows.push(`<div class="wk-row">${esc(splitList(meta.used_in_recipes).join(', '))}</div>`);
 
   const desc = (meta && meta.notes) ? esc(meta.notes) : (it.blurb ? esc(it.blurb) : '');
@@ -223,7 +223,7 @@ export function openWiki(focusId = null) {
     overlay = document.createElement('div');
     overlay.id = 'wiki-overlay';
     overlay.innerHTML = `<div class="wk-panel">
-      <div class="wk-head"><h2>📖 Codex</h2>
+      <div class="wk-head"><h2>Codex</h2>
         <input class="wk-search" placeholder="Search items…" />
         <button class="wk-x" title="Close">✕</button></div>
       <div class="wk-body"><div class="wk-list"></div>
@@ -247,7 +247,7 @@ export function initWiki() {
   const host = document.getElementById('game-panel') || document.body;
   const btn = document.createElement('button');
   btn.id = 'wiki-btn';
-  btn.textContent = '📖 Wiki';
+  btn.textContent = 'Codex';
   btn.title = 'Open the item Codex — search any item to see what it is and where it comes from';
   btn.onclick = () => openWiki();
   host.appendChild(btn);

@@ -135,7 +135,7 @@ function updateHud() {
       bar.insertBefore(el, document.getElementById('logout-btn'));
     }
     if (el) {
-      el.textContent = '🌐 Shared World';
+      el.textContent = 'Shared World';
       el.title = 'Connected to the always-on world server — Grand Exchange prices are the live, shared ones.';
       el.style.display = '';
     }

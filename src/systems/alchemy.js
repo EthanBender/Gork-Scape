@@ -118,7 +118,7 @@ export function brew(ids) {
       saveDiscovered();
       const xp = r.xp * 2; // discovery bonus
       grantXp('Alchemy', xp);
-      Game.log(`✨ You discover a new brew — ${ITEMS[r.out].name}! (+${xp} Alchemy xp)`);
+      Game.log(`You discover a new brew — ${ITEMS[r.out].name}! (+${xp} Alchemy xp)`);
       return { ok: true, discovered: true, out: r.out };
     }
     grantXp('Alchemy', r.xp);
@@ -206,10 +206,10 @@ export function renderAlchemy(view) {
   // header: level + forage
   const head = document.createElement('div');
   head.className = 'ge-head';
-  head.innerHTML = `<span class="stat-title" style="margin:0">⚗️ Alchemy · Lv ${alchLevel()}</span>`;
+  head.innerHTML = `<span class="stat-title" style="margin:0">Alchemy · Lv ${alchLevel()}</span>`;
   const forage = document.createElement('button');
   forage.className = 'craft-btn';
-  forage.textContent = '🍄 Forage';
+  forage.textContent = 'Forage';
   forage.onclick = () => { forageSpores(); Game.refresh(); };
   head.appendChild(forage);
   view.appendChild(head);

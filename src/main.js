@@ -326,7 +326,7 @@ function spawnQuestBoss(spec) {
   });
   npc.questBoss = true;
   Game.npcs.push(npc);
-  Game.log(`⚔️ ${npc.name} rises to face you!`);
+  Game.log(`${npc.name} rises to face you!`);
   Game.refresh();
 }
 
@@ -512,9 +512,10 @@ function create() {
     const chip = document.createElement('div');
     chip.id = 'goal-chip';
     chip.style.cssText = 'position:absolute;left:10px;top:10px;z-index:30;max-width:46%;' +
-      'padding:6px 10px;font:600 11px monospace;color:#e8c65a;background:rgba(20,19,15,.82);' +
-      'border:1px solid #4a4331;border-radius:6px;box-shadow:0 2px 6px rgba(0,0,0,.4);' +
-      'pointer-events:none;display:none;text-shadow:0 1px 0 #000;line-height:1.35;white-space:pre-line;';
+      'padding:7px 11px;font:600 12px/1.4 var(--font-display),sans-serif;color:#e8c65a;' +
+      'background:rgba(16,15,11,.86);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);' +
+      'border:1px solid rgba(232,198,90,.4);border-radius:8px;box-shadow:0 3px 10px rgba(0,0,0,.45);' +
+      'pointer-events:none;display:none;text-shadow:0 1px 0 #000;white-space:pre-line;';
     (document.getElementById('game-panel') || document.body).appendChild(chip);
   }
   // Day/night light (juice): a multiply-blended overlay driven by the world
@@ -1233,10 +1234,10 @@ function gameTick(count, isLast = true) {
         Game.hp = Math.max(0, Game.hp - dmg);
         floatText(p, '-' + dmg, '#ff2b2b');
         playSfx('slam');
-        Game.log(`💥 The ${n.name}'s slam CRUSHES you for ${dmg}!`);
+        Game.log(`The ${n.name}'s slam CRUSHES you for ${dmg}!`);
         if (Game.hp <= 0) playerDeath();
       } else {
-        Game.log(`💥 The ${n.name}'s slam shatters the ground where you stood!`);
+        Game.log(`The ${n.name}'s slam shatters the ground where you stood!`);
       }
     }
 
@@ -1255,7 +1256,7 @@ function gameTick(count, isLast = true) {
             n._specCount = 0;
             n._windup = { x: p.tileX, y: p.tileY, at: count + 2 };
             floatText(n, '!!', '#ffd24d');
-            Game.log(`⚠️ The ${n.name} rears back — MOVE!`);
+            Game.log(`The ${n.name} rears back — MOVE!`);
           } else {
             npcAttack(n, count);
           }
@@ -1762,7 +1763,7 @@ function dropLoot(npc, count) {
   // rare roll when the fun demands it). Announced loudly; it's the point of the run.
   if (npc.bossDrop && ITEMS[npc.bossDrop]) {
     spawnGroundItem(npc.bossDrop, 1, npc.tileX, npc.tileY, count, 900);
-    Game.log(`💀 ${npc.name} drops its trophy: ${ITEMS[npc.bossDrop].name}!`);
+    Game.log(`${npc.name} drops its trophy: ${ITEMS[npc.bossDrop].name}!`);
   }
 }
 
@@ -1922,7 +1923,7 @@ function teleportHome() {
   p.tileX = sp.x; p.tileY = sp.y; p.px = tilePx(sp.x); p.py = tilePx(sp.y);
   for (const n of Game.npcs) n.target = null;
   Game.location = regionAt(p.tileX, p.tileY);
-  Game.log('🏠 The world folds and you step out at the settlement.');
+  Game.log('The world folds and you step out at the settlement.');
   Game.refresh();
 }
 function updateHomeHud() {
@@ -2407,7 +2408,7 @@ function updateGoalChip() {
   }
   // M3: the active slayer contract rides the same chip (second line).
   const c = contractState();
-  if (c && c.done < c.need) text += `${text ? '\n' : ''}📜 Contract: ${c.done}/${c.need} ${c.name} — ${c.region}`;
+  if (c && c.done < c.need) text += `${text ? '\n' : ''}Contract: ${c.done}/${c.need} ${c.name} — ${c.region}`;
   if (text !== goalChipText) {
     goalChipText = text;
     chip.textContent = text;

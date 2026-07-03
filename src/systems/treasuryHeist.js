@@ -74,7 +74,7 @@ export function checkHeist() {
   heist.hoard = Math.floor(geTax.balance);
   spendTreasury(heist.hoard);               // the treasury is drained INTO the hoard
   heist.phase = 'raided';
-  Game.log(`🐉 ${HOARD_DRAGON.name} descends and plunders `
+  Game.log(`${HOARD_DRAGON.name} descends and plunders `
     + `${heist.hoard.toLocaleString()} gp from the Goblin Treasury! `
     + `Hunt it to its lair and take back the hoard.`);
   Game.refresh();
@@ -112,7 +112,7 @@ export function resolveHeistVictory(party = ['player']) {
   const dropText = drops.length
     ? drops.map((d) => `${d.qty}× ${itemName(d.id)}`).join(', ')
     : 'no rare drops this time';
-  Game.log(`🐉 ${HOARD_DRAGON.name} is slain! You reclaim ${perMember.toLocaleString()} gp`
+  Game.log(`${HOARD_DRAGON.name} is slain! You reclaim ${perMember.toLocaleString()} gp`
     + (members > 1 ? ` (your split of ${reclaimable.toLocaleString()} across ${members})` : '')
     + ` and loot ${dropText}. ${lost.toLocaleString()} gp was lost to the flames.`);
 

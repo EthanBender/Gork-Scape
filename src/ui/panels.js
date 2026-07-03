@@ -16,6 +16,7 @@ import { SKILL_NAMES, levelProgress } from '../engine/skills.js';
 import { EQUIP_SLOTS, STAT_KEYS, itemView } from '../items/equipment.js';
 import { splitList, GameData } from '../data/gameData.js';
 import { itemIcon, itemIconHTML } from '../data/itemIcons.js';
+import { icon, skillIcon } from './icons.js';
 import { openWiki } from './wiki.js'; // [economy lane] item Codex lookup
 import { recipesForStation, craft, stationTypes } from '../systems/crafting.js';
 import { rollMonsterDrops } from '../systems/drops.js';
@@ -155,11 +156,7 @@ const SKILL_COLORS = {
 
 const STYLES = ['Accurate', 'Aggressive', 'Defensive', 'Controlled'];
 
-const SKILL_EMOJI = {
-  Woodcutting: '🪓', Fishing: '🎣', Mining: '⛏️', Cooking: '🍳',
-  Firemaking: '🔥', Smithing: '🔨', Crafting: '🧵', Attack: '⚔️', Strength: '💪',
-  Defence: '🛡️', Ranged: '🏹', Prayer: '🙏', Alchemy: '⚗️', Tinkering: '🔧', Hitpoints: '❤️',
-};
+// Skill glyphs come from the crafted SVG set (ui/icons.js) — see skillIcon().
 
 // ---------- Progression flourishes (xp drops + level-up banner) ----------
 // Overlay layer pinned over the game view; created lazily.
@@ -180,9 +177,9 @@ function showXpDrop(skill, amount) {
   const d = document.createElement('div');
   d.className = 'xp-drop';
   const col = SKILL_COLORS[skill] || 'var(--gold)';
-  d.innerHTML = `<span class="xp-dot" style="background:${col}"></span>`
+  d.innerHTML = `<span class="xp-ico" style="color:${col}">${skillIcon(skill)}</span>`
     + `<span class="xp-amt">+${amt.toLocaleString()}</span>`
-    + `<span class="xp-skill">${SKILL_EMOJI[skill] || ''} ${skill}</span>`;
+    + `<span class="xp-skill">${skill}</span>`;
   fxLayer().appendChild(d);
   d.addEventListener('animationend', () => d.remove());
   // Safety net if animationend doesn't fire.
@@ -193,7 +190,7 @@ function showXpDrop(skill, amount) {
 function showLevelUp(skill, level) {
   const b = document.createElement('div');
   b.className = 'levelup-banner';
-  b.innerHTML = `<div class="lu-icon">${SKILL_EMOJI[skill] || '⭐'}</div>`
+  b.innerHTML = `<div class="lu-icon">${skillIcon(skill)}</div>`
     + `<div class="lu-text"><b>${skill} Level ${level}</b>`
     + `<span>Congratulations, Gork!</span></div>`;
   fxLayer().appendChild(b);
@@ -260,23 +257,23 @@ function buildLayout() {
   els.panel.innerHTML = '';
 
   const tabs = [
-    ['skills', 'Skills', '📊'], ['quests', 'Quests', '📜'],
-    ['inventory', 'Inventory', '🎒'],
-    ['equipment', 'Equipment', '🛡️'], ['combat', 'Combat', '⚔️'],
-    ['stations', 'Stations', '🔨'], ['alchemy', 'Alchemy', '⚗️'],
-    ['ge', 'Exchange', '💰'],
-    ['shop', 'Shop', '🏪'], ['bank', 'Bank', '🏦'],
+    ['skills', 'Skills', icon('skills')], ['quests', 'Quests', icon('quests')],
+    ['inventory', 'Inventory', icon('inventory')],
+    ['equipment', 'Equipment', icon('equipment')], ['combat', 'Combat', icon('combat')],
+    ['stations', 'Stations', icon('stations')], ['alchemy', 'Alchemy', icon('alchemy')],
+    ['ge', 'Exchange', icon('exchange')],
+    ['shop', 'Shop', icon('shop')], ['bank', 'Bank', icon('bank')],
   ];
   els.tabButtons = {};
   // [economy lane] Exchange + Stations are opened from the WORLD (merchant /
   // anvil), not a persistent tab — the views still exist, they just get no button.
   const NO_BUTTON = new Set(['ge', 'stations', 'shop', 'bank']);
-  for (const [id, label, icon] of tabs) {
+  for (const [id, label, iconSvg] of tabs) {
     if (NO_BUTTON.has(id)) continue;
     const b = document.createElement('button');
     b.className = 'tab-btn';
     b.title = label;
-    b.innerHTML = `<span class="tab-icon">${icon}</span><span class="tab-label">${label}</span>`;
+    b.innerHTML = `<span class="tab-icon">${iconSvg}</span><span class="tab-label">${label}</span>`;
     b.onclick = () => switchTab(id);
     els.tabbar.appendChild(b);
     els.tabButtons[id] = b;
@@ -317,11 +314,13 @@ export function closeWorldPanels() { if (WORLD_PANELS.has(activeTab)) switchTab(
 // [economy lane] Shared header for world-opened panels (shop/bank/exchange/
 // station): names what you're interacting with + a ✕ to close by hand (walking
 // away also closes it — see main.js panelAnchor).
-function worldHeader(v, icon, title) {
+function worldHeader(v, iconName, title) {
   const h = document.createElement('div');
   h.className = 'wp-header';
   const t = document.createElement('span');
-  t.className = 'wp-title'; t.textContent = `${icon} ${title}`;
+  t.className = 'wp-title';
+  t.innerHTML = icon(iconName);                     // trusted markup (ours)
+  t.appendChild(document.createTextNode(title));    // data-driven — text only
   const x = document.createElement('button');
   x.className = 'wp-close'; x.title = 'Close'; x.textContent = '✕';
   x.onclick = () => closeWorldPanels();
@@ -361,7 +360,7 @@ function skillCell(name, sk, extra) {
   const cell = document.createElement('div');
   cell.className = 'skill-cell';
   cell.innerHTML =
-    `<span class="skill-icon" style="background:${SKILL_COLORS[name] || '#888'}"></span>`
+    `<span class="skill-icon">${skillIcon(name)}</span>`
     + `<span class="skill-name">${name}</span>`
     + `<span class="lvl">${prog.level}</span>`
     + `<div class="xpbar"><div class="xpfill" style="width:${Math.round(prog.ratio * 100)}%"></div></div>`;
@@ -387,7 +386,7 @@ export function renderSkills() {
     if (name === 'Attack') attackCell = cell;
   }
   // Hitpoints — first-class OSRS skill; level = max HP, trained by dealing damage.
-  const hpCell = skillCell('Hitpoints', Game.hitpoints, `❤️ ${Game.hp}/${Game.maxHp} HP — max grows with your level`);
+  const hpCell = skillCell('Hitpoints', Game.hitpoints, `${Game.hp}/${Game.maxHp} HP — max grows with your level`);
   if (attackCell) grid.insertBefore(hpCell, attackCell); // head of the combat block
   else grid.appendChild(hpCell);
   v.appendChild(grid);
@@ -410,7 +409,7 @@ function showSkillGuide(name) {
           <span class="sg-lvl">${u.level}</span>
           <span class="sg-name">${tipEsc(u.display_name)}</span>
           <span class="sg-kind">${kind}</span>
-          <span class="sg-state">${open ? '✓' : '🔒'}</span>
+          <span class="sg-state">${open ? '✓' : '·'}</span>
         </div>`;
       }).join('')
     : '<div class="sg-empty">No level unlocks are recorded for this skill yet.</div>';
@@ -426,7 +425,7 @@ function showSkillGuide(name) {
       <span class="modal-title">${SKILL_EMOJI[name] || ''} ${name} — Level ${level}/99</span>
       <button class="modal-close" aria-label="Close">✕</button>
     </div>
-    <div class="modal-sub">${unlocks.length} unlock${unlocks.length === 1 ? '' : 's'} · ✓ available now · 🔒 locked</div>
+    <div class="modal-sub">${unlocks.length} unlock${unlocks.length === 1 ? '' : 's'} · ✓ available now · · locked</div>
     <div class="modal-body skill-guide">${rows}</div>`;
   overlay.appendChild(panel);
   function close() { overlay.remove(); document.removeEventListener('keydown', onKey); }
@@ -441,7 +440,6 @@ function showSkillGuide(name) {
 // available / complete) and renders each with live per-step progress bars and
 // its reward. Available quests get a Start button; the engine auto-completes and
 // pays out when objectives are met, so there's no "hand in" click to forget.
-const REWARD_ICON = { coins: '🪙' };
 function rewardSummary(r) {
   if (!r) return '';
   const bits = [];
@@ -492,7 +490,7 @@ function questCard(q, opts = {}) {
   // Track toggle — only the tracked quest shows a marker on the map/minimap, so
   // the world doesn't clutter with every quest at once.
   const trackBtn = trackable
-    ? `<button class="quest-track ${tracked ? 'on' : ''}" title="${tracked ? 'Stop tracking' : 'Track on the map'}">${tracked ? '📍 Tracked' : '📍 Track'}</button>`
+    ? `<button class="quest-track ${tracked ? 'on' : ''}" title="${tracked ? 'Stop tracking' : 'Track on the map'}">${tracked ? ' Tracked' : '📍 Track'}</button>`
     : '';
 
   card.innerHTML = `
@@ -521,7 +519,7 @@ export function renderQuests() {
 
   const header = document.createElement('div');
   header.className = 'quest-header';
-  header.innerHTML = `<span class="qh-title">📜 Quest Journal</span>`
+  header.innerHTML = `<span class="qh-title">${icon('quests')} Quest Journal</span>`
     + `<span class="qh-count">${board.completedCount}/${board.total} complete</span>`;
   v.appendChild(header);
 
@@ -560,7 +558,7 @@ export function renderQuests() {
 function onQuestComplete(q) {
   const b = document.createElement('div');
   b.className = 'levelup-banner quest-banner';
-  b.innerHTML = `<div class="lu-icon">📜</div>`
+  b.innerHTML = `<div class="lu-icon">${icon('scroll')}</div>`
     + `<div class="lu-text"><b>Quest Complete</b><span>${tipEsc(q.name)}</span></div>`;
   fxLayer().appendChild(b);
   setTimeout(() => { b.classList.add('out'); }, 2400);
@@ -603,7 +601,7 @@ export function renderStations() {
   // the world), so no switcher — just this station's header + recipes.
   const stations = stationTypes();
   if (!stations.includes(currentStation)) currentStation = stations[0];
-  worldHeader(v, '🔨', STATION_LABELS[currentStation] || currentStation);
+  worldHeader(v, 'stations', STATION_LABELS[currentStation] || currentStation);
 
   const hint = document.createElement('div');
   hint.className = 'xptext';
@@ -629,7 +627,7 @@ export function renderStations() {
       `<div class="recipe-name">${(out && out.display_name) || r.recipe.output_item_id}`
       + `${r.recipe.output_qty > 1 ? ' ×' + r.recipe.output_qty : ''}</div>`
       + `<div class="recipe-meta">${r.skill} ${r.need}`
-      + `${r.haveLevel ? '' : ' 🔒'} · +${r.recipe.xp_reward || 0} xp</div>`
+      + `${r.haveLevel ? '' : ' (locked)'} · +${r.recipe.xp_reward || 0} xp</div>`
       + `<div class="recipe-inputs">${inputStr || '(no inputs)'}</div>`;
 
     const btn = document.createElement('button');
@@ -672,13 +670,13 @@ export function renderGrandExchange() {
   const v = els.views.ge;
   if (!v) return;
   v.innerHTML = '';
-  worldHeader(v, '🏛️', 'Grand Exchange');
+  worldHeader(v, 'exchange', 'Grand Exchange');
 
   // Gate: must be at the Grand Bazaar with the Exchange Merchant.
   if (!exchangeMerchantInRange()) {
     const gate = document.createElement('div');
     gate.className = 'ge-gate';
-    gate.innerHTML = `<div class="ge-gate-title">🏛️ Grand Exchange</div>`
+    gate.innerHTML = `<div class="ge-gate-title">Grand Exchange</div>`
       + `<div class="ge-gate-body">The Exchange is only open at the <b>Grand Bazaar</b> in the`
       + ` central city. Travel there and speak to the <b>Exchange Merchant</b> to buy and sell.</div>`;
     v.appendChild(gate);
@@ -700,13 +698,13 @@ export function renderGrandExchange() {
     // The dragon has struck — show the raid alert + a way to confront it.
     const raid = document.createElement('div');
     raid.className = 'ge-raid';
-    raid.innerHTML = `<div class="ge-raid-title">🐉 ${hv.dragon.name} — Lv ${hv.bossLevel}</div>`
+    raid.innerHTML = `<div class="ge-raid-title">${icon('dragon')} ${hv.dragon.name} — Lv ${hv.bossLevel}</div>`
       + `<div class="ge-raid-body">The dragon looted <b>${hv.hoard.toLocaleString()} gp</b> and `
       + `carried it to its lair. Slay it to reclaim ${Math.round(hv.hoard * 0.6).toLocaleString()} gp `
       + `(split on a team) plus its hoard drops.</div>`;
     const btn = document.createElement('button');
     btn.className = 'ge-raid-btn';
-    btn.textContent = '⚔️ Confront the Dragon';
+    btn.textContent = 'Confront the Dragon';
     btn.title = 'Temporary — the real lair fight is being wired by the world/combat lane';
     btn.onclick = () => { resolveHeistVictory(['player']); renderGrandExchange(); };
     raid.appendChild(btn);
@@ -716,10 +714,10 @@ export function renderGrandExchange() {
     const pct = Math.round(hv.ratio * 100);
     const treas = document.createElement('div');
     treas.className = 'ge-treasury';
-    treas.innerHTML = `<div class="ge-treasury-head"><span>🏛️ Goblin Treasury</span>`
+    treas.innerHTML = `<div class="ge-treasury-head"><span>Goblin Treasury</span>`
       + `<span class="ge-treasury-bal">${hv.balance.toLocaleString()} / ${hv.threshold.toLocaleString()} gp</span></div>`
       + `<div class="ge-hoard"><span class="ge-hoard-fill" style="width:${pct}%"></span>`
-      + `<span class="ge-hoard-dragon" title="A dragon is drawn to large hoards">🐉</span></div>`
+      + `<span class="ge-hoard-dragon" title="A dragon is drawn to large hoards">${icon('dragon')}</span></div>`
       + `<div class="ge-treasury-note">2% sell tax feeds the hoard`
       + `${hv.tier > 0 ? ` · ${hv.tier} raid${hv.tier > 1 ? 's' : ''} survived` : ''}. `
       + `A dragon raids when it fills.</div>`;
@@ -846,12 +844,12 @@ export function renderShop() {
   const v = els.views.shop;
   if (!v) return;
   v.innerHTML = '';
-  worldHeader(v, '🏪', (GameData.shop(currentShop)[0] || {}).shop_name || 'Shop');
+  worldHeader(v, 'shop', (GameData.shop(currentShop)[0] || {}).shop_name || 'Shop');
 
   if (!shopkeeperInRange(currentShop)) {
     const gate = document.createElement('div');
     gate.className = 'ge-gate';
-    gate.innerHTML = `<div class="ge-gate-title">🏪 Shop</div>`
+    gate.innerHTML = `<div class="ge-gate-title">Shop</div>`
       + `<div class="ge-gate-body">Shops are run by <b>Shopkeepers</b> in town. Stand next to a`
       + ` Shopkeeper and talk to them to browse their wares.</div>`;
     v.appendChild(gate);
@@ -926,7 +924,7 @@ function buildBankOverlay() {
   panel.className = 'modal-panel bank-panel';
   panel.onclick = (e) => e.stopPropagation();
   panel.innerHTML =
-    '<div class="modal-head"><span class="modal-title">🏦 Bank of Gorkholm <span class="bank-slots"></span></span>'
+    '<div class="modal-head"><span class="modal-title">Bank of Gorkholm <span class="bank-slots"></span></span>'
     + '<button class="modal-close" title="Close">✕</button></div>'
     + '<div class="bank-actions"><button class="ge-mini bank-depall">Deposit all</button>'
     + '<button class="ge-mini bank-buy"></button></div>'
@@ -1169,10 +1167,10 @@ const SLOT_LAYOUT = [
   ['hands', 'feet', 'ring'],
 ];
 
-// Faint glyph shown in an empty equipment slot (OSRS slot silhouettes).
+// Faint label shown in an empty equipment slot (OSRS slot silhouettes).
 const SLOT_ICON = {
-  head: '🪖', cape: '🧣', neck: '📿', ammo: '🎯', weapon: '⚔️',
-  shield: '🛡️', body: '👕', legs: '👖', hands: '🧤', feet: '🥾', ring: '💍',
+  head: 'Head', cape: 'Cape', neck: 'Neck', ammo: 'Ammo', weapon: 'Weapon',
+  shield: 'Shield', body: 'Body', legs: 'Legs', hands: 'Hands', feet: 'Feet', ring: 'Ring',
 };
 
 // Human-readable labels for the raw stat keys in the bonus summary.

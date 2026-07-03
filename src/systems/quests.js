@@ -239,7 +239,7 @@ export function grantUnlock(id) {
   if (!Game.unlocks) Game.unlocks = new Set();
   if (Game.unlocks.has(id)) return;
   Game.unlocks.add(id);
-  Game.log(`🔓 ${unlockLabel(id)}`);
+  Game.log(`Unlocked: ${unlockLabel(id)}`);
   if (Game.ui.onUnlock) Game.ui.onUnlock(id);
 }
 export function hasUnlock(id) {
@@ -285,7 +285,7 @@ function completeQuest(id, speaker) {
   const finishTalk = () => emitDialogue(speaker || q.giver?.name || q.name, lines);
   if (q.outroCutscene && Game.playCutscene) Game.playCutscene(q.outroCutscene).then(finishTalk);
   else finishTalk();
-  Game.log(`✅ Quest complete: ${q.name}!`);
+  Game.log(`Quest complete: ${q.name}!`);
   if (Game.ui.onQuestComplete) Game.ui.onQuestComplete(q);
   refreshAvailability();
   autoTrack(); // the tracked quest just finished → follow the next one
@@ -379,7 +379,7 @@ function npcNameFor(npcId, quest) {
 function emitDialogue(speaker, lines) {
   const clean = (lines || []).filter(Boolean);
   if (!clean.length) return;
-  for (const l of clean) Game.log(`💬 ${speaker}: ${l}`);
+  for (const l of clean) Game.log(`${speaker}: ${l}`);
   if (Game.ui && Game.ui.showDialogue) Game.ui.showDialogue(speaker, clean);
 }
 

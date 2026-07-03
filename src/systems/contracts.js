@@ -47,10 +47,10 @@ export function contractOnKill(monsterId) {
     if (Game.sfx) Game.sfx('coins');
     const per = Math.round((c.xp * bonus) / 3);
     grantXp('Attack', per); grantXp('Strength', per); grantXp('Defence', per);
-    Game.log(`📜 Contract complete: ${c.need}× ${c.name}! ${c.coins * bonus} coins + combat XP` +
+    Game.log(`Contract complete: ${c.need}× ${c.name}! ${c.coins * bonus} coins + combat XP` +
       `${bonus > 1 ? ' — STREAK BONUS ×2 (' + Game.contractStreak + ' in a row)!' : '.'} Grimjaw has more work.`);
   } else {
-    Game.log(`📜 Contract: ${c.done}/${c.need} ${c.name}.`);
+    Game.log(`Contract: ${c.done}/${c.need} ${c.name}.`);
   }
 }
 

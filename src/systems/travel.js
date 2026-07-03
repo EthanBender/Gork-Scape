@@ -160,7 +160,7 @@ export function boardTransport(obj) {
   } else if (obj.cost.hpFrac) {
     const lost = Math.floor(Game.hp * obj.cost.hpFrac);
     Game.hp = Math.max(1, Game.hp - lost); // never lethal — leaves you at ≥1 HP
-    Game.log(`🩸 The blood portal drains ${lost} HP as you ${k.verb} to ${dest.name}.`);
+    Game.log(`The blood portal drains ${lost} HP as you ${k.verb} to ${dest.name}.`);
   }
   travelTo(obj.destId, { silent: true });
   return true;

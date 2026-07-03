@@ -12,6 +12,8 @@
 import { Game } from './state.js';
 import { loadSave, saveGame, serialize } from './save.js';
 import * as authClient from '../net/authClient.js';
+import { startLoginFx, stopLoginFx } from '../ui/loginFx.js';
+import { icon } from '../ui/icons.js';
 
 export const IDLE_LOGOUT_MS = 10 * 60 * 1000;  // auto-logout after 10 min idle
 const AUTOSAVE_MS = 20 * 1000;                 // periodic background save
@@ -189,22 +191,45 @@ function ensureOverlay() {
   return overlay;
 }
 
+// The masthead every login page shares: goblin crest + wordmark. Sits above
+// whatever card the page renders into #login-card. setStage() paints it AND
+// (re)starts the animated valley — innerHTML replacement detaches the old
+// canvas, so the FX must start after the markup lands.
+function setStage(overlay, cardHTML) {
+  overlay.innerHTML = stageHTML(cardHTML);
+  startLoginFx(overlay);
+}
+
+function stageHTML(cardHTML) {
+  return `
+    <div class="login-stage">
+      <div class="login-mast">
+        <div class="login-crest">${icon('goblin')}</div>
+        <h1 class="login-wordmark">Goblin&nbsp;Empire</h1>
+        <div class="login-tagline">A living low-poly world that keeps its own time</div>
+      </div>
+      <div id="login-card">${cardHTML}</div>
+      <div class="login-foot">gorkscape.ca</div>
+    </div>`;
+}
+
 // A brief interstitial while we probe the server / resume a session at boot, so
 // the player never sees a flash of the wrong login form.
 function showConnecting() {
   const overlay = ensureOverlay();
   overlay.hidden = false;
-  overlay.innerHTML = `
-    <div class="login-panel">
-      <h1 class="login-title">Goblin Empire</h1>
+  setStage(overlay, `
+    <div class="login-panel login-connecting">
+      <div class="conn-spinner"></div>
       <p class="login-sub">Connecting to the world…</p>
-    </div>`;
+    </div>`);
 }
 
 function showLogin(opts = {}) {
   const overlay = ensureOverlay();
   overlay.hidden = false;
-  renderAuthLogin(overlay, opts.notice || '');
+  setStage(overlay, '');
+  renderAuthLogin(el('login-card'), opts.notice || '');
 }
 
 // The "server is resting" landing page — shown whenever the authoritative server
@@ -214,18 +239,16 @@ function showLogin(opts = {}) {
 function showComingSoon() {
   const overlay = ensureOverlay();
   overlay.hidden = false;
-  overlay.innerHTML = `
+  setStage(overlay, `
     <div class="login-panel coming-soon">
-      <div class="cs-crest">🏰</div>
-      <h1 class="login-title">Goblin Empire</h1>
-      <p class="cs-tagline">A living goblin world — mine, craft, trade, and fight in a realm that keeps its own time whether you're watching or not.</p>
+      <p class="cs-tagline">Mine, craft, trade, and fight in a goblin realm that keeps living whether you're watching or not.</p>
       <div class="cs-status">
         <span class="cs-dot"></span>
         <span>The realm is resting — the server is offline right now.</span>
       </div>
       <p class="cs-sub">Come back soon. Your character and everything you've built are safe on the server.</p>
       <button id="cs-retry" class="login-primary">Try again</button>
-    </div>`;
+    </div>`);
   const retry = el('cs-retry');
   if (retry) retry.onclick = () => { retry.disabled = true; retry.textContent = 'Checking…'; gateOnServer(); };
 }
@@ -233,6 +256,7 @@ function showComingSoon() {
 function hideLogin() {
   const overlay = el('login-overlay');
   if (overlay) overlay.hidden = true;
+  stopLoginFx(); // tear the background animation down — it must cost the game nothing
 }
 
 // The account screen: Sign In / Create Account, username + password. The username
@@ -240,12 +264,10 @@ function hideLogin() {
 // drops between the boot probe and submit, we fall through to the coming-soon page.
 let authFormMode = 'signin'; // 'signin' | 'create'
 
-function renderAuthLogin(overlay, notice) {
+function renderAuthLogin(card, notice) {
   const isCreate = authFormMode === 'create';
-  overlay.innerHTML = `
+  card.innerHTML = `
     <div class="login-panel">
-      <h1 class="login-title">Goblin Empire</h1>
-      <p class="login-sub">The world keeps its own time. Sign in to continue.</p>
       ${notice ? `<div class="login-notice">${escapeHtml(notice)}</div>` : ''}
       <div class="login-tabs" role="tablist">
         <button class="login-tab ${isCreate ? '' : 'active'}" data-mode="signin">Sign In</button>
@@ -282,8 +304,8 @@ function renderAuthLogin(overlay, notice) {
   const label = isCreate ? 'Create Account & Enter' : 'Sign In';
   const setBusy = (b) => { if (submitBtn) { submitBtn.disabled = b; submitBtn.textContent = b ? 'Please wait…' : label; } };
 
-  overlay.querySelectorAll('.login-tab').forEach((btn) => {
-    btn.onclick = () => { authFormMode = btn.dataset.mode; renderAuthLogin(overlay, ''); };
+  card.querySelectorAll('.login-tab').forEach((btn) => {
+    btn.onclick = () => { authFormMode = btn.dataset.mode; renderAuthLogin(card, ''); };
   });
 
   const submit = async () => {
@@ -357,70 +379,104 @@ function injectStyles() {
   style.id = 'session-styles';
   style.textContent = `
     #login-overlay {
-      position: fixed; inset: 0; z-index: 3000;
+      position: fixed; inset: 0; z-index: 3000; overflow: hidden;
       display: flex; align-items: center; justify-content: center;
-      background: radial-gradient(circle at 50% 30%, #241f16 0%, #0c0b08 80%);
-      font-family: "Segoe UI", Tahoma, sans-serif;
+      background: #0a0e14;
+      font-family: var(--font-ui, "Segoe UI", Tahoma, sans-serif);
     }
     #login-overlay[hidden] { display: none; }
+    .login-stage {
+      position: relative; z-index: 1; width: min(400px, calc(100vw - 32px));
+      display: flex; flex-direction: column; align-items: center;
+      max-height: 100dvh; overflow-y: auto; padding: 18px 0;
+      animation: stageIn .7s cubic-bezier(.2,.9,.3,1) both;
+    }
+    @keyframes stageIn { 0% { opacity: 0; transform: translateY(16px); }
+      100% { opacity: 1; transform: none; } }
+    /* Masthead: crest + wordmark, gently bobbing over the valley. */
+    .login-mast { text-align: center; margin-bottom: 18px; }
+    .login-crest { width: clamp(84px, 16vh, 124px); height: clamp(84px, 16vh, 124px);
+      margin: 0 auto 4px; filter: drop-shadow(0 8px 18px rgba(0,0,0,.6)) drop-shadow(0 0 26px rgba(123,191,74,.28));
+      animation: crestBob 4.2s ease-in-out infinite; }
+    .login-crest svg { width: 100%; height: 100%; }
+    @keyframes crestBob { 0%,100% { transform: translateY(0) rotate(-1.2deg); }
+      50% { transform: translateY(-7px) rotate(1.2deg); } }
+    .login-wordmark {
+      margin: 0; font-family: var(--font-display, inherit); font-weight: 800;
+      font-size: clamp(34px, 7.5vh, 46px); line-height: 1.05; letter-spacing: .5px;
+      background: linear-gradient(180deg, #c9ef9c 0%, #7bbf4a 55%, #4d7a2f 100%);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      filter: drop-shadow(0 3px 0 rgba(0,0,0,.85)) drop-shadow(0 0 22px rgba(123,191,74,.35));
+    }
+    .login-tagline { margin-top: 6px; font-size: 12.5px; letter-spacing: 2.5px;
+      text-transform: uppercase; color: #b9c9a6; opacity: .85; text-shadow: 0 1px 3px #000; }
+    #login-card { width: 100%; }
+    .login-foot { margin-top: 14px; font-size: 11px; letter-spacing: 1.5px;
+      color: #6f7d62; text-shadow: 0 1px 2px #000; }
+    /* The card: dark glass over the valley. */
     .login-panel {
-      width: 380px; max-width: 92vw; padding: 26px 26px 22px;
-      background: var(--panel2, #322d21);
-      border: 1px solid var(--border, #4a4331);
-      border-radius: 10px;
-      box-shadow: 0 18px 60px rgba(0,0,0,.6), var(--raise, inset 1px 1px 0 #6b6144);
+      width: 100%; padding: 20px 22px 18px;
+      background: linear-gradient(180deg, rgba(24,28,20,.86), rgba(14,17,12,.92));
+      -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+      border: 1px solid rgba(143,208,92,.22); border-radius: 16px;
+      box-shadow: 0 24px 70px rgba(0,0,0,.65), inset 0 1px 0 rgba(255,255,255,.07);
       color: var(--text, #efe8d4);
     }
-    .login-title {
-      margin: 0 0 2px; text-align: center; font-size: 30px; letter-spacing: .5px;
-      color: var(--accent, #7bbf4a); text-shadow: 0 2px 0 #000;
-    }
-    .login-sub { margin: 0 0 16px; text-align: center; color: var(--muted, #a89c7d); font-size: 13px; }
-    .login-offline {
-      margin: 0 0 14px; padding: 8px 10px; font-size: 12px; border-radius: 6px;
-      background: rgba(168,156,125,.1); border: 1px dashed var(--border, #4a4331);
-      color: var(--muted, #a89c7d); text-align: center; line-height: 1.4;
-    }
+    .login-sub { margin: 0; text-align: center; color: var(--muted, #a89c7d); font-size: 13px; }
+    .login-connecting { display: flex; flex-direction: column; align-items: center; gap: 12px;
+      padding-top: 26px; padding-bottom: 26px; }
+    .conn-spinner { width: 30px; height: 30px; border-radius: 50%;
+      border: 3px solid rgba(143,208,92,.18); border-top-color: #8fd05c;
+      animation: connSpin .9s linear infinite; }
+    @keyframes connSpin { to { transform: rotate(360deg); } }
     .login-tabs {
-      display: flex; gap: 4px; margin: 4px 0 16px; padding: 4px;
-      background: var(--panel-lo, #191710); border: 1px solid var(--border, #4a4331); border-radius: 8px;
+      display: flex; gap: 4px; margin: 0 0 16px; padding: 4px;
+      background: rgba(0,0,0,.35); border: 1px solid rgba(255,255,255,.06); border-radius: 10px;
     }
     .login-tab {
-      flex: 1; padding: 8px 10px; cursor: pointer; font-size: 13px; font-weight: 700;
-      border-radius: 6px; border: 1px solid transparent; background: transparent;
-      color: var(--muted, #a89c7d);
+      flex: 1; padding: 9px 10px; cursor: pointer; font-size: 13px; font-weight: 700;
+      font-family: var(--font-display, inherit); letter-spacing: .3px;
+      border-radius: 7px; border: 1px solid transparent; background: transparent;
+      color: var(--muted, #a89c7d); transition: color .15s, background .15s;
     }
     .login-tab:hover { color: var(--text, #efe8d4); }
     .login-tab.active {
-      background: var(--panel-hi, #3d3728); color: var(--accent, #7bbf4a);
-      border-color: var(--border, #4a4331);
+      background: linear-gradient(180deg, rgba(143,208,92,.2), rgba(77,122,47,.25));
+      color: #c9ef9c; border-color: rgba(143,208,92,.35);
+      text-shadow: 0 1px 2px #000;
     }
     .login-form { display: flex; flex-direction: column; gap: 12px; }
     .login-field { display: flex; flex-direction: column; gap: 5px; }
     .login-field > span { font-size: 12px; color: var(--muted, #a89c7d); font-weight: 600; }
     .login-field > span em { font-style: italic; font-weight: 400; color: var(--gold, #e8c65a); }
     .login-field input {
-      padding: 10px 12px; font-size: 14px; border-radius: 6px;
-      background: var(--panel-lo, #191710); color: var(--text, #efe8d4);
-      border: 1px solid var(--border, #4a4331);
+      padding: 11px 13px; font-size: 16px; border-radius: 9px;
+      background: rgba(0,0,0,.4); color: var(--text, #efe8d4);
+      border: 1px solid rgba(255,255,255,.1); transition: border-color .15s, box-shadow .15s;
     }
-    .login-field input:focus { outline: none; border-color: var(--accent, #7bbf4a); }
+    .login-field input:focus { outline: none; border-color: #7bbf4a;
+      box-shadow: 0 0 0 3px rgba(123,191,74,.18); }
     .login-primary {
-      margin-top: 4px; padding: 11px 16px; cursor: pointer; font-weight: 700; font-size: 14px;
-      border-radius: 6px; background: var(--accent-dk, #4d7a2f); color: #fff;
-      border: 1px solid var(--accent, #7bbf4a);
+      margin-top: 6px; padding: 13px 16px; cursor: pointer; font-weight: 800; font-size: 15px;
+      font-family: var(--font-display, inherit); letter-spacing: .4px;
+      border-radius: 10px; color: #0f1408;
+      background: linear-gradient(180deg, #a4e070, #5a8f3d);
+      border: 1px solid #3c6428;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.45), 0 4px 14px rgba(90,143,61,.35);
+      text-shadow: 0 1px 0 rgba(255,255,255,.25);
+      transition: transform .08s, filter .12s;
     }
-    .login-primary:hover { background: var(--accent, #7bbf4a); }
-    .login-primary:disabled { opacity: .6; cursor: default; }
+    .login-primary:hover { filter: brightness(1.08); }
+    .login-primary:active { transform: translateY(1px); }
+    .login-primary:disabled { opacity: .6; cursor: default; filter: grayscale(.3); }
     .login-hint { margin-top: 12px; font-size: 11.5px; line-height: 1.5; text-align: center; color: var(--muted, #a89c7d); }
     /* "Server resting" landing / ad page */
     .login-panel.coming-soon { text-align: center; }
-    .cs-crest { font-size: 46px; line-height: 1; margin-bottom: 6px; filter: drop-shadow(0 3px 0 #000); }
-    .cs-tagline { margin: 6px 2px 18px; font-size: 13.5px; line-height: 1.55; color: var(--text, #efe8d4); }
+    .cs-tagline { margin: 2px 2px 16px; font-size: 13.5px; line-height: 1.55; color: var(--text, #efe8d4); }
     .cs-status {
       display: flex; align-items: center; justify-content: center; gap: 8px;
-      margin: 0 0 10px; padding: 9px 12px; border-radius: 6px; font-size: 12.5px;
-      background: rgba(232,198,90,.10); border: 1px solid var(--gold-dk, #a8842a); color: var(--gold, #e8c65a);
+      margin: 0 0 10px; padding: 10px 12px; border-radius: 9px; font-size: 12.5px;
+      background: rgba(232,198,90,.10); border: 1px solid rgba(232,198,90,.35); color: var(--gold, #e8c65a);
     }
     .cs-dot {
       width: 9px; height: 9px; border-radius: 50%; background: var(--gold, #e8c65a);
@@ -431,69 +487,29 @@ function injectStyles() {
       70% { box-shadow: 0 0 0 8px rgba(232,198,90,0); }
       100% { box-shadow: 0 0 0 0 rgba(232,198,90,0); }
     }
-    .cs-sub { margin: 0 0 18px; font-size: 12px; line-height: 1.5; color: var(--muted, #a89c7d); }
+    .cs-sub { margin: 0 0 16px; font-size: 12px; line-height: 1.5; color: var(--muted, #a89c7d); }
     .coming-soon .login-primary { width: 100%; }
     .login-notice {
-      margin: 0 0 14px; padding: 8px 10px; font-size: 12.5px; border-radius: 6px;
-      background: rgba(232,198,90,.12); border: 1px solid var(--gold-dk, #a8842a);
+      margin: 0 0 14px; padding: 9px 11px; font-size: 12.5px; border-radius: 9px;
+      background: rgba(232,198,90,.12); border: 1px solid rgba(232,198,90,.35);
       color: var(--gold, #e8c65a);
     }
-    .login-section-label {
-      margin: 14px 0 6px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;
-      color: var(--muted, #a89c7d);
-    }
-    .login-accts { display: flex; flex-direction: column; gap: 6px; }
-    .login-acct { display: flex; gap: 6px; }
-    .login-continue {
-      flex: 1; display: flex; flex-direction: column; align-items: flex-start;
-      padding: 8px 12px; cursor: pointer; text-align: left;
-      background: var(--panel, #26221a); color: var(--text, #efe8d4);
-      border: 1px solid var(--border, #4a4331); border-radius: 6px;
-    }
-    .login-continue:hover { background: var(--panel-hi, #3d3728); border-color: var(--accent, #7bbf4a); }
-    .la-name { font-weight: 700; font-size: 15px; }
-    .la-when { font-size: 11px; color: var(--muted, #a89c7d); }
-    .login-delete {
-      width: 34px; cursor: pointer; border-radius: 6px;
-      background: var(--panel, #26221a); color: var(--muted, #a89c7d);
-      border: 1px solid var(--border, #4a4331);
-    }
-    .login-delete:hover { color: #ff8a8a; border-color: #7a3030; }
-    .login-backup {
-      width: 34px; cursor: pointer; border-radius: 6px;
-      background: var(--panel, #26221a); color: var(--muted, #a89c7d);
-      border: 1px solid var(--border, #4a4331);
-    }
-    .login-backup:hover { color: var(--gold, #e8c65a); border-color: var(--gold-dk, #a8842a); }
-    .login-restore { margin-top: 12px; text-align: center; }
-    #login-restore-btn {
-      padding: 6px 12px; cursor: pointer; font-size: 12px; border-radius: 6px;
-      background: transparent; color: var(--muted, #a89c7d);
-      border: 1px dashed var(--border, #4a4331);
-    }
-    #login-restore-btn:hover { color: var(--text, #efe8d4); border-color: var(--accent, #7bbf4a); }
-    .login-new { display: flex; gap: 6px; }
-    #login-name {
-      flex: 1; padding: 9px 12px; font-size: 14px; border-radius: 6px;
-      background: var(--panel-lo, #191710); color: var(--text, #efe8d4);
-      border: 1px solid var(--border, #4a4331); box-shadow: var(--sink, none);
-    }
-    #login-name:focus { outline: none; border-color: var(--accent, #7bbf4a); }
-    #login-enter {
-      padding: 9px 16px; cursor: pointer; font-weight: 700; border-radius: 6px;
-      background: var(--accent-dk, #4d7a2f); color: #fff;
-      border: 1px solid var(--accent, #7bbf4a);
-    }
-    #login-enter:hover { background: var(--accent, #7bbf4a); }
-    .login-error { min-height: 16px; margin-top: 8px; font-size: 12px; color: #ff8a8a; }
+    .login-error { min-height: 16px; margin-top: 8px; font-size: 12px; color: #ff8a8a; text-align: center; }
     #logout-btn {
       margin-left: auto; margin-right: 12px; padding: 4px 12px; cursor: pointer;
-      font-size: 12px; font-weight: 700; border-radius: 5px;
+      font-size: 12px; font-weight: 700; border-radius: 6px;
       background: var(--panel, #26221a); color: var(--muted, #a89c7d);
       border: 1px solid var(--border, #4a4331);
     }
     #logout-btn:hover { color: #ff8a8a; border-color: #7a3030; }
     #logout-btn[hidden] { display: none; }
+    /* Short screens (landscape phones): compress the masthead so the form fits. */
+    @media (max-height: 600px) {
+      .login-crest { width: 64px; height: 64px; }
+      .login-wordmark { font-size: 30px; }
+      .login-tagline { display: none; }
+      .login-mast { margin-bottom: 10px; }
+    }
   `;
   document.head.appendChild(style);
 }
