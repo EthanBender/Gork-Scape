@@ -18,6 +18,7 @@ import { splitList, GameData } from '../data/gameData.js';
 import { itemIcon, itemIconHTML } from '../data/itemIcons.js';
 import { icon, skillIcon } from './icons.js';
 import { openWiki } from './wiki.js'; // [economy lane] item Codex lookup
+import { openSkillGuide } from './skillGuide.js'; // [economy lane] per-skill guide (unlocks + recipes + locations)
 import { recipesForStation, craft, stationTypes } from '../systems/crafting.js';
 import { rollMonsterDrops } from '../systems/drops.js';
 import { gather, resolveNode } from '../systems/gathering.js';
@@ -380,8 +381,8 @@ export function renderSkills() {
   for (const name of SKILL_NAMES) {
     const cell = skillCell(name, Game.skills[name]);
     cell.classList.add('sg-clickable');
-    cell.title += '\n(click for the unlock guide)';
-    cell.onclick = () => showSkillGuide(name);
+    cell.title += '\n(click for the skill guide)';
+    cell.onclick = () => openSkillGuide(name);
     grid.appendChild(cell);
     if (name === 'Attack') attackCell = cell;
   }
@@ -392,48 +393,8 @@ export function renderSkills() {
   v.appendChild(grid);
 }
 
-// ---------- Skill guide popup (RuneScape-style level unlock list) ----------
-// Clicking a skill opens a modal listing every unlock for it by level, marking
-// which are already available (✓) vs still locked (🔒) at the player's level.
-function showSkillGuide(name) {
-  const skill = name.toLowerCase();
-  const level = levelProgress(Game.skills[name].xp).level;
-  const unlocks = (GameData.levelUnlocks || [])
-    .filter((u) => u.skill === skill && u.display_name)
-    .sort((a, b) => a.level - b.level || String(a.display_name).localeCompare(b.display_name));
-  const rows = unlocks.length
-    ? unlocks.map((u) => {
-        const open = level >= u.level;
-        const kind = u.unlock_type === 'world_node' ? 'node' : 'item';
-        return `<div class="sg-row ${open ? 'sg-open' : 'sg-locked'}">
-          <span class="sg-lvl">${u.level}</span>
-          <span class="sg-name">${tipEsc(u.display_name)}</span>
-          <span class="sg-kind">${kind}</span>
-          <span class="sg-state">${open ? '✓' : '·'}</span>
-        </div>`;
-      }).join('')
-    : '<div class="sg-empty">No level unlocks are recorded for this skill yet.</div>';
-
-  const overlay = document.createElement('div');
-  overlay.className = 'modal-overlay';
-  overlay.onclick = () => close();
-  const panel = document.createElement('div');
-  panel.className = 'modal-panel';
-  panel.onclick = (e) => e.stopPropagation();
-  panel.innerHTML = `
-    <div class="modal-head">
-      <span class="modal-title">${SKILL_EMOJI[name] || ''} ${name} — Level ${level}/99</span>
-      <button class="modal-close" aria-label="Close">✕</button>
-    </div>
-    <div class="modal-sub">${unlocks.length} unlock${unlocks.length === 1 ? '' : 's'} · ✓ available now · · locked</div>
-    <div class="modal-body skill-guide">${rows}</div>`;
-  overlay.appendChild(panel);
-  function close() { overlay.remove(); document.removeEventListener('keydown', onKey); }
-  function onKey(e) { if (e.key === 'Escape') close(); }
-  panel.querySelector('.modal-close').onclick = close;
-  document.addEventListener('keydown', onKey);
-  document.body.appendChild(overlay);
-}
+// The per-skill guide (unlocks + recipes + locations) lives in its own
+// self-contained overlay — see src/ui/skillGuide.js. skillCell wires its click.
 
 // ---------- Quest Journal ----------
 // The player-facing goals view. Reads the quest engine's board (active /
