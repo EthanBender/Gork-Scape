@@ -766,25 +766,28 @@
       opacity: 0; pointer-events: none; transition: opacity .28s ease; }
     #app.sheet-open #sheet-backdrop { opacity: 1; pointer-events: auto; }
 
-    /* Chat: translucent strips floating just above the nav. */
-    #chatlog { position: fixed; left: 0; right: 0; z-index: 45;
-      bottom: calc(var(--nav-h) + var(--chatbar-h)); height: 72px; flex-basis: auto;
-      padding: 6px 12px; border: none; box-shadow: none;
-      background: linear-gradient(180deg, transparent, rgba(20,15,9,.72)); }
+    /* Chat: a one-line preview strip above the nav; tap it (or the chevron) to
+       pull up a full-log sheet. */
+    #chatlog { position: fixed; left: 0; right: 0; z-index: 45; cursor: pointer;
+      bottom: calc(var(--nav-h) + var(--chatbar-h)); height: 28px; flex-basis: auto;
+      padding: 4px 12px; border: none; box-shadow: none;
+      background: linear-gradient(180deg, transparent, rgba(20,15,9,.72)); transition: height .2s ease; }
+    #app.chat-expanded #chatlog { height: 42dvh; padding-top: 10px;
+      background: linear-gradient(180deg, rgba(26,20,13,.92), rgba(20,15,9,.96));
+      border-top: 1px solid #4a3927; border-radius: 14px 14px 0 0; box-shadow: 0 -12px 30px rgba(0,0,0,.5); }
     #chat-input-bar { position: fixed; left: 0; right: 0; z-index: 46;
       bottom: var(--nav-h); height: var(--chatbar-h); padding: 5px 10px; gap: 6px;
       background: rgba(20,15,9,.94); border-top: 1px solid #4a3927; }
     #chat-input { font-size: 16px; padding: 8px 10px; }
     .ge-form input { font-size: 16px; }
 
-    /* Minimizable chat log (handle in the input bar). */
+    /* Pull-up handle (chevron) — points up when collapsed, down when expanded. */
     #chat-toggle { display: inline-flex; align-items: center; justify-content: center;
       flex: 0 0 auto; width: 36px; height: 36px; padding: 0; color: #a89877;
       background: #3a2c1e; border: 1px solid #4a3927; border-radius: 9px; }
-    #chat-toggle .chev { display: inline-flex; transition: transform .15s ease; }
+    #chat-toggle .chev { display: inline-flex; transform: rotate(180deg); transition: transform .15s ease; }
     #chat-toggle svg { display: block; width: 18px; height: 18px; }
-    #app.chat-collapsed #chat-toggle .chev { transform: rotate(180deg); }
-    #app.chat-collapsed #chatlog { display: none; }
+    #app.chat-expanded #chat-toggle .chev { transform: rotate(0deg); }
 
     /* Comfortable tap sizes for the common action buttons. */
     .style-btn, .station-btn, .craft-btn, .ge-btn, .ge-chip, .ge-mini,
@@ -857,19 +860,21 @@
     #app.sheet-open #sheet-backdrop { opacity: 1; pointer-events: auto; }
 
     /* Chat: compact strips bottom-centre, clear of the button column + rail. */
-    #chatlog { position: fixed; left: 66px; right: var(--rail-w); z-index: 45; bottom: 42px;
-      height: 44px; flex-basis: auto; padding: 4px 10px; border: none; box-shadow: none;
-      background: linear-gradient(180deg, transparent, rgba(20,15,9,.7)); }
+    #chatlog { position: fixed; left: 66px; right: var(--rail-w); z-index: 45; bottom: 42px; cursor: pointer;
+      height: 26px; flex-basis: auto; padding: 3px 10px; border: none; box-shadow: none;
+      background: linear-gradient(180deg, transparent, rgba(20,15,9,.7)); transition: height .2s ease; }
+    #app.chat-expanded #chatlog { height: 62dvh; padding-top: 8px;
+      background: linear-gradient(180deg, rgba(26,20,13,.92), rgba(20,15,9,.96));
+      border-top: 1px solid #4a3927; border-radius: 12px 12px 0 0; box-shadow: 0 -12px 30px rgba(0,0,0,.5); }
     #chat-input-bar { position: fixed; left: 66px; right: var(--rail-w); z-index: 46; bottom: 0;
       height: 42px; padding: 4px 10px; gap: 6px; background: rgba(20,15,9,.94); border-top: 1px solid #4a3927; }
     #chat-input { font-size: 16px; padding: 6px 10px; }
     #chat-toggle { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto;
       width: 32px; height: 32px; padding: 0; color: #a89877; background: #3a2c1e;
       border: 1px solid #4a3927; border-radius: 8px; }
-    #chat-toggle .chev { display: inline-flex; transition: transform .15s ease; }
+    #chat-toggle .chev { display: inline-flex; transform: rotate(180deg); transition: transform .15s ease; }
     #chat-toggle svg { display: block; width: 16px; height: 16px; }
-    #app.chat-collapsed #chat-toggle .chev { transform: rotate(180deg); }
-    #app.chat-collapsed #chatlog { display: none; }
+    #app.chat-expanded #chat-toggle .chev { transform: rotate(0deg); }
   }
 
   /* Coarse pointer (touch) anywhere: remove hover-only affordances that can

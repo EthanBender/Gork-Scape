@@ -1462,22 +1462,33 @@ function buildChatInput() {
   input.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && input.value.trim()) { playerSay(input.value); input.value = ''; }
   });
-  // Minimize handle (mobile): collapses the message log to reclaim game space,
-  // leaving just this input bar. Hidden on desktop via CSS.
+  // Pull-up handle (mobile): the chat log is a one-line preview by default; this
+  // chevron expands it into a full-log sheet and back. Hidden on desktop via CSS.
   const toggle = document.createElement('button');
   toggle.id = 'chat-toggle';
   toggle.type = 'button';
-  toggle.setAttribute('aria-label', 'Minimize chat');
+  toggle.setAttribute('aria-label', 'Expand chat');
   toggle.innerHTML = '<span class="chev"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>';
   toggle.addEventListener('click', (e) => {
     e.stopPropagation();
     const app = document.getElementById('app');
-    const collapsed = app.classList.toggle('chat-collapsed');
-    toggle.setAttribute('aria-label', collapsed ? 'Expand chat' : 'Minimize chat');
+    const expanded = app.classList.toggle('chat-expanded');
+    toggle.setAttribute('aria-label', expanded ? 'Collapse chat' : 'Expand chat');
+    if (expanded && els.chatlog) els.chatlog.scrollTop = els.chatlog.scrollHeight;
   });
   bar.appendChild(toggle);
   bar.appendChild(input);
   els.chatlog.parentNode.insertBefore(bar, els.chatlog.nextSibling);
+  // Tapping the collapsed one-line preview pulls the full log up.
+  els.chatlog.addEventListener('click', () => {
+    const app = document.getElementById('app');
+    if (app && !app.classList.contains('chat-expanded')) {
+      app.classList.add('chat-expanded');
+      const t = document.getElementById('chat-toggle');
+      if (t) t.setAttribute('aria-label', 'Collapse chat');
+      els.chatlog.scrollTop = els.chatlog.scrollHeight;
+    }
+  });
 }
 
 // ---------- Context menu ----------

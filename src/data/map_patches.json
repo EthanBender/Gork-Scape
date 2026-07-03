@@ -7626,6 +7626,683 @@
      "blocking": false
     }
    ]
+  },
+  {
+   "id": "city-plunder-market",
+   "note": "Plunder Market — the bazaar on the ceremonial axis south of Highgate. Cobbled plaza around the kept Grand Exchange + spawn + canal/road crossing + farm nodes; a stall bazaar (varied awnings/goods) ringing the square + a market lane down from Highgate’s gate; a central Market Cross monument on a stepped base; a BUILT Merchants’ Guildhall on a low plinth (walls, door to the plaza, guildmaster desk/coffer/ledger, banners) east of the square; Grand Exchange forecourt dressed with sacks/crates/barrels/awning; iron lamps, market barrels, produce carts, bunting. Patch-only; reachability + coherence simulated.",
+   "ops": [
+    {
+     "op": "remove_objects",
+     "rect": [
+      480,
+      390,
+      488,
+      397
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      478,
+      392,
+      481,
+      401
+     ],
+     "types": [
+      "resource"
+     ]
+    },
+    {
+     "op": "terrain",
+     "rect": [
+      463,
+      389,
+      478,
+      407
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "rect": [
+      469,
+      384,
+      471,
+      408
+     ],
+     "to": "ROAD"
+    },
+    {
+     "op": "terrain",
+     "rect": [
+      479,
+      392,
+      481,
+      397
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "decor",
+     "x": 465,
+     "y": 393,
+     "color": 7038560,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 472,
+     "y": 393,
+     "color": 7038560,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 466,
+     "y": 401,
+     "color": 7038560,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 474,
+     "y": 401,
+     "color": 7038560,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 469,
+     "y": 397,
+     "color": 7038560,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "elevation",
+     "rect": [
+      480,
+      390,
+      488,
+      397
+     ],
+     "to": 120
+    },
+    {
+     "op": "terrain",
+     "rect": [
+      481,
+      391,
+      487,
+      396
+     ],
+     "to": "FLOOR"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       480,
+       390
+      ],
+      [
+       480,
+       397
+      ],
+      [
+       481,
+       390
+      ],
+      [
+       481,
+       397
+      ],
+      [
+       482,
+       390
+      ],
+      [
+       482,
+       397
+      ],
+      [
+       483,
+       390
+      ],
+      [
+       483,
+       397
+      ],
+      [
+       484,
+       390
+      ],
+      [
+       484,
+       397
+      ],
+      [
+       485,
+       390
+      ],
+      [
+       485,
+       397
+      ],
+      [
+       486,
+       390
+      ],
+      [
+       486,
+       397
+      ],
+      [
+       487,
+       390
+      ],
+      [
+       487,
+       397
+      ],
+      [
+       488,
+       390
+      ],
+      [
+       488,
+       397
+      ],
+      [
+       480,
+       390
+      ],
+      [
+       488,
+       390
+      ],
+      [
+       480,
+       391
+      ],
+      [
+       488,
+       391
+      ],
+      [
+       480,
+       392
+      ],
+      [
+       488,
+       392
+      ],
+      [
+       488,
+       393
+      ],
+      [
+       480,
+       394
+      ],
+      [
+       488,
+       394
+      ],
+      [
+       480,
+       395
+      ],
+      [
+       488,
+       395
+      ],
+      [
+       480,
+       396
+      ],
+      [
+       488,
+       396
+      ],
+      [
+       480,
+       397
+      ],
+      [
+       488,
+       397
+      ]
+     ],
+     "to": "WALL"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       480,
+       393
+      ]
+     ],
+     "to": "FLOOR"
+    },
+    {
+     "op": "object",
+     "x": 484,
+     "y": 393,
+     "label": "Merchants Guildhall",
+     "color": 12161578,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 482,
+     "y": 392,
+     "label": "Guildmaster Desk",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 486,
+     "y": 392,
+     "label": "Coin Coffer",
+     "color": 13214282,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 484,
+     "y": 395,
+     "label": "Ledger Table",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 482,
+     "y": 391,
+     "label": "Guild Banner",
+     "color": 12161578,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 486,
+     "y": 391,
+     "label": "Guild Banner",
+     "color": 3493995,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 479,
+     "y": 393,
+     "label": "Iron Lamp",
+     "color": 16765517,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 466,
+     "y": 398,
+     "color": 9078140,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 466,
+     "y": 399,
+     "color": 9078140,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 466,
+     "y": 400,
+     "color": 9078140,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 467,
+     "y": 398,
+     "color": 9078140,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 467,
+     "y": 399,
+     "color": 9078140,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 467,
+     "y": 400,
+     "color": 9078140,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 468,
+     "y": 398,
+     "color": 9078140,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 468,
+     "y": 399,
+     "color": 9078140,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 468,
+     "y": 400,
+     "color": 9078140,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 467,
+     "y": 399,
+     "label": "Market Cross",
+     "color": 13280826,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 465,
+     "y": 390,
+     "label": "Fishmonger Stall",
+     "color": 9187114,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 473,
+     "y": 390,
+     "label": "Produce Stall",
+     "color": 12161578,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 463,
+     "y": 396,
+     "label": "Trinket Stall",
+     "color": 3493995,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 463,
+     "y": 400,
+     "label": "Cloth Stall",
+     "color": 3107386,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 477,
+     "y": 394,
+     "label": "Skewer Stall",
+     "color": 8010346,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 477,
+     "y": 400,
+     "label": "Charm Stall",
+     "color": 9187114,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 465,
+     "y": 406,
+     "label": "Pelt Stall",
+     "color": 12161578,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 473,
+     "y": 406,
+     "label": "Bread Stall",
+     "color": 3493995,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 466,
+     "y": 385,
+     "label": "Spice Stall",
+     "color": 3107386,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 472,
+     "y": 385,
+     "label": "Grog Stall",
+     "color": 8010346,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 459,
+     "y": 396,
+     "label": "Produce Sack",
+     "color": 9075274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 461,
+     "y": 396,
+     "label": "Ale Barrel",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 459,
+     "y": 394,
+     "label": "Trade Crate",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 460,
+     "y": 397,
+     "label": "Trade Crate",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 458,
+     "y": 395,
+     "label": "Iron Lamp",
+     "color": 16765517,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 459,
+     "y": 393,
+     "color": 12161578,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 460,
+     "y": 393,
+     "color": 12161578,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 461,
+     "y": 393,
+     "color": 12161578,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 464,
+     "y": 389,
+     "label": "Iron Lamp",
+     "color": 16765517,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 474,
+     "y": 389,
+     "label": "Iron Lamp",
+     "color": 16765517,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 462,
+     "y": 398,
+     "label": "Iron Lamp",
+     "color": 16765517,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 478,
+     "y": 398,
+     "label": "Iron Lamp",
+     "color": 16765517,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 464,
+     "y": 407,
+     "label": "Iron Lamp",
+     "color": 16765517,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 474,
+     "y": 407,
+     "label": "Iron Lamp",
+     "color": 16765517,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 464,
+     "y": 391,
+     "label": "Market Barrel",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 474,
+     "y": 391,
+     "label": "Market Barrel",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 464,
+     "y": 405,
+     "label": "Market Barrel",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 474,
+     "y": 405,
+     "label": "Market Barrel",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 466,
+     "y": 386,
+     "color": 3493995,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 472,
+     "y": 386,
+     "color": 3107386,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 467,
+     "y": 384,
+     "color": 12161578,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 471,
+     "y": 384,
+     "color": 9187114,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "object",
+     "x": 465,
+     "y": 388,
+     "label": "Produce Cart",
+     "color": 9080726,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 473,
+     "y": 388,
+     "label": "Produce Cart",
+     "color": 9080726,
+     "blocking": false
+    }
+   ]
   }
  ]
 }

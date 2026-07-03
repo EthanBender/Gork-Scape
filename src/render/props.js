@@ -28,6 +28,7 @@ export function propKind(label = '') {
   if (/dummy/.test(n)) return 'dummy';
   if (/throne|high seat|\bdais\b/.test(n)) return 'throne';
   if (/ladder/.test(n)) return 'ladder';
+  if (/market cross|obelisk|monument|standing stone|memorial/.test(n)) return 'monument';
   if (/lamp|lantern/.test(n)) return 'lamp';
   if (/fence|paling|railing|hitch/.test(n)) return 'fence';
   if (/bush|shrub|hedge|topiary/.test(n)) return 'bush';
@@ -255,6 +256,18 @@ function fence(g, X, Y) {
   g.fillStyle(WOOD, 1); g.fillRect(X - 8, Y - 2, 15.8, 1.8); g.fillRect(X - 8, Y + 4, 15.8, 1.8);   // rails
   g.fillStyle(shade(WOOD, 1.2), 1); g.fillRect(X - 8, Y - 2, 15.8, 0.7);
 }
+function monument(g, X, Y, accent) {
+  const STONE = 0x9a948a, STONE_D = 0x6e685e, STONE_H = 0xb4aea2;
+  g.fillStyle(STONE_D, 1); g.fillRect(X - 9, Y + 8, 18, 5);             // stepped base (lower)
+  g.fillStyle(STONE, 1); g.fillRect(X - 7, Y + 4, 14, 5);               // step
+  g.fillStyle(STONE_H, 0.5); g.fillRect(X - 7, Y + 4, 14, 1.4);
+  g.fillStyle(STONE_D, 1); g.fillRect(X - 3.5, Y - 16, 7, 22);          // tall shaft
+  g.fillStyle(STONE, 1); g.fillRect(X - 2.6, Y - 16, 5.2, 22);
+  g.fillStyle(STONE_H, 0.55); g.fillRect(X - 2.6, Y - 16, 1.6, 22);     // lit edge
+  g.fillStyle(accent || 0xcaa63a, 1); g.fillRect(X - 5, Y - 18, 10, 3); // gilded cross-bar
+  g.fillStyle(accent || 0xcaa63a, 1); g.fillRect(X - 1.6, Y - 22, 3.2, 8);
+  g.fillStyle(shade(accent || 0xcaa63a, 1.3), 1); g.fillCircle(X, Y - 22, 1.8); // finial
+}
 function bush(g, X, Y, accent) {
   const grn = accent || 0x2f5a2a;
   g.fillStyle(grn, 1); g.fillCircle(X - 4, Y + 4, 5); g.fillCircle(X + 4, Y + 4, 5); g.fillCircle(X, Y + 1, 6);
@@ -266,7 +279,7 @@ function bush(g, X, Y, accent) {
 const DRAW = {
   anvil, chest, barrel, stall, exchange, weaponrack, dummy, banner, tower, throne, well,
   shrine, cauldron, fire, coalheap, rockpile, logpile, cart, table, hiderack, bin,
-  entrance, sign, crate, hut, ladder, lamp, fence, bush,
+  entrance, sign, crate, hut, ladder, lamp, fence, bush, monument,
 };
 
 // Entry point: draw the prop for object `o` at tile top-left (cx,cy).
