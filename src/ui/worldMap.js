@@ -478,15 +478,15 @@ function injectCss() {
     background:rgba(0,0,0,.62); }
   #zmap-overlay[hidden] { display:none; }
   .zmap-panel { width:min(96vw,1100px); height:min(92vh,780px); display:flex; flex-direction:column;
-    background:linear-gradient(180deg,#26221a,#1c190f); border:2px solid #4a4331; border-radius:12px;
-    box-shadow:0 12px 48px rgba(0,0,0,.6); overflow:hidden; }
-  .zmap-head { display:flex; align-items:center; justify-content:space-between; padding:8px 12px;
-    border-bottom:2px solid #0d0c08; background:#201d15; }
-  .zmap-title { color:#e8c65a; font-weight:800; font-size:15px; font-family:"Baloo 2",system-ui,sans-serif; }
+    background:linear-gradient(#2b2117,#211910); border:1px solid #4a3927; border-radius:16px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 26px 60px rgba(0,0,0,.6); overflow:hidden; }
+  .zmap-head { display:flex; align-items:center; justify-content:space-between; padding:10px 14px;
+    border-bottom:1px solid #3c2e1f; background:#211910; }
+  .zmap-title { color:#e0b44a; font-weight:600; font-size:16px; font-family:"Fredoka",system-ui,sans-serif; }
   .zmap-tools { display:flex; gap:6px; }
-  .zmap-btn { width:30px; height:30px; border-radius:6px; border:1px solid #0d0c08; cursor:pointer;
-    background:linear-gradient(180deg,#3d3728,#26221a); color:#e8c65a; font-size:16px; font-weight:700; line-height:1; }
-  .zmap-btn:hover { color:#fff; background:#4a4331; }
+  .zmap-btn { width:30px; height:30px; border-radius:8px; border:1px solid #4a3927; cursor:pointer;
+    background:#3a2c1e; color:#e0b44a; font-size:16px; font-weight:700; line-height:1; transition:filter .1s; }
+  .zmap-btn:hover { color:#ebdfc8; filter:brightness(1.15); }
   .zmap-x { color:#c98; }
   .zmap-body { flex:1; display:flex; min-height:0; }
   .zmap-stage { position:relative; flex:1; overflow:hidden; cursor:grab; background:#0c0c0a; }
@@ -498,7 +498,7 @@ function injectCss() {
   .zmap-mk svg { width:100%; height:100%; display:block; }
   .zmap-mk-res { width:18px; height:18px; margin:-9px 0 0 -9px; }
   .zmap-mk-n { position:absolute; right:-6px; bottom:-5px; min-width:11px; height:13px; padding:0 2px;
-    font:700 9px/13px "Baloo 2",system-ui,sans-serif; color:#1a1a12; background:var(--mk); border:1px solid #0d0c08;
+    font:700 9px/13px "Fredoka",system-ui,sans-serif; color:#1a1a12; background:var(--mk); border:1px solid #0d0c08;
     border-radius:7px; text-align:center; }
   .zmap-you { position:absolute; width:16px; height:16px; margin:-8px 0 0 -8px; border:2px solid #fff; border-radius:50%;
     box-shadow:0 0 0 2px rgba(0,0,0,.6), 0 0 8px #fff; pointer-events:none; }
@@ -506,12 +506,12 @@ function injectCss() {
   .zmap-hint { position:absolute; left:10px; bottom:8px; color:#cdc3a6; font-size:11px; opacity:.7;
     background:rgba(10,10,8,.5); padding:2px 7px; border-radius:5px; pointer-events:none; }
   .zmap-side { width:232px; flex:0 0 232px; display:flex; flex-direction:column; min-height:0;
-    background:#1a170f; border-left:2px solid #0d0c08; }
-  .zmap-search-wrap { padding:8px 8px 5px; border-bottom:1px solid #0d0c08; }
-  .zmap-search { width:100%; box-sizing:border-box; padding:7px 9px; font-size:12px; color:#efe8d4;
-    background:#14130f; border:1px solid #3a3527; border-radius:6px; font-family:inherit; }
-  .zmap-search::placeholder { color:#8a8168; }
-  .zmap-search:focus { outline:none; border-color:#8a7a3a; }
+    background:#1c150d; border-left:1px solid #3c2e1f; }
+  .zmap-search-wrap { padding:8px 8px 5px; border-bottom:1px solid #3c2e1f; }
+  .zmap-search { width:100%; box-sizing:border-box; padding:8px 10px; font-size:12px; color:#ebdfc8;
+    background:#120d08; border:1px solid #4a3927; border-radius:10px; font-family:inherit; }
+  .zmap-search::placeholder { color:#8a7a5c; }
+  .zmap-search:focus { outline:none; border-color:#9fb04e; box-shadow:0 0 0 2px rgba(159,176,78,.25); }
   .zmap-results { max-height:44%; overflow-y:auto; display:flex; flex-direction:column; gap:2px; }
   .zmap-results.zmap-has { margin-top:5px; }
   .zmap-res { display:flex; align-items:center; gap:7px; padding:5px 6px; border-radius:5px; cursor:pointer;
@@ -531,7 +531,7 @@ function injectCss() {
   .zmap-lg-lbl { flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .zmap-lg-n { color:#8a8168; font-size:11px; }
   .zmap-lg-eye { flex:0 0 24px; width:24px; height:26px; background:none; border:none; cursor:pointer; color:#7a7256; padding:0; }
-  .zmap-lg-eye:hover { color:#e8c65a; } .zmap-lg-eye svg { width:15px; height:15px; display:block; margin:auto; }
+  .zmap-lg-eye:hover { color:#e0b44a; } .zmap-lg-eye svg { width:15px; height:15px; display:block; margin:auto; }
   .zmap-off .zmap-lg-eye { color:#4a4638; }
   .zmap-mk.zmap-flash { animation:zmapFlash 1.9s ease-out; z-index:5; }
   @keyframes zmapFlash {
