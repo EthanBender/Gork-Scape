@@ -96,6 +96,39 @@ export class Accounts {
   }
 
   // ------------------------------------------------------------ sessions
+  // ── admin operations (Voyra Gork Scape manager, 2026-07-03) ───────────────
+  // Called ONLY from the token-gated /api/admin/* routes in index.mjs — the
+  // game client has no path to these. Reset re-salts (never reuses a salt);
+  // delete also drops the user's live sessions.
+  adminResetPassword(username, newPassword) {
+    const key = String(username || '').trim().toLowerCase();
+    const rec = this.users.get(key);
+    if (!rec) return { ok: false, error: 'no such user' };
+    if (typeof newPassword !== 'string' || newPassword.length < 4) {
+      return { ok: false, error: 'password too short (min 4)' };
+    }
+    const salt = newSalt();
+    rec.salt = salt;
+    rec.hash = hashPassword(newPassword, salt);
+    // Old sessions die with the old password.
+    for (const [t, sess] of this.sessions) {
+      if (sess.key === key) this.sessions.delete(t);
+    }
+    this._scheduleSave();
+    return { ok: true, username: rec.username };
+  }
+
+  adminDeleteUser(username) {
+    const key = String(username || '').trim().toLowerCase();
+    if (!this.users.has(key)) return { ok: false, error: 'no such user' };
+    this.users.delete(key);
+    for (const [t, sess] of this.sessions) {
+      if (sess.key === key) this.sessions.delete(t);
+    }
+    this._scheduleSave();
+    return { ok: true };
+  }
+
   _issueSession(key) {
     const token = newToken();
     this.sessions.set(token, { key, exp: Date.now() + TOKEN_TTL_MS });

@@ -323,6 +323,23 @@ const handleRequest = async (req, res) => {
 
   // ---- multiplayer presence + shared chat ----
   // Heartbeat: report my position, get everyone else + new chat. Token-authed.
+  // ── admin (Voyra manager, 2026-07-03): OFF unless GORK_ADMIN_TOKEN is set.
+  // The cloudflared tunnel makes every request look local, so the gate is a
+  // shared secret header, never an IP check. 404 (not 403) when disabled or
+  // wrong — the endpoints are invisible to probing.
+  if (path.startsWith('/api/admin/') && req.method === 'POST') {
+    const tok = process.env.GORK_ADMIN_TOKEN || '';
+    if (!tok || req.headers['x-admin-token'] !== tok) return sendJson(res, 404, { error: 'not found' });
+    const body = await readJson(req);
+    if (path === '/api/admin/reset-password') {
+      return sendJson(res, 200, accounts.adminResetPassword(body && body.username, body && body.password));
+    }
+    if (path === '/api/admin/delete-user') {
+      return sendJson(res, 200, accounts.adminDeleteUser(body && body.username));
+    }
+    return sendJson(res, 404, { error: 'not found' });
+  }
+
   if (path === '/api/presence' && req.method === 'POST') {
     const body = await readJson(req);
     if (!body) return sendJson(res, 400, { error: 'Bad request.' });
