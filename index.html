@@ -94,33 +94,33 @@
   #side-panel { flex: 3 1 0; min-width: 258px; max-width: 360px; display: flex;
     flex-direction: column; min-height: 0; /* let panel-content scroll instead of overflowing into the chat (mobile stacked layout) */
     background:
-      repeating-linear-gradient(45deg, rgba(255,255,255,.011) 0 1px, transparent 1px 4px),
-      repeating-linear-gradient(-45deg, rgba(0,0,0,.05) 0 1px, transparent 1px 5px),
-      linear-gradient(180deg, var(--panel), #201d15);
-    border-left: 2px solid var(--bevel-lo); box-shadow: inset 1px 0 0 var(--bevel-hi); }
+      repeating-linear-gradient(45deg, rgba(255,255,255,.012) 0 1px, transparent 1px 4px),
+      repeating-linear-gradient(-45deg, rgba(0,0,0,.06) 0 1px, transparent 1px 5px),
+      linear-gradient(180deg, #2b2117, #211910);
+    border-left: 1px solid #4a3927; box-shadow: inset 1px 0 0 rgba(255,255,255,.03); }
 
-  #tabbar { display: flex; flex: 0 0 auto; background: var(--panel-lo);
-    border-bottom: 2px solid var(--bevel-lo);
+  /* Tab bar — AAA redesign: active tab = cream on #3a2c1e w/ a 3px olive underline;
+     inactive tabs grayscaled. */
+  #tabbar { display: flex; flex: 0 0 auto; background: #1c150d;
+    border-bottom: 1px solid #4a3927;
     overflow-x: auto; scrollbar-width: none; } /* world panels add up to 10 tabs — scroll, don't clip */
   #tabbar::-webkit-scrollbar { display: none; }
-  .tab-btn { flex: 1 0 auto; min-width: 52px; padding: 7px 2px 5px; color: var(--muted);
+  .tab-btn { flex: 1 0 auto; min-width: 52px; padding: 8px 2px 6px; color: #a89877;
     display: flex; flex-direction: column; align-items: center; gap: 3px;
-    background: linear-gradient(180deg, var(--panel2), var(--panel));
-    border: none; border-right: 1px solid var(--bevel-lo); border-bottom: 2px solid transparent;
-    cursor: pointer; transition: color .12s, background .12s; }
+    background: transparent;
+    border: none; border-bottom: 3px solid transparent;
+    cursor: pointer; font-family: "Fredoka", sans-serif; transition: color .12s, background .12s; }
   .tab-btn .tab-icon { width: 20px; height: 20px; line-height: 1;
-    filter: saturate(.8) brightness(.92) drop-shadow(0 1px 1px rgba(0,0,0,.5));
+    filter: grayscale(.85) brightness(.9) drop-shadow(0 1px 1px rgba(0,0,0,.5));
     transition: filter .15s, transform .15s; }
   .tab-btn .tab-icon svg { width: 100%; height: 100%; display: block; }
-  .tab-btn .tab-label { font-size: 10px; font-weight: 700; letter-spacing: .2px;
-    font-family: var(--font-display); }
-  .tab-btn.active .tab-icon { filter: drop-shadow(0 1px 1px rgba(0,0,0,.5)) drop-shadow(0 0 5px rgba(232,198,90,.45));
-    transform: translateY(-1px) scale(1.08); }
+  .tab-btn .tab-label { font-size: 10px; font-weight: 600; letter-spacing: .2px;
+    font-family: "Fredoka", sans-serif; }
   .tab-btn:last-child { border-right: none; }
-  .tab-btn:hover { color: var(--text); background: linear-gradient(180deg, var(--panel-hi), var(--panel2)); }
-  .tab-btn.active { color: var(--gold); border-bottom-color: var(--gold);
-    background: linear-gradient(180deg, var(--panel), var(--panel-hi));
-    text-shadow: 0 1px 0 #000, 0 0 6px rgba(232,198,90,.3); }
+  .tab-btn:hover { color: #ebdfc8; background: rgba(255,255,255,.03); }
+  .tab-btn.active { color: #f4e7c8; background: #3a2c1e; border-bottom-color: #9fb04e; }
+  .tab-btn.active .tab-icon { filter: drop-shadow(0 1px 1px rgba(0,0,0,.5));
+    transform: translateY(-1px) scale(1.06); }
 
   #panel-content { flex: 1 1 auto; overflow-y: auto; padding: 10px; }
 
