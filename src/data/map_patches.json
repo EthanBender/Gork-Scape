@@ -3264,7 +3264,7 @@
   },
   {
    "id": "coherence-stray-walls",
-   "why": "Human-coherence pass: dissolve 74 stray WALL tiles (2-6 tile fragments with no building floor, walls ringed by water, walls with a tree clipping through) into their surroundings — WATER in lakes, ROCK against mountains, GRASS in open reachable ground (only where it joins reachable land, so no new pockets) — plus grass 2 isolated cliffs and pull 0 trees off enclosed walls. Skips walls within 5 tiles of a labelled structure (authored ruin/crypt/camp scenes, incl. intentional overgrowth).",
+   "why": "Human-coherence: dissolve 93 stray WALL tiles — WHOLE components only (<=6 tiles, no building floor, not part of a labelled ruin/crypt/camp), so no fragment is ever left behind. Each becomes its surroundings: WATER in lakes, ROCK against mountains, GRASS in open reachable ground (reach-guarded = no new pockets). Objects on tiles turned to water/rock are removed to avoid clipping. Grass keeps its tree (natural). Also grasses isolated meadow-cliffs.",
    "ops": [
     {
      "op": "terrain",
@@ -3282,6 +3282,10 @@
        169
       ],
       [
+       410,
+       168
+      ],
+      [
        247,
        171
       ],
@@ -3290,8 +3294,36 @@
        171
       ],
       [
+       371,
+       274
+      ],
+      [
+       375,
+       274
+      ],
+      [
        199,
        277
+      ],
+      [
+       376,
+       276
+      ],
+      [
+       371,
+       278
+      ],
+      [
+       375,
+       278
+      ],
+      [
+       373,
+       279
+      ],
+      [
+       187,
+       351
       ],
       [
        285,
@@ -3398,6 +3430,14 @@
        639
       ],
       [
+       917,
+       799
+      ],
+      [
+       919,
+       800
+      ],
+      [
        889,
        810
       ],
@@ -3412,6 +3452,82 @@
       [
        930,
        811
+      ],
+      [
+       887,
+       813
+      ],
+      [
+       931,
+       813
+      ],
+      [
+       887,
+       815
+      ],
+      [
+       886,
+       817
+      ],
+      [
+       886,
+       819
+      ],
+      [
+       886,
+       821
+      ],
+      [
+       886,
+       823
+      ],
+      [
+       886,
+       825
+      ],
+      [
+       931,
+       827
+      ],
+      [
+       931,
+       829
+      ],
+      [
+       930,
+       831
+      ],
+      [
+       919,
+       842
+      ],
+      [
+       915,
+       843
+      ],
+      [
+       917,
+       843
+      ],
+      [
+       905,
+       844
+      ],
+      [
+       907,
+       844
+      ],
+      [
+       909,
+       844
+      ],
+      [
+       911,
+       844
+      ],
+      [
+       913,
+       844
       ],
       [
        758,
@@ -3454,6 +3570,10 @@
        890
       ],
       [
+       825,
+       914
+      ],
+      [
        827,
        916
       ],
@@ -3464,38 +3584,6 @@
       [
        825,
        918
-      ],
-      [
-       375,
-       274
-      ],
-      [
-       376,
-       276
-      ],
-      [
-       846,
-       327
-      ],
-      [
-       591,
-       478
-      ],
-      [
-       830,
-       671
-      ],
-      [
-       829,
-       674
-      ],
-      [
-       855,
-       803
-      ],
-      [
-       274,
-       875
       ],
       [
        453,
@@ -3558,14 +3646,6 @@
       [
        759,
        857
-      ],
-      [
-       429,
-       424
-      ],
-      [
-       431,
-       424
       ]
      ],
      "to": "WATER"
@@ -3578,15 +3658,25 @@
        170
       ],
       [
-       410,
-       168
-      ],
-      [
        151,
        522
       ]
      ],
      "to": "ROCK"
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      198,
+      276,
+      198,
+      276
+     ],
+     "types": [
+      "resource",
+      "decor",
+      "structure"
+     ]
     }
    ]
   }

@@ -3,8 +3,8 @@
 *Human-readable view of `HOPPER.jsonl`. The curator keeps this in sync with the feed.
 Last curated: 2026-07-03.*
 
-**Totals:** 8 · **owner-raised 5** · agent/auto-raised 3 · (gate-raised 0)
-**By status:** inbox 8 · ready 0 · picked 0 · done 0 · parked 0
+**Totals:** 9 · **owner-raised 6** · agent/auto-raised 3 · (gate-raised 0)
+**By status:** inbox 9 · ready 0 · picked 0 · done 0 · parked 0
 **Overnight-ready now (`ready` + `overnight-safe`):** 0
 
 > **Owner-raised items always list first, in their own section, and are never outranked
@@ -22,6 +22,7 @@ Last curated: 2026-07-03.*
 | GH-0004 | Click-to-pick-up doesn't auto-walk to the ground item | fix | needs-strong-model | P1 | S | net / shared | inbox |
 | GH-0005 | Remote players lag/snap + clip through walls | fix | needs-strong-model | P2 | M | net / shared | inbox |
 | GH-0008 | Night tint only covers the game view, not the whole screen | design-spike | needs-strong-model | P2 | S | render / shared | inbox |
+| GH-0009 | Minimap: many unclear arrows → keep one tracked-quest arrow | fix | needs-strong-model | P2 | S | ui / shared | inbox |
 | GH-0007 | Right-click a monster to view its drop table | content | needs-strong-model | P3 | M | ui / shared | inbox |
 
 ---
