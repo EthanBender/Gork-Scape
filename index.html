@@ -406,6 +406,8 @@
     font-size: 13px; font-family: "Consolas", "Menlo", monospace; box-shadow: var(--sink); }
   #chat-input::placeholder { color: #6f6752; }
   #chat-input:focus { outline: none; box-shadow: var(--sink), 0 0 0 1px var(--gold); }
+  /* Chat minimize handle — mobile only (shown in the max-width:560 block). */
+  #chat-toggle { display: none; }
 
   /* Item hover tooltip (OSRS-style card) */
   #item-tip { position: fixed; z-index: 10000; pointer-events: none; max-width: 250px;
@@ -483,6 +485,13 @@
   .quest-card.quest-done { opacity: .7; }
   .quest-head { display: flex; justify-content: space-between; align-items: center; gap: 6px; }
   .quest-name { font-weight: 700; font-size: 13px; color: var(--text); }
+  /* [a11y] subtle "read aloud" button — sits by the name, badge stays right */
+  .quest-tts { margin-right: auto; padding: 2px; background: none; border: 0;
+    cursor: pointer; opacity: .4; line-height: 0; border-radius: 4px;
+    transition: opacity .12s, background .12s; }
+  .quest-tts:hover { opacity: 1; background: rgba(255,255,255,.08); }
+  .quest-tts.speaking { opacity: 1; }
+  .quest-tts svg { width: 15px; height: 15px; display: block; }
   .quest-badge { font-size: 9px; text-transform: uppercase; letter-spacing: .5px;
     padding: 2px 6px; border-radius: 4px; white-space: nowrap;
     background: var(--panel-lo); color: var(--muted); border: 1px solid var(--bevel-lo); }
@@ -701,9 +710,19 @@
 
     /* Chat: a touch shorter; input big enough that iOS won't zoom on focus. */
     #chatlog { flex-basis: 84px; height: 84px; padding: 6px 12px; }
-    #chat-input-bar { padding: 5px 10px calc(5px + env(safe-area-inset-bottom)); }
+    #chat-input-bar { padding: 5px 10px calc(5px + env(safe-area-inset-bottom)); gap: 6px; }
     #chat-input { font-size: 16px; padding: 9px 10px; }
     .ge-form input { font-size: 16px; }
+
+    /* Minimizable chat: tap the handle to collapse the log to nothing and hand
+       its height back to the game view; the input bar stays put. */
+    #chat-toggle { display: inline-flex; align-items: center; justify-content: center;
+      flex: 0 0 auto; width: 40px; height: 40px; padding: 0; color: var(--muted);
+      background: var(--panel-lo); border: 1px solid var(--bevel-lo); border-radius: 4px; }
+    #chat-toggle .chev { display: inline-flex; transition: transform .15s ease; }
+    #chat-toggle svg { display: block; width: 18px; height: 18px; }
+    #app.chat-collapsed #chat-toggle .chev { transform: rotate(180deg); }
+    #app.chat-collapsed #chatlog { display: none; }
 
     /* Comfortable tap sizes for the common action buttons. */
     .style-btn, .station-btn, .craft-btn, .ge-btn, .ge-chip, .ge-mini,

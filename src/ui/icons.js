@@ -254,6 +254,15 @@ const ICONS = {
      <polygon points="24.5,41.5 27.5,42.8 25,46.5" fill="#f6efd8"/>
      <polygon points="39.5,41.5 36.5,42.8 39,46.5" fill="#f6efd8"/>`,
     '0 0 64 64'),
+
+  // ---------------------------------------------------------------- a11y
+  // Speaker + sound waves — the "read this aloud" control on quest cards.
+  speaker: wrap(
+    `<polygon points="3.5,9.5 8,9.5 13,5 13,19 8,14.5 3.5,14.5" fill="${STEEL}"/>
+     <polygon points="3.5,9.5 8,9.5 8,14.5 3.5,14.5" fill="${STEEL_D}"/>
+     <polygon points="8,9.5 8,14.5 13,19 13,5" fill="${STEEL_DD}"/>
+     <path d="M15.4 8.6a4.6 4.6 0 0 1 0 6.8" fill="none" stroke="${GOLD}" stroke-width="1.8" stroke-linecap="round"/>
+     <path d="M15.2 11a2.1 2.1 0 0 1 0 2" fill="none" stroke="${GOLD}" stroke-width="1.8" stroke-linecap="round"/>`),
 };
 
 // Public: get an icon's SVG markup. Unknown names return an empty span so a

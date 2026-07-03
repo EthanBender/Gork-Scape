@@ -457,6 +457,7 @@ function questCard(q, opts = {}) {
   card.innerHTML = `
     <div class="quest-head">
       <span class="quest-name">${tipEsc(q.name)}</span>
+      <button class="quest-tts" title="Read this quest aloud" aria-label="Read this quest aloud">${icon('speaker')}</button>
       <span class="quest-badge q-${q.status}">${q.status === 'active' ? `${q.done}/${q.total}` : q.status}</span>
     </div>
     ${giverName ? `<div class="quest-giver">${tipEsc(giverName)}</div>` : ''}
@@ -470,7 +471,47 @@ function questCard(q, opts = {}) {
     const btn = card.querySelector('.quest-track');
     if (btn) btn.onclick = () => { trackQuest(q.id); renderQuests(); };
   }
+  const ttsBtn = card.querySelector('.quest-tts');
+  if (ttsBtn) ttsBtn.onclick = (e) => { e.stopPropagation(); speakQuest(q, ttsBtn); };
   return card;
+}
+
+// [a11y] Read a quest aloud with the browser's built-in speech synthesis — a
+// subtle assist for players who find reading hard. No dependency and no network
+// (the Web Speech API is client-side). Clicking the same quest's button again
+// stops playback. Degrades to a log line where the API is unavailable.
+let ttsQuestId = null;
+function speakQuest(q, btn) {
+  const synth = window.speechSynthesis;
+  if (!synth || typeof SpeechSynthesisUtterance === 'undefined') {
+    Game.log('Read-aloud is not supported in this browser.');
+    return;
+  }
+  const wasSpeakingThis = synth.speaking && ttsQuestId === q.id;
+  synth.cancel(); // stop anything already playing (including this quest)
+  document.querySelectorAll('.quest-tts.speaking').forEach((b) => b.classList.remove('speaking'));
+  ttsQuestId = null;
+  if (wasSpeakingThis) return; // a second click on the active button = stop
+
+  const parts = [q.name];
+  if (q.summary) parts.push(q.summary);
+  const cur = q.steps && q.steps.find((s) => s.current);
+  if (cur && cur.text) parts.push(`Current objective: ${cur.text}`);
+  else if (q.current && q.current.say) parts.push(q.current.say);
+  if (q.status === 'available' && q.giver && q.giver.name) parts.push(`Speak to ${q.giver.name} to begin`);
+  // Strip trailing punctuation per part so the join gives clean single stops.
+  const text = parts.map((p) => String(p).trim().replace(/[.\s]+$/, '')).filter(Boolean)
+    .join('. ').replace(/[“”"«»]/g, '');
+
+  const u = new SpeechSynthesisUtterance(text);
+  u.rate = 0.98;
+  ttsQuestId = q.id;
+  if (btn) btn.classList.add('speaking');
+  u.onend = u.onerror = () => {
+    if (ttsQuestId === q.id) ttsQuestId = null;
+    if (btn) btn.classList.remove('speaking');
+  };
+  synth.speak(u);
 }
 export function renderQuests() {
   const v = els.views.quests;
@@ -1394,6 +1435,20 @@ function buildChatInput() {
   input.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && input.value.trim()) { playerSay(input.value); input.value = ''; }
   });
+  // Minimize handle (mobile): collapses the message log to reclaim game space,
+  // leaving just this input bar. Hidden on desktop via CSS.
+  const toggle = document.createElement('button');
+  toggle.id = 'chat-toggle';
+  toggle.type = 'button';
+  toggle.setAttribute('aria-label', 'Minimize chat');
+  toggle.innerHTML = '<span class="chev"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>';
+  toggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const app = document.getElementById('app');
+    const collapsed = app.classList.toggle('chat-collapsed');
+    toggle.setAttribute('aria-label', collapsed ? 'Expand chat' : 'Minimize chat');
+  });
+  bar.appendChild(toggle);
   bar.appendChild(input);
   els.chatlog.parentNode.insertBefore(bar, els.chatlog.nextSibling);
 }
