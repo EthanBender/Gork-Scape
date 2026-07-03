@@ -286,6 +286,9 @@ export function weaponStatsFromRecord(rec) {
   };
   if (cls.twoHanded) fields.twoHanded = true;
   if (cls.range) fields.attackRange = cls.range;
+  // Battle axes double as woodcutting tools (the hand-authored iron_axe set
+  // this precedent) — a goblin with an axe can always chop, tool or weapon.
+  if (cls.key === 'battle axe') fields.tool = 'woodcutting';
   if (cls.type === 'ranged') {
     b.range_atk = Math.round(cls.ratkBase + t * cls.ratkStep);
     b.range_str = Math.round(cls.rstrBase + t * cls.rstrStep);
@@ -393,6 +396,55 @@ export function armorStatsFromRecord(rec) {
   return fields;
 }
 
+// ----- Tool ladder hydration -----
+// The database Tool ladder (Hatchet/Pickaxe/Fishing gear/Spade/… × Crude→Meteor,
+// ~98 items) shipped with no `tool` field, so neither gather path recognized
+// them: gathering.hasTool matches on `item.tool`, and the legacy resource gate
+// (main.hasTool) does the same via TOOL_FAMILY. Derive the family from the
+// record's subcategory — one rule, no per-item whitelist to drift out of date.
+const TOOL_SUBCAT_FAMILY = {
+  Hatchet: 'woodcutting', Pickaxe: 'mining',
+  'Fishing Net': 'net', 'Fishing Rod': 'rod', Harpoon: 'harpoon', 'Fishing Cage': 'cage',
+  Spade: 'spade', 'Watering Can': 'watering_can', Chisel: 'chisel', Knife: 'knife',
+  Hammer: 'hammer', Needle: 'needle', Tinderbox: 'tinderbox',
+};
+// 'Crafting Tool' is a grab-bag subcategory; its two members map by id.
+const CRAFTING_TOOL_FAMILY = { knife: 'knife', chisel: 'chisel' };
+const TOOL_REQ_SKILL = { woodcutting: 'Woodcutting', mining: 'Mining', fishing: 'Fishing' };
+export function toolStatsFromRecord(rec) {
+  if (rec.category !== 'Tool') return null;
+  const family = TOOL_SUBCAT_FAMILY[rec.subcategory] || CRAFTING_TOOL_FAMILY[rec.item_id] || null;
+  if (!family) return null;
+  const name = rec.display_name || rec.item_id;
+  const fields = {
+    slot: null, tool: family,
+    color: TIER_COLOR[tierKey(name)] || CATEGORY_COLORS.Tool,
+    bonuses: emptyBonuses(),
+  };
+  // Hatchets and pickaxes double as weak weapons, matching the hand-authored
+  // bronze/iron ones (bronze_hatchet: slash 4 / str 2; iron_pickaxe: stab 6 / str 4).
+  if (family === 'woodcutting' || family === 'mining') {
+    const t = tierIndex(name);
+    fields.slot = 'weapon';
+    fields.attackSpeed = 3;
+    if (family === 'woodcutting') {
+      fields.weaponType = 'slash';
+      fields.bonuses = bonuses({ slash_atk: Math.round(1 + 3 * t), melee_str: Math.round(2 * t) });
+    } else {
+      fields.weaponType = 'stab';
+      fields.bonuses = bonuses({ stab_atk: Math.round(3 * t), melee_str: Math.round(2 * t) });
+    }
+    // Wielding a tiered tool asks for its gathering skill, same as tiered
+    // weapons ask for Attack/Strength. (Holding it in the pack has no gate.)
+    const req = TOOL_REQ_SKILL[rec.related_skill];
+    if (req && (rec.level_requirement || 0) > 1) {
+      fields.reqSkill = req;
+      fields.reqLevel = rec.level_requirement;
+    }
+  }
+  return fields;
+}
+
 function hydrateFromDatabase() {
   if (!GameData || !GameData.items) return;
   for (const rec of GameData.items) {
@@ -406,6 +458,11 @@ function hydrateFromDatabase() {
     const arm = armorStatsFromRecord(rec);
     if (arm) {
       ITEMS[id] = { id, name: rec.display_name || id, stackable: false, fromDatabase: true, ...arm };
+      continue;
+    }
+    const tool = toolStatsFromRecord(rec);
+    if (tool) {
+      ITEMS[id] = { id, name: rec.display_name || id, stackable: false, fromDatabase: true, ...tool };
       continue;
     }
     const heal = foodHealFromRecord(rec);

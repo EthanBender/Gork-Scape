@@ -9,11 +9,17 @@ import { engineSkill } from '../src/systems/crafting.js';
 import { Game, initState } from '../src/engine/state.js';
 import { ITEMS } from '../src/items/equipment.js';
 
-// give the player every gathering tool so the tool-gate passes for any node
+// give the player every gathering tool so the tool-gate passes for any node —
+// one item per tool FAMILY (the whole hydrated tool ladder carries `tool` now;
+// granting every def would fill all 28 slots and break the gather itself)
 function grantAllTools() {
   let slot = 0;
+  const seen = new Set();
   for (const d of Object.values(ITEMS)) {
-    if (d.tool && slot < Game.inventory.length) Game.inventory[slot++] = d;
+    if (d.tool && !seen.has(d.tool) && slot < Game.inventory.length) {
+      seen.add(d.tool);
+      Game.inventory[slot++] = d;
+    }
   }
 }
 function maxSkillFor(dbSkill) {

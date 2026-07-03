@@ -69,7 +69,10 @@ const RECIPES = {}; // id -> { output, outQty, level, xp, inputs:[{id|any, qty}]
 
 function reg(id, def) {
   TINKER_ITEMS[id] = { id, ...def };
-  if (!ITEMS[id]) ITEMS[id] = { id, bonuses: emptyBonuses(), ...def };
+  // Authored tinker defs replace generic database stubs (equipment.js hydrates
+  // those first; some tinker ids also appear in items.json as quest items —
+  // e.g. rusty_wrench — and the stub has no `tool` field, breaking gates).
+  if (!ITEMS[id] || ITEMS[id].fromDatabase) ITEMS[id] = { id, bonuses: emptyBonuses(), ...def };
 }
 function recipe(id, r) { RECIPES[id] = { id, skill: SKILL, ...r }; }
 

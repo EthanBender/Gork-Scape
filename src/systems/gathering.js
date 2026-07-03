@@ -19,22 +19,34 @@ function skillLevel(dbSkill) {
 }
 
 // Does the player hold/wear a tool of the required family? Tools carry
-// `tool: 'woodcutting'|'mining'|'net'|'rod'|'harpoon'|'cage'` on their item def.
-// The database expresses required_tool as 'hatchet'/'pickaxe'/'net'/etc., so map
-// the node's tool word onto the engine tool family.
+// `tool: 'woodcutting'|'mining'|'net'|…` on their item def (hand-authored, or
+// hydrated from the database Tool ladder — see equipment.toolStatsFromRecord).
+// The database expresses required_tool in several spellings ('hatchet',
+// 'small_net', 'cave_rod', …), so map each node word onto the engine family.
+// Specialised fishing gear the database never defined as items (cave_rod,
+// heavy_harpoon, moon_net) falls back to its base family — the node's level
+// requirement is the real gate there.
 const TOOL_FAMILY = {
   hatchet: 'woodcutting', axe: 'woodcutting', pickaxe: 'mining',
-  net: 'net', rod: 'rod', fishing_rod: 'rod', harpoon: 'harpoon', cage: 'cage',
+  net: 'net', small_net: 'net', fishing_net: 'net', moon_net: 'net',
+  rod: 'rod', fishing_rod: 'rod', cave_rod: 'rod',
+  harpoon: 'harpoon', heavy_harpoon: 'harpoon',
+  cage: 'cage', fishing_cage: 'cage',
 };
 
-function hasTool(requiredTool) {
+// required_tool may list several tools separated by ';' (gem nodes want
+// 'pickaxe;chisel'); the player must satisfy every entry. Exported so the
+// legacy resource-object gate (main.hasTool) runs the exact same check.
+export function hasRequiredTool(requiredTool) {
   if (!requiredTool) return true;
-  const family = TOOL_FAMILY[requiredTool] || requiredTool;
   const wornOrHeld = [
     ...EQUIP_SLOTS.map((s) => Game.equipment[s]),
     ...Game.inventory,
   ].filter(Boolean);
-  return wornOrHeld.some((it) => it.tool === family);
+  return String(requiredTool).split(';').every((word) => {
+    const family = TOOL_FAMILY[word.trim()] || word.trim();
+    return wornOrHeld.some((it) => it.tool === family);
+  });
 }
 
 // Resolve a node id -> { node, skill, need, haveLevel, haveTool, canGather }.
@@ -43,7 +55,7 @@ export function resolveNode(nodeId) {
   if (!node) return null;
   const need = node.level_requirement || 1;
   const haveLevel = skillLevel(node.related_skill) >= need;
-  const haveTool = hasTool(node.required_tool);
+  const haveTool = hasRequiredTool(node.required_tool);
   return { node, skill: node.related_skill, need, haveLevel, haveTool, canGather: haveLevel && haveTool };
 }
 

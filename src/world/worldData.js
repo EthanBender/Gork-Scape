@@ -146,15 +146,11 @@ export const RESOURCE_TYPES = {
   fish_eel:    { label: 'Eel',         skill: 'Fishing', level: 30, tool: 'cage',    drop: 'raw_eel',   xp: 70, low: 10, high: 120, color: 0x5a8a6a, deplete: 0, respawn: 0, blocking: false },
 };
 
-// Which item ids satisfy each tool gate.
-export const TOOLS = {
-  axe: ['bronze_hatchet', 'iron_axe'],
-  pickaxe: ['bronze_pickaxe', 'iron_pickaxe'],
-  net: ['small_net'],
-  rod: ['fishing_rod'],
-  harpoon: ['harpoon'],
-  cage: ['fishing_cage'],
-};
+// Tool gates: which items satisfy 'axe'/'pickaxe'/'net'/… is no longer a
+// whitelist here. Item defs carry a `tool` family (hand-authored in
+// items/equipment.js, or hydrated from items.json by subcategory — see
+// toolStatsFromRecord), and systems/gathering.hasRequiredTool checks it for
+// both the legacy resource objects and the database node path.
 
 // Resource spawns per region: [resourceType, count].
 export const REGION_RESOURCES = {

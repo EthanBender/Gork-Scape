@@ -15,7 +15,7 @@ import {
 import { generateInterior } from './world/interiors.js'; // M2: dungeon sub-maps (enter/exit world swap)
 import { contractOnKill, contractDialog, contractState } from './systems/contracts.js'; // M3: slayer-lite contracts
 import { playSfx, unlockAudio, toggleMute } from './engine/sfx.js'; // juice: the game's first audio
-import { TOOLS, LANDMARKS, REGION_ANCHORS } from './world/worldData.js';
+import { LANDMARKS, REGION_ANCHORS } from './world/worldData.js';
 
 // World-map overlay toggles (PASS 7)
 const SHOW_REGION_BOUNDS = false;    // giant region circles — off (debug only)
@@ -39,7 +39,7 @@ import { styleOfWeapon, PROTECT_FACTOR } from './engine/prayer.js';
 import { isTinkerWeapon, effectiveGadgetEffect } from './systems/tinkering.js';
 import { initTinkerHud, openWorkbench } from './systems/tinkeringUI.js';
 import { initWiki } from './ui/wiki.js'; // [economy lane] item Codex/Wiki button + overlay
-import { gather as gatherNode, rollGatherByproduct } from './systems/gathering.js'; // [economy lane] data-driven world-node gathering + byproducts
+import { gather as gatherNode, rollGatherByproduct, hasRequiredTool } from './systems/gathering.js'; // [economy lane] data-driven world-node gathering + byproducts
 import { rollSkillSuccess } from './engine/skills.js';
 import { emptyBonuses, ITEMS } from './items/equipment.js';
 import { rollLoot } from './world/loot.js';
@@ -292,10 +292,11 @@ function findOpenTileNear(world, cx, cy, radius) {
   return null;
 }
 
+// Legacy resource objects gate on 'axe'/'pickaxe'/'net'/'rod'/'harpoon'/'cage';
+// gathering.hasRequiredTool maps those words onto the same tool families the
+// data-driven node path uses, so any obtainable tool of the family works.
 function hasTool(toolType) {
-  const ids = TOOLS[toolType] || [];
-  if (Game.equipment.weapon && ids.includes(Game.equipment.weapon.id)) return true;
-  return Game.inventory.some((s) => s && ids.includes(s.id));
+  return hasRequiredTool(toolType);
 }
 
 // [economy lane] Spawn a unique QUEST BOSS into the world (installed as
