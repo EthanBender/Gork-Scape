@@ -307,6 +307,10 @@ let lastNormalTab = 'skills';
 // station, no tab button, and auto-closed when the player walks away (main.js).
 const WORLD_PANELS = new Set(['ge', 'stations', 'shop', 'bank']);
 function switchTab(id) {
+  // Showing any panel un-minimizes the side panel (e.g. a world panel opening
+  // while the player had it collapsed).
+  const app = document.getElementById('app');
+  if (app) app.classList.remove('panel-collapsed');
   activeTab = id;
   if (!WORLD_PANELS.has(id)) lastNormalTab = id;
   hideTip();

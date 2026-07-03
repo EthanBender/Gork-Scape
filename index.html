@@ -724,6 +724,12 @@
     #app.chat-collapsed #chat-toggle .chev { transform: rotate(180deg); }
     #app.chat-collapsed #chatlog { display: none; }
 
+    /* Minimizable menu: re-tap the active tab to collapse the panel body and
+       give the whole stack to the game view; the tab bar stays so any tap
+       brings it back. The active tab keeps its highlight as the "reopen" cue. */
+    #app.panel-collapsed #panel-content { display: none; }
+    #app.panel-collapsed #side-panel { flex: 0 0 auto; }
+
     /* Comfortable tap sizes for the common action buttons. */
     .style-btn, .station-btn, .craft-btn, .ge-btn, .ge-chip, .ge-mini,
     .modal-close, .tab-btn { min-height: 40px; }
