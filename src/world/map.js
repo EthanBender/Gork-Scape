@@ -291,20 +291,102 @@ export function generateWorld(seed = DEFAULT_SEED, opts = {}) {
   if (GEO2) withOffset(townOff.dx, townOff.dy, buildTown); else buildTown();
   const spawn = { x: 500 + townOff.dx, y: 462 + townOff.dy };
 
-  // ---- GEO2: the river flows THROUGH the ford-town. The authored layout paves
-  // its box, so re-carve the macro river across open ground; where the avenues
-  // cross it the road becomes a stone BRIDGE — the ford the town exists for.
-  if (GEO2) {
-    for (let y = TB.y0 + townOff.dy - 4; y <= TB.y1 + townOff.dy + 4; y++) for (let x = TB.x0 + townOff.dx - 4; x <= TB.x1 + townOff.dx + 4; x++) {
-      if (!inB(x, y)) continue;
-      const i = idx(x, y);
-      if (macro.water[i] !== 3) continue;                    // only the river course
-      const t = terrain[i];
-      if (t === T.ROAD) terrain[i] = T.BRIDGE;               // avenue crossing → bridge
-      else if (t === T.GRASS || t === T.DIRT || t === T.SAND || t === T.FIELD) terrain[i] = T.WATER;
-      else if (t === T.WALL) terrain[i] = T.WATER;           // water-gate gap in the palisade
+  // ---- GEO2: TOWN ARCHITECTURE — the goblins CANALIZED the river ------------
+  // The macro river hits the town walls; inside, a clean 3-wide engineered canal
+  // connects the entry and exit water-gates with an L-shaped channel, dirt
+  // embankments, stone bridges wherever it crosses an avenue, a plank
+  // footbridge midway, and town fishing. No wandering water through buildings.
+  if (GEO2) (function townCanal() {
+    const bx0 = TB.x0 + townOff.dx, by0 = TB.y0 + townOff.dy, bx1 = TB.x1 + townOff.dx, by1 = TB.y1 + townOff.dy;
+    const cx = TB.cx + townOff.dx, cy = TB.cy + townOff.dy;
+    // where does the macro river touch the walls? (scan just OUTSIDE the box)
+    const edgeHits = { N: [], S: [], W: [], E: [] };
+    for (let x = bx0; x <= bx1; x++) { if (macro.water[idx(x, by0 - 2)] === 3) edgeHits.N.push(x); if (macro.water[idx(x, by1 + 2)] === 3) edgeHits.S.push(x); }
+    for (let y = by0; y <= by1; y++) { if (macro.water[idx(bx0 - 2, y)] === 3) edgeHits.W.push(y); if (macro.water[idx(bx1 + 2, y)] === 3) edgeHits.E.push(y); }
+    const mid = (a) => a.length ? a[(a.length / 2) | 0] : null;
+    const entryX = mid(edgeHits.N), exitS = mid(edgeHits.S), exitW = mid(edgeHits.W), exitE = mid(edgeHits.E);
+    if (entryX === null && exitS === null && exitW === null && exitE === null) return; // river misses the town
+    // find a clear vertical column (no buildings within canal width) nearest a wanted x
+    const colClear = (x) => { for (let y = by0 + 1; y <= by1 - 1; y++) for (let dx = -1; dx <= 1; dx++) { const t = terrain[idx(x + dx, y)]; if (t === T.WALL || t === T.FLOOR) { if (y > by0 + 2 && y < by1 - 2) return false; } } return true; };
+    const rowClear = (y, xa, xb) => { for (let x = Math.min(xa, xb); x <= Math.max(xa, xb); x++) for (let dy = -1; dy <= 1; dy++) { const t = terrain[idx(x, y + dy)]; if (t === T.WALL || t === T.FLOOR) { if (x > bx0 + 2 && x < bx1 - 2) return false; } } return true; };
+    let vx = entryX !== null ? entryX : cx + 14;
+    for (let d = 0; d < 30 && !colClear(vx); d++) vx += (d % 2 ? -d : d);
+    let hy = exitW !== null ? exitW : exitE !== null ? exitE : cy + 18;
+    for (let d = 0; d < 30 && !rowClear(hy, bx0, vx); d++) hy += (d % 2 ? -d : d);
+    // carve helper: 3-wide water, roads become stone bridges, walls become water-gates
+    const carve = (x, y) => { for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+      if (Math.abs(dx) + Math.abs(dy) > 1 && !(dx === 0 || dy === 0)) continue;
+      const px = x + dx, py = y + dy; if (!inB(px, py)) continue;
+      const t = terrain[idx(px, py)];
+      if (t === T.ROAD) terrain[idx(px, py)] = T.BRIDGE;
+      else if (t === T.GRASS || t === T.DIRT || t === T.SAND || t === T.FIELD || t === T.WALL) terrain[idx(px, py)] = T.WATER;
+    } };
+    const path = [];
+    if (entryX !== null) { for (let y = by0; y <= (exitS !== null && exitW === null && exitE === null ? by1 : hy); y++) path.push([vx, y]); }
+    if (exitW !== null) { for (let x = vx; x >= bx0; x--) path.push([x, hy]); }
+    else if (exitE !== null) { for (let x = vx; x <= bx1; x++) path.push([x, hy]); }
+    else if (exitS !== null && entryX !== null) { for (let x = vx; x !== exitS; x += Math.sign(exitS - vx)) path.push([x, hy]); for (let y = hy; y <= by1; y++) path.push([exitS, y]); }
+    for (const [x, y] of path) carve(x, y);
+    // embankments: dirt promenade + the odd lamp along the water
+    for (const [x, y] of path) for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) {
+      if (Math.abs(dx) !== 2 && Math.abs(dy) !== 2) continue;
+      const px = x + dx, py = y + dy; if (!inB(px, py)) continue;
+      if (terrain[idx(px, py)] === T.GRASS) terrain[idx(px, py)] = T.DIRT;
     }
-  }
+    for (let k = 6; k < path.length - 6; k += 9) { const [x, y] = path[k]; decor(x - 2, y - 2, 0xe8c65a, 3, 'circle'); }
+    // a plank footbridge midway along the vertical leg (besides the avenue bridges)
+    if (entryX !== null) { const fy = ((by0 + hy) / 2) | 0; for (let dx = -1; dx <= 1; dx++) if (terrain[idx(vx + dx, fy)] === T.WATER) terrain[idx(vx + dx, fy)] = T.BRIDGE; }
+    // town fishing — a Lumbridge touch
+    let placedFish = 0;
+    for (const [x, y] of path) { if (placedFish >= 2) break; if (terrain[idx(x, y)] === T.WATER && (terrain[idx(x - 2, y)] === T.DIRT || terrain[idx(x + 2, y)] === T.DIRT)) { resObj(x, y, 'fish_shrimp'); placedFish++; } }
+    // gate towers: carving leaves orphaned wall stubs where the canal breaches
+    // walls — turn stubs beside water into proper tower decor, clear the rest
+    for (let y = by0 - 2; y <= by1 + 2; y++) for (let x = bx0 - 2; x <= bx1 + 2; x++) {
+      if (!inB(x, y) || terrain[idx(x, y)] !== T.WALL) continue;
+      let wn = 0, nearWaterN = false;
+      for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+        if (terrain[idx(x + dx, y + dy)] === T.WALL) wn++;
+        if (terrain[idx(x + dx, y + dy)] === T.WATER) nearWaterN = true;
+      }
+      if (wn === 0) {
+        terrain[idx(x, y)] = nearWaterN ? T.DIRT : T.GRASS;
+        if (nearWaterN) decor(x, y, 0x555046, 6, 'rect'); // a squat gate tower
+      }
+    }
+  })();
+
+  // ---- GEO2: TOWN DECORATION — make Gorkholm read as lived-in ---------------
+  if (GEO2) (function townDecor() {
+    const cx = TB.cx + townOff.dx, cy = TB.cy + townOff.dy;
+    const bx0 = TB.x0 + townOff.dx, by0 = TB.y0 + townOff.dy, bx1 = TB.x1 + townOff.dx, by1 = TB.y1 + townOff.dy;
+    const onGrass = (x, y) => terrain[idx(x, y)] === T.GRASS && !occupied.has(okey(x, y));
+    // lamp posts along both avenues, every 7 tiles
+    for (let x = bx0 + 4; x < bx1 - 3; x += 7) { if (onGrass(x, cy - 2)) decor(x, cy - 2, 0xe8c65a, 3, 'circle'); if (onGrass(x, cy + 2)) decor(x, cy + 2, 0xe8c65a, 3, 'circle'); }
+    for (let y = by0 + 4; y < by1 - 3; y += 7) { if (onGrass(cx - 2, y)) decor(cx - 2, y, 0xe8c65a, 3, 'circle'); if (onGrass(cx + 2, y)) decor(cx + 2, y, 0xe8c65a, 3, 'circle'); }
+    // plaza: bench ring + planters around the fountain
+    for (const a of [30, 90, 150, 210, 270, 330]) { const x = Math.round(cx + 6 * Math.cos(a * Math.PI / 180)), y = Math.round(cy + 6 * Math.sin(a * Math.PI / 180)); if (terrain[idx(x, y)] === T.FLOOR && !occupied.has(okey(x, y))) decor(x, y, a % 60 ? 0x6a5a3a : 0x3f6e2c, 4, a % 60 ? 'rect' : 'circle'); }
+    // door spurs: every building doorway gets a dirt path toward the nearest avenue
+    for (let y = by0 + 1; y < by1; y++) for (let x = bx0 + 1; x < bx1; x++) {
+      if (terrain[idx(x, y)] !== T.FLOOR) continue;
+      for (const [dx, dy] of [[0, 1], [0, -1], [1, 0], [-1, 0]]) {
+        if (terrain[idx(x + dx, y + dy)] === T.GRASS && terrain[idx(x - dx, y - dy)] === T.FLOOR) {
+          for (let k = 1; k <= 3; k++) { const px = x + dx * k, py = y + dy * k; if (terrain[idx(px, py)] === T.GRASS) terrain[idx(px, py)] = T.DIRT; else break; }
+        }
+      }
+    }
+    // corner gardens: a tended patch in each ward's far corner
+    for (const [gx, gy] of [[bx0 + 5, by0 + 5], [bx1 - 7, by0 + 5], [bx0 + 5, by1 - 7], [bx1 - 7, by1 - 7]]) {
+      let clear = true;
+      for (let y = gy; y < gy + 3 && clear; y++) for (let x = gx; x < gx + 3; x++) if (terrain[idx(x, y)] !== T.GRASS) { clear = false; break; }
+      if (!clear) continue;
+      for (let y = gy; y < gy + 3; y++) for (let x = gx; x < gx + 3; x++) terrain[idx(x, y)] = T.FIELD;
+      decor(gx + 1, gy + 1, [0xd66a8a, 0xe6d24a, 0xc0c0e0, 0xd08040][((gx + gy) / 3 | 0) % 4], 4, 'circle');
+    }
+    // small orchard in the quietest ward (NW): a 2x2 grid of oaks
+    for (const [ox, oy] of [[bx0 + 12, by0 + 10], [bx0 + 16, by0 + 10], [bx0 + 12, by0 + 14], [bx0 + 16, by0 + 14]]) if (onGrass(ox, oy)) resObj(ox, oy, 'tree_oak');
+    // training yard flavour: weapon racks by the dummies
+    for (const o of objects) if (o.label === 'Combat Dummy') { if (onGrass(o.x + 1, o.y + 1)) decor(o.x + 1, o.y + 1, 0x8a6a3a, 4, 'rect'); }
+  })();
 
   // ---- PASS 4: roads (exact polylines from roads.json) ----
   const carveRoad = (pts, w) => alongPath(pts, (cx, cy) => disc(cx, cy, w, (x, y) => { const t = getT(x, y); if (t === T.WATER) setT(x, y, T.BRIDGE); else if (t === T.WALL || t === T.FLOOR || t === T.ROAD || t === T.BRIDGE) return; else setT(x, y, T.ROAD); }));
