@@ -159,13 +159,19 @@ function buildWorld() {
     levels: elderLevels, combatLevel: null, bonuses: emptyBonuses(),
   }));
 
-  // [economy lane] Banker — gates the Bank panel. Now stationed AT the Bank counter
-  // inside the keep's west-wing vault (counter at 493,431; reachable via the N
-  // passage + the wing door world-gen cut at 497,427). Keep id 'banker' so the
-  // proximity gate finds it.
+  // [economy lane] Banker — gates the Bank panel. Stands in the keep's west-wing
+  // vault one tile IN FRONT of the Bank counter (counter at 493,431), facing the
+  // open plaza-side floor. He used to stand flush against the counter (493,432),
+  // but the town's elevation lift draws the counter prop shifted up-and-over so it
+  // overhung his approach tile — players read the (walkable) tile beside him as a
+  // blocked square. Pulling him back to 493,433 leaves a clear buffer tile (the
+  // banking mat, drawn in townDecor) between him and the counter so the approach
+  // reads unambiguously. Reachable via the N passage + the wing door cut at
+  // 497,427; banking still gates on either his tile or the counter (both range 3).
+  // Keep id 'banker' so the proximity gate finds it.
   Game.npcs.push(new NPC({
     id: 'banker', name: 'Banker', type: 'elder',
-    tileX: 493 + TD.dx, tileY: 432 + TD.dy,
+    tileX: 493 + TD.dx, tileY: 433 + TD.dy,
     color: 0xc9a24a, aggressive: false,
     dialog: 'Welcome to the Bank of Gorkholm. Deposit and withdraw your goods here.',
     levels: elderLevels, combatLevel: null, bonuses: emptyBonuses(),

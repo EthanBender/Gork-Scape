@@ -44,7 +44,9 @@ export const TOWN_DECOR = [
   { x: 485, y: 454, kind: 'lamp' }, { x: 515, y: 456, kind: 'lamp' },
   // ---- the keep + bank vault ----
   { x: 497, y: 418, kind: 'banner', c: 0x8a6fbf }, { x: 503, y: 418, kind: 'banner', c: 0x8a6fbf },
-  { x: 492, y: 432, kind: 'rug', c: 0x6a3b6a },
+  // banking mat: a 2-tile runner in front of the Bank counter (493,431) marking
+  // the clear approach — the buffer tile (493,432) and the Banker's stand (493,433).
+  { x: 493, y: 432, kind: 'rug', c: 0x6a3b6a }, { x: 493, y: 433, kind: 'rug', c: 0x6a3b6a },
   { x: 494, y: 430, kind: 'coins' },
   { x: 490, y: 428, kind: 'torch' }, { x: 496, y: 425, kind: 'torch' },
   // ---- forge ward (N) ----
