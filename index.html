@@ -721,8 +721,17 @@
       -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
     #topbar::-webkit-scrollbar { display: none; }
     #topbar > * { flex: 0 0 auto; }
-    #topbar #tb-name { font-size: 15px; }
-    #tb-tick, #tb-fps { display: none; }
+    #topbar #tb-name { font-size: 15px; line-height: 1.05; }
+    /* Compact HUD: drop the dev/ambient chips + the divider; keep avatar, name,
+       combat pill, HP bar, gp, and log out. Fits 375px without scrolling. */
+    #topbar #tb-tick, #topbar #tb-fps, #topbar #tb-worldtime, #topbar #tb-worldevent,
+    #topbar #tb-netstatus, #topbar .tb-div { display: none; }
+    #topbar .tb-id { align-items: center; }
+    #topbar .tb-hp { display: block; width: 78px; height: 6px; margin-top: 4px;
+      background: #17110a; border-radius: 99px; overflow: hidden; box-shadow: inset 0 1px 2px rgba(0,0,0,.5); }
+    #topbar .tb-hp > i { display: block; height: 100%; width: 100%;
+      background: linear-gradient(#d96a6a, #b34a4a); box-shadow: inset 0 1px 0 rgba(255,255,255,.3); }
+    #topbar .tb { padding: 6px 10px; }
 
     /* Canvas HUD controls → floating right-side cluster (above the chat strip). */
     #cam-hint { display: none; }

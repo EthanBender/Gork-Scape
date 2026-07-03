@@ -7003,7 +7003,7 @@
      "op": "object",
      "x": 459,
      "y": 364,
-     "label": "Wall Torch",
+     "label": "Wall Firebrand",
      "color": 16742954,
      "blocking": false
     },
@@ -7011,7 +7011,7 @@
      "op": "object",
      "x": 481,
      "y": 364,
-     "label": "Wall Torch",
+     "label": "Wall Firebrand",
      "color": 16742954,
      "blocking": false
     },
@@ -7019,7 +7019,7 @@
      "op": "object",
      "x": 459,
      "y": 367,
-     "label": "Wall Torch",
+     "label": "Wall Firebrand",
      "color": 16742954,
      "blocking": false
     },
@@ -7027,7 +7027,7 @@
      "op": "object",
      "x": 481,
      "y": 367,
-     "label": "Wall Torch",
+     "label": "Wall Firebrand",
      "color": 16742954,
      "blocking": false
     },
@@ -7035,7 +7035,7 @@
      "op": "object",
      "x": 459,
      "y": 370,
-     "label": "Wall Torch",
+     "label": "Wall Firebrand",
      "color": 16742954,
      "blocking": false
     },
@@ -7043,7 +7043,7 @@
      "op": "object",
      "x": 481,
      "y": 370,
-     "label": "Wall Torch",
+     "label": "Wall Firebrand",
      "color": 16742954,
      "blocking": false
     },
@@ -7051,7 +7051,7 @@
      "op": "object",
      "x": 459,
      "y": 375,
-     "label": "Wall Torch",
+     "label": "Wall Firebrand",
      "color": 16742954,
      "blocking": false
     },
@@ -7059,7 +7059,7 @@
      "op": "object",
      "x": 481,
      "y": 375,
-     "label": "Wall Torch",
+     "label": "Wall Firebrand",
      "color": 16742954,
      "blocking": false
     },
@@ -7221,7 +7221,7 @@
      "op": "object",
      "x": 470,
      "y": 361,
-     "label": "North Arch",
+     "label": "North Gate",
      "color": 6975352,
      "blocking": false
     }

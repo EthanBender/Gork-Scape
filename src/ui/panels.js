@@ -353,6 +353,13 @@ export function renderTopBar() {
   set('tb-location', Game.location);
   const gpEl = document.getElementById('tb-gp');
   if (gpEl) { const gp = playerCoins(); gpEl.textContent = gp.toLocaleString(); gpEl.style.color = qtyStyle(gp).color; }
+  // [mobile] Compact HUD HP bar (hidden on desktop).
+  const hpFill = document.getElementById('tb-hp-fill');
+  if (hpFill) {
+    const r = Game.maxHp ? Math.max(0, Math.min(1, Game.hp / Game.maxHp)) : 0;
+    hpFill.style.width = (r * 100) + '%';
+    if (hpFill.parentElement) hpFill.parentElement.title = `Hitpoints ${Game.hp}/${Game.maxHp}`;
+  }
   set('tb-tick', 'Tick ' + (Game.ticker ? Game.ticker.count : 0));
 
   // Perf probe: live render FPS + active NPC count, so the "135 rigs at 60fps"
