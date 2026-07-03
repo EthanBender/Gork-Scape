@@ -6199,7 +6199,7 @@
   "level_requirement": 5,
   "inputs": "bone_pearl:1;chisel:1",
   "output_qty": 1,
-  "xp_reward": 25,
+  "xp_reward": 130,
   "gp_cost": 0,
   "notes": "Gem cutting (chain-audit fix: closes the raw gem -> jewellery loop)."
  },
@@ -6211,7 +6211,7 @@
   "level_requirement": 10,
   "inputs": "cave_ruby:1;chisel:1",
   "output_qty": 1,
-  "xp_reward": 35,
+  "xp_reward": 325,
   "gp_cost": 0,
   "notes": "Gem cutting (chain-audit fix: closes the raw gem -> jewellery loop)."
  },
@@ -6223,7 +6223,7 @@
   "level_requirement": 28,
   "inputs": "goblin_jade:1;chisel:1",
   "output_qty": 1,
-  "xp_reward": 71,
+  "xp_reward": 228,
   "gp_cost": 0,
   "notes": "Gem cutting (chain-audit fix: closes the raw gem -> jewellery loop)."
  },
@@ -6235,7 +6235,7 @@
   "level_requirement": 10,
   "inputs": "meteor_diamond:1;chisel:1",
   "output_qty": 1,
-  "xp_reward": 35,
+  "xp_reward": 520,
   "gp_cost": 0,
   "notes": "Gem cutting (chain-audit fix: closes the raw gem -> jewellery loop)."
  },
@@ -6247,7 +6247,7 @@
   "level_requirement": 20,
   "inputs": "moss_agate:1;chisel:1",
   "output_qty": 1,
-  "xp_reward": 55,
+  "xp_reward": 195,
   "gp_cost": 0,
   "notes": "Gem cutting (chain-audit fix: closes the raw gem -> jewellery loop)."
  },
@@ -6259,7 +6259,7 @@
   "level_requirement": 12,
   "inputs": "river_opal:1;chisel:1",
   "output_qty": 1,
-  "xp_reward": 39,
+  "xp_reward": 163,
   "gp_cost": 0,
   "notes": "Gem cutting (chain-audit fix: closes the raw gem -> jewellery loop)."
  },
@@ -6271,7 +6271,7 @@
   "level_requirement": 35,
   "inputs": "swamp_amber:1;chisel:1",
   "output_qty": 1,
-  "xp_reward": 85,
+  "xp_reward": 260,
   "gp_cost": 0,
   "notes": "Gem cutting (chain-audit fix: closes the raw gem -> jewellery loop)."
  },
@@ -6283,7 +6283,7 @@
   "level_requirement": 10,
   "inputs": "troll_sapphire:1;chisel:1",
   "output_qty": 1,
-  "xp_reward": 35,
+  "xp_reward": 390,
   "gp_cost": 0,
   "notes": "Gem cutting (chain-audit fix: closes the raw gem -> jewellery loop)."
  }
