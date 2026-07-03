@@ -1,0 +1,4 @@
+{
+  "_note": "Part-keys that have real PNG art at assets/avatar/<key>.png. Empty = the game draws the procedural rig everywhere. Add a key here once its PNG is dropped in. See docs/AVATAR_ART_SPEC.md.",
+  "parts": []
+}
