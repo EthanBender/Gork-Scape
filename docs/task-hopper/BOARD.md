@@ -3,8 +3,8 @@
 *Human-readable view of `HOPPER.jsonl`. The curator keeps this in sync with the feed.
 Last curated: 2026-07-03.*
 
-**Totals:** 7 · **owner-raised 4** · agent/auto-raised 3 · (gate-raised 0)
-**By status:** inbox 7 · ready 0 · picked 0 · done 0 · parked 0
+**Totals:** 8 · **owner-raised 5** · agent/auto-raised 3 · (gate-raised 0)
+**By status:** inbox 8 · ready 0 · picked 0 · done 0 · parked 0
 **Overnight-ready now (`ready` + `overnight-safe`):** 0
 
 > **Owner-raised items always list first, in their own section, and are never outranked

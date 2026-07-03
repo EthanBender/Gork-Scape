@@ -2912,6 +2912,7 @@ let phaserGame = null;
 function startGame() {
   if (phaserGame) return;
   phaserGame = new Phaser.Game(config);
+  window.__geGame = phaserGame; // DEBUG (temp): probe scale API from preview
 }
 function stopGame() {
   stopPresence(); // [presence lane] end heartbeat + clear remote players on logout
@@ -2926,6 +2927,20 @@ function stopGame() {
   projectiles = [];
   playerLabel = null;
 }
+
+// [mobile] The UI minimize toggles (chat/menu) resize #game-canvas via a CSS
+// class, but Phaser's RESIZE mode only re-fits the canvas on a real window
+// resize — so the panel body vanishing would leave the canvas letterboxed.
+// Let the UI nudge the scale manager to re-read its parent after a relayout.
+window.addEventListener('ge:relayout', () => {
+  if (!phaserGame || !phaserGame.scale) return;
+  // Size the canvas to the container's own box. refresh() alone only grows the
+  // canvas (never shrinks it) in RESIZE mode, so drive the size explicitly from
+  // #game-canvas's clientW/H — which is the intended layout size regardless of
+  // the (possibly still-oversized) canvas child inside it.
+  const el = document.getElementById('game-canvas');
+  if (el && el.clientWidth && el.clientHeight) phaserGame.scale.resize(el.clientWidth, el.clientHeight);
+});
 
 // [economy lane] The shared GE + shop world state is saved alongside every player
 // save (autosave / tab-close / logout), so `savedAt` stays fresh for offline drift.

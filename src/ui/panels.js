@@ -282,6 +282,7 @@ function buildLayout() {
       if (id === activeTab) {
         const app = document.getElementById('app');
         if (app) app.classList.toggle('panel-collapsed');
+        relayout();
       } else {
         switchTab(id);
       }
@@ -301,6 +302,13 @@ function buildLayout() {
   }
 }
 
+// [mobile] After a layout change that resizes #game-canvas (panel/chat minimize),
+// ask main.js to re-fit the Phaser canvas to its parent — on the next frame so the
+// CSS reflow has settled first. No-op on desktop (canvas size unchanged).
+function relayout() {
+  requestAnimationFrame(() => window.dispatchEvent(new Event('ge:relayout')));
+}
+
 let activeTab = 'skills';
 let lastNormalTab = 'skills';
 // [economy lane] World-opened panels — reached by talking to an NPC / clicking a
@@ -310,7 +318,7 @@ function switchTab(id) {
   // Showing any panel un-minimizes the side panel (e.g. a world panel opening
   // while the player had it collapsed).
   const app = document.getElementById('app');
-  if (app) app.classList.remove('panel-collapsed');
+  if (app && app.classList.contains('panel-collapsed')) { app.classList.remove('panel-collapsed'); relayout(); }
   activeTab = id;
   if (!WORLD_PANELS.has(id)) lastNormalTab = id;
   hideTip();
@@ -1461,6 +1469,7 @@ function buildChatInput() {
     const app = document.getElementById('app');
     const collapsed = app.classList.toggle('chat-collapsed');
     toggle.setAttribute('aria-label', collapsed ? 'Expand chat' : 'Minimize chat');
+    relayout();
   });
   bar.appendChild(toggle);
   bar.appendChild(input);
