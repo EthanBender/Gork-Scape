@@ -36,11 +36,16 @@ function makeOrder(side, itemId, qty, limit, trader, ts) {
 }
 
 export class Market {
+  // GE tax (M2 gold sink): sellers pay this fraction of proceeds on every fill;
+  // the coins are destroyed. Lives on the ENGINE so client and server agree.
+  static GE_TAX = 0.01;
+
   constructor() {
     this.books = new Map();   // itemId -> { buys: Order[], sells: Order[] }
     this.guide = new Map();   // itemId -> guide price (int)
     this.trades = [];         // recent { itemId, price, qty, ts }
     this.seq = 0;
+    this.taxBurned = 0;       // cumulative coins removed by the GE tax
   }
 
   now() { return ++this.seq; }
@@ -109,12 +114,17 @@ export class Market {
       order.qty -= n; order.filled += n;
       best.qty -= n; best.filled += n;
 
-      // Settlement bookkeeping (adapter collects these):
+      // Settlement bookkeeping (adapter collects these). Sellers pay the GE tax
+      // (M2 gold sink): 1% of proceeds, floored — so small trades are naturally
+      // exempt and the coins leave the economy entirely (tracked in taxBurned).
+      const gross = n * tradePrice;
+      const tax = Math.floor(gross * Market.GE_TAX);
+      this.taxBurned = (this.taxBurned || 0) + tax;
       if (side === 'buy') {
         order.itemsOwed += n;                   // buyer receives items
-        best.coinsOwed += n * tradePrice;       // resting seller receives coins
+        best.coinsOwed += gross - tax;          // resting seller receives coins (net of tax)
       } else {
-        order.coinsOwed += n * tradePrice;      // seller receives coins
+        order.coinsOwed += gross - tax;         // seller receives coins (net of tax)
         best.itemsOwed += n;                    // resting buyer receives items
       }
       fills.push({ price: tradePrice, qty: n, counterTrader: best.trader });

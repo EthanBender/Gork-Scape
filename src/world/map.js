@@ -351,6 +351,9 @@ export function generateWorld(seed = DEFAULT_SEED, opts = {}) {
     }
     const lay = (x, y, w) => disc(x, y, w, (ax, ay) => { const t = getT(ax, ay); if (t === T.WATER) setT(ax, ay, T.BRIDGE); else if (t === T.GRASS || t === T.SAND || t === T.SWAMP || t === T.DIRT) setT(ax, ay, T.ROAD); });
     const stamp = (path, w) => { if (!path) return; for (let k = 0; k < path.length; k++) { lay(path[k][0], path[k][1], w); if (k) lay((path[k][0] + path[k - 1][0]) / 2, (path[k][1] + path[k - 1][1]) / 2, w); } };
+    // pass trails CARVE through rock (a cut switchback), not just decorate it
+    const layCarve = (x, y, w) => disc(x, y, w, (ax, ay) => { const t = getT(ax, ay); if (t === T.WATER) setT(ax, ay, T.BRIDGE); else if (t === T.GRASS || t === T.SAND || t === T.SWAMP || t === T.DIRT || t === T.ROCK) setT(ax, ay, T.ROAD); });
+    const stampCarve = (path, w) => { if (!path) return; for (let k = 0; k < path.length; k++) { layCarve(path[k][0], path[k][1], w); if (k) layCarve((path[k][0] + path[k - 1][0]) / 2, (path[k][1] + path[k - 1][1]) / 2, w); } };
     const g = TB.gates || {}; const gate = (k, fb) => { const p = g[k] || fb; return [p[0] + townOff.dx, p[1] + townOff.dy]; };
     const N_ = gate('N', [500, 404]), S_ = gate('S', [500, 511]), E_ = gate('E', [556, 455]), W_ = gate('W', [449, 455]);
     for (const [from, id, w] of [
@@ -362,8 +365,34 @@ export function generateWorld(seed = DEFAULT_SEED, opts = {}) {
     // Mountain-valley regions (the ruins) get a pass trail: rock is climbable at
     // trail prices here, so a switchback path cuts through instead of stranding it.
     for (let i = 0; i < cost.length; i++) if (cost[i] > 400 && cost[i] < 8000) cost[i] = 90;
-    stamp(route([A.choppers.x, A.choppers.y], [A.ruins.x, A.ruins.y]), 1.0);
-    stamp(route([A.minehills.x, A.minehills.y], [A.troll.x, A.troll.y]), 1.0);
+    stampCarve(route([A.choppers.x, A.choppers.y], [A.ruins.x, A.ruins.y]), 1.0);
+    const trollPath = route([A.minehills.x, A.minehills.y], [A.troll.x, A.troll.y]);
+    stampCarve(trollPath, 1.0);
+
+    // ---- THE TROLL GATE: the endgame region is EARNED. Wall the pass trail at
+    // its deepest rock point; the shortcut marker opens it for materials.
+    if (trollPath && trollPath.length > 6) {
+      let gi = -1, best = -1;
+      for (let k = 2; k < trollPath.length - 2; k++) {
+        const [px, py] = trollPath[k]; const h = macro.height[idx(px, py)];
+        if (h > best && macro.terrain[idx(px, py)] === T.ROCK) { best = h; gi = k; }
+      }
+      if (gi < 0) gi = (trollPath.length / 2) | 0;
+      const [gx, gy] = trollPath[gi];
+      const span = [];
+      for (let k = Math.max(0, gi - 1); k <= Math.min(trollPath.length - 1, gi + 1); k++) {
+        const [px, py] = trollPath[k];
+        disc(px, py, 1.8, (x, y) => { const t = getT(x, y); if (t === T.ROAD || t === T.DIRT || t === T.GRASS || t === T.BRIDGE) { setT(x, y, T.WALL); span.push([x, y]); } });
+      }
+      if (span.length) {
+        // marker on the approach side (toward the mine hills — the player's side)
+        const [ax, ay] = trollPath[Math.max(0, gi - 3)];
+        placeObj({ x: ax, y: ay, type: 'structure', label: 'Troll Ridge Gate (sealed)', color: 0x6a7a8a, skill: null, blocking: false, depleted: false,
+          shortcut: { id: 'troll_gate', kind: 'gate', cost: [['iron_bar', 3], ['oak_plank', 2]], span,
+            doneLabel: 'Troll Ridge Gate', hint: 'The trolls sealed the pass. With 3 iron bars and 2 oak planks you could force the mechanism.',
+            doneMsg: 'The gate mechanism grinds open — Troll Ridge lies ahead. Tread carefully.', opened: false } });
+      }
+    }
   })();
 
   // ---- PASS 3b: build named locations at pack coords ----

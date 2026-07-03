@@ -16,7 +16,9 @@ test('a crossing order matches at the resting order price', () => {
   eq(fills[0].price, 100, 'executes at the resting bid price, not the new ask');
   eq(fills[0].qty, 10);
   eq(fills[0].counterTrader, 'A');
-  eq(ask.coinsOwed, 1000, 'seller owed 10*100');
+  // Sellers pay the 1% GE tax on proceeds (M2 gold sink) — coins leave the economy.
+  eq(ask.coinsOwed, 990, 'seller owed 10*100 minus the 1% GE tax');
+  eq(m.taxBurned, 10, 'the tax is burned, not transferred');
 });
 
 test('partial fills leave the remainder resting', () => {

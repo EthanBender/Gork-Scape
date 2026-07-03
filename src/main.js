@@ -1370,7 +1370,9 @@ function updateCropLabels() {
 // re-apply it on load. Shared by the material-spend path and quest-reward grants.
 function applyShortcutOpen(o) {
   const sc = o.shortcut, W = Game.world.W;
-  for (const [tx, ty] of sc.span) { const i = ty * W + tx; Game.world.terrain[i] = T.BRIDGE; Game.world.collision[i] = 0; }
+  // bridges span water; gates clear their wall back to a walkable pass
+  const to = sc.kind === 'gate' ? T.DIRT : T.BRIDGE;
+  for (const [tx, ty] of sc.span) { const i = ty * W + tx; Game.world.terrain[i] = to; Game.world.collision[i] = 0; }
   sc.opened = true; o.label = sc.doneLabel; o.color = 0x9a7a4a;
   (Game.openedShortcuts || (Game.openedShortcuts = [])).includes(sc.id) || Game.openedShortcuts.push(sc.id);
 }
