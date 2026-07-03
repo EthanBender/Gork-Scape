@@ -265,7 +265,7 @@ async function readJson(req) {
   try { return JSON.parse(await readBody(req) || '{}'); } catch { return null; }
 }
 
-const server = http.createServer(async (req, res) => {
+const handleRequest = async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
   const path = url.pathname;
 
@@ -437,6 +437,21 @@ const server = http.createServer(async (req, res) => {
 
   // ---- static client ----
   serveStatic(req, res, path);
+};
+
+// One throw in a route must never kill the always-on world. The handler is async,
+// so an uncaught throw would otherwise become an unhandled rejection → process
+// crash (Node 15+) → game down for everyone until someone notices the laptop.
+const server = http.createServer((req, res) => {
+  handleRequest(req, res).catch((err) => {
+    console.error('[world] request error on', req.url, err);
+    try { sendJson(res, 500, { error: 'internal error' }); } catch { try { res.end(); } catch { /* socket gone */ } }
+  });
+});
+process.on('unhandledRejection', (err) => console.error('[world] unhandled rejection:', err));
+process.on('uncaughtException', (err) => {
+  console.error('[world] uncaught exception (world kept alive, state saved):', err);
+  try { saveState(); accounts.flush(); } catch { /* best effort */ }
 });
 
 server.listen(PORT, () => {
