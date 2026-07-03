@@ -77,7 +77,7 @@
   /* Main split */
   #main { flex: 1 1 auto; display: flex; min-height: 0; }
   #game-panel { flex: 7 1 0; min-width: 0; position: relative; background: #000; }
-  #game-canvas { width: 100%; height: 100%; overflow: hidden; }
+  #game-canvas { width: 100%; height: 100%; }
   #side-panel { flex: 3 1 0; min-width: 258px; max-width: 360px; display: flex;
     flex-direction: column; min-height: 0; /* let panel-content scroll instead of overflowing into the chat (mobile stacked layout) */
     background:
@@ -723,12 +723,6 @@
     #chat-toggle svg { display: block; width: 18px; height: 18px; }
     #app.chat-collapsed #chat-toggle .chev { transform: rotate(180deg); }
     #app.chat-collapsed #chatlog { display: none; }
-
-    /* Minimizable menu: re-tap the active tab to collapse the panel body and
-       give the whole stack to the game view; the tab bar stays so any tap
-       brings it back. The active tab keeps its highlight as the "reopen" cue. */
-    #app.panel-collapsed #panel-content { display: none; }
-    #app.panel-collapsed #side-panel { flex: 0 0 auto; }
 
     /* Comfortable tap sizes for the common action buttons. */
     .style-btn, .station-btn, .craft-btn, .ge-btn, .ge-chip, .ge-mini,

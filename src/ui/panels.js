@@ -275,18 +275,7 @@ function buildLayout() {
     b.className = 'tab-btn';
     b.title = label;
     b.innerHTML = `<span class="tab-icon">${iconSvg}</span><span class="tab-label">${label}</span>`;
-    b.onclick = () => {
-      // Re-tapping the active tab minimizes/restores the panel (OSRS mobile
-      // idiom) so the game view can take the whole screen; the tab bar stays
-      // put so any tab re-opens it. Switching tabs always restores it.
-      if (id === activeTab) {
-        const app = document.getElementById('app');
-        if (app) app.classList.toggle('panel-collapsed');
-        relayout();
-      } else {
-        switchTab(id);
-      }
-    };
+    b.onclick = () => switchTab(id);
     els.tabbar.appendChild(b);
     els.tabButtons[id] = b;
   }
@@ -302,13 +291,6 @@ function buildLayout() {
   }
 }
 
-// [mobile] After a layout change that resizes #game-canvas (panel/chat minimize),
-// ask main.js to re-fit the Phaser canvas to its parent — on the next frame so the
-// CSS reflow has settled first. No-op on desktop (canvas size unchanged).
-function relayout() {
-  requestAnimationFrame(() => window.dispatchEvent(new Event('ge:relayout')));
-}
-
 let activeTab = 'skills';
 let lastNormalTab = 'skills';
 // [economy lane] World-opened panels — reached by talking to an NPC / clicking a
@@ -317,8 +299,6 @@ const WORLD_PANELS = new Set(['ge', 'stations', 'shop', 'bank']);
 function switchTab(id) {
   // Showing any panel un-minimizes the side panel (e.g. a world panel opening
   // while the player had it collapsed).
-  const app = document.getElementById('app');
-  if (app && app.classList.contains('panel-collapsed')) { app.classList.remove('panel-collapsed'); relayout(); }
   activeTab = id;
   if (!WORLD_PANELS.has(id)) lastNormalTab = id;
   hideTip();
@@ -1469,7 +1449,6 @@ function buildChatInput() {
     const app = document.getElementById('app');
     const collapsed = app.classList.toggle('chat-collapsed');
     toggle.setAttribute('aria-label', collapsed ? 'Expand chat' : 'Minimize chat');
-    relayout();
   });
   bar.appendChild(toggle);
   bar.appendChild(input);
