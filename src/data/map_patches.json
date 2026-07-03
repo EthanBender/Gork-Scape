@@ -8514,6 +8514,224 @@
      "blocking": false
     }
    ]
+  },
+  {
+   "id": "city-market-square",
+   "note": "Market Square vignette — recompose the Market Cross into a composed civic square (pattern-language): a stone-flagged base with the cross as centerpiece, benches gathered facing it, a town well as second focal + water source, planters and flowerbeds framing the edges, a proclamation board by the cross, and radiating cobble paths. Applied after the market to supersede the scattered centre. Reachability + coherence simulated.",
+   "ops": [
+    {
+     "op": "remove_objects",
+     "rect": [
+      463,
+      396,
+      468,
+      402
+     ],
+     "types": [
+      "decor"
+     ]
+    },
+    {
+     "op": "decor",
+     "x": 466,
+     "y": 398,
+     "color": 9078140,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 466,
+     "y": 399,
+     "color": 9078140,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 466,
+     "y": 400,
+     "color": 9078140,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 467,
+     "y": 398,
+     "color": 9078140,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 467,
+     "y": 399,
+     "color": 9078140,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 467,
+     "y": 400,
+     "color": 9078140,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 468,
+     "y": 398,
+     "color": 9078140,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 468,
+     "y": 399,
+     "color": 9078140,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 468,
+     "y": 400,
+     "color": 9078140,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 465,
+     "y": 399,
+     "color": 7038560,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 464,
+     "y": 399,
+     "color": 7038560,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 467,
+     "y": 401,
+     "color": 7038560,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 467,
+     "y": 402,
+     "color": 7038560,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 465,
+     "y": 401,
+     "color": 7038560,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 465,
+     "y": 398,
+     "label": "Square Bench",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 465,
+     "y": 400,
+     "label": "Square Bench",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 466,
+     "y": 401,
+     "label": "Square Bench",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 464,
+     "y": 400,
+     "label": "Town Well",
+     "color": 6974058,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 464,
+     "y": 398,
+     "label": "Rose Planter",
+     "color": 9067060,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 468,
+     "y": 401,
+     "label": "Rose Planter",
+     "color": 9067060,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 465,
+     "y": 402,
+     "label": "Flower Bed",
+     "color": 14241615,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 466,
+     "y": 402,
+     "label": "Flower Bed",
+     "color": 14729296,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 464,
+     "y": 397,
+     "label": "Iron Lamp",
+     "color": 16765517,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 468,
+     "y": 398,
+     "label": "Iron Lamp",
+     "color": 16765517,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 468,
+     "y": 399,
+     "label": "Proclamation Board",
+     "color": 9071162,
+     "blocking": false
+    }
+   ]
   }
  ]
 }
