@@ -13,7 +13,6 @@ import { Game } from './state.js';
 import { loadSave, saveGame, serialize } from './save.js';
 import * as authClient from '../net/authClient.js';
 import { startLoginFx, stopLoginFx } from '../ui/loginFx.js';
-import { icon } from '../ui/icons.js';
 
 export const IDLE_LOGOUT_MS = 10 * 60 * 1000;  // auto-logout after 10 min idle
 const AUTOSAVE_MS = 20 * 1000;                 // periodic background save
@@ -204,8 +203,8 @@ function stageHTML(cardHTML) {
   return `
     <div class="login-stage">
       <div class="login-mast">
-        <div class="login-crest">${icon('goblin')}</div>
-        <h1 class="login-wordmark">Goblin&nbsp;Empire</h1>
+        <div class="login-crest"><div class="login-crest-inner"><img src="assets/ui/goblin_hero.png" alt="Goblin Empire crest"></div></div>
+        <h1 class="login-wordmark">Goblin <span>Empire</span></h1>
         <div class="login-tagline">A living low-poly world that keeps its own time</div>
       </div>
       <div id="login-card">${cardHTML}</div>
@@ -266,9 +265,11 @@ let authFormMode = 'signin'; // 'signin' | 'create'
 
 function renderAuthLogin(card, notice) {
   const isCreate = authFormMode === 'create';
+  const keySvg = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#8b5a2b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="8" r="3.5"/><path d="M10 10.5 19 19.5"/><path d="M17 17.5 19.5 15"/><path d="M14.5 15 16.5 13"/></svg>';
+  const label = isCreate ? 'Create Account & Enter' : 'Sign In';
   card.innerHTML = `
     <div class="login-panel">
-      ${notice ? `<div class="login-notice">${escapeHtml(notice)}</div>` : ''}
+      ${notice ? `<div class="login-notice"><span class="login-notice-coin">!</span><span>${escapeHtml(notice)}</span></div>` : ''}
       <div class="login-tabs" role="tablist">
         <button class="login-tab ${isCreate ? '' : 'active'}" data-mode="signin">Sign In</button>
         <button class="login-tab ${isCreate ? 'active' : ''}" data-mode="create">Create Account</button>
@@ -276,19 +277,29 @@ function renderAuthLogin(card, notice) {
       <div class="login-form">
         <label class="login-field">
           <span>Username${isCreate ? ' <em>— your name in the world</em>' : ''}</span>
-          <input id="auth-user" type="text" maxlength="16" autocomplete="username"
-                 autocapitalize="off" spellcheck="false" placeholder="e.g. Grukthar" />
+          <div class="login-inputwrap">
+            <input id="auth-user" type="text" maxlength="16" autocomplete="username"
+                   autocapitalize="off" spellcheck="false" placeholder="e.g. Grukthar" />
+            <span class="login-key" aria-hidden="true">${keySvg}</span>
+          </div>
         </label>
         <label class="login-field">
           <span>Password</span>
-          <input id="auth-pass" type="password" autocomplete="${isCreate ? 'new-password' : 'current-password'}"
-                 placeholder="${isCreate ? 'At least 6 characters' : 'Your password'}" />
+          <div class="login-inputwrap">
+            <input id="auth-pass" type="password" autocomplete="${isCreate ? 'new-password' : 'current-password'}"
+                   placeholder="${isCreate ? 'At least 6 characters' : 'Your password'}" />
+          </div>
         </label>
         ${isCreate ? `<label class="login-field">
           <span>Confirm password</span>
-          <input id="auth-pass2" type="password" autocomplete="new-password" placeholder="Re-enter password" />
+          <div class="login-inputwrap">
+            <input id="auth-pass2" type="password" autocomplete="new-password" placeholder="Re-enter password" />
+          </div>
         </label>` : ''}
-        <button id="auth-submit" class="login-primary">${isCreate ? 'Create Account & Enter' : 'Sign In'}</button>
+        <button id="auth-submit" class="login-primary">
+          <span class="lp-label">${label}</span>
+          <span class="lp-sheen" aria-hidden="true"></span>
+        </button>
       </div>
       <div id="login-error" class="login-error"></div>
       <div class="login-hint">${isCreate
@@ -301,8 +312,14 @@ function renderAuthLogin(card, notice) {
   const errBox = el('login-error');
   const submitBtn = el('auth-submit');
   const showErr = (m) => { if (errBox) errBox.textContent = m; };
-  const label = isCreate ? 'Create Account & Enter' : 'Sign In';
-  const setBusy = (b) => { if (submitBtn) { submitBtn.disabled = b; submitBtn.textContent = b ? 'Please wait…' : label; } };
+  // Update only the label span — the button also holds the sheen sweep element,
+  // so setting the button's textContent would wipe it.
+  const lpLabel = submitBtn && submitBtn.querySelector('.lp-label');
+  const setBusy = (b) => {
+    if (!submitBtn) return;
+    submitBtn.disabled = b;
+    if (lpLabel) lpLabel.textContent = b ? 'Please wait…' : label;
+  };
 
   card.querySelectorAll('.login-tab').forEach((btn) => {
     btn.onclick = () => { authFormMode = btn.dataset.mode; renderAuthLogin(card, ''); };
@@ -337,7 +354,9 @@ function renderAuthLogin(card, notice) {
   userInput.onkeydown = onEnter;
   passInput.onkeydown = onEnter;
   if (isCreate) el('auth-pass2').onkeydown = onEnter;
-  userInput.focus();
+  // preventScroll: focusing the field must not scroll the tall card container
+  // and push the crest/wordmark off the top on short viewports.
+  userInput.focus({ preventScroll: true });
 }
 
 function validName(name) {
@@ -378,123 +397,172 @@ function injectStyles() {
   const style = document.createElement('style');
   style.id = 'session-styles';
   style.textContent = `
+    /* ============================================================
+       Login / Landing — AAA redesign (parchment + wood + juicy olive).
+       Warm dusk scene is painted behind by src/ui/loginFx.js.
+       ============================================================ */
     #login-overlay {
-      position: fixed; inset: 0; z-index: 3000; overflow: hidden;
-      display: flex; align-items: center; justify-content: center;
-      background: #0a0e14;
-      font-family: var(--font-ui, "Segoe UI", Tahoma, sans-serif);
+      position: fixed; inset: 0; z-index: 3000;
+      display: block; overflow: auto; overscroll-behavior: contain;
+      background: #20191f;
+      font-family: "Nunito", "Segoe UI", Tahoma, sans-serif;
     }
     #login-overlay[hidden] { display: none; }
+    /* min-height:100% + centering means the card sits centered when it fits and
+       simply grows the scroll area (crest never clipped) when the viewport is
+       too short — the overlay scrolls, the fixed scene stays put behind. */
     .login-stage {
-      position: relative; z-index: 1; width: min(400px, calc(100vw - 32px));
-      display: flex; flex-direction: column; align-items: center;
-      max-height: 100dvh; overflow-y: auto; padding: 18px 0;
+      position: relative; z-index: 5; box-sizing: border-box;
+      min-height: 100%; width: min(440px, 92vw); margin: 0 auto;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 28px 0 36px;
       animation: stageIn .7s cubic-bezier(.2,.9,.3,1) both;
     }
     @keyframes stageIn { 0% { opacity: 0; transform: translateY(16px); }
       100% { opacity: 1; transform: none; } }
-    /* Masthead: crest + wordmark, gently bobbing over the valley. */
-    .login-mast { text-align: center; margin-bottom: 18px; }
-    .login-crest { width: clamp(84px, 16vh, 124px); height: clamp(84px, 16vh, 124px);
-      margin: 0 auto 4px; filter: drop-shadow(0 8px 18px rgba(0,0,0,.6)) drop-shadow(0 0 26px rgba(123,191,74,.28));
-      animation: crestBob 4.2s ease-in-out infinite; }
-    .login-crest svg { width: 100%; height: 100%; }
-    @keyframes crestBob { 0%,100% { transform: translateY(0) rotate(-1.2deg); }
-      50% { transform: translateY(-7px) rotate(1.2deg); } }
+    /* Masthead: PNG crest in a gold-ringed roundel + stacked wordmark. */
+    .login-mast { text-align: center; }
+    .login-crest {
+      width: 104px; height: 104px; margin: 0 auto; border-radius: 50%;
+      padding: 5px; background: linear-gradient(#e7c76b, #b7862f);
+      box-shadow: 0 12px 26px rgba(0,0,0,.45), inset 0 2px 0 rgba(255,255,255,.5);
+      animation: crestBob 4.6s ease-in-out infinite;
+    }
+    .login-crest-inner {
+      width: 100%; height: 100%; border-radius: 50%; overflow: hidden;
+      background: #2c2438; box-shadow: inset 0 0 0 3px #3e2a18;
+    }
+    .login-crest-inner img {
+      width: 150%; height: 150%; object-fit: cover; object-position: 50% 8%;
+      transform: translate(-16%, -4%);
+    }
+    @keyframes crestBob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
     .login-wordmark {
-      margin: 0; font-family: var(--font-display, inherit); font-weight: 800;
-      font-size: clamp(34px, 7.5vh, 46px); line-height: 1.05; letter-spacing: .5px;
-      background: linear-gradient(180deg, #c9ef9c 0%, #7bbf4a 55%, #4d7a2f 100%);
-      -webkit-background-clip: text; background-clip: text; color: transparent;
-      filter: drop-shadow(0 3px 0 rgba(0,0,0,.85)) drop-shadow(0 0 22px rgba(123,191,74,.35));
+      margin: 18px 0 0; font-family: "Fredoka", sans-serif; font-weight: 700;
+      font-size: clamp(40px, 9vw, 66px); line-height: .95; letter-spacing: .5px; color: #f4e7c8;
+      text-shadow: 0 2px 0 #8b5a2b, 0 4px 0 #5c3a1c, 0 8px 18px rgba(0,0,0,.5);
     }
-    .login-tagline { margin-top: 6px; font-size: 12.5px; letter-spacing: 2.5px;
-      text-transform: uppercase; color: #b9c9a6; opacity: .85; text-shadow: 0 1px 3px #000; }
-    #login-card { width: 100%; }
-    .login-foot { margin-top: 14px; font-size: 11px; letter-spacing: 1.5px;
-      color: #6f7d62; text-shadow: 0 1px 2px #000; }
-    /* The card: dark glass over the valley. */
+    .login-wordmark span { color: #c3d46a; }
+    .login-tagline {
+      margin: 14px 0 0; font-family: "Space Mono", monospace; font-size: 12px;
+      letter-spacing: 3px; text-transform: uppercase; color: #b8a988;
+    }
+    /* #login-card is the WOOD FRAME; .login-panel is the parchment card inside. */
+    #login-card {
+      width: min(440px, 92vw); margin-top: 30px; border-radius: 26px; padding: 5px;
+      background: linear-gradient(#7a5324, #4e3319); box-shadow: 0 26px 60px rgba(0,0,0,.55);
+    }
+    .login-foot {
+      margin-top: 20px; font-family: "Space Mono", monospace; font-size: 12px;
+      letter-spacing: 1px; color: #6b5a44;
+    }
     .login-panel {
-      width: 100%; padding: 20px 22px 18px;
-      background: linear-gradient(180deg, rgba(24,28,20,.86), rgba(14,17,12,.92));
-      -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
-      border: 1px solid rgba(143,208,92,.22); border-radius: 16px;
-      box-shadow: 0 24px 70px rgba(0,0,0,.65), inset 0 1px 0 rgba(255,255,255,.07);
-      color: var(--text, #efe8d4);
+      padding: 24px; border-radius: 22px; color: #4a3524;
+      background: linear-gradient(#f7edd4, #eaddb8); border: 1px solid #d9c39a;
+      box-shadow: inset 0 2px 0 rgba(255,255,255,.7);
     }
-    .login-sub { margin: 0; text-align: center; color: var(--muted, #a89c7d); font-size: 13px; }
+    .login-sub { margin: 0; text-align: center; color: #6b5240; font-size: 13px; }
     .login-connecting { display: flex; flex-direction: column; align-items: center; gap: 12px;
-      padding-top: 26px; padding-bottom: 26px; }
+      padding-top: 30px; padding-bottom: 30px; }
     .conn-spinner { width: 30px; height: 30px; border-radius: 50%;
-      border: 3px solid rgba(143,208,92,.18); border-top-color: #8fd05c;
+      border: 3px solid rgba(159,176,78,.28); border-top-color: #7d8a44;
       animation: connSpin .9s linear infinite; }
     @keyframes connSpin { to { transform: rotate(360deg); } }
+    /* Inactivity notice — gold ribbon with a "!" coin. */
+    .login-notice {
+      display: flex; gap: 10px; align-items: flex-start; margin: 0 0 16px;
+      padding: 12px 14px; border-radius: 14px; font-size: 13px; line-height: 1.4;
+      font-weight: 600; color: #6f531f;
+      background: linear-gradient(#f6e5b4, #f0d998); border: 1px solid #e0bf6f;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.6);
+    }
+    .login-notice-coin {
+      flex: none; width: 22px; height: 22px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(#e7c76b, #c99a2f); color: #5c3a1c; font-weight: 900; font-size: 13px;
+    }
+    /* Segmented Sign In / Create Account toggle. */
     .login-tabs {
-      display: flex; gap: 4px; margin: 0 0 16px; padding: 4px;
-      background: rgba(0,0,0,.35); border: 1px solid rgba(255,255,255,.06); border-radius: 10px;
+      display: flex; gap: 5px; margin: 0; padding: 5px; border-radius: 15px;
+      background: #e2cfa4; box-shadow: inset 0 2px 4px rgba(94,58,28,.28);
     }
     .login-tab {
-      flex: 1; padding: 9px 10px; cursor: pointer; font-size: 13px; font-weight: 700;
-      font-family: var(--font-display, inherit); letter-spacing: .3px;
-      border-radius: 7px; border: 1px solid transparent; background: transparent;
-      color: var(--muted, #a89c7d); transition: color .15s, background .15s;
+      flex: 1; padding: 11px 0; cursor: pointer; border: none; border-radius: 11px;
+      background: transparent; font-family: "Fredoka", sans-serif; font-weight: 600;
+      font-size: 15px; color: #4a3524; transition: filter .12s;
     }
-    .login-tab:hover { color: var(--text, #efe8d4); }
     .login-tab.active {
-      background: linear-gradient(180deg, rgba(143,208,92,.2), rgba(77,122,47,.25));
-      color: #c9ef9c; border-color: rgba(143,208,92,.35);
-      text-shadow: 0 1px 2px #000;
+      background: linear-gradient(#c3d46a, #9fb04e);
+      box-shadow: inset 0 2px 0 rgba(255,255,255,.55), 0 3px 0 #5c6b2c;
     }
-    .login-form { display: flex; flex-direction: column; gap: 12px; }
-    .login-field { display: flex; flex-direction: column; gap: 5px; }
-    .login-field > span { font-size: 12px; color: var(--muted, #a89c7d); font-weight: 600; }
-    .login-field > span em { font-style: italic; font-weight: 400; color: var(--gold, #e8c65a); }
-    .login-field input {
-      padding: 11px 13px; font-size: 16px; border-radius: 9px;
-      background: rgba(0,0,0,.4); color: var(--text, #efe8d4);
-      border: 1px solid rgba(255,255,255,.1); transition: border-color .15s, box-shadow .15s;
+    .login-tab:not(.active):hover { filter: brightness(.97); }
+    .login-form { display: flex; flex-direction: column; gap: 14px; margin-top: 18px; }
+    .login-field { display: flex; flex-direction: column; }
+    .login-field > span {
+      font-family: "Fredoka", sans-serif; font-weight: 600; font-size: 13px;
+      color: #6b5240; margin-bottom: 6px;
     }
-    .login-field input:focus { outline: none; border-color: #7bbf4a;
-      box-shadow: 0 0 0 3px rgba(123,191,74,.18); }
+    .login-field > span em { font-style: italic; font-weight: 400; color: #8b5a2b; }
+    .login-inputwrap {
+      display: flex; align-items: center; gap: 8px; padding: 0 12px; border-radius: 13px;
+      background: #fffdf6; border: 2px solid #dcc79f;
+      box-shadow: inset 0 2px 4px rgba(94,58,28,.12); transition: border-color .14s, box-shadow .14s;
+    }
+    .login-inputwrap:focus-within {
+      border-color: #9fb04e;
+      box-shadow: inset 0 2px 4px rgba(94,58,28,.12), 0 0 0 3px rgba(159,176,78,.25);
+    }
+    .login-inputwrap input {
+      flex: 1; padding: 13px 0; border: none; outline: none; background: transparent;
+      font-family: "Nunito", sans-serif; font-weight: 700; font-size: 16px; color: #4a3524;
+    }
+    .login-inputwrap input::placeholder { color: #b6a487; font-weight: 600; }
+    .login-key {
+      flex: none; width: 26px; height: 26px; border-radius: 8px; background: #efe0bd;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .login-key svg { display: block; }
+    /* Juicy olive CTA with a lip + sweeping sheen. */
     .login-primary {
-      margin-top: 6px; padding: 13px 16px; cursor: pointer; font-weight: 800; font-size: 15px;
-      font-family: var(--font-display, inherit); letter-spacing: .4px;
-      border-radius: 10px; color: #0f1408;
-      background: linear-gradient(180deg, #a4e070, #5a8f3d);
-      border: 1px solid #3c6428;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.45), 0 4px 14px rgba(90,143,61,.35);
-      text-shadow: 0 1px 0 rgba(255,255,255,.25);
-      transition: transform .08s, filter .12s;
+      position: relative; overflow: hidden; width: 100%; margin-top: 20px; padding: 16px;
+      border: none; border-radius: 16px; cursor: pointer;
+      font-family: "Fredoka", sans-serif; font-weight: 600; font-size: 20px; letter-spacing: .3px;
+      color: #2f3a12; background: linear-gradient(#c9db72, #9fb04e);
+      box-shadow: inset 0 2px 0 rgba(255,255,255,.55), 0 6px 0 #5c6b2c, 0 12px 20px rgba(0,0,0,.35);
+      transition: transform .07s, box-shadow .07s, filter .12s;
     }
-    .login-primary:hover { filter: brightness(1.08); }
-    .login-primary:active { transform: translateY(1px); }
-    .login-primary:disabled { opacity: .6; cursor: default; filter: grayscale(.3); }
-    .login-hint { margin-top: 12px; font-size: 11.5px; line-height: 1.5; text-align: center; color: var(--muted, #a89c7d); }
-    /* "Server resting" landing / ad page */
+    .login-primary:hover { filter: brightness(1.04); }
+    .login-primary:active {
+      transform: translateY(4px);
+      box-shadow: inset 0 2px 0 rgba(255,255,255,.45), 0 2px 0 #5c6b2c, 0 6px 12px rgba(0,0,0,.3);
+    }
+    .login-primary:disabled { cursor: default; filter: grayscale(.25) brightness(.98); }
+    .lp-label { position: relative; z-index: 1; }
+    .lp-sheen {
+      position: absolute; top: 0; bottom: 0; left: 0; width: 40%; z-index: 0; pointer-events: none;
+      background: linear-gradient(100deg, transparent, rgba(255,255,255,.5), transparent);
+      animation: gob-sheen 4.5s ease-in-out infinite;
+    }
+    .login-hint { margin: 16px 4px 2px; text-align: center; font-size: 12.5px; line-height: 1.5; color: #8a704f; }
+    /* "Server resting" landing / ad page (on parchment). */
     .login-panel.coming-soon { text-align: center; }
-    .cs-tagline { margin: 2px 2px 16px; font-size: 13.5px; line-height: 1.55; color: var(--text, #efe8d4); }
+    .cs-tagline { margin: 2px 2px 16px; font-size: 13.5px; line-height: 1.55; color: #4a3524; font-weight: 600; }
     .cs-status {
       display: flex; align-items: center; justify-content: center; gap: 8px;
-      margin: 0 0 10px; padding: 10px 12px; border-radius: 9px; font-size: 12.5px;
-      background: rgba(232,198,90,.10); border: 1px solid rgba(232,198,90,.35); color: var(--gold, #e8c65a);
+      margin: 0 0 12px; padding: 10px 12px; border-radius: 11px; font-size: 12.5px; font-weight: 700;
+      background: linear-gradient(#f6e5b4, #f0d998); border: 1px solid #e0bf6f; color: #6f531f;
     }
     .cs-dot {
-      width: 9px; height: 9px; border-radius: 50%; background: var(--gold, #e8c65a);
-      box-shadow: 0 0 0 0 rgba(232,198,90,.6); animation: cs-pulse 1.8s infinite;
+      width: 9px; height: 9px; border-radius: 50%; background: #c99a2f;
+      box-shadow: 0 0 0 0 rgba(201,154,47,.6); animation: cs-pulse 1.8s infinite;
     }
     @keyframes cs-pulse {
-      0% { box-shadow: 0 0 0 0 rgba(232,198,90,.5); }
-      70% { box-shadow: 0 0 0 8px rgba(232,198,90,0); }
-      100% { box-shadow: 0 0 0 0 rgba(232,198,90,0); }
+      0% { box-shadow: 0 0 0 0 rgba(201,154,47,.5); }
+      70% { box-shadow: 0 0 0 8px rgba(201,154,47,0); }
+      100% { box-shadow: 0 0 0 0 rgba(201,154,47,0); }
     }
-    .cs-sub { margin: 0 0 16px; font-size: 12px; line-height: 1.5; color: var(--muted, #a89c7d); }
-    .coming-soon .login-primary { width: 100%; }
-    .login-notice {
-      margin: 0 0 14px; padding: 9px 11px; font-size: 12.5px; border-radius: 9px;
-      background: rgba(232,198,90,.12); border: 1px solid rgba(232,198,90,.35);
-      color: var(--gold, #e8c65a);
-    }
-    .login-error { min-height: 16px; margin-top: 8px; font-size: 12px; color: #ff8a8a; text-align: center; }
+    .cs-sub { margin: 0 0 16px; font-size: 12px; line-height: 1.5; color: #6b5240; }
+    .login-error { min-height: 16px; margin-top: 10px; font-size: 12.5px; font-weight: 700; color: #b34a4a; text-align: center; }
     #logout-btn {
       margin-left: auto; margin-right: 12px; padding: 4px 12px; cursor: pointer;
       font-size: 12px; font-weight: 700; border-radius: 6px;
@@ -503,12 +571,26 @@ function injectStyles() {
     }
     #logout-btn:hover { color: #ff8a8a; border-color: #7a3030; }
     #logout-btn[hidden] { display: none; }
-    /* Short screens (landscape phones): compress the masthead so the form fits. */
+    /* Login scene keyframes (consumed by loginFx.js DOM nodes). */
+    @keyframes gob-aurora { 0%,100% { opacity:.45; transform:translateX(0) scale(1); }
+      50% { opacity:.95; transform:translateX(34px) scale(1.08); } }
+    @keyframes gob-drift { from { transform:translateX(-260px); } to { transform:translateX(112vw); } }
+    @keyframes gob-shoot { 0% { opacity:0; transform:translate(0,0) rotate(24deg); }
+      4% { opacity:1; } 13%,100% { opacity:0; transform:translate(260px,110px) rotate(24deg); } }
+    @keyframes gob-tw { 0%,100% { opacity:.2; } 50% { opacity:.9; } }
+    @keyframes gob-fire { 0%,100% { transform:translate(0,0); opacity:.45; }
+      50% { transform:translate(7px,-16px); opacity:1; } }
+    @keyframes gob-walk { from { transform:translateX(-9vw); } to { transform:translateX(112vw); } }
+    @keyframes gob-step { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-2.5px); } }
+    @keyframes gob-sheen { 0% { transform:translateX(-120%); } 60%,100% { transform:translateX(240%); } }
+    /* Short screens (landscape phones): compress the masthead so the card fits. */
     @media (max-height: 600px) {
-      .login-crest { width: 64px; height: 64px; }
-      .login-wordmark { font-size: 30px; }
+      .login-stage { padding: 16px 0 24px; }
+      .login-crest { width: 66px; height: 66px; }
+      .login-wordmark { font-size: clamp(30px, 7vw, 40px); margin-top: 12px; }
       .login-tagline { display: none; }
-      .login-mast { margin-bottom: 10px; }
+      #login-card { margin-top: 16px; }
+      .login-panel { padding: 18px; }
     }
   `;
   document.head.appendChild(style);
