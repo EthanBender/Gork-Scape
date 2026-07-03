@@ -19287,6 +19287,522 @@
      "shape": "circle"
     }
    ]
+  },
+  {
+   "id": "region-mire-coven",
+   "note": "Reeking Mire regional identity — turn the witch coven (2 witch huts, Strange Garden, Hidden Cave, Mushroom Ring, Vex) into a proper WITCH-BOG: boggy MUD ground, bubbling Witch Cauldrons + a Coven Fire, Skull Wards + Bone Fence warding stakes, greenish Bog Lanterns, a Bone Totem greeting the path, a hexed cart; toadstool + will-o-wisp + dark-reed scatter. Guarded onto dry land; reachability + coherence simulated.",
+   "ops": [
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       224,
+       805
+      ],
+      [
+       225,
+       805
+      ],
+      [
+       226,
+       805
+      ],
+      [
+       227,
+       805
+      ],
+      [
+       228,
+       805
+      ],
+      [
+       229,
+       805
+      ],
+      [
+       224,
+       806
+      ],
+      [
+       225,
+       806
+      ],
+      [
+       226,
+       806
+      ],
+      [
+       227,
+       806
+      ],
+      [
+       228,
+       806
+      ],
+      [
+       229,
+       806
+      ],
+      [
+       224,
+       807
+      ],
+      [
+       225,
+       807
+      ],
+      [
+       226,
+       807
+      ],
+      [
+       227,
+       807
+      ],
+      [
+       228,
+       807
+      ],
+      [
+       224,
+       808
+      ],
+      [
+       225,
+       808
+      ],
+      [
+       226,
+       808
+      ],
+      [
+       227,
+       808
+      ],
+      [
+       228,
+       808
+      ],
+      [
+       224,
+       809
+      ],
+      [
+       225,
+       809
+      ],
+      [
+       226,
+       809
+      ],
+      [
+       227,
+       809
+      ],
+      [
+       228,
+       809
+      ],
+      [
+       224,
+       810
+      ],
+      [
+       225,
+       810
+      ],
+      [
+       226,
+       810
+      ],
+      [
+       227,
+       810
+      ],
+      [
+       224,
+       811
+      ],
+      [
+       225,
+       811
+      ],
+      [
+       226,
+       811
+      ],
+      [
+       227,
+       811
+      ],
+      [
+       228,
+       811
+      ],
+      [
+       224,
+       812
+      ],
+      [
+       225,
+       812
+      ],
+      [
+       226,
+       812
+      ],
+      [
+       224,
+       813
+      ],
+      [
+       225,
+       813
+      ],
+      [
+       226,
+       813
+      ],
+      [
+       227,
+       813
+      ],
+      [
+       228,
+       813
+      ],
+      [
+       224,
+       814
+      ],
+      [
+       225,
+       814
+      ],
+      [
+       226,
+       814
+      ],
+      [
+       227,
+       814
+      ],
+      [
+       228,
+       814
+      ],
+      [
+       229,
+       814
+      ],
+      [
+       224,
+       815
+      ],
+      [
+       225,
+       815
+      ],
+      [
+       226,
+       815
+      ],
+      [
+       227,
+       815
+      ],
+      [
+       228,
+       815
+      ],
+      [
+       229,
+       815
+      ],
+      [
+       224,
+       816
+      ],
+      [
+       225,
+       816
+      ],
+      [
+       226,
+       816
+      ],
+      [
+       227,
+       816
+      ],
+      [
+       228,
+       816
+      ],
+      [
+       229,
+       816
+      ],
+      [
+       230,
+       816
+      ],
+      [
+       224,
+       817
+      ],
+      [
+       225,
+       817
+      ],
+      [
+       226,
+       817
+      ],
+      [
+       227,
+       817
+      ],
+      [
+       228,
+       817
+      ],
+      [
+       229,
+       817
+      ],
+      [
+       230,
+       817
+      ],
+      [
+       231,
+       817
+      ],
+      [
+       232,
+       817
+      ],
+      [
+       224,
+       818
+      ],
+      [
+       225,
+       818
+      ],
+      [
+       226,
+       818
+      ],
+      [
+       227,
+       818
+      ],
+      [
+       228,
+       818
+      ],
+      [
+       229,
+       818
+      ],
+      [
+       231,
+       818
+      ],
+      [
+       232,
+       818
+      ],
+      [
+       233,
+       818
+      ],
+      [
+       234,
+       818
+      ]
+     ],
+     "to": "MUD"
+    },
+    {
+     "op": "object",
+     "x": 230,
+     "y": 809,
+     "label": "Witch Cauldron",
+     "color": 7069818,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 238,
+     "y": 813,
+     "label": "Witch Cauldron",
+     "color": 7069818,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 232,
+     "y": 807,
+     "label": "Witch Cauldron",
+     "color": 7069818,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 229,
+     "y": 808,
+     "label": "Skull Ward",
+     "color": 15262416,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 240,
+     "y": 812,
+     "label": "Skull Ward",
+     "color": 15262416,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 227,
+     "y": 813,
+     "label": "Skull Ward",
+     "color": 15262416,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 239,
+     "y": 807,
+     "label": "Skull Ward",
+     "color": 15262416,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 231,
+     "y": 805,
+     "label": "Bog Lantern",
+     "color": 12574842,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 226,
+     "y": 812,
+     "label": "Bog Lantern",
+     "color": 12574842,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 236,
+     "y": 815,
+     "label": "Bog Lantern",
+     "color": 12574842,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 234,
+     "y": 805,
+     "label": "Bone Totem",
+     "color": 9079410,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 228,
+     "y": 807,
+     "label": "Bone Fence",
+     "color": 6974042,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 230,
+     "y": 816,
+     "label": "Bone Fence",
+     "color": 6974042,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 237,
+     "y": 806,
+     "label": "Bone Fence",
+     "color": 6974042,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 237,
+     "y": 811,
+     "color": 9058922,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 229,
+     "y": 811,
+     "color": 9058922,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 235,
+     "y": 814,
+     "color": 9058922,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 231,
+     "y": 812,
+     "color": 8380592,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 239,
+     "y": 815,
+     "color": 8380592,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 227,
+     "y": 810,
+     "color": 8380592,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 225,
+     "y": 809,
+     "color": 4872762,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 232,
+     "y": 817,
+     "color": 4872762,
+     "size": 4,
+     "shape": "rect"
+    }
+   ]
   }
  ]
 }
