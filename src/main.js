@@ -14,6 +14,7 @@ import {
 } from './world/map.js';
 import { generateInterior } from './world/interiors.js'; // M2: dungeon sub-maps (enter/exit world swap)
 import { contractOnKill, contractDialog, contractState } from './systems/contracts.js'; // M3: slayer-lite contracts
+import { playSfx, unlockAudio, toggleMute } from './engine/sfx.js'; // juice: the game's first audio
 import { TOOLS, LANDMARKS, REGION_ANCHORS } from './world/worldData.js';
 
 // World-map overlay toggles (PASS 7)
@@ -515,6 +516,15 @@ function create() {
       'pointer-events:none;display:none;text-shadow:0 1px 0 #000;line-height:1.35;white-space:pre-line;';
     (document.getElementById('game-panel') || document.body).appendChild(chip);
   }
+  // Day/night light (juice): a multiply-blended overlay driven by the world
+  // clock — dawn gold, clear noon, amber dusk, moonlit blue night. DOM so it
+  // costs nothing per frame and never touches the render pipeline.
+  if (!document.getElementById('daylight-overlay')) {
+    const dl = document.createElement('div');
+    dl.id = 'daylight-overlay';
+    dl.style.cssText = 'position:absolute;inset:0;z-index:20;pointer-events:none;mix-blend-mode:multiply;background:#fff;transition:background 2s linear;';
+    (document.getElementById('game-panel') || document.body).appendChild(dl);
+  }
   initWiki(); // [economy lane] the item Codex/Wiki button
 
   this.input.mouse.disableContextMenu();
@@ -539,6 +549,8 @@ function create() {
   // MEASURED (watch the #tb-fps topbar readout) instead of asserted. stressClear()
   // removes them. Dummies are inert guards on valid ground; they cost render +
   // the near-player AI/interp exactly like real NPCs.
+  Game.sfx = playSfx; // bridge for engine/state (level-ups) + systems (quests/contracts)
+  window.addEventListener('keydown', (e) => { if ((e.key === 'm' || e.key === 'M') && !/INPUT|TEXTAREA/.test(document.activeElement && document.activeElement.tagName || '')) Game.log(toggleMute() ? 'Sound muted. (M to unmute)' : 'Sound on.'); });
   window.__GE = { Game, startInteract, startAttack, regionAt, stress: stressSpawn, stressClear, tick: gameTick, goalChip: updateGoalChip };
 
   // Persistence/idle/autosave may start now that saved state is applied.
@@ -737,6 +749,7 @@ function onPointerMove(pointer) {
 }
 
 function onPointerDown(pointer) {
+  unlockAudio(); // browser autoplay policy: audio starts on the first gesture
   // Compass sits on top of the minimap corner — check it first: clicking it snaps
   // the camera back to north (nearest full turn, so it eases the short way).
   if (!pointer.rightButtonDown() && pointerOnCompass(pointer.x, pointer.y)) {
@@ -1210,6 +1223,7 @@ function gameTick(count, isLast = true) {
         const dmg = Math.max(4, Math.round(Game.maxHp * 0.35));
         Game.hp = Math.max(0, Game.hp - dmg);
         floatText(p, '-' + dmg, '#ff2b2b');
+        playSfx('slam');
         Game.log(`💥 The ${n.name}'s slam CRUSHES you for ${dmg}!`);
         if (Game.hp <= 0) playerDeath();
       } else {
@@ -1525,6 +1539,7 @@ function performSkill(o, count) {
     if (rollSkillSuccess(Game.skills[o.skill].level, o.low, o.high)) {
       if (!addItem(o.drop)) { p.interactTarget = null; return; }
       grantXp(o.skill, o.xp);
+      playSfx('gather');
       Game.log(`You get ${ITEMS[o.drop].name}. (+${o.xp} ${o.skill} xp)`);
       rollGatherByproduct(o.skill); // [economy lane] Tinkering cross-pollination byproduct
       if (o.deplete && Math.random() < o.deplete) {
@@ -1651,6 +1666,7 @@ function playerAttack(npc, count) {
     }
   }
   npc.hp = Math.max(0, npc.hp - total);
+  playSfx(total > 0 ? 'hit' : 'miss');
   if (total > 0) {
     Game.log(`You ${results.length > 1 ? 'strike' : 'swing at'} the ${npc.name}... and hit for ${total} damage.`);
     grantCombatXp(total);
@@ -1772,6 +1788,7 @@ function npcAttack(n, count) {
     Game.hp = Math.max(0, Game.hp - dmg);
     if (cancelHomeTeleport()) Game.log('Your Home Teleport fizzles as you take a hit.');
     floatText(Game.player, '-' + dmg, '#ff5b5b');
+    playSfx('hurt');
     Game.log(`The ${n.name} hits you for ${dmg} damage.`);
   } else {
     floatText(Game.player, '0', '#cccccc');
@@ -1839,6 +1856,7 @@ function exitInterior() {
 }
 
 function playerDeath() {
+  playSfx('death');
   // Dying in a dungeon throws you out first: your dropped stacks land at the
   // dungeon's overworld doorstep (no re-entry run required to recover them).
   if (Game.world.interior) exitInterior();
@@ -2388,9 +2406,36 @@ function updateGoalChip() {
   }
 }
 
+// The daylight curve: hour -> a multiply colour. Piecewise: night 21-05 (moonlit
+// blue), dawn 05-08 (warming gold), day 08-18 (clear), dusk 18-21 (amber fade).
+let lastDaylightMin = -1;
+function updateDaylight() {
+  const dl = document.getElementById('daylight-overlay');
+  if (!dl || !Game.worldClock) return;
+  const t = Game.worldClock.timeOfDay();
+  const minute = (t * 24 * 60) | 0;
+  if (minute === lastDaylightMin) return;   // colour shifts once a game-minute
+  lastDaylightMin = minute;
+  const h = t * 24;
+  const lerp = (a, b, k) => a + (b - a) * Math.max(0, Math.min(1, k));
+  const NIGHT = [125, 135, 190], DAY = [255, 255, 255], DAWN = [255, 216, 165], DUSK = [255, 190, 140];
+  let c;
+  if (h < 5) c = NIGHT;
+  else if (h < 6.5) c = NIGHT.map((v, i) => lerp(v, DAWN[i], (h - 5) / 1.5));
+  else if (h < 8) c = DAWN.map((v, i) => lerp(v, DAY[i], (h - 6.5) / 1.5));
+  else if (h < 18) c = DAY;
+  else if (h < 19.5) c = DAY.map((v, i) => lerp(v, DUSK[i], (h - 18) / 1.5));
+  else if (h < 21) c = DUSK.map((v, i) => lerp(v, NIGHT[i], (h - 19.5) / 1.5));
+  else c = NIGHT;
+  dl.style.background = `rgb(${c[0] | 0},${c[1] | 0},${c[2] | 0})`;
+  // interiors are torch-lit — steady warm dim regardless of the sky
+  if (Game.world && Game.world.interior) dl.style.background = 'rgb(205,180,150)';
+}
+
 function updateLabels() {
   const p = Game.player;
   updateGoalChip();
+  updateDaylight();
   // World-space labels ride the rotating main camera; spin them back so the text
   // stays upright and readable at any camera angle (no-op when rotation is 0).
   const rot = -scene.cameras.main.rotation;

@@ -44,6 +44,7 @@ export function contractOnKill(monsterId) {
     Game.contractStreak = (Game.contractStreak || 0) + 1;
     const bonus = Game.contractStreak % 5 === 0 ? 2 : 1;
     addItem('coins', c.coins * bonus);
+    if (Game.sfx) Game.sfx('coins');
     const per = Math.round((c.xp * bonus) / 3);
     grantXp('Attack', per); grantXp('Strength', per); grantXp('Defence', per);
     Game.log(`📜 Contract complete: ${c.need}× ${c.name}! ${c.coins * bonus} coins + combat XP` +

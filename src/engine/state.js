@@ -227,6 +227,7 @@ export function grantXp(skillName, amount) {
     } else {
       if (skillName === 'Prayer') Game.maxPrayer = sk.level; // more prayer points
       Game.log(`Congratulations! Your ${skillName} level is now ${sk.level}.`);
+      if (Game.sfx) Game.sfx('levelup'); // the little fanfare that makes number-go-up FEEL like it
     }
   }
   // UI flourish hook (xp drops + level-up banner); registered by panels.js.

@@ -259,6 +259,7 @@ function completeQuest(id, speaker) {
   const st = Game.questState[id];
   if (!q || !st) return;
   st.status = 'complete';
+  if (Game.sfx) Game.sfx('quest');
   const r = q.rewards || {};
   if (r.coins) addItem('coins', r.coins);
   if (Array.isArray(r.items)) for (const it of r.items) addItem(it.id, it.qty || 1);
