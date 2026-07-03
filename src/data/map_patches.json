@@ -50,6 +50,13 @@
    ]
   },
   {
+   "id": "c5r5-center-tree-pocket",
+   "why": "Center chunk c5,r5 (first stop on the spiral crawl): a single grass tile at (570,591) ringed by 4 trees, unreachable. Remove the west tree so it connects to the reachable ground at (568,591).",
+   "ops": [
+    { "op": "remove_objects", "rect": [569, 591, 569, 591], "types": ["resource"] }
+   ]
+  },
+  {
    "id": "c1r3-wall-rings",
    "why": "c1,r3: three hollow diamond rings of stray WALL tiles (no label, no floor, no structure = generation artifacts, not authored ruins), each flagged as ~8 wall_orphans enclosing a 5-tile dead_pocket. Convert each ring footprint to GRASS — clears the orphan walls and opens the enclosed pocket at once. Rects contain only wall/grass/decor (no water/rock/POI), so the fill is safe.",
    "ops": [
