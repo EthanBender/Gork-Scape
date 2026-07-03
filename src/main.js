@@ -724,7 +724,15 @@ function miniGeom() {
   const ox = w - MINI_SIZE - 12 - railClear;
   return { ox, oy, cx: ox + MINI_SIZE / 2, cy: oy + MINI_SIZE / 2 };
 }
+// [mobile] The handoff drops the persistent minimap on phones (full-bleed world;
+// the map button opens the full world map instead). Matches the CSS layout
+// triggers: portrait phones, and short landscape phones.
+function minimapHidden() {
+  const w = scene.scale.width, h = scene.scale.height;
+  return w <= 560 || (h <= 500 && w >= 561 && w > h);
+}
 function pointerOnMinimap(sx, sy) {
+  if (minimapHidden()) return false;
   const { ox, oy } = miniGeom();
   return sx >= ox && sx <= ox + MINI_SIZE && sy >= oy && sy <= oy + MINI_SIZE;
 }
@@ -747,6 +755,7 @@ function compassGeom() {
   return { x: ox + COMPASS_R + 4, y: oy + COMPASS_R + 4, r: COMPASS_R };
 }
 function pointerOnCompass(sx, sy) {
+  if (minimapHidden()) return false;
   const c = compassGeom();
   const dx = sx - c.x, dy = sy - c.y;
   return dx * dx + dy * dy <= c.r * c.r;
@@ -2587,6 +2596,9 @@ function drawPOIIcon(g, mx, my, kind) {
 // A zoomed view centered on the player — a bit wider than the screen view.
 function drawMinimap() {
   const g = miniGfx; g.clear();
+  // [mobile] Hidden on phones — clear the graphics + the compass label and bail.
+  if (minimapHidden()) { if (compassN) compassN.setVisible(false); return; }
+  if (compassN) compassN.setVisible(true);
   const p = Game.player;
   const { ox, oy, cx, cy } = miniGeom();
   const ter = Game.world.terrain, W = Game.world.W, H = Game.world.H;

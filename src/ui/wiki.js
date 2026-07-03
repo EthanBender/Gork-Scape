@@ -68,6 +68,15 @@ function injectCss() {
     border:1px solid #6b4a2a; border-radius:10px; padding:6px 12px; font-size:12px;
     box-shadow:inset 0 1px 0 rgba(255,255,255,.08), 0 2px 5px rgba(0,0,0,.4); transition:filter .1s; }
   #wiki-btn:hover { filter:brightness(1.12); }
+  /* [mobile] The minimap is hidden on phones, so move the Codex button into the
+     now-clear top-right — below the HUD (portrait) and left of the tab rail
+     (landscape) so it's reachable. */
+  @media (max-width: 560px) {
+    #wiki-btn { top: calc(env(safe-area-inset-top) + 62px); right: 12px; }
+  }
+  @media (max-height: 500px) and (min-width: 561px) and (orientation: landscape) {
+    #wiki-btn { top: calc(env(safe-area-inset-top) + 52px); right: calc(var(--rail-w, 60px) + 12px); }
+  }
   #wiki-overlay { position:absolute; inset:0; z-index:70; display:flex; align-items:center;
     justify-content:center; background:rgba(0,0,0,.6); }
   #wiki-overlay[hidden] { display:none; }
