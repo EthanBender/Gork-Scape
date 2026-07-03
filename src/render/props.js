@@ -51,6 +51,8 @@ export function propKind(label = '') {
   if (/ore cart|cart|wagon/.test(n)) return 'cart';
   if (/rock|rubble|heap|pile/.test(n)) return 'rockpile';
   if (/war table|workbench|\btable\b|potion station/.test(n)) return 'table';
+  if (/trophy|antler|mounted head|hunting rack|\bpelt\b/.test(n)) return 'trophy';
+  if (/bones|\bbone\b|skull|carcass|ribcage|ossuary/.test(n)) return 'bones';
   if (/skinning|butcher|tan/.test(n)) return 'hiderack';
   if (/compost|\bbin\b|trough/.test(n)) return 'bin';
   if (/gate|pass|entrance|\bcave\b|\bmine\b|tunnel|deep/.test(n)) return 'entrance';
@@ -186,6 +188,19 @@ function pile(g, X, Y, c, cd) {
   g.fillStyle(cd, 1); g.fillCircle(X - 4, Y + 6, 4); g.fillCircle(X + 4, Y + 6, 4);
   g.fillStyle(c, 1); g.fillCircle(X, Y + 3, 5); g.fillCircle(X - 5, Y + 5, 3); g.fillCircle(X + 5, Y + 5, 3);
   g.fillStyle(shade(c, 1.35), 1); g.fillCircle(X - 1, Y + 1, 1.6);
+}
+function trophy(g, X, Y) {
+  g.fillStyle(WOOD_D, 1); g.fillRect(X - 5, Y - 3, 10, 13); g.fillStyle(WOOD, 1); g.fillRect(X - 4, Y - 2, 8, 11); // plaque post
+  g.fillStyle(0xe8e2d0, 1); g.fillCircle(X, Y + 3, 3);                 // skull
+  g.lineStyle(1.6, 0xd8d2c0, 1);                                       // antlers
+  g.beginPath(); g.moveTo(X - 2, Y + 1); g.lineTo(X - 7, Y - 7); g.moveTo(X - 5, Y - 3); g.lineTo(X - 8, Y - 4);
+  g.moveTo(X + 2, Y + 1); g.lineTo(X + 7, Y - 7); g.moveTo(X + 5, Y - 3); g.lineTo(X + 8, Y - 4); g.strokePath();
+}
+function bones(g, X, Y) {
+  g.fillStyle(0xe8e2d0, 1); g.fillCircle(X - 3, Y + 4, 3.4);           // skull
+  g.fillStyle(0x14140f, 1); g.fillCircle(X - 4.2, Y + 3.4, 0.9); g.fillCircle(X - 1.8, Y + 3.4, 0.9); // eye sockets
+  g.lineStyle(2.6, 0xe8e2d0, 1); g.beginPath(); g.moveTo(X + 1, Y + 1); g.lineTo(X + 7, Y + 8); g.strokePath(); // long bone
+  g.fillStyle(0xe8e2d0, 1); g.fillCircle(X + 1, Y + 1, 1.5); g.fillCircle(X + 7, Y + 8, 1.5);
 }
 function boat(g, X, Y) {
   g.fillStyle(WOOD_D, 1); g.fillEllipse(X, Y + 5, 21, 8);              // hull outer
@@ -341,7 +356,7 @@ function bush(g, X, Y, accent) {
 const DRAW = {
   anvil, chest, barrel, stall, exchange, weaponrack, dummy, banner, tower, throne, well,
   shrine, cauldron, fire, coalheap, rockpile, logpile, cart, table, hiderack, bin,
-  entrance, sign, crate, hut, ladder, lamp, fence, bush, monument, fountain, flowers, planter, bench, stump, boat, net,
+  entrance, sign, crate, hut, ladder, lamp, fence, bush, monument, fountain, flowers, planter, bench, stump, boat, net, trophy, bones,
 };
 
 // Entry point: draw the prop for object `o` at tile top-left (cx,cy).

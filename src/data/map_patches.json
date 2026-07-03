@@ -18575,6 +18575,718 @@
      "shape": "rect"
     }
    ]
+  },
+  {
+   "id": "region-thornhaunt-hunt",
+   "note": "Thornhaunt regional identity — intensify the East-Road hunter camp (lodge, tents, fire pit, weapon rack, snare, Bracken) into a HUNTING STATION: a widened dirt clearing, antler trophies (new prop), skinning frames of drying pelts, kill-bones + a hanging carcass (new bones prop), a smokehouse + smoke fire, a rough stockade, a trapper cart, and a Hunters Totem greeting the road; feather/bone scatter. Guarded onto dry clearing; reachability + coherence simulated.",
+   "ops": [
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       807,
+       325
+      ],
+      [
+       808,
+       325
+      ],
+      [
+       809,
+       325
+      ],
+      [
+       810,
+       325
+      ],
+      [
+       811,
+       325
+      ],
+      [
+       812,
+       325
+      ],
+      [
+       813,
+       325
+      ],
+      [
+       827,
+       325
+      ],
+      [
+       828,
+       325
+      ],
+      [
+       829,
+       325
+      ],
+      [
+       830,
+       325
+      ],
+      [
+       831,
+       325
+      ],
+      [
+       807,
+       326
+      ],
+      [
+       808,
+       326
+      ],
+      [
+       809,
+       326
+      ],
+      [
+       810,
+       326
+      ],
+      [
+       811,
+       326
+      ],
+      [
+       812,
+       326
+      ],
+      [
+       813,
+       326
+      ],
+      [
+       827,
+       326
+      ],
+      [
+       828,
+       326
+      ],
+      [
+       829,
+       326
+      ],
+      [
+       830,
+       326
+      ],
+      [
+       831,
+       326
+      ],
+      [
+       807,
+       327
+      ],
+      [
+       808,
+       327
+      ],
+      [
+       809,
+       327
+      ],
+      [
+       810,
+       327
+      ],
+      [
+       811,
+       327
+      ],
+      [
+       812,
+       327
+      ],
+      [
+       828,
+       327
+      ],
+      [
+       829,
+       327
+      ],
+      [
+       830,
+       327
+      ],
+      [
+       831,
+       327
+      ],
+      [
+       807,
+       328
+      ],
+      [
+       808,
+       328
+      ],
+      [
+       809,
+       328
+      ],
+      [
+       810,
+       328
+      ],
+      [
+       811,
+       328
+      ],
+      [
+       812,
+       328
+      ],
+      [
+       828,
+       328
+      ],
+      [
+       829,
+       328
+      ],
+      [
+       830,
+       328
+      ],
+      [
+       831,
+       328
+      ],
+      [
+       807,
+       329
+      ],
+      [
+       808,
+       329
+      ],
+      [
+       809,
+       329
+      ],
+      [
+       810,
+       329
+      ],
+      [
+       811,
+       329
+      ],
+      [
+       812,
+       329
+      ],
+      [
+       828,
+       329
+      ],
+      [
+       829,
+       329
+      ],
+      [
+       830,
+       329
+      ],
+      [
+       831,
+       329
+      ],
+      [
+       807,
+       330
+      ],
+      [
+       808,
+       330
+      ],
+      [
+       809,
+       330
+      ],
+      [
+       810,
+       330
+      ],
+      [
+       811,
+       330
+      ],
+      [
+       829,
+       330
+      ],
+      [
+       831,
+       330
+      ],
+      [
+       807,
+       331
+      ],
+      [
+       808,
+       331
+      ],
+      [
+       809,
+       331
+      ],
+      [
+       810,
+       331
+      ],
+      [
+       811,
+       331
+      ],
+      [
+       828,
+       331
+      ],
+      [
+       829,
+       331
+      ],
+      [
+       830,
+       331
+      ],
+      [
+       831,
+       331
+      ],
+      [
+       807,
+       332
+      ],
+      [
+       808,
+       332
+      ],
+      [
+       809,
+       332
+      ],
+      [
+       810,
+       332
+      ],
+      [
+       811,
+       332
+      ],
+      [
+       812,
+       332
+      ],
+      [
+       828,
+       332
+      ],
+      [
+       829,
+       332
+      ],
+      [
+       830,
+       332
+      ],
+      [
+       831,
+       332
+      ],
+      [
+       807,
+       333
+      ],
+      [
+       808,
+       333
+      ],
+      [
+       828,
+       333
+      ],
+      [
+       829,
+       333
+      ],
+      [
+       830,
+       333
+      ],
+      [
+       827,
+       334
+      ],
+      [
+       828,
+       334
+      ],
+      [
+       829,
+       334
+      ],
+      [
+       830,
+       334
+      ],
+      [
+       831,
+       334
+      ],
+      [
+       809,
+       335
+      ],
+      [
+       810,
+       335
+      ],
+      [
+       811,
+       335
+      ],
+      [
+       812,
+       335
+      ],
+      [
+       813,
+       335
+      ],
+      [
+       827,
+       335
+      ],
+      [
+       828,
+       335
+      ],
+      [
+       829,
+       335
+      ],
+      [
+       807,
+       336
+      ],
+      [
+       808,
+       336
+      ],
+      [
+       809,
+       336
+      ],
+      [
+       810,
+       336
+      ],
+      [
+       811,
+       336
+      ],
+      [
+       812,
+       336
+      ],
+      [
+       813,
+       336
+      ],
+      [
+       814,
+       336
+      ],
+      [
+       826,
+       336
+      ],
+      [
+       827,
+       336
+      ],
+      [
+       828,
+       336
+      ],
+      [
+       829,
+       336
+      ],
+      [
+       830,
+       336
+      ],
+      [
+       831,
+       336
+      ],
+      [
+       807,
+       337
+      ],
+      [
+       808,
+       337
+      ],
+      [
+       809,
+       337
+      ],
+      [
+       810,
+       337
+      ],
+      [
+       811,
+       337
+      ],
+      [
+       812,
+       337
+      ],
+      [
+       813,
+       337
+      ],
+      [
+       814,
+       337
+      ],
+      [
+       815,
+       337
+      ],
+      [
+       816,
+       337
+      ],
+      [
+       824,
+       337
+      ],
+      [
+       825,
+       337
+      ],
+      [
+       826,
+       337
+      ],
+      [
+       827,
+       337
+      ],
+      [
+       828,
+       337
+      ],
+      [
+       829,
+       337
+      ],
+      [
+       830,
+       337
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "object",
+     "x": 810,
+     "y": 326,
+     "label": "Antler Trophy",
+     "color": 15262416,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 828,
+     "y": 329,
+     "label": "Antler Trophy",
+     "color": 15262416,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 814,
+     "y": 325,
+     "label": "Antler Trophy",
+     "color": 15262416,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 810,
+     "y": 329,
+     "label": "Skinning Frame",
+     "color": 11569754,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 827,
+     "y": 331,
+     "label": "Skinning Frame",
+     "color": 11569754,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 812,
+     "y": 337,
+     "label": "Skinning Frame",
+     "color": 11569754,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 811,
+     "y": 334,
+     "label": "Kill Bones",
+     "color": 15262416,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 826,
+     "y": 335,
+     "label": "Kill Bones",
+     "color": 15262416,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 808,
+     "y": 332,
+     "label": "Kill Bones",
+     "color": 15262416,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 813,
+     "y": 328,
+     "label": "Hanging Carcass",
+     "color": 15262416,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 826,
+     "y": 326,
+     "label": "Smokehouse",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 827,
+     "y": 328,
+     "label": "Smoke Fire",
+     "color": 16742954,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 814,
+     "y": 333,
+     "label": "Hunters Totem",
+     "color": 6978122,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 809,
+     "y": 325,
+     "label": "Stockade Fence",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 830,
+     "y": 327,
+     "label": "Stockade Fence",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 811,
+     "y": 336,
+     "label": "Stockade Fence",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 809,
+     "y": 333,
+     "label": "Stockade Fence",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 816,
+     "y": 325,
+     "label": "Trapper Cart",
+     "color": 9080726,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 812,
+     "y": 330,
+     "color": 6969914,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 824,
+     "y": 330,
+     "color": 6969914,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 818,
+     "y": 335,
+     "color": 6969914,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 811,
+     "y": 328,
+     "color": 14209728,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 828,
+     "y": 333,
+     "color": 14209728,
+     "size": 3,
+     "shape": "circle"
+    }
+   ]
   }
  ]
 }
