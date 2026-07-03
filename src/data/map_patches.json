@@ -5139,6 +5139,980 @@
      "shape": "circle"
     }
    ]
+  },
+  {
+   "id": "poi-enrich-structural-scenes-2",
+   "why": "POI build-out (folded in, owner approved): enriched 22 THIN structural landmark scenes (Tents, Collapsed Watchtowers, Pilgrim's Rests, Charred Homesteads, Hunter's Caches, Looted/Wrecked Carts) with 121 decor pieces drawn from each TYPE's own rich-sibling palette, placed on empty grass so they read as built-up camps/ruins like their richer siblings. Decor-only (no walls) = no clipping / no sealed rooms. Loot markers + animal dens deliberately left small.",
+   "ops": [
+    {
+     "op": "decor",
+     "x": 892,
+     "y": 803,
+     "color": 3104036,
+     "size": 6,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 891,
+     "y": 804,
+     "color": 4864552,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 893,
+     "y": 804,
+     "color": 3104036,
+     "size": 6,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 892,
+     "y": 805,
+     "color": 3104036,
+     "size": 6,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 892,
+     "y": 802,
+     "color": 3104036,
+     "size": 6,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 891,
+     "y": 803,
+     "color": 3104036,
+     "size": 6,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 892,
+     "y": 839,
+     "color": 3104036,
+     "size": 6,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 892,
+     "y": 840,
+     "color": 4864552,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 890,
+     "y": 839,
+     "color": 3104036,
+     "size": 6,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 891,
+     "y": 840,
+     "color": 3104036,
+     "size": 6,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 893,
+     "y": 840,
+     "color": 3104036,
+     "size": 6,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 244,
+     "y": 832,
+     "color": 5601844,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 241,
+     "y": 833,
+     "color": 6969914,
+     "size": 3,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 243,
+     "y": 833,
+     "color": 9075296,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 898,
+     "y": 413,
+     "color": 5601844,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 895,
+     "y": 414,
+     "color": 9075296,
+     "size": 3,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 899,
+     "y": 414,
+     "color": 6969914,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 194,
+     "y": 786,
+     "color": 5601844,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 194,
+     "y": 781,
+     "color": 4156972,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 193,
+     "y": 782,
+     "color": 4156972,
+     "size": 5,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 192,
+     "y": 783,
+     "color": 4156972,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 196,
+     "y": 783,
+     "color": 5601844,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 349,
+     "y": 165,
+     "color": 3104036,
+     "size": 6,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 348,
+     "y": 166,
+     "color": 5601844,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 350,
+     "y": 166,
+     "color": 5601844,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 349,
+     "y": 167,
+     "color": 5601844,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 349,
+     "y": 164,
+     "color": 4864552,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 348,
+     "y": 165,
+     "color": 5601844,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 350,
+     "y": 165,
+     "color": 4156972,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 767,
+     "y": 722,
+     "color": 9079418,
+     "size": 3,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 766,
+     "y": 723,
+     "color": 4864552,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 765,
+     "y": 721,
+     "color": 9075296,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 767,
+     "y": 721,
+     "color": 9075296,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 764,
+     "y": 722,
+     "color": 14051978,
+     "size": 2,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 497,
+     "y": 811,
+     "color": 4864552,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 496,
+     "y": 812,
+     "color": 9075296,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 498,
+     "y": 812,
+     "color": 9075296,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 497,
+     "y": 810,
+     "color": 14051978,
+     "size": 2,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 496,
+     "y": 811,
+     "color": 9075296,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 501,
+     "y": 239,
+     "color": 4156972,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 500,
+     "y": 240,
+     "color": 4864552,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 502,
+     "y": 240,
+     "color": 9075296,
+     "size": 3,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 499,
+     "y": 241,
+     "color": 6969914,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 503,
+     "y": 241,
+     "color": 8025706,
+     "size": 3,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 500,
+     "y": 242,
+     "color": 6969914,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 637,
+     "y": 426,
+     "color": 4156972,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 636,
+     "y": 427,
+     "color": 9075296,
+     "size": 3,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 638,
+     "y": 427,
+     "color": 4156972,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 635,
+     "y": 428,
+     "color": 15127114,
+     "size": 2,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 636,
+     "y": 429,
+     "color": 9075296,
+     "size": 3,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 284,
+     "y": 765,
+     "color": 15127114,
+     "size": 2,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 283,
+     "y": 766,
+     "color": 4156972,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 282,
+     "y": 767,
+     "color": 4156972,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 286,
+     "y": 767,
+     "color": 9075296,
+     "size": 3,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 283,
+     "y": 768,
+     "color": 9075296,
+     "size": 3,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 285,
+     "y": 768,
+     "color": 4156972,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 284,
+     "y": 764,
+     "color": 4156972,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 209,
+     "y": 211,
+     "color": 6969914,
+     "size": 3,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 208,
+     "y": 212,
+     "color": 5601844,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 210,
+     "y": 212,
+     "color": 5601844,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 209,
+     "y": 213,
+     "color": 6969914,
+     "size": 3,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 572,
+     "y": 779,
+     "color": 4156972,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 571,
+     "y": 780,
+     "color": 9075296,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 573,
+     "y": 780,
+     "color": 5601844,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 572,
+     "y": 781,
+     "color": 4864552,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 572,
+     "y": 778,
+     "color": 9075296,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 571,
+     "y": 779,
+     "color": 9075296,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 573,
+     "y": 779,
+     "color": 9075296,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 570,
+     "y": 780,
+     "color": 6969914,
+     "size": 3,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 539,
+     "y": 893,
+     "color": 9075296,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 538,
+     "y": 894,
+     "color": 9075296,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 540,
+     "y": 894,
+     "color": 6969914,
+     "size": 3,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 539,
+     "y": 895,
+     "color": 9075296,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 539,
+     "y": 892,
+     "color": 15127114,
+     "size": 2,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 537,
+     "y": 894,
+     "color": 4156972,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 329,
+     "y": 209,
+     "color": 5601844,
+     "size": 4,
+     "shape": "square"
+    },
+    {
+     "op": "decor",
+     "x": 328,
+     "y": 210,
+     "color": 6969914,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 330,
+     "y": 210,
+     "color": 5601844,
+     "size": 4,
+     "shape": "square"
+    },
+    {
+     "op": "decor",
+     "x": 327,
+     "y": 211,
+     "color": 6969914,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 331,
+     "y": 211,
+     "color": 5601844,
+     "size": 4,
+     "shape": "square"
+    },
+    {
+     "op": "decor",
+     "x": 328,
+     "y": 212,
+     "color": 6969914,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 323,
+     "y": 394,
+     "color": 5601844,
+     "size": 4,
+     "shape": "square"
+    },
+    {
+     "op": "decor",
+     "x": 322,
+     "y": 395,
+     "color": 6969914,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 324,
+     "y": 395,
+     "color": 5601844,
+     "size": 4,
+     "shape": "square"
+    },
+    {
+     "op": "decor",
+     "x": 321,
+     "y": 396,
+     "color": 6969914,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 322,
+     "y": 397,
+     "color": 5601844,
+     "size": 4,
+     "shape": "square"
+    },
+    {
+     "op": "decor",
+     "x": 324,
+     "y": 397,
+     "color": 6969914,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 323,
+     "y": 398,
+     "color": 5601844,
+     "size": 4,
+     "shape": "square"
+    },
+    {
+     "op": "decor",
+     "x": 323,
+     "y": 393,
+     "color": 6969914,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 322,
+     "y": 394,
+     "color": 5601844,
+     "size": 4,
+     "shape": "square"
+    },
+    {
+     "op": "decor",
+     "x": 804,
+     "y": 784,
+     "color": 7319162,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 803,
+     "y": 785,
+     "color": 4156972,
+     "size": 5,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 805,
+     "y": 785,
+     "color": 3104036,
+     "size": 6,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 804,
+     "y": 786,
+     "color": 4156972,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 804,
+     "y": 783,
+     "color": 9075296,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 803,
+     "y": 784,
+     "color": 4156972,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 805,
+     "y": 784,
+     "color": 7319162,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 802,
+     "y": 785,
+     "color": 5601844,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 806,
+     "y": 785,
+     "color": 7319162,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 803,
+     "y": 786,
+     "color": 3104036,
+     "size": 6,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 850,
+     "y": 853,
+     "color": 6257980,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 851,
+     "y": 854,
+     "color": 5601844,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 850,
+     "y": 855,
+     "color": 7319162,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 850,
+     "y": 852,
+     "color": 7319162,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 607,
+     "y": 234,
+     "color": 13672512,
+     "size": 6,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 609,
+     "y": 234,
+     "color": 10119871,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 606,
+     "y": 235,
+     "color": 13656122,
+     "size": 5,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 387,
+     "y": 835,
+     "color": 13672512,
+     "size": 5,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 386,
+     "y": 836,
+     "color": 9075296,
+     "size": 3,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 388,
+     "y": 836,
+     "color": 12864106,
+     "size": 21,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 385,
+     "y": 837,
+     "color": 13672512,
+     "size": 6,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 762,
+     "y": 893,
+     "color": 13656122,
+     "size": 5,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 761,
+     "y": 894,
+     "color": 11550842,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 763,
+     "y": 894,
+     "color": 13672512,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 760,
+     "y": 895,
+     "color": 11550842,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 761,
+     "y": 896,
+     "color": 6969914,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 720,
+     "y": 233,
+     "color": 4156972,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 719,
+     "y": 234,
+     "color": 4156972,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 719,
+     "y": 230,
+     "color": 4156972,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 720,
+     "y": 231,
+     "color": 4156972,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 716,
+     "y": 233,
+     "color": 4156972,
+     "size": 3,
+     "shape": "circle"
+    }
+   ]
   }
  ]
 }
