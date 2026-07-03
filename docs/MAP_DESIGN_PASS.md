@@ -110,6 +110,30 @@ from ROADMAP.md):
 - Shores: reeds/rocks at water edges; bridges where trails meet rivers
 - Wilds: cluster decor into patches (a camp, a grove), never even sprinkles
 
+## POI build-out (a later, dedicated pass)
+
+Most landmarks (~740/957) already get an authored scene from the generator. The
+rest read as bare markers or thin scenes. `node scripts/poi_inventory.mjs`
+lists them — **24 BARE (build), 193 THIN (enrich)** — grouped by type; that is
+the build-out worklist. This is AUTHORING (judged by eye, not a gate), so it's
+its own pass after the mechanical cleanup is done. Per-type templates:
+
+- **Collapsed / ruined / overgrown things** (Collapsed Watchtower, Toppled
+  Idol, Charred Homestead ruin): tumbled-stone rubble decor (`decor` op,
+  stone `0x8a7a60` + mossy `0x557a34`, sizes 2-5) on empty grass around the
+  marker. Decor-only is safest — no walls to clip neighbours or seal a room.
+- **Standing structures** (Tent, Pilgrim's Rest, Watchtower keep): a small
+  FLOOR footprint ringed by WALL **with a doorway** (one wall cell left as
+  FLOOR to the outside, or the room is a `sealed_room` defect), plus a `trail`
+  spur to the nearest path and a little decor. Check `map_defects` after.
+- **Camps / caches** (Hunter's Cache, Looted Cart): a firepit + crates/barrels
+  decor + trampled `DIRT` ground + a fence line (short WALL run near a labelled
+  object is furniture-exempt).
+
+Rules: place decor only on empty GRASS (no object, not water/rock) so you never
+make `obj_water`/`obj_stack`; keep a doorway on anything walled; re-run
+`coherence_audit` + `map_defects` after — the build must stay green.
+
 ## Guardrails
 - One patch entry per problem; small ops; commit per chunk.
 - NEVER lower a budget you didn't earn, never raise one.

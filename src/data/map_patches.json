@@ -3679,6 +3679,84 @@
      ]
     }
    ]
+  },
+  {
+   "id": "poi-watchtower-rubble-307-635",
+   "why": "Minimal POI build-out (folded into the coherence pass): the lone BARE Collapsed Watchtower at (307,635) stood as a naked marker in a willow grove while its 13 siblings are full ruins. Dressed it with tumbled mossy stone rubble (decor only — no walls, so no willow clipping / no sealed room), so it reads as a collapsed, overgrown tower. Full structural build-out of bare/thin landmarks is the dedicated pass — see scripts/poi_inventory.mjs.",
+   "ops": [
+    {
+     "op": "decor",
+     "x": 307,
+     "y": 634,
+     "color": 9075296,
+     "size": 3,
+     "shape": "square"
+    },
+    {
+     "op": "decor",
+     "x": 306,
+     "y": 635,
+     "color": 9075296,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 308,
+     "y": 635,
+     "color": 5601844,
+     "size": 5,
+     "shape": "square"
+    },
+    {
+     "op": "decor",
+     "x": 307,
+     "y": 636,
+     "color": 9075296,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 307,
+     "y": 633,
+     "color": 9075296,
+     "size": 4,
+     "shape": "square"
+    },
+    {
+     "op": "decor",
+     "x": 306,
+     "y": 634,
+     "color": 5601844,
+     "size": 5,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 308,
+     "y": 634,
+     "color": 9075296,
+     "size": 3,
+     "shape": "square"
+    },
+    {
+     "op": "decor",
+     "x": 309,
+     "y": 635,
+     "color": 9075296,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 306,
+     "y": 636,
+     "color": 5601844,
+     "size": 5,
+     "shape": "square"
+    }
+   ]
   }
  ]
 }
