@@ -1,5 +1,8 @@
 {
  "_readme": "Map patches: small, typed fixes applied as the FINAL world-gen step. Each entry: {id, why, ops:[...]}. Ops: {op:'terrain', rect:[x0,y0,x1,y1]|cells:[[x,y]..], to:'GRASS'} | {op:'trail', from:[x,y], to:[x,y]} | {op:'remove_objects', rect:[x0,y0,x1,y1], types:['decor','resource','structure']} | {op:'object', x,y, label, color, examine} | {op:'decor', x,y, color, size, shape}. Terrain names must exist in worldData T. See docs/MAP_DESIGN_PASS.md.",
+ "_notes": [
+  "MACRO-BLOCKED CHUNKS (do NOT force these defect counts down with the local patch loop — they need the macro connectivity/bridge pass, CRITICAL_PATH.md Steps 4-5): The whole NW 'Goblin Wilds' north of the Willow river is a large region stranded from spawn (audit_world warns ~7642-tile pocket near 72,106). Because of it: c0,r1 has dead_pocket (67,105) size 424 — reachable across a single river channel at (58,124)→(58,125), so ONE authored footbridge/ford reclaims all 424 tiles; and sealed_room (80,129) sits INSIDE the stranded region, so punching a door won't un-seal it until the region connects. The treeline slivers at x70-74 / x78-79 y135-199 are a dense 2-3-deep wall on the river's west bank; their sealed trees only un-seal by punching multiple gaps, low value until the bridge lands. RECOMMEND: the macro pass decides where the Wilds bridge goes (a ford near x58,y124 is the natural spot), then the local loop mops up the slivers. Until then leave c0,r1 as-is."
+ ],
  "patches": [
   {
    "id": "c0r2-west-shoulder-slivers",
