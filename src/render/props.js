@@ -33,6 +33,10 @@ export function propKind(label = '') {
   if (/lamp|lantern/.test(n)) return 'lamp';
   if (/fence|paling|railing|hitch/.test(n)) return 'fence';
   if (/bush|shrub|hedge|topiary/.test(n)) return 'bush';
+  if (/fountain/.test(n)) return 'fountain';
+  if (/flower|blossom|petal|garden bed|flowerbed|planting/.test(n)) return 'flowers';
+  if (/planter|potted|pot plant|flowerpot|\burn\b|window box/.test(n)) return 'planter';
+  if (/bench|\bseat\b|\bpew\b/.test(n)) return 'bench';
   if (/banner|\bflag\b/.test(n)) return 'banner';
   if (/tower|watchtower/.test(n)) return 'tower';
   if (/\bwell\b/.test(n)) return 'well';
@@ -43,7 +47,7 @@ export function propKind(label = '') {
   if (/log|lumber|saw/.test(n)) return 'logpile';
   if (/ore cart|cart|wagon/.test(n)) return 'cart';
   if (/rock|rubble|heap|pile/.test(n)) return 'rockpile';
-  if (/war table|workbench|\btable\b|\bbench\b|potion station/.test(n)) return 'table';
+  if (/war table|workbench|\btable\b|potion station/.test(n)) return 'table';
   if (/skinning|butcher|tan/.test(n)) return 'hiderack';
   if (/compost|\bbin\b|trough/.test(n)) return 'bin';
   if (/gate|pass|entrance|\bcave\b|\bmine\b|tunnel|deep/.test(n)) return 'entrance';
@@ -257,6 +261,38 @@ function fence(g, X, Y) {
   g.fillStyle(WOOD, 1); g.fillRect(X - 8, Y - 2, 15.8, 1.8); g.fillRect(X - 8, Y + 4, 15.8, 1.8);   // rails
   g.fillStyle(shade(WOOD, 1.2), 1); g.fillRect(X - 8, Y - 2, 15.8, 0.7);
 }
+function fountain(g, X, Y) {
+  g.fillStyle(0x6e685e, 1); g.fillEllipse(X, Y + 7, 24, 10);            // stone basin rim
+  g.fillStyle(0x8a847a, 1); g.fillEllipse(X, Y + 6, 22, 8);
+  g.fillStyle(0x2a5a6a, 1); g.fillEllipse(X, Y + 6, 17, 6);             // water
+  g.fillStyle(0x4a90a8, 0.8); g.fillEllipse(X, Y + 5, 12, 4);
+  g.fillStyle(0x7a746a, 1); g.fillRect(X - 2.4, Y - 7, 4.8, 13);        // central pedestal
+  g.fillStyle(0x6e685e, 1); g.fillEllipse(X, Y - 7, 9, 3.4);           // upper bowl
+  g.fillStyle(0xaee0f0, 0.55); g.fillRect(X - 0.7, Y - 8, 1.4, 10);    // falling jet
+  g.fillStyle(0xcdeaf5, 0.9); g.fillCircle(X, Y - 9, 1.7);             // spout
+}
+function flowers(g, X, Y) {
+  g.fillStyle(0x3a2a1a, 1); g.fillRect(X - 8, Y + 5, 16, 6);            // soil bed
+  g.fillStyle(0x33612e, 1); g.fillRect(X - 8, Y + 4, 16, 2.4);         // foliage base
+  const cols = [0xd94f4f, 0xe0c050, 0x8a5ac0, 0xe07ab0, 0x5aa0e0];
+  for (let i = 0; i < 7; i++) { const bx = X - 6.5 + i * 2.0;
+    g.fillStyle(0x2f6a3a, 1); g.fillRect(bx, Y - 2, 0.9, 7);           // stem
+    g.fillStyle(cols[i % cols.length], 1); g.fillCircle(bx + 0.4, Y - 3, 1.8); // bloom
+    g.fillStyle(0xffe27a, 0.85); g.fillCircle(bx + 0.4, Y - 3, 0.6); } // pollen centre
+}
+function planter(g, X, Y) {
+  g.fillStyle(0x8a5a34, 1); g.fillRect(X - 6, Y + 3, 12, 8);           // trough
+  g.fillStyle(shade(0x8a5a34, 1.2), 1); g.fillRect(X - 6, Y + 3, 12, 1.6);
+  g.fillStyle(0x3a2a18, 1); g.fillRect(X - 6, Y + 3, 12, 1.2);
+  g.fillStyle(0x2f6a3a, 1); g.fillCircle(X - 3, Y, 4); g.fillCircle(X + 3, Y, 4); g.fillCircle(X, Y - 2.5, 4.6); // shrub
+  g.fillStyle(0xd94f4f, 0.9); g.fillCircle(X - 2.5, Y - 1, 1.1); g.fillStyle(0xe0c050, 0.9); g.fillCircle(X + 3, Y - 1.5, 1); // blooms
+}
+function bench(g, X, Y) {
+  g.fillStyle(WOOD_D, 1); g.fillRect(X - 8, Y + 5, 2, 7); g.fillRect(X + 6, Y + 5, 2, 7); // legs
+  g.fillStyle(WOOD, 1); g.fillRect(X - 9, Y + 1, 18, 4);               // seat plank
+  g.fillStyle(shade(WOOD, 1.2), 1); g.fillRect(X - 9, Y + 1, 18, 1.2);
+  g.fillStyle(WOOD_D, 1); g.fillRect(X - 8, Y - 6, 2, 8); g.fillRect(X + 6, Y - 6, 2, 8); g.fillStyle(WOOD, 1); g.fillRect(X - 9, Y - 6, 18, 2.4); // backrest
+}
 function monument(g, X, Y, accent) {
   const STONE = 0x9a948a, STONE_D = 0x6e685e, STONE_H = 0xb4aea2;
   g.fillStyle(STONE_D, 1); g.fillRect(X - 9, Y + 8, 18, 5);             // stepped base (lower)
@@ -280,7 +316,7 @@ function bush(g, X, Y, accent) {
 const DRAW = {
   anvil, chest, barrel, stall, exchange, weaponrack, dummy, banner, tower, throne, well,
   shrine, cauldron, fire, coalheap, rockpile, logpile, cart, table, hiderack, bin,
-  entrance, sign, crate, hut, ladder, lamp, fence, bush, monument,
+  entrance, sign, crate, hut, ladder, lamp, fence, bush, monument, fountain, flowers, planter, bench,
 };
 
 // Entry point: draw the prop for object `o` at tile top-left (cx,cy).

@@ -8303,6 +8303,217 @@
      "blocking": false
     }
    ]
+  },
+  {
+   "id": "city-market-guild-court",
+   "note": "Guild Court vignette — recompose the guildhall forecourt as a COMPOSED SCENE (pattern-language method, not scattered props): a clear paved walk from the plaza to the door (threshold kept clear — no lamp-in-the-doorway), door framed by planters, an offset entrance lamp, flowerbeds lining the path, and a low-hedge-enclosed green garden pocket with a bench that FACES a fountain, plus setback barrel/crate leaning on the guild wall. Applied after city-plunder-market to supersede its scattered court. Reachability + coherence simulated.",
+   "ops": [
+    {
+     "op": "remove_objects",
+     "rect": [
+      474,
+      390,
+      480,
+      400
+     ],
+     "types": [
+      "structure",
+      "decor"
+     ]
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       476,
+       393
+      ],
+      [
+       477,
+       393
+      ],
+      [
+       478,
+       393
+      ],
+      [
+       479,
+       393
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "decor",
+     "x": 476,
+     "y": 393,
+     "color": 7038560,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 477,
+     "y": 393,
+     "color": 7038560,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 478,
+     "y": 393,
+     "color": 7038560,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 479,
+     "y": 393,
+     "color": 7038560,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "terrain",
+     "rect": [
+      475,
+      395,
+      479,
+      399
+     ],
+     "to": "GRASS"
+    },
+    {
+     "op": "object",
+     "x": 479,
+     "y": 392,
+     "label": "Door Planter",
+     "color": 9067060,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 479,
+     "y": 394,
+     "label": "Door Planter",
+     "color": 9067060,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 476,
+     "y": 392,
+     "label": "Iron Lamp",
+     "color": 16765517,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 476,
+     "y": 394,
+     "label": "Flower Bed",
+     "color": 14241615,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 478,
+     "y": 394,
+     "label": "Flower Bed",
+     "color": 14729296,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 477,
+     "y": 396,
+     "label": "Garden Fountain",
+     "color": 9077882,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 477,
+     "y": 398,
+     "label": "Garden Bench",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 475,
+     "y": 396,
+     "label": "Garden Hedge",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 475,
+     "y": 397,
+     "label": "Garden Hedge",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 479,
+     "y": 396,
+     "label": "Garden Hedge",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 479,
+     "y": 398,
+     "label": "Garden Hedge",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 476,
+     "y": 399,
+     "label": "Garden Hedge",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 478,
+     "y": 399,
+     "label": "Garden Hedge",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 475,
+     "y": 395,
+     "label": "Rose Planter",
+     "color": 9067060,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 479,
+     "y": 391,
+     "label": "Ale Barrel",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 480,
+     "y": 398,
+     "label": "Trade Crate",
+     "color": 8016432,
+     "blocking": false
+    }
+   ]
   }
  ]
 }
