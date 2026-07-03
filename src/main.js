@@ -1669,6 +1669,12 @@ function dropLoot(npc, count) {
     const def = ITEMS[d.id] || { name: d.id };
     Game.log(`The ${npc.name} drops ${qty > 1 ? qty + ' ' : ''}${def.name}.`);
   }
+  // Dungeon-boss unique: the trophy always drops (prototype tuning — tighten to a
+  // rare roll when the fun demands it). Announced loudly; it's the point of the run.
+  if (npc.bossDrop && ITEMS[npc.bossDrop]) {
+    spawnGroundItem(npc.bossDrop, 1, npc.tileX, npc.tileY, count, 900);
+    Game.log(`💀 ${npc.name} drops its trophy: ${ITEMS[npc.bossDrop].name}!`);
+  }
 }
 
 // Scale a drop quantity by a >1 multiplier with probabilistic rounding, so a
@@ -1723,7 +1729,7 @@ function spawnEnemyNpcs(world, prefix) {
     const def = world.ENEMY_TYPES[s.type]; if (!def) return;
     const m = s.boss ? 2 : 1; // bosses: doubled combat stats, 5× HP, aggressive
     const levels = { attack: def.att * m, strength: def.str * m, defence: def.def * m, ranged: 1, hitpoints: def.hp * (s.boss ? 5 : 1) };
-    Game.npcs.push(new NPC({
+    const npc = new NPC({
       id: prefix + i, name: s.name || def.name, type: 'guard', tileX: s.x, tileY: s.y,
       color: s.boss ? 0xd04a4a : def.color, monsterId: null,
       wanderRadius: 3, leashRadius: 12, aggressive: !!s.boss, aggroRange: s.boss ? 7 : 4,
@@ -1732,7 +1738,9 @@ function spawnEnemyNpcs(world, prefix) {
         crush_atk: Math.floor(def.att * m / 2), melee_str: Math.floor(def.str * m / 3),
         slash_def: def.def * m, crush_def: def.def * m, stab_def: def.def * m,
       }),
-    }));
+    });
+    if (s.bossDrop) npc.bossDrop = s.bossDrop; // guaranteed unique on kill (see dropLoot)
+    Game.npcs.push(npc);
   });
 }
 

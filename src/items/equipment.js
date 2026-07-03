@@ -154,6 +154,27 @@ export const ITEMS = {
     bonuses: bonuses({ range_atk: 58, range_str: 50 }),
     spec: { name: 'Meteor Shower', cost: 55, hits: 3 },
   },
+
+  // ----- Dungeon-boss uniques (M2) — mid-tier trophies from the four interiors.
+  // Guaranteed drops (prototype tuning; make them rare when the fun demands it).
+  rockjaw_pick: {
+    id: 'rockjaw_pick', name: "Rockjaw's Pick", slot: 'weapon',
+    weaponType: 'crush', attackSpeed: 3, tool: 'mining', color: 0x8a8aa4,
+    reqSkill: 'Attack', reqLevel: 20, tier: 4, boss: 'Rockjaw',
+    bonuses: bonuses({ crush_atk: 22, melee_str: 18 }),
+  },
+  pale_veil: {
+    id: 'pale_veil', name: 'The Pale Veil', slot: 'cape', color: 0xd8d8e8,
+    reqSkill: 'Defence', reqLevel: 20, tier: 4, boss: 'The Pale Priest',
+    bonuses: bonuses({ magic_def: 10, prayer: 6 }),
+  },
+  warlords_cleaver: {
+    id: 'warlords_cleaver', name: "Warlord's Cleaver", slot: 'weapon',
+    weaponType: 'slash', attackSpeed: 4, color: 0xb04a3a,
+    reqSkill: 'Attack', reqLevel: 40, tier: 6, boss: 'Red-Ear Warlord',
+    bonuses: bonuses({ slash_atk: 38, melee_str: 34 }),
+    spec: { name: 'War Cry', cost: 40, damageMult: 1.35, accuracyMult: 1.2 },
+  },
   // Boss components (forge ingredients) — rare drops; not equippable themselves.
   bog_king_heart: {
     id: 'bog_king_heart', name: "Bog King's Heart", slot: null, stackable: false, color: 0x7a3a5a,

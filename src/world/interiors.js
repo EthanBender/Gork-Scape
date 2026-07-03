@@ -22,10 +22,10 @@ function rngFor(seedStr) {
 
 // interior themes: wall/floor terrain, mob base, loot, size, boss
 const THEMES = {
-  deep_mine: { name: 'Deep Mine', W: 54, H: 40, wall: T.ROCK, floor: T.DIRT, mob: 'cave_bug', mobName: 'Cave Lurker', n: 14, boss: 'Rockjaw', ore: 'ore', chestLoot: 'iron_ore' },
-  ruin_chapel: { name: 'Old Ruin Chapel', W: 46, H: 34, wall: T.WALL, floor: T.FLOOR, mob: 'cave_bug', mobName: 'Crypt Crawler', n: 12, boss: 'The Pale Priest', ore: null, chestLoot: 'coins' },
-  witch_hut: { name: 'Witch-Goblin Hut', W: 34, H: 26, wall: T.WALL, floor: T.FLOOR, mob: 'rat', mobName: 'Familiar', n: 6, boss: null, ore: null, chestLoot: 'coins' },
-  rival_camp: { name: 'Rival War Camp', W: 50, H: 38, wall: T.WALL, floor: T.DIRT, mob: 'bandit', mobName: 'Red-Ear Raider', n: 16, boss: 'Red-Ear Warlord', ore: null, chestLoot: 'bronze_bar' },
+  deep_mine: { name: 'Deep Mine', W: 54, H: 40, wall: T.ROCK, floor: T.DIRT, mob: 'cave_bug', mobName: 'Cave Lurker', n: 14, boss: 'Rockjaw', bossDrop: 'rockjaw_pick', ore: 'ore', chestLoot: 'iron_ore' },
+  ruin_chapel: { name: 'Old Ruin Chapel', W: 46, H: 34, wall: T.WALL, floor: T.FLOOR, mob: 'cave_bug', mobName: 'Crypt Crawler', n: 12, boss: 'The Pale Priest', bossDrop: 'pale_veil', ore: null, chestLoot: 'coins' },
+  witch_hut: { name: 'Witch-Goblin Hut', W: 34, H: 26, wall: T.WALL, floor: T.FLOOR, mob: 'rat', mobName: 'Familiar', n: 6, boss: null, bossDrop: null, ore: null, chestLoot: 'coins' },
+  rival_camp: { name: 'Rival War Camp', W: 50, H: 38, wall: T.WALL, floor: T.DIRT, mob: 'bandit', mobName: 'Red-Ear Raider', n: 16, boss: 'Red-Ear Warlord', bossDrop: 'warlords_cleaver', ore: null, chestLoot: 'bronze_bar' },
 };
 
 export function generateInterior(id, opts = {}) {
@@ -73,7 +73,7 @@ export function generateInterior(id, opts = {}) {
   // mobs through the chambers
   for (let i = 0; i < th.n; i++) { const r = rooms[1 + (rng() * (rooms.length - 1) | 0)]; const s = randFloor(r); if (s) enemySpawns.push({ type: th.mob, x: s[0], y: s[1], name: th.mobName }); }
   // the boss holds the top chamber
-  if (th.boss) { const s = randFloor(boss) || [boss.cx, boss.cy]; enemySpawns.push({ type: th.mob, x: s[0], y: s[1], name: th.boss, boss: true }); place({ x: boss.cx, y: boss.cy - 2, type: 'structure', color: 0xd0c040, label: `${th.boss}'s Hoard`, blocking: false, examine: 'The prize, if you can take it.', loot: th.chestLoot, wild: 'treasure' }); }
+  if (th.boss) { const s = randFloor(boss) || [boss.cx, boss.cy]; enemySpawns.push({ type: th.mob, x: s[0], y: s[1], name: th.boss, boss: true, bossDrop: th.bossDrop }); place({ x: boss.cx, y: boss.cy - 2, type: 'structure', color: 0xd0c040, label: `${th.boss}'s Hoard`, blocking: false, examine: 'The prize, if you can take it.', loot: th.chestLoot, wild: 'treasure' }); }
 
   // torches / decor along the entry
   for (let i = 0; i < 12; i++) { const r = rooms[rng() * rooms.length | 0]; const x = r.cx + (rng() * 2 * r.w - r.w | 0), y = r.cy + (rng() * 2 * r.h - r.h | 0); if (isFloor(x, y)) place({ x, y, type: 'decor', color: th.floor === T.DIRT ? 0x5a4a3a : 0x6a6a6a, size: 3, shape: 'rect', blocking: false }); }
