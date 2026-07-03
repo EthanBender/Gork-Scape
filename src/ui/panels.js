@@ -239,7 +239,7 @@ export function initPanels() {
     onXp,
     postChat,
   };
-  switchTab('skills');
+  switchTab('skills', false);
   Game.refresh();
   // backfill any log lines emitted before the panel existed
   els.chatlog.innerHTML = '';
@@ -252,6 +252,9 @@ function buildLayout() {
   els.tabbar = document.getElementById('tabbar');
   els.panel = document.getElementById('panel-content');
   els.chatlog = document.getElementById('chatlog');
+  // [mobile] Tapping the dimmed backdrop closes the slide-up menu sheet.
+  const bd = document.getElementById('sheet-backdrop');
+  if (bd) bd.onclick = () => closeSheet();
 
   // Idempotent rebuild: initPanels()/buildLayout() runs again on every re-login,
   // so wipe the containers first — otherwise each logout→login stacks a fresh set
@@ -277,7 +280,14 @@ function buildLayout() {
     b.className = 'tab-btn';
     b.title = label;
     b.innerHTML = `<span class="tab-icon">${iconSvg}</span><span class="tab-label">${label}</span>`;
-    b.onclick = () => switchTab(id);
+    b.onclick = () => {
+      // [mobile] Re-tapping the active tab closes the slide-up sheet; any other
+      // tap switches panel (and raises the sheet). Desktop just switches.
+      const app = document.getElementById('app');
+      const onPhone = window.matchMedia('(max-width: 560px)').matches;
+      if (onPhone && id === activeTab && app && app.classList.contains('sheet-open')) closeSheet();
+      else switchTab(id);
+    };
     els.tabbar.appendChild(b);
     els.tabButtons[id] = b;
   }
@@ -298,9 +308,7 @@ let lastNormalTab = 'skills';
 // [economy lane] World-opened panels — reached by talking to an NPC / clicking a
 // station, no tab button, and auto-closed when the player walks away (main.js).
 const WORLD_PANELS = new Set(['ge', 'stations', 'shop', 'bank']);
-function switchTab(id) {
-  // Showing any panel un-minimizes the side panel (e.g. a world panel opening
-  // while the player had it collapsed).
+function switchTab(id, openSheet = true) {
   activeTab = id;
   if (!WORLD_PANELS.has(id)) lastNormalTab = id;
   hideTip();
@@ -308,13 +316,18 @@ function switchTab(id) {
     els.views[key].style.display = key === id ? 'block' : 'none';
     if (els.tabButtons[key]) els.tabButtons[key].classList.toggle('active', key === id);
   }
+  // [mobile] On phones the panel body is a slide-up sheet over the full-bleed
+  // game; showing a panel (tab tap, or a world panel opening) raises it. No-op
+  // on desktop (the .sheet-open class has no styling there). Boot passes false.
+  if (openSheet) { const app = document.getElementById('app'); if (app) app.classList.add('sheet-open'); }
   Game.refresh();
 }
+function closeSheet() { const app = document.getElementById('app'); if (app) app.classList.remove('sheet-open'); }
 
 // [economy lane] The world (main.js) reads the active panel + can close a
 // world-opened panel (shop/bank/exchange/stations) when you leave the asset.
 export function activePanel() { return activeTab; }
-export function closeWorldPanels() { if (WORLD_PANELS.has(activeTab)) switchTab(lastNormalTab || 'inventory'); }
+export function closeWorldPanels() { if (WORLD_PANELS.has(activeTab)) { switchTab(lastNormalTab || 'inventory', false); closeSheet(); } }
 
 // [economy lane] Shared header for world-opened panels (shop/bank/exchange/
 // station): names what you're interacting with + a ✕ to close by hand (walking
