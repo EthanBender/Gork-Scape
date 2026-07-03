@@ -15,7 +15,7 @@ at `api.gorkscape.ca`. **Green tree = live site. Red gate = nothing ships.**
 
 Gates to run before calling work done: `scripts/smoke.mjs` (boot), `test/run.mjs`
 (unit, 61 tests), `scripts/economy_sim.mjs` + `scripts/quest_test.mjs` (economy/quests,
-also CI), `scripts/audit_world.mjs` (map invariants), `scripts/pacing_sim.mjs` (XP pacing).
+also CI), `scripts/audit_world.mjs` (map invariants), `scripts/chain_audit.mjs` (economy chains: every item sourced + consumed), `scripts/pacing_sim.mjs` (XP pacing).
 
 ## Done (playable today)
 
