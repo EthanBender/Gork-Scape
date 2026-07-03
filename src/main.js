@@ -713,11 +713,15 @@ function viewRange() {
 // Shared between drawMinimap() and click-to-navigate so the picture and the hit
 // test always agree. The minimap is a player-centred, screen-space HUD element.
 function miniGeom() {
-  // [mobile] Drop the minimap below the translucent top HUD so it doesn't clash
-  // with the avatar/name/HP strip on the full-bleed phone layout. Draw + hit-test
-  // both read this, so they stay in sync.
-  const oy = scene.scale.width <= 560 ? 74 : 12;
-  const ox = scene.scale.width - MINI_SIZE - 12;
+  // [mobile] Keep the minimap clear of the full-bleed HUD overlays. Portrait: drop
+  // below the top HUD. Landscape phone: below the HUD and left of the right tab
+  // rail. Draw + hit-test both read this, so they stay in sync.
+  const w = scene.scale.width, h = scene.scale.height;
+  const portraitPhone = w <= 560;
+  const landscapePhone = w > 560 && h <= 500;
+  const oy = portraitPhone ? 74 : (landscapePhone ? 46 : 12);
+  const railClear = landscapePhone ? 66 : 0;
+  const ox = w - MINI_SIZE - 12 - railClear;
   return { ox, oy, cx: ox + MINI_SIZE / 2, cy: oy + MINI_SIZE / 2 };
 }
 function pointerOnMinimap(sx, sy) {
