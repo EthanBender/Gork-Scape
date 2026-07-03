@@ -1567,6 +1567,10 @@ function performSkill(o, count) {
   const STATION_OF = { 'Town Furnace': 'furnace', 'Town Anvil': 'anvil', 'Cooking Range': 'fire_or_range', 'Crafting Bench': 'crafting_bench', 'Sawmill': 'sawmill' };
   if (!o.fire && STATION_OF[o.label]) { openStation(STATION_OF[o.label]); panelAnchor = { tab: 'stations', x: o.x, y: o.y, range: 2 }; p.interactTarget = null; return; }
 
+  // [economy lane] The Bank counter opens the vault too — clicking the asset
+  // beside the Banker works like talking to the Banker himself (same range-3 anchor).
+  if (o.label === 'Bank') { openBank(); panelAnchor = { tab: 'bank', x: o.x, y: o.y, range: 3 }; p.interactTarget = null; return; }
+
   // [economy lane] Tinker's Workbench is a world object (design doc's station model),
   // not a HUD button — clicking it opens the workbench popup.
   if (o.label === "Tinker's Workbench") { openWorkbench(); p.interactTarget = null; return; }
