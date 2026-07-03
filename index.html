@@ -490,22 +490,21 @@
   .levelup-banner .lu-text span { color: var(--muted); font-size: 12px; margin-top: 2px; }
   .quest-banner .lu-text b { color: var(--accent); }
 
-  /* Quest Journal */
+  /* Quest Journal — AAA redesign */
   .quest-header { display: flex; justify-content: space-between; align-items: baseline;
     margin-bottom: 10px; }
-  .quest-header .qh-title { font-size: 15px; font-weight: 700; color: var(--gold);
-    text-shadow: 0 1px 0 #000; font-family: var(--font-display);
+  .quest-header .qh-title { font-family: "Fredoka", sans-serif; font-size: 16px; font-weight: 600; color: #e0b44a;
     display: inline-flex; align-items: center; gap: 6px; }
   .quest-header .qh-title svg { width: 17px; height: 17px; }
-  .quest-header .qh-count { font-size: 11px; color: var(--muted); }
-  .quest-section-label { margin: 12px 0 6px; font-size: 10px; text-transform: uppercase;
-    letter-spacing: 1px; color: var(--muted); }
-  .quest-card { padding: 9px 10px; margin-bottom: 8px; border-radius: 6px;
-    background: linear-gradient(180deg, var(--panel2), var(--panel));
-    border: 1px solid var(--bevel-lo); box-shadow: var(--raise); }
+  .quest-header .qh-count { font-size: 11px; color: #a89877; }
+  .quest-section-label { margin: 14px 0 7px; font-family: "Space Mono", monospace; font-size: 10px; text-transform: uppercase;
+    letter-spacing: 1.5px; color: #a89877; }
+  .quest-card { padding: 11px 12px; margin-bottom: 8px; border-radius: 13px;
+    background: linear-gradient(#2a1f14, #231a11);
+    border: 1px solid #3c2e1f; box-shadow: inset 0 1px 0 rgba(255,255,255,.04); }
   .quest-card.quest-done { opacity: .7; }
   .quest-head { display: flex; justify-content: space-between; align-items: center; gap: 6px; }
-  .quest-name { font-weight: 700; font-size: 13px; color: var(--text); }
+  .quest-name { font-family: "Nunito", sans-serif; font-weight: 700; font-size: 13.5px; color: #ebdfc8; }
   /* [a11y] subtle "read aloud" button — sits by the name, badge stays right */
   .quest-tts { margin-right: auto; padding: 2px; background: none; border: 0;
     cursor: pointer; opacity: .4; line-height: 0; border-radius: 4px;
@@ -513,48 +512,48 @@
   .quest-tts:hover { opacity: 1; background: rgba(255,255,255,.08); }
   .quest-tts.speaking { opacity: 1; }
   .quest-tts svg { width: 15px; height: 15px; display: block; }
-  .quest-badge { font-size: 9px; text-transform: uppercase; letter-spacing: .5px;
-    padding: 2px 6px; border-radius: 4px; white-space: nowrap;
-    background: var(--panel-lo); color: var(--muted); border: 1px solid var(--bevel-lo); }
-  .quest-badge.q-active { color: var(--gold); border-color: var(--gold-dk); }
-  .quest-badge.q-complete { color: var(--accent); border-color: var(--accent-dk); }
-  .quest-giver { font-size: 10px; color: var(--accent); margin-top: 1px; opacity: .85; }
-  .quest-summary { font-size: 11px; color: var(--muted); margin: 5px 0 6px; line-height: 1.35; }
+  .quest-badge { font-family: "Space Mono", monospace; font-size: 9px; text-transform: uppercase; letter-spacing: .5px;
+    padding: 2px 7px; border-radius: 99px; white-space: nowrap;
+    background: rgba(0,0,0,.25); color: #a89877; border: 1px solid #3c2e1f; }
+  .quest-badge.q-active { color: #e0b44a; border-color: #b7862f; }
+  .quest-badge.q-complete { color: #9fb04e; border-color: #5c6b2c; }
+  .quest-giver { font-size: 10px; color: #9fb04e; margin-top: 2px; opacity: .9; }
+  .quest-summary { font-size: 11.5px; color: #a89877; margin: 6px 0; line-height: 1.4; }
   .quest-steps { display: flex; flex-direction: column; gap: 4px; margin: 6px 0; }
   .quest-step { display: grid; grid-template-columns: 14px 1fr auto; align-items: center;
-    gap: 6px; font-size: 11px; color: var(--text); }
-  .quest-step .qs-check { color: var(--muted); text-align: center; }
-  .quest-step.qs-done .qs-check { color: var(--accent); }
-  .quest-step.qs-done .qs-text { color: var(--muted); text-decoration: line-through; }
-  .quest-step .qs-count { font-size: 10px; color: var(--gold); font-weight: 700; }
-  .quest-step .qs-bar { grid-column: 2 / 4; height: 4px; background: var(--panel-lo);
-    border-radius: 3px; overflow: hidden; box-shadow: var(--sink); }
+    gap: 6px; font-size: 11px; color: #ebdfc8; }
+  .quest-step .qs-check { color: #a89877; text-align: center; }
+  .quest-step.qs-done .qs-check { color: #9fb04e; }
+  .quest-step.qs-done .qs-text { color: #a89877; text-decoration: line-through; }
+  .quest-step .qs-count { font-size: 10px; color: #e0b44a; font-weight: 700; }
+  .quest-step .qs-bar { grid-column: 2 / 4; height: 5px; background: #17110a;
+    border-radius: 99px; overflow: hidden; box-shadow: inset 0 1px 2px rgba(0,0,0,.5); }
   .quest-step .qs-fill { display: block; height: 100%;
-    background: linear-gradient(180deg,#9cd86a,#5a8f3d); }
-  .quest-reward { margin-top: 6px; font-size: 10.5px; color: var(--gold); }
-  .quest-start { margin-top: 8px; width: 100%; padding: 6px; cursor: pointer;
-    font-weight: 700; font-size: 12px; border-radius: 5px; color: #fff;
-    background: var(--accent-dk); border: 1px solid var(--accent); }
-  .quest-start:hover { background: var(--accent); }
-  .quest-empty { font-size: 11px; color: var(--muted); font-style: italic; padding: 4px 0; }
+    background: linear-gradient(#c3d46a, #9fb04e); }
+  .quest-reward { margin-top: 6px; font-size: 10.5px; color: #e0b44a; }
+  .quest-start { margin-top: 8px; width: 100%; padding: 9px; cursor: pointer; border: none;
+    font-family: "Fredoka", sans-serif; font-weight: 600; font-size: 12px; border-radius: 12px; color: #2f3a12;
+    background: linear-gradient(#c9db72, #9fb04e); box-shadow: inset 0 1px 0 rgba(255,255,255,.5), 0 3px 0 #5c6b2c; }
+  .quest-start:hover { filter: brightness(1.05); }
+  .quest-empty { font-size: 11px; color: #a89877; font-style: italic; padding: 4px 0; }
   /* v2 quest journal: active highlight, current step, directions, giver-start */
-  .quest-card.quest-active { border-color: var(--gold-dk); box-shadow: var(--raise), 0 0 0 1px rgba(232,198,90,.25); }
-  .quest-step.qs-current { color: var(--gold); font-weight: 700; }
-  .quest-step.qs-current .qs-check { color: var(--gold); }
-  .quest-step.qs-todo { color: var(--muted); opacity: .8; }
-  .quest-step.qs-todo .qs-check { color: var(--muted); }
-  .quest-directions { margin: 6px 0; padding: 6px 8px; font-size: 11px; font-style: italic;
-    color: var(--text); background: rgba(232,198,90,.08); border-left: 2px solid var(--gold-dk);
-    border-radius: 0 4px 4px 0; line-height: 1.4; }
-  .quest-starthint { margin-top: 6px; font-size: 11px; color: var(--accent); line-height: 1.4; }
-  .quest-starthint b { color: var(--gold); }
-  .quest-track { margin-top: 8px; padding: 5px 12px; cursor: pointer; font-size: 11px;
-    font-weight: 700; border-radius: 5px; color: var(--muted);
-    background: var(--panel-lo); border: 1px solid var(--bevel-lo); }
-  .quest-track:hover { color: var(--text); border-color: var(--accent); }
-  .quest-track.on { color: #1a1710; background: linear-gradient(180deg, #f2d774, var(--gold-dk));
-    border-color: var(--gold); }
-  .quest-card.quest-tracked { box-shadow: var(--raise), -3px 0 0 var(--gold) inset; }
+  .quest-card.quest-active { border-color: #b7862f; box-shadow: inset 0 1px 0 rgba(255,255,255,.04), 0 0 0 1px rgba(224,180,74,.25); }
+  .quest-step.qs-current { color: #e0b44a; font-weight: 700; }
+  .quest-step.qs-current .qs-check { color: #e0b44a; }
+  .quest-step.qs-todo { color: #a89877; opacity: .8; }
+  .quest-step.qs-todo .qs-check { color: #a89877; }
+  .quest-directions { margin: 6px 0; padding: 7px 9px; font-size: 11px; font-style: italic;
+    color: #ebdfc8; background: rgba(224,180,74,.08); border-left: 2px solid #b7862f;
+    border-radius: 0 8px 8px 0; line-height: 1.4; }
+  .quest-starthint { margin-top: 6px; font-size: 11px; color: #9fb04e; line-height: 1.4; }
+  .quest-starthint b { color: #e0b44a; }
+  .quest-track { margin-top: 8px; padding: 7px 14px; cursor: pointer; font-family: "Fredoka", sans-serif; font-size: 11px;
+    font-weight: 600; border-radius: 99px; color: #a89877;
+    background: rgba(0,0,0,.2); border: 1px solid #6b4a2a; }
+  .quest-track:hover { color: #ebdfc8; border-color: #9fb04e; }
+  .quest-track.on { color: #3a2a10; background: linear-gradient(#e7c76b, #c99a2f);
+    border-color: transparent; box-shadow: inset 0 1px 0 rgba(255,255,255,.45); }
+  .quest-card.quest-tracked { box-shadow: inset 0 1px 0 rgba(255,255,255,.04), -3px 0 0 #e0b44a inset; }
 
   /* Quest-giver speech box over the game view */
   #dialogue-box { position: absolute; left: 50%; bottom: 18px; transform: translateX(-50%);
