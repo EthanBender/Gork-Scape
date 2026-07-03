@@ -1512,20 +1512,40 @@ if (!GEO2) {
   // height-shading, and drives the terrace + shadow relief below.
   const elevation = new Uint8Array(WORLD_W * WORLD_H);
   if (GEO2) {
-    // Elevation IS the geo2 heightfield: rolling grassland, mountains that climb,
-    // and river VALLEYS — water sits lowest and the banks dip toward it, so the
-    // 2.5D renderer shows real riverbanks and hills with zero extra draw code.
-    for (let i = 0; i < elevation.length; i++) {
-      const w = macro.water[i];
-      elevation[i] = w === 1 ? 8 : w === 2 ? 14 : w === 3 ? 34 : 28 + macro.height[i] * 190;
+    // Elevation rides the geo2 heightfield (keeps its rolling hills + carved
+    // valleys) but is then RE-PINNED by the FINAL terrain so the water/rock rules
+    // hold LOCALLY, not just on the world average. The geo2 water *mask* and the
+    // finished terrain (texture pass, town canal, ford patches, wonders) don't
+    // perfectly align, which otherwise left canal/ford water sitting at hilltop
+    // height and low rock outcrops below the grass beside them (elevation_audit
+    // caught 1208 such tiles). Water lowest, rock highest, banks slope in via two
+    // light blur passes. Elevation is DATA-ONLY — it never gates movement — so the
+    // terrain LAYOUT is untouched; only the 2.5D height shading changes.
+    const isW = (t) => t === T.WATER || t === T.WATER_DEEP || t === T.WATER_SHALLOW;
+    const pin = (i) => {
+      const t = terrain[i], base = 28 + macro.height[i] * 190;
+      if (t === T.WATER_DEEP) return 8;
+      if (isW(t)) return t === T.WATER_SHALLOW ? 20 : 12;         // water is the valley floor
+      if (t === T.SWAMP || t === T.MUD) return Math.min(base, 32);
+      if (t === T.WET_SAND) return Math.min(base, 46);
+      if (t === T.SAND || t === T.SAND_SHADOW) return Math.min(base, 54);
+      if (t === T.ROCK) return Math.max(base, 172);               // mountains always high
+      if (t === T.ROCK2) return Math.max(base, 150);
+      if (t === T.CLIFF) return Math.max(base, 118);              // terrace lips / flanks
+      if (t === T.FLOOR) return Math.max(base, 96);               // settlement stands proud
+      if (t === T.WALL) return Math.max(base, 100);
+      return base;                                                // grass/dirt/road/field ride the roll
+    };
+    let a = new Float32Array(WORLD_W * WORLD_H), b = new Float32Array(WORLD_W * WORLD_H);
+    for (let i = 0; i < a.length; i++) a[i] = pin(i);
+    for (let pass = 0; pass < 2; pass++) {                        // sloped banks + foothill ramps
+      for (let y = 1; y < WORLD_H - 1; y++) for (let x = 1; x < WORLD_W - 1; x++) { const i = idx(x, y); b[i] = (a[i] + a[i - 1] + a[i + 1] + a[i - WORLD_W] + a[i + WORLD_W]) * 0.2; }
+      for (let x = 0; x < WORLD_W; x++) { b[idx(x, 0)] = a[idx(x, 0)]; b[idx(x, WORLD_H - 1)] = a[idx(x, WORLD_H - 1)]; }
+      for (let y = 0; y < WORLD_H; y++) { b[idx(0, y)] = a[idx(0, y)]; b[idx(WORLD_W - 1, y)] = a[idx(WORLD_W - 1, y)]; }
+      for (let i = 0; i < b.length; i++) { const t = terrain[i]; if (isW(t)) b[i] = Math.min(b[i], t === T.WATER_DEEP ? 8 : t === T.WATER_SHALLOW ? 20 : 12); else if (t === T.ROCK) b[i] = Math.max(b[i], 172); else if (t === T.ROCK2) b[i] = Math.max(b[i], 150); else if (t === T.CLIFF) b[i] = Math.max(b[i], 118); }
+      const tmp = a; a = b; b = tmp;
     }
-    for (let y = 2; y < WORLD_H - 2; y++) for (let x = 2; x < WORLD_W - 2; x++) {
-      const i = idx(x, y); if (macro.water[i]) continue;
-      let near = 0;
-      for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) if (macro.water[idx(x + dx, y + dy)] === 3) { near = 2; break; }
-      if (!near) for (const [dx, dy] of [[2, 0], [-2, 0], [0, 2], [0, -2], [1, 1], [-1, 1], [1, -1], [-1, -1]]) if (macro.water[idx(x + dx, y + dy)] === 3) { near = 1; break; }
-      if (near) elevation[i] = Math.max(22, elevation[i] - (near === 2 ? 14 : 7));
-    }
+    for (let i = 0; i < a.length; i++) elevation[i] = a[i] < 0 ? 0 : a[i] > 255 ? 255 : a[i];
   } else
   (function elevationModel() {
     const N = WORLD_W * WORLD_H;

@@ -151,6 +151,23 @@ if (mode !== undefined && process.argv[3] !== undefined) {
 
 const byClass = {}; const byChunk = {};
 for (const d of defects) { byClass[d.cls] = (byClass[d.cls] || 0) + 1; const k = chunkOf(d); byChunk[k] = (byChunk[k] || 0) + 1; }
+
+// `spiral` — every chunk in center-out spiral order (the crawl coverage list;
+// see docs/MAP_DESIGN_PASS.md). Prints defect count per chunk so the crawl can
+// confirm it visited each one, not just the worst.
+if (mode === 'spiral') {
+  const cols = W / CS, rows = H / CS;
+  const cx0 = cols >> 1, cy0 = rows >> 1, seen = new Set(), order = [];
+  const push = (px, py) => { if (px >= 0 && py >= 0 && px < cols && py < rows && !seen.has(px + ',' + py)) { seen.add(px + ',' + py); order.push([px, py]); } };
+  let x = cx0, y = cy0, step = 1, d = 0; push(x, y);
+  const dirs = [[1, 0], [0, 1], [-1, 0], [0, -1]];
+  while (order.length < cols * rows) { for (let twice = 0; twice < 2; twice++) { const [dx, dy] = dirs[d % 4]; for (let s = 0; s < step; s++) { x += dx; y += dy; push(x, y); } d++; } step++; }
+  let clean = 0;
+  for (let r = 0; r < order.length; r++) { const [cx, cy] = order[r]; const n = byChunk[`c${cx},r${cy}`] || 0; if (!n) clean++; else console.log(`  #${String(r + 1).padStart(3)}  c${cx},r${cy}  ${n} defects`); }
+  console.log(`\n${clean}/${order.length} chunks defect-clean (spiral from center c${cx0},r${cy0}).`);
+  process.exit(0);
+}
+
 console.log('\nMAP DEFECT SCAN');
 console.log('─'.repeat(50));
 for (const [k, v] of Object.entries(byClass).sort((a, b) => b[1] - a[1])) console.log(`  ${k.padEnd(14)} ${v}`);
