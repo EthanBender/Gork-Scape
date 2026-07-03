@@ -829,6 +829,8 @@ function rightClickMenu(pointer, tx, ty, npc, obj, ground, fire) {
   if (npc && npc.type === 'guard') {
     opts.push(['Attack ' + npcLabelText(npc), () => startAttack(npc)]);
   } else if (npc && npc.type === 'elder') {
+    // [economy lane] the Banker gets a direct "Bank" verb (both open the vault).
+    if (npc.id === 'banker') opts.push(['Bank', () => talkTo(npc)]);
     opts.push(['Talk-to ' + npc.name, () => talkTo(npc)]);
   } else if (fire) { // [economy lane] temporary firemaking fire
     opts.push(['Cook at Fire', () => startInteract(fire)]);
@@ -842,6 +844,11 @@ function rightClickMenu(pointer, tx, ty, npc, obj, ground, fire) {
     const planted = Farming.cropAt(key);
     const verb = planted ? (Farming.isReady(key) ? 'Harvest' : 'Inspect') : 'Plant at';
     opts.push([`${verb} ${obj.label}`, () => startInteract(obj)]);
+  } else if (obj && obj.label === 'Bank') {
+    // [economy lane] right-click the Bank counter to open the vault (matches the
+    // left-click interaction) — same "Bank" verb as the Banker.
+    opts.push(['Bank', () => startInteract(obj)]);
+    opts.push(['Examine Bank', () => Game.log('The Bank of Gorkholm.')]);
   } else if (obj) {
     opts.push(['Examine ' + obj.label, () => Game.log(`${obj.label}.`)]);
   }
