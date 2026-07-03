@@ -74,6 +74,7 @@ import { drawAvatar } from './render/avatar.js';
 import { gearHints, weaponStyleFor, bodyTypeFor, footprintFor } from './render/gear.js';
 import { avatarStateFor, playerSkillTarget, drawSkillFx, AV_SCALE, AV_FEET, AV_TOP } from './render/characters.js';
 import { drawProp } from './render/props.js'; // [char-render] structure props (anvil/chest/stall/…) replace flat squares
+import { loadTerrainArt, terrainArtUrl } from './render/terrainArt.js'; // [char-render] optional real ground-tile art (falls back to procedural)
 
 const tilePx = (t) => t * TILE_SIZE + TILE_SIZE / 2;
 const manhattan = (ax, ay, bx, by) => Math.abs(ax - bx) + Math.abs(ay - by);
@@ -491,6 +492,7 @@ function create() {
   this.cameras.main.ignore(miniGfx);
   uiCam.ignore([terrainGfx, objectsGfx, decorGfx, groundGfx, entitiesGfx, playerLabel]); // pooled NPC labels get uiCam.ignore on creation (see updateLabels)
   this.scale.on('resize', (size) => uiCam.setSize(size.width, size.height));
+  initTerrainArt(this); // [char-render] load any real ground-tile art (no-op if none)
 
   // Compass "N" marker — rides the HUD camera (screen-space, upright), repositioned
   // each frame around the compass dial to point at world-north. Main cam ignores it.
@@ -2128,8 +2130,48 @@ function detailField(g, px, py, color) {
   for (let fy = py + 4; fy < py + TS - 1; fy += 6) g.fillRect(px, fy, TS + 1, 1);
 }
 
+// [char-render] Optional real ground-tile art. Each tile id maps to an art-key
+// (the file stem); when that key's texture is loaded, drawTerrain blits a pooled
+// image instead of the procedural fill+detail. Empty manifest / no texture => the
+// map stays 100% procedural (this whole path is skipped). See terrainArt.js.
+const TERRAIN_ART_KEY = {
+  [T.GRASS]: 'grass', [T.GRASS2]: 'grass2', [T.GRASS3]: 'grass', [T.GRASS_SHADOW]: 'grass',
+  [T.WATER]: 'water', [T.WATER_DEEP]: 'water', [T.WATER_SHALLOW]: 'water',
+  [T.DIRT]: 'dirt', [T.ROAD]: 'dirt', [T.DIRT_SHADOW]: 'dirt',
+  [T.ROCK]: 'rock', [T.ROCK2]: 'rock', [T.CLIFF]: 'rock',
+};
+let terrainArtScene = null;              // scene ref for creating pooled images
+const terrainTexReady = new Set();       // art-keys whose PNG texture has loaded
+const terrainArtPool = [];               // reused Phaser.Image bobs for arted tiles
+let terrainArtCursor = 0;                // per-frame pool cursor
+
+// Load the terrain manifest, preload each listed tile texture, mark it ready.
+// Called once from create(); safe no-op when the manifest is empty/absent.
+function initTerrainArt(scene) {
+  terrainArtScene = scene;
+  loadTerrainArt().then((keys) => {
+    if (!keys.length) return;
+    const need = keys.filter((k) => !scene.textures.exists('terr_' + k));
+    if (!need.length) { keys.forEach((k) => terrainTexReady.add(k)); return; }
+    need.forEach((k) => scene.load.image('terr_' + k, terrainArtUrl(k)));
+    scene.load.once('complete', () => keys.forEach((k) => { if (scene.textures.exists('terr_' + k)) terrainTexReady.add(k); }));
+    scene.load.start();
+  });
+}
+function terrainBlit(px, topY, texKey) {
+  let img = terrainArtPool[terrainArtCursor];
+  if (!img) {
+    img = terrainArtScene.add.image(0, 0, texKey).setOrigin(0, 0).setDepth(0.05);
+    if (uiCam) uiCam.ignore(img);         // world layer: main cam only, never the HUD cam
+    terrainArtPool[terrainArtCursor] = img;
+  }
+  img.setTexture(texKey).setPosition(px, topY).setDisplaySize(TILE_SIZE + 1, TILE_SIZE + 1).setVisible(true);
+  terrainArtCursor++;
+}
+
 function drawTerrain() {
   const g = terrainGfx; g.clear();
+  terrainArtCursor = 0;                   // recycle the art-image pool this frame
   const v = viewRange();
   const W = Game.world.W, H = Game.world.H, ter = Game.world.terrain, elev = Game.world.elevation;
   const TS = TILE_SIZE;
@@ -2145,6 +2187,10 @@ function drawTerrain() {
         const side = lift - (eSouth - ELEV_BASE) * ELEV_K; // px of front face exposed above the tile in front
         if (side > 0.5) { g.fillStyle(shadeColor(color, 0.5), 1); g.fillRect(px, topY + TS - 1, TS + 1, side + 2); }
       }
+      // real ground art (if this tile's texture is loaded) replaces the procedural
+      // fill+detail; the elevation side-face above still draws for 2.5D depth.
+      const artKey = TERRAIN_ART_KEY[t];
+      if (artKey && terrainTexReady.has(artKey)) { terrainBlit(px, topY, 'terr_' + artKey); continue; }
       g.fillStyle(color, 1);
       g.fillRect(px, topY, TS + 1, TS + 1);
       switch (t) {
@@ -2158,6 +2204,8 @@ function drawTerrain() {
       }
     }
   }
+  // hide any pooled art images not used this frame (view shrank / fewer arted tiles)
+  for (let k = terrainArtCursor; k < terrainArtPool.length; k++) terrainArtPool[k].setVisible(false);
 }
 
 // [economy lane] Procedural art for post-gen world objects that used to render as

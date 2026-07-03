@@ -1,0 +1,4 @@
+{
+  "_note": "Terrain tile-keys that have real PNG art at assets/terrain/<key>.png. Empty = the game draws the procedural tiles. Add a key here once its PNG is dropped in and it re-skins that ground everywhere. See docs/TERRAIN_ART_SPEC.md.",
+  "tiles": []
+}
