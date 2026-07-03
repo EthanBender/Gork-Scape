@@ -23,6 +23,7 @@ export function propKind(label = '') {
   if (/deposit|\bbank\b|coffer|lockbox|hidden chest|\bchest\b|storage|vault/.test(n)) return 'chest';
   if (/tavern|\binn\b|\bpub\b|alehouse|brewery/.test(n)) return 'barrel';
   if (/barrel|keg|cask/.test(n)) return 'barrel';
+  if (/market cross|obelisk|monument|standing stone|memorial/.test(n)) return 'monument';
   if (/stall|market|shack|bait|tackle|produce|grocer|fishmonger|fletcher|lumber stall|shop|store/.test(n)) return 'stall';
   if (/weapon rack|armou?r|\brack\b/.test(n)) return 'weaponrack';
   if (/dummy/.test(n)) return 'dummy';
