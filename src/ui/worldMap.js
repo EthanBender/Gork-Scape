@@ -128,6 +128,7 @@ function buildTerrainBuffer() {
   terrainBuf = buf;
 }
 const hexCss = (n) => '#' + ((n == null ? 0x808080 : n) >>> 0 & 0xffffff).toString(16).padStart(6, '0');
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
 // ---- view state -------------------------------------------------------------
 const view = { scale: 4, cx: 500, cy: 500 };  // scale = px per tile; (cx,cy) = world tile at canvas center
@@ -208,24 +209,88 @@ function makeMarkerEls() {
 }
 
 // ---- legend -----------------------------------------------------------------
+// Small no-emoji "eye" glyph for the show/hide toggle.
+const EYE_SVG = '<svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="3" fill="currentColor"/><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>';
 function buildLegend() {
   const present = [...new Set(markers.map((m) => m.cat))];
   const ordered = CATEGORIES.filter((c) => present.includes(c.key));
   els.legend.innerHTML = ordered.map((c) => {
     const n = markers.filter((m) => m.cat === c.key).length;
     const off = hidden.has(c.key) ? ' zmap-off' : '';
-    return `<button class="zmap-lg${off}" data-cat="${c.key}">
-      <span class="zmap-lg-ico" style="color:${c.color}">${icon(c.ico) || ''}</span>
-      <span class="zmap-lg-lbl">${c.label}</span><span class="zmap-lg-n">${n}</span></button>`;
+    return `<div class="zmap-lg${off}" data-cat="${c.key}">
+      <button class="zmap-lg-main" title="Show all ${esc(c.label)} on the map">
+        <span class="zmap-lg-ico" style="color:${c.color}">${icon(c.ico) || ''}</span>
+        <span class="zmap-lg-lbl">${esc(c.label)}</span><span class="zmap-lg-n">${n}</span>
+      </button>
+      <button class="zmap-lg-eye" title="Show / hide on map">${EYE_SVG}</button>
+    </div>`;
   }).join('');
-  els.legend.querySelectorAll('.zmap-lg').forEach((b) => {
-    b.onclick = () => {
-      const k = b.dataset.cat;
+  els.legend.querySelectorAll('.zmap-lg').forEach((row) => {
+    const k = row.dataset.cat;
+    row.querySelector('.zmap-lg-main').onclick = () => flashCategory(k);   // OSRS "Key": flash all of this type
+    row.querySelector('.zmap-lg-eye').onclick = () => {
       if (hidden.has(k)) hidden.delete(k); else hidden.add(k);
-      b.classList.toggle('zmap-off');
+      row.classList.toggle('zmap-off');
       positionMarkers();
     };
   });
+}
+function syncLegendOff() {
+  if (!els) return;
+  els.legend.querySelectorAll('.zmap-lg').forEach((row) => row.classList.toggle('zmap-off', hidden.has(row.dataset.cat)));
+}
+
+// ---- search / locate / flash (Phase 2) --------------------------------------
+// 8-way compass from the player to a tile. y grows downward (south).
+function dirTo(dx, dy) {
+  if (!dx && !dy) return 'here';
+  const a = (Math.atan2(dy, dx) * 180 / Math.PI + 360) % 360;
+  return ['E', 'SE', 'S', 'SW', 'W', 'NW', 'N', 'NE'][Math.round(a / 45) % 8];
+}
+function distFrom(p, m) { return Math.round(Math.hypot(m.x - p.tileX, m.y - p.tileY)); }
+
+// Pulse a set of markers (make them visible first) so the eye is drawn to them.
+function flashMarkers(list) {
+  for (const m of list) {
+    if (!m.el) continue;
+    hidden.delete(m.cat);
+    m.el.style.display = 'block';
+    m.el.classList.remove('zmap-flash'); void m.el.offsetWidth;  // restart the animation
+    m.el.classList.add('zmap-flash');
+  }
+  positionMarkers();
+  syncLegendOff();
+}
+// Center the view on a marker (zoom in a touch) and flash it.
+function locate(m) {
+  view.cx = m.x; view.cy = m.y;
+  view.scale = Math.max(view.scale, 5);
+  render();
+  flashMarkers([m]);
+}
+function flashCategory(cat) { flashMarkers(markers.filter((m) => m.cat === cat)); }
+
+function runSearch(q) {
+  const s = (q || '').trim().toLowerCase();
+  const box = els.results;
+  if (!s) { box.innerHTML = ''; box.classList.remove('zmap-has'); return; }
+  const p = Game.player || { tileX: WORLD_W / 2, tileY: WORLD_H / 2 };
+  const hits = markers
+    .filter((m) => m.name.toLowerCase().includes(s) || (CAT[m.cat] && CAT[m.cat].label.toLowerCase().includes(s)))
+    .map((m) => ({ m, d: distFrom(p, m) }))
+    .sort((a, b) => a.d - b.d)
+    .slice(0, 14);
+  box.classList.add('zmap-has');
+  if (!hits.length) { box.innerHTML = `<div class="zmap-nohit">No match for “${esc(s)}”.</div>`; return; }
+  box.innerHTML = hits.map(({ m, d }, i) => {
+    const c = CAT[m.cat] || CAT.landmark;
+    const dir = dirTo(m.x - p.tileX, m.y - p.tileY);
+    return `<button class="zmap-res" data-i="${i}">
+      <span class="zmap-res-ico" style="color:${c.color}">${icon(c.ico) || ''}</span>
+      <span class="zmap-res-nm">${esc(m.name)}</span>
+      <span class="zmap-res-d">${dir === 'here' ? 'here' : `${d}·${dir}`}</span></button>`;
+  }).join('');
+  box.querySelectorAll('.zmap-res').forEach((b) => { b.onclick = () => locate(hits[+b.dataset.i].m); });
 }
 
 // ---- open / close -----------------------------------------------------------
@@ -236,6 +301,7 @@ function open() {
   markers = buildMarkers();
   makeMarkerEls();
   buildLegend();
+  els.search.value = ''; runSearch('');
   // center on the player at a comfortable zoom the first time
   const p = Game.player;
   if (p) { view.cx = p.tileX; view.cy = p.tileY; }
@@ -277,7 +343,14 @@ function ensureDom() {
           <div class="zmap-you" title="You are here"></div>
           <div class="zmap-hint">drag to pan · scroll to zoom</div>
         </div>
-        <div class="zmap-legend"></div>
+        <div class="zmap-side">
+          <div class="zmap-search-wrap">
+            <input class="zmap-search" type="text" autocomplete="off" spellcheck="false"
+                   placeholder="Search: bank, cooking range, shop…" />
+            <div class="zmap-results"></div>
+          </div>
+          <div class="zmap-legend"></div>
+        </div>
       </div>
     </div>`;
   document.body.appendChild(overlay);
@@ -289,6 +362,8 @@ function ensureDom() {
     markerLayer: overlay.querySelector('.zmap-markers'),
     player: overlay.querySelector('.zmap-you'),
     legend: overlay.querySelector('.zmap-legend'),
+    search: overlay.querySelector('.zmap-search'),
+    results: overlay.querySelector('.zmap-results'),
   };
   wireInput();
 }
@@ -336,6 +411,12 @@ function wireInput() {
   stage.addEventListener('pointerup', end);
   stage.addEventListener('pointercancel', end);
   window.addEventListener('resize', () => { if (isOpen()) { sizeCanvas(); render(); } });
+  // search box (Phase 2): predictive, distance-sorted; Enter locates the top hit.
+  els.search.addEventListener('input', () => runSearch(els.search.value));
+  els.search.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { const first = els.results.querySelector('.zmap-res'); if (first) first.click(); }
+    else if (e.key === 'Escape' && els.search.value) { e.stopImmediatePropagation(); els.search.value = ''; runSearch(''); }
+  });
 }
 
 function injectCss() {
@@ -370,17 +451,41 @@ function injectCss() {
   .zmap-you::after { content:""; position:absolute; inset:5px; background:#fff; border-radius:50%; }
   .zmap-hint { position:absolute; left:10px; bottom:8px; color:#cdc3a6; font-size:11px; opacity:.7;
     background:rgba(10,10,8,.5); padding:2px 7px; border-radius:5px; pointer-events:none; }
-  .zmap-legend { width:210px; flex:0 0 210px; overflow-y:auto; padding:8px; background:#1a170f;
-    border-left:2px solid #0d0c08; display:flex; flex-direction:column; gap:3px; }
-  .zmap-lg { display:flex; align-items:center; gap:8px; padding:5px 7px; border-radius:6px; cursor:pointer;
-    background:transparent; border:1px solid transparent; color:#e9e2cf; font-size:12px; text-align:left; width:100%; }
+  .zmap-side { width:232px; flex:0 0 232px; display:flex; flex-direction:column; min-height:0;
+    background:#1a170f; border-left:2px solid #0d0c08; }
+  .zmap-search-wrap { padding:8px 8px 5px; border-bottom:1px solid #0d0c08; }
+  .zmap-search { width:100%; box-sizing:border-box; padding:7px 9px; font-size:12px; color:#efe8d4;
+    background:#14130f; border:1px solid #3a3527; border-radius:6px; font-family:inherit; }
+  .zmap-search::placeholder { color:#8a8168; }
+  .zmap-search:focus { outline:none; border-color:#8a7a3a; }
+  .zmap-results { max-height:44%; overflow-y:auto; display:flex; flex-direction:column; gap:2px; }
+  .zmap-results.zmap-has { margin-top:5px; }
+  .zmap-res { display:flex; align-items:center; gap:7px; padding:5px 6px; border-radius:5px; cursor:pointer;
+    background:transparent; border:1px solid transparent; color:#e9e2cf; font-size:12px; text-align:left; width:100%; font-family:inherit; }
+  .zmap-res:hover { background:#2a2519; border-color:#3a3527; }
+  .zmap-res-ico { width:16px; height:16px; flex:0 0 16px; } .zmap-res-ico svg { width:100%; height:100%; display:block; }
+  .zmap-res-nm { flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .zmap-res-d { color:#8a8168; font-size:10px; flex:0 0 auto; }
+  .zmap-nohit { color:#8a8168; font-size:11px; font-style:italic; padding:4px 6px; }
+  .zmap-legend { flex:1; overflow-y:auto; padding:6px; display:flex; flex-direction:column; gap:2px; }
+  .zmap-lg { display:flex; align-items:center; border-radius:6px; border:1px solid transparent; }
   .zmap-lg:hover { background:#26221a; border-color:#3a3527; }
   .zmap-lg.zmap-off { opacity:.4; }
-  .zmap-lg-ico { width:18px; height:18px; flex:0 0 18px; }
-  .zmap-lg-ico svg { width:100%; height:100%; display:block; }
-  .zmap-lg-lbl { flex:1; }
+  .zmap-lg-main { flex:1; display:flex; align-items:center; gap:8px; padding:5px 7px; cursor:pointer; min-width:0;
+    background:none; border:none; color:#e9e2cf; font-size:12px; text-align:left; font-family:inherit; }
+  .zmap-lg-ico { width:18px; height:18px; flex:0 0 18px; } .zmap-lg-ico svg { width:100%; height:100%; display:block; }
+  .zmap-lg-lbl { flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .zmap-lg-n { color:#8a8168; font-size:11px; }
-  @media (max-width:620px){ .zmap-legend{ width:150px; flex-basis:150px; } .zmap-panel{ height:94vh; } }
+  .zmap-lg-eye { flex:0 0 24px; width:24px; height:26px; background:none; border:none; cursor:pointer; color:#7a7256; padding:0; }
+  .zmap-lg-eye:hover { color:#e8c65a; } .zmap-lg-eye svg { width:15px; height:15px; display:block; margin:auto; }
+  .zmap-off .zmap-lg-eye { color:#4a4638; }
+  .zmap-mk.zmap-flash { animation:zmapFlash 1.9s ease-out; z-index:5; }
+  @keyframes zmapFlash {
+    0%,100% { transform:scale(1); }
+    12% { transform:scale(2.2); filter:drop-shadow(0 0 6px #fff) drop-shadow(0 0 13px var(--mk)); }
+    60% { transform:scale(1.35); filter:drop-shadow(0 0 5px var(--mk)); }
+  }
+  @media (max-width:620px){ .zmap-side{ width:168px; flex-basis:168px; } .zmap-panel{ height:94vh; } }
   `;
   document.head.appendChild(s);
 }
