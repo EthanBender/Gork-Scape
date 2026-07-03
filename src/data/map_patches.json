@@ -3188,6 +3188,38 @@
      "to": "GRASS"
     }
    ]
+  },
+  {
+   "id": "crawl-c5r2-water-speckle",
+   "why": "Two orphan-wall tiles at (548,296),(550,296) sat in open water; the sweep grassed them, leaving grass-in-water speckles. Set to WATER to blend into the shallows. Also clears a decor left on (548,296).",
+   "ops": [
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       548,
+       296
+      ],
+      [
+       550,
+       296
+      ]
+     ],
+     "to": "WATER"
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      548,
+      296,
+      548,
+      296
+     ],
+     "types": [
+      "decor"
+     ]
+    }
+   ]
   }
  ]
 }
