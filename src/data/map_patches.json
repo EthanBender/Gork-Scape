@@ -31,6 +31,13 @@
    ]
   },
   {
+   "id": "wilds-ford-74-149",
+   "why": "MACRO connectivity (owner-approved): the 7642-tile north 'Goblin Wilds' was stranded from spawn (audit_world warning). Its whole region touches reachable ground across ONE shallow-water tile at (74,149) — the natural narrowest crossing, flanked by deep water. A footbridge/ford here reclaims all ~7643 tiles, giving the Wilds its entrance and un-stranding the sealed_room + treeline slivers for local cleanup. trail lays dirt approaches + a bridge (runs before the texture pass, so the ford tile is still base WATER and bridges cleanly).",
+   "ops": [
+    { "op": "trail", "from": [72, 149], "to": [76, 149] }
+   ]
+  },
+  {
    "id": "c0r2-crag-courtyards",
    "why": "c0,r2 (Goblin Wilds mountain edge): 8 dead_pockets + 43 sealed trees. The pockets are tree-walled grass courtyards pinned between the crag and the Willow river; a Charred Homestead and a Dropped Coin Purse were sealed inside/on the rock. Fix = open the treelines so each courtyard (and its POI) becomes reachable, clear the ~20 trees stranded on the bare rock shoulder, and cut a dirt doorstep to the coin purse the earlier rock-fill had buried. Removal-only + one un-rock cell, so no new slivers/orphans possible.",
    "ops": [
