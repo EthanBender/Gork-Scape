@@ -44,7 +44,8 @@ export function propKind(label = '') {
   if (/potion|cauldron|witch|brew|alchemy|herb/.test(n)) return 'cauldron';
   if (/fire|campfire|hearth|range/.test(n)) return 'fire';
   if (/coal/.test(n)) return 'coalheap';
-  if (/log|lumber|saw/.test(n)) return 'logpile';
+  if (/stump/.test(n)) return 'stump';
+  if (/log|lumber|saw|timber/.test(n)) return 'logpile';
   if (/ore cart|cart|wagon/.test(n)) return 'cart';
   if (/rock|rubble|heap|pile/.test(n)) return 'rockpile';
   if (/war table|workbench|\btable\b|potion station/.test(n)) return 'table';
@@ -184,6 +185,14 @@ function pile(g, X, Y, c, cd) {
   g.fillStyle(c, 1); g.fillCircle(X, Y + 3, 5); g.fillCircle(X - 5, Y + 5, 3); g.fillCircle(X + 5, Y + 5, 3);
   g.fillStyle(shade(c, 1.35), 1); g.fillCircle(X - 1, Y + 1, 1.6);
 }
+function stump(g, X, Y) {
+  g.fillStyle(0x5a3a20, 1); g.fillEllipse(X, Y + 8, 15, 6);             // ground shadow/roots
+  g.fillStyle(0x6a4a2a, 1); g.fillRect(X - 6, Y - 1, 12, 9);            // bark side
+  g.fillStyle(0x8a6a44, 1); g.fillEllipse(X, Y - 1, 12, 5);            // cut top
+  g.fillStyle(0xcaa46a, 1); g.fillEllipse(X, Y - 1, 8, 3.2);           // inner rings
+  g.lineStyle(0.7, 0x9a7a4a, 1); g.strokeEllipse(X, Y - 1, 5, 2);
+  g.fillStyle(0x3a2a18, 1); g.fillRect(X - 1, Y - 2, 2, 3);             // axe notch
+}
 function logpile(g, X, Y) {
   for (const [dx, dy] of [[-5, 6], [0, 6], [5, 6], [-2.5, 1.5], [2.5, 1.5]]) {
     g.fillStyle(WOOD, 1); g.fillCircle(X + dx, Y + dy, 3.2);
@@ -316,7 +325,7 @@ function bush(g, X, Y, accent) {
 const DRAW = {
   anvil, chest, barrel, stall, exchange, weaponrack, dummy, banner, tower, throne, well,
   shrine, cauldron, fire, coalheap, rockpile, logpile, cart, table, hiderack, bin,
-  entrance, sign, crate, hut, ladder, lamp, fence, bush, monument, fountain, flowers, planter, bench,
+  entrance, sign, crate, hut, ladder, lamp, fence, bush, monument, fountain, flowers, planter, bench, stump,
 };
 
 // Entry point: draw the prop for object `o` at tile top-left (cx,cy).

@@ -17259,6 +17259,878 @@
      "shape": "rect"
     }
    ]
+  },
+  {
+   "id": "region-mossreach-woodcamp",
+   "note": "Mossreach regional identity — turn the bare woodcut camp into a LOGGING SETTLEMENT: a widened dirt log-yard, a Timber Sawmill + stacked-timber landing by the West Road (the region anchor), a Timber Lodge cabin, a cut-over clearing of stumps, split-log fences, a charcoal kiln + woodsmoke, a carved Forest Totem greeting the road, sawdust/wood-chip ground scatter. Keeps the Woodcutting Hut, Saw Pit, log piles, campfire, Woodcutter Splinter, oaks + mushroom node. Guarded (land + not on trees/structures); reachability + coherence simulated.",
+   "ops": [
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       230,
+       453
+      ],
+      [
+       231,
+       453
+      ],
+      [
+       232,
+       453
+      ],
+      [
+       233,
+       453
+      ],
+      [
+       234,
+       453
+      ],
+      [
+       235,
+       453
+      ],
+      [
+       236,
+       453
+      ],
+      [
+       237,
+       453
+      ],
+      [
+       238,
+       453
+      ],
+      [
+       239,
+       453
+      ],
+      [
+       240,
+       453
+      ],
+      [
+       241,
+       453
+      ],
+      [
+       242,
+       453
+      ],
+      [
+       243,
+       453
+      ],
+      [
+       244,
+       453
+      ],
+      [
+       232,
+       454
+      ],
+      [
+       233,
+       454
+      ],
+      [
+       234,
+       454
+      ],
+      [
+       235,
+       454
+      ],
+      [
+       236,
+       454
+      ],
+      [
+       237,
+       454
+      ],
+      [
+       238,
+       454
+      ],
+      [
+       239,
+       454
+      ],
+      [
+       240,
+       454
+      ],
+      [
+       241,
+       454
+      ],
+      [
+       242,
+       454
+      ],
+      [
+       243,
+       454
+      ],
+      [
+       244,
+       454
+      ],
+      [
+       233,
+       455
+      ],
+      [
+       234,
+       455
+      ],
+      [
+       235,
+       455
+      ],
+      [
+       236,
+       455
+      ],
+      [
+       237,
+       455
+      ],
+      [
+       238,
+       455
+      ],
+      [
+       239,
+       455
+      ],
+      [
+       240,
+       455
+      ],
+      [
+       241,
+       455
+      ],
+      [
+       242,
+       455
+      ],
+      [
+       243,
+       455
+      ],
+      [
+       244,
+       455
+      ],
+      [
+       234,
+       456
+      ],
+      [
+       235,
+       456
+      ],
+      [
+       236,
+       456
+      ],
+      [
+       237,
+       456
+      ],
+      [
+       238,
+       456
+      ],
+      [
+       239,
+       456
+      ],
+      [
+       240,
+       456
+      ],
+      [
+       241,
+       456
+      ],
+      [
+       242,
+       456
+      ],
+      [
+       243,
+       456
+      ],
+      [
+       244,
+       456
+      ],
+      [
+       234,
+       457
+      ],
+      [
+       235,
+       457
+      ],
+      [
+       236,
+       457
+      ],
+      [
+       237,
+       457
+      ],
+      [
+       238,
+       457
+      ],
+      [
+       239,
+       457
+      ],
+      [
+       240,
+       457
+      ],
+      [
+       241,
+       457
+      ],
+      [
+       242,
+       457
+      ],
+      [
+       243,
+       457
+      ],
+      [
+       244,
+       457
+      ],
+      [
+       235,
+       458
+      ],
+      [
+       236,
+       458
+      ],
+      [
+       237,
+       458
+      ],
+      [
+       238,
+       458
+      ],
+      [
+       239,
+       458
+      ],
+      [
+       240,
+       458
+      ],
+      [
+       241,
+       458
+      ],
+      [
+       242,
+       458
+      ],
+      [
+       243,
+       458
+      ],
+      [
+       244,
+       458
+      ],
+      [
+       235,
+       459
+      ],
+      [
+       236,
+       459
+      ],
+      [
+       237,
+       459
+      ],
+      [
+       238,
+       459
+      ],
+      [
+       239,
+       459
+      ],
+      [
+       240,
+       459
+      ],
+      [
+       241,
+       459
+      ],
+      [
+       242,
+       459
+      ],
+      [
+       243,
+       459
+      ],
+      [
+       244,
+       459
+      ],
+      [
+       235,
+       460
+      ],
+      [
+       236,
+       460
+      ],
+      [
+       237,
+       460
+      ],
+      [
+       238,
+       460
+      ],
+      [
+       239,
+       460
+      ],
+      [
+       240,
+       460
+      ],
+      [
+       241,
+       460
+      ],
+      [
+       242,
+       460
+      ],
+      [
+       243,
+       460
+      ],
+      [
+       244,
+       460
+      ],
+      [
+       235,
+       461
+      ],
+      [
+       236,
+       461
+      ],
+      [
+       237,
+       461
+      ],
+      [
+       238,
+       461
+      ],
+      [
+       239,
+       461
+      ],
+      [
+       240,
+       461
+      ],
+      [
+       241,
+       461
+      ],
+      [
+       242,
+       461
+      ],
+      [
+       243,
+       461
+      ],
+      [
+       244,
+       461
+      ],
+      [
+       236,
+       462
+      ],
+      [
+       237,
+       462
+      ],
+      [
+       238,
+       462
+      ],
+      [
+       239,
+       462
+      ],
+      [
+       240,
+       462
+      ],
+      [
+       241,
+       462
+      ],
+      [
+       235,
+       463
+      ],
+      [
+       236,
+       463
+      ],
+      [
+       237,
+       463
+      ],
+      [
+       238,
+       463
+      ],
+      [
+       239,
+       463
+      ],
+      [
+       240,
+       463
+      ],
+      [
+       241,
+       463
+      ],
+      [
+       235,
+       464
+      ],
+      [
+       236,
+       464
+      ],
+      [
+       237,
+       464
+      ],
+      [
+       238,
+       464
+      ],
+      [
+       239,
+       464
+      ],
+      [
+       240,
+       464
+      ],
+      [
+       241,
+       464
+      ],
+      [
+       242,
+       464
+      ],
+      [
+       243,
+       464
+      ],
+      [
+       234,
+       468
+      ],
+      [
+       235,
+       468
+      ],
+      [
+       236,
+       468
+      ],
+      [
+       237,
+       468
+      ],
+      [
+       238,
+       468
+      ],
+      [
+       239,
+       468
+      ],
+      [
+       240,
+       468
+      ],
+      [
+       241,
+       468
+      ],
+      [
+       242,
+       468
+      ],
+      [
+       243,
+       468
+      ],
+      [
+       244,
+       468
+      ],
+      [
+       233,
+       469
+      ],
+      [
+       234,
+       469
+      ],
+      [
+       235,
+       469
+      ],
+      [
+       236,
+       469
+      ],
+      [
+       237,
+       469
+      ],
+      [
+       238,
+       469
+      ],
+      [
+       239,
+       469
+      ],
+      [
+       240,
+       469
+      ],
+      [
+       241,
+       469
+      ],
+      [
+       242,
+       469
+      ],
+      [
+       243,
+       469
+      ],
+      [
+       244,
+       469
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "object",
+     "x": 233,
+     "y": 456,
+     "label": "Timber Sawmill",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 235,
+     "y": 458,
+     "label": "Timber Stack",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 237,
+     "y": 457,
+     "label": "Timber Stack",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 236,
+     "y": 460,
+     "label": "Timber Stack",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 240,
+     "y": 462,
+     "label": "Log Landing Stack",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 242,
+     "y": 464,
+     "label": "Timber Stack",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 226,
+     "y": 454,
+     "label": "Timber Lodge",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 228,
+     "y": 453,
+     "label": "Cut Stump",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 231,
+     "y": 454,
+     "label": "Cut Stump",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 225,
+     "y": 456,
+     "label": "Cut Stump",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 229,
+     "y": 458,
+     "label": "Cut Stump",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 227,
+     "y": 461,
+     "label": "Cut Stump",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 232,
+     "y": 462,
+     "label": "Cut Stump",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 224,
+     "y": 464,
+     "label": "Cut Stump",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 238,
+     "y": 454,
+     "label": "Cut Stump",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 224,
+     "y": 453,
+     "label": "Split-Log Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 244,
+     "y": 456,
+     "label": "Split-Log Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 244,
+     "y": 460,
+     "label": "Split-Log Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 223,
+     "y": 466,
+     "label": "Split-Log Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 227,
+     "y": 468,
+     "label": "Split-Log Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 238,
+     "y": 466,
+     "label": "Charcoal Kiln",
+     "color": 2763306,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 239,
+     "y": 468,
+     "label": "Kiln Fire",
+     "color": 16742954,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 243,
+     "y": 461,
+     "label": "Forest Totem",
+     "color": 6978122,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 230,
+     "y": 466,
+     "label": "Cut Stump",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 228,
+     "y": 465,
+     "label": "Woodcutter Bench",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 234,
+     "y": 457,
+     "color": 12361850,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 236,
+     "y": 458,
+     "color": 12361850,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 232,
+     "y": 459,
+     "color": 12361850,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 235,
+     "y": 461,
+     "color": 12361850,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 231,
+     "y": 463,
+     "color": 12361850,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 238,
+     "y": 463,
+     "color": 12361850,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 229,
+     "y": 456,
+     "color": 12361850,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 227,
+     "y": 455,
+     "color": 9071172,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 225,
+     "y": 462,
+     "color": 9071172,
+     "size": 4,
+     "shape": "circle"
+    }
+   ]
   }
  ]
 }
