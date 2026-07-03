@@ -26,6 +26,13 @@ function sanitizeGear(g) {
   return out;
 }
 
+// A player's live gathering signal (so others render them mining/chopping/etc.).
+// Whitelisted so a client can't push arbitrary strings into everyone's render.
+const SKILLS = new Set(['Woodcutting', 'Mining', 'Fishing', 'Smithing', 'Cooking', 'Crafting', 'Farming']);
+const DIRS = new Set(['N', 'E', 'S', 'W']);
+const sanitizeSkill = (v) => (SKILLS.has(v) ? v : null);
+const sanitizeDir = (v) => (DIRS.has(v) ? v : null);
+
 export class Presence {
   constructor() {
     this.players = new Map(); // username -> { name, x, y, dir, combat, skin, feats, lastSeen }
@@ -42,6 +49,8 @@ export class Presence {
       x: num(data.x), y: num(data.y),
       combat: num(data.combat),
       gear: sanitizeGear(data.gear), // render hints for the player's equipment
+      skill: sanitizeSkill(data.skill), // gathering skill, or null when not skilling
+      sdir: sanitizeDir(data.sdir),     // facing toward the node while gathering
       lastSeen: now,
     });
     this._sweep(now);
@@ -49,7 +58,7 @@ export class Presence {
     const others = [];
     for (const [name, p] of this.players) {
       if (name === username) continue;
-      others.push({ name: p.name, x: p.x, y: p.y, combat: p.combat, gear: p.gear });
+      others.push({ name: p.name, x: p.x, y: p.y, combat: p.combat, gear: p.gear, skill: p.skill, sdir: p.sdir });
     }
     const chat = this.chat.filter((m) => m.id > (sinceChat || 0));
     return { players: others, chat, chatCursor: this.chatSeq, online: this.players.size };

@@ -16,6 +16,7 @@
 import { Game } from '../engine/state.js';
 import { NPC } from '../world/entities.js';
 import { gearHints } from '../render/gear.js';
+import { playerSkillTarget } from '../render/characters.js';
 import { api } from './config.js';
 import * as authClient from './authClient.js';
 
@@ -96,6 +97,10 @@ function reconcile(players) {
       if (pl.combat) npc.combatLevel = pl.combat;
       if (pl.gear) npc._gearCache = pl.gear; // keep gear live as they swap equipment
     }
+    // gathering state (null when not skilling) — makes remotes mime the tool +
+    // gather animation instead of idling; avatarStateFor() reads these.
+    const cur = remotes.get(pl.name);
+    if (cur) { cur._skill = pl.skill || null; cur._sdir = pl.sdir || null; }
   }
   for (const [name, npc] of remotes) {
     if (!seen.has(name)) {
@@ -115,10 +120,20 @@ async function beat() {
   const token = authClient.getToken();
   const p = Game.player;
   if (!token || !p) return;
+  // broadcast a gathering signal (skill + facing) so others see me mining/chopping/
+  // fishing — this is exactly the node that drives my own skill animation locally.
+  let skill = null, sdir = null;
+  const node = playerSkillTarget();
+  if (node && node.skill) {
+    skill = node.skill;
+    const dx = node.x - p.tileX, dy = node.y - p.tileY;
+    sdir = Math.abs(dx) >= Math.abs(dy) ? (dx > 0 ? 'E' : 'W') : (dy > 0 ? 'S' : 'N');
+  }
   const data = await post('/api/presence', {
     token, x: p.tileX, y: p.tileY,
     combat: Game.myCombat || 0,
     gear: gearHints(Game.equipment), // render hints so others see my real weapon/armour
+    skill, sdir,
     sinceChat: chatCursor,
   });
   if (!data) return;

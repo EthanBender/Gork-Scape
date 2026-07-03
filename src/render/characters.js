@@ -118,14 +118,27 @@ export function avatarStateFor(e, isPlayer, time, skillObj = null) {
     if (attentive) e._facing = Math.abs(dxp) >= Math.abs(dyp) ? (dxp > 0 ? 'E' : 'W') : (dyp > 0 ? 'S' : 'N');
   }
 
-  // gathering overrides walk/idle: face the node and mime the tool
-  if (skillObj && !moving) {
-    const tool = SKILL_TOOL[skillObj.skill] || SKILL_TOOL.Crafting;
-    const dx = skillObj.x - e.tileX, dy = skillObj.y - e.tileY;
+  // gathering overrides walk/idle: face the node and mime the tool. The local
+  // player gets the live node via skillObj; remote players broadcast their skill +
+  // facing over presence (e._skill / e._sdir) so others see them gathering too,
+  // instead of just standing there holding a weapon.
+  const activeSkill = skillObj ? skillObj.skill : (!isPlayer ? e._skill : null);
+  if (activeSkill && !moving) {
+    const tool = SKILL_TOOL[activeSkill] || SKILL_TOOL.Crafting;
+    let facing;
+    if (skillObj) {
+      const dx = skillObj.x - e.tileX, dy = skillObj.y - e.tileY;
+      facing = Math.abs(dx) >= Math.abs(dy) ? (dx > 0 ? 'E' : 'W') : (dy > 0 ? 'S' : 'N');
+    } else {
+      facing = e._sdir || e._facing;
+    }
     return {
-      facing: Math.abs(dx) >= Math.abs(dy) ? (dx > 0 ? 'E' : 'W') : (dy > 0 ? 'S' : 'N'),
-      anim: 'skill', skillType: tool.motion, tool: tool.hint, phase: 0, t: time,
-      weaponStyle: 'unarmed', gear: gearHints(Game.equipment), skin: 0x6fbf3f, scale: AV_SCALE,
+      facing,
+      anim: 'skill', skillType: tool.motion, tool: tool.hint, phase: 0,
+      t: isPlayer ? time : time + (e._tOff || 0),
+      weaponStyle: 'unarmed',
+      gear: isPlayer ? gearHints(Game.equipment) : (e._gearCache || gearHints({})),
+      skin: isPlayer ? 0x6fbf3f : (e.color || 0x6fbf3f), scale: AV_SCALE,
     };
   }
 
