@@ -43,11 +43,13 @@ export function shopIds() { return [...new Set(GameData.shops.map((s) => s.shop_
 // CENTRAL_REGION_DESIGN.md). Shops WITHOUT a town building (region shops like the
 // miner's camp / rival black market) are omitted and fall back to the ring.
 export const SHOP_POSTS = {
-  weapon_shop: [476, 412], armour_shop: [524, 412],   // Forge Ward (N)
-  fishing_shack: [539, 448], fishmonger: [547, 455], bait_tackle: [530, 468], // Wharf (E)
-  farming_shed: [485, 499], grocer: [471, 499], general_store: [499, 501],    // Greengate (S)
-  fletcher: [467, 455], lumber_stall: [453, 468],     // Timber Row (W)
-  tavern: [481, 468],                                 // Market Square
+  // Gorkholm (re-authored): each keeper stands on the interior floor beside its
+  // counter. Legacy town frame (main.js adds the town offset).
+  weapon_shop: [473, 415], armour_shop: [527, 415],   // Forge District (N)
+  fishing_shack: [537, 448], fishmonger: [546, 455], bait_tackle: [523, 468], // Wharf (E)
+  farming_shed: [487, 498], grocer: [473, 498], general_store: [498, 501],    // Green District (S)
+  fletcher: [469, 455], lumber_stall: [455, 468],     // Timber District (W)
+  tavern: [485, 470],                                 // the Bazaar
   // Region shops — posted at their landmark out in the world, not the town.
   miner_camp: [606, 206],          // Miners Lodge, Northern Mine Hills
   witch_hut: [250, 801],           // Witch-Goblin Hut, Mushroom Forest

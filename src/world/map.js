@@ -199,23 +199,20 @@ export function generateWorld(seed = DEFAULT_SEED, opts = {}) {
   const TB = { x0: 450, y0: 405, x1: 555, y1: 510, cx: 500, cy: 455 };
   const townOff = GEO2 ? { dx: A.settlement.x - 500, dy: A.settlement.y - 455 } : { dx: 0, dy: 0 };
   const buildTown = () => {
-    const { x0, y0, x1, y1, cx, cy } = TB;
-    // [economy lane] Gorkholm coherence pass — see CENTRAL_REGION_DESIGN.md.
-    // A goblin keep-town at the great crossroads: a fountain plaza at the heart,
-    // the Chief's gatehouse-keep guarding the north approach, four gate-WARDS each
-    // themed to the road/trade that feeds it (N=ore→forge, E=water→wharf,
-    // S=farm→greengate, W=timber→craft), and a warren of back-alley housing in the
-    // gaps. Every fixture sits where its raw materials arrive. Nothing is random.
+    const { x0, y0, x1, y1, cx, cy } = TB; // 450,405 · 555,510 · cx500 cy455
+    // ================================================================
+    // GORKHOLM — a dense goblin capital (re-authored). A walled city that
+    // reads like a PLACE: the Chief's Great Hall on the plaza at the heart,
+    // a packed market bazaar spilling south from it, four trade districts of
+    // real walled buildings hugging their gates (N forge, E wharf, S green,
+    // W timber), and a warren of alley housing filling every gap. Cobbled
+    // avenues, back lanes, lamplight, gardens. Anchors preserved so shops +
+    // quests + NPCs keep working: Bank counter (493,431), Elder (492,448),
+    // spawn plaza (500,462), Grand Exchange (~500,459), Training Yard
+    // (515,485), General Store (~499,501). Nothing random.
+    // ================================================================
     for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) setT(x, y, T.GRASS);
-    for (let y = cy - 1; y <= cy + 1; y++) for (let x = x0 + 1; x <= x1 - 1; x++) setT(x, y, T.ROAD); // E-W avenue
-    for (let x = cx - 1; x <= cx + 1; x++) for (let y = y0 + 1; y <= y1 - 1; y++) setT(x, y, T.ROAD); // N-S avenue
-    disc(cx, cy, 8, (x, y) => setT(x, y, T.FLOOR)); // plaza
-    // Fountain sits off the exact crossroads (the 4 main roads originate at cx,cy
-    // and would otherwise bridge over it); this spot stays water in the plaza.
-    const fx = cx + 4, fy = cy - 3;
-    disc(fx, fy, 1, (x, y) => setT(x, y, T.WATER)); // fountain pool
-    for (const [dx, dy] of [[2, 0], [-2, 0], [0, 2], [0, -2]]) decor(fx + dx, fy + dy, 0x8a8a7a, 4, 'rect'); // fountain rim
-    // perimeter wall + 4 road gates + gatehouse towers
+    // --- perimeter wall + 4 road gates (3 wide) + squat gate towers ---
     for (let x = x0; x <= x1; x++) { setT(x, y0, T.WALL); setT(x, y1, T.WALL); }
     for (let y = y0; y <= y1; y++) { setT(x0, y, T.WALL); setT(x1, y, T.WALL); }
     for (const g of [-1, 0, 1]) { setT(cx + g, y0, T.ROAD); setT(cx + g, y1, T.ROAD); setT(x0, cy + g, T.ROAD); setT(x1, cy + g, T.ROAD); }
@@ -223,67 +220,112 @@ export function generateWorld(seed = DEFAULT_SEED, opts = {}) {
     for (const [gx, gy] of [[x0, cy], [x1, cy]]) for (const dy of [-2, 2]) decor(gx, gy + dy, 0x555046, 6, 'rect');
     TB.gates = { N: [cx, y0 - 1], S: [cx, y1 + 1], W: [x0 - 1, cy], E: [x1 + 1, cy] };
 
-    // ---- THE KEEP: Chief's gatehouse guarding the north approach to the plaza.
-    // The N avenue passes through its central FLOOR passage; Bank/Chief in the
-    // west wing (the guarded vault), War Table/Quest Board in the east wing. ----
-    (function keep() {
-      const a0 = 489, b0 = 419, a1 = 511, b1 = 434;
+    // --- STREET SKELETON: two grand cobbled avenues + district lanes ---
+    const paveH = (y, xa, xb, w = 0) => { for (let x = xa; x <= xb; x++) for (let o = -w; o <= w; o++) if (inB(x, y + o) && getT(x, y + o) !== T.WALL) setT(x, y + o, T.ROAD); };
+    const paveV = (x, ya, yb, w = 0) => { for (let y = ya; y <= yb; y++) for (let o = -w; o <= w; o++) if (inB(x + o, y) && getT(x + o, y) !== T.WALL) setT(x + o, y, T.ROAD); };
+    paveV(cx, y0 + 1, y1 - 1, 1);   // N-S grand avenue (gate to gate)
+    paveH(cy, x0 + 1, x1 - 1, 1);   // E-W grand avenue (gate to gate)
+    // district ring lanes framing the core
+    paveH(430, 470, 530); paveH(478, 468, 532);
+    paveV(470, 432, 476); paveV(530, 432, 476);
+
+    // --- helper: a lamp post ---
+    const lamp = (x, y) => { if (getT(x, y) === T.ROAD || getT(x, y) === T.DIRT) decor(x, y, 0xe8c65a, 3, 'circle'); };
+
+    // ---- THE GREAT HALL: the Chief's seat, straddling the plaza's north.
+    // A grand keep the N-avenue passes through (central archway); Bank+Chief in
+    // the west wing, Quest Board+War Table in the east. Grand south steps. ----
+    (function greatHall() {
+      const a0 = 487, b0 = 428, a1 = 513, b1 = 446;                 // 27 x 19
       for (let y = b0; y <= b1; y++) for (let x = a0; x <= a1; x++) setT(x, y, T.FLOOR);
       for (let x = a0 - 1; x <= a1 + 1; x++) { setT(x, b0 - 1, T.WALL); setT(x, b1 + 1, T.WALL); }
       for (let y = b0 - 1; y <= b1 + 1; y++) { setT(a0 - 1, y, T.WALL); setT(a1 + 1, y, T.WALL); }
-      for (const g of [-1, 0, 1]) { setT(cx + g, b0 - 1, T.ROAD); setT(cx + g, b1 + 1, T.ROAD); } // N+S passage openings
-      for (let y = b0; y <= b1; y++) { setT(497, y, T.WALL); setT(503, y, T.WALL); } // passage walls (x499-501 open)
-      setT(497, 427, T.FLOOR); setT(503, 427, T.FLOOR); // wing doors off the passage
-      structure(493, 424, 'Chief Hall', 0x7a5a8a); structure(493, 431, 'Bank', 0xc9a24a);   // west wing
-      structure(507, 424, 'War Table', 0x9a5a4a); structure(507, 431, 'Quest Board', 0x8a6a3a); // east wing
+      for (const g of [-1, 0, 1]) { setT(cx + g, b0 - 1, T.ROAD); setT(cx + g, b1 + 1, T.ROAD); } // N + S archways
+      for (let y = b0; y <= b1; y++) { setT(497, y, T.WALL); setT(503, y, T.WALL); }             // passage walls
+      setT(497, 442, T.FLOOR); setT(503, 442, T.FLOOR);            // wing doors off the passage
+      // west wing — the guarded vault + the Chief's dais
+      structure(492, 431, 'Bank', 0xc9a24a); structure(491, 436, 'Chief Hall', 0x7a5a8a);
+      for (const [x, y] of [[489, 430], [489, 444], [495, 444]]) decor(x, y, 0x9a3a2a, 4, 'rect'); // banners
+      // east wing — war + quests
+      structure(508, 431, 'War Table', 0x9a5a4a); structure(508, 436, 'Quest Board', 0x8a6a3a);
+      for (const [x, y] of [[511, 430], [505, 444], [511, 444]]) decor(x, y, 0x9a3a2a, 4, 'rect');
+      // grand south steps onto the plaza + entrance torches
+      for (let x = 496; x <= 504; x++) if (getT(x, 447) === T.GRASS) setT(x, 447, T.FLOOR);
+      decor(497, 447, 0xe8a24a, 4, 'circle'); decor(503, 447, 0xe8a24a, 4, 'circle');
     })();
 
-    // ---- FORGE WARD (N gate ↔ ore road): metal from the northern mines ----
-    building(485, 412, 2, 1, 'Town Furnace', 0x7a3a2a, 'Smithing', 'S');
-    building(515, 412, 2, 1, 'Town Anvil', 0x3a3a3a, 'Smithing', 'S');
-    building(477, 412, 1, 1, 'Weapon Shop', 0x9a5a4a, null, 'S');
-    building(523, 412, 1, 1, 'Armour Shop', 0x6a7a9a, null, 'S');
-    // [economy lane] Tinker's Workbench — a world node for the Tinkering skill
-    // (replaces the old floating HUD button). skill flag routes the click to
-    // performSkill, which opens the workbench popup (main.js hook).
-    structure(496, 416, "Tinker's Workbench", 0xb8863a, 'Tinkering');
+    // ---- THE BAZAAR: a packed market plaza spilling south from the hall,
+    // around the spawn. Grand Exchange at the head, stalls in rows, awnings. ----
+    (function bazaar() {
+      for (let y = 449; y <= 474; y++) for (let x = 486; x <= 514; x++) if (getT(x, y) === T.GRASS) setT(x, y, T.FLOOR);
+      structure(500, 452, 'Grand Exchange', 0xe3c45a);            // head of the market, on the avenue (merchant at 502,462)
+      // two rows of market stalls flanking the avenue
+      for (const [x, y] of [[490, 456], [494, 456], [506, 456], [510, 456], [490, 468], [494, 468], [506, 468], [510, 468]]) { structure(x, y, 'Market Stall', 0xbf9a5a); decor(x, y - 1, 0xb04a3a, 5, 'rect'); }
+      // crates + barrels between the stalls
+      for (const [x, y] of [[492, 464], [508, 464], [488, 460], [512, 460]]) decor(x, y, 0x8a6a3a, 4, 'rect');
+      building(486, 470, 2, 1, 'Crossroads Tavern', 0x8a6a4a, null, 'N');
+      building(508, 471, 1, 1, "Tinker's Workbench", 0xb8863a, 'Tinkering', 'N'); // Sprocket finds it near spawn
+      structure(514, 466, 'Prayer Idol', 0xc0b070);
+    })();
 
-    // ---- THE WHARF (E gate ↔ water road): fish from Grublake to the east ----
-    building(540, 448, 2, 1, 'Fishing Shack', 0x4f8fae, null, 'W');
-    building(540, 462, 2, 1, 'Cooking Range', 0xd2691e, 'Cooking', 'W');
-    building(548, 455, 1, 1, 'Fishmonger', 0x5a9ab0, null, 'W');
-    building(531, 468, 1, 1, 'Bait & Tackle', 0x3f8fb5, null, 'N');
+    // ---- FORGE DISTRICT (N gate ↔ ore road): furnaces glow, coal + racks ----
+    building(482, 414, 2, 1, 'Town Furnace', 0x7a3a2a, 'Smithing', 'S');
+    building(518, 414, 2, 1, 'Town Anvil', 0x3a3a3a, 'Smithing', 'S');
+    building(474, 415, 1, 1, 'Weapon Shop', 0x9a5a4a, null, 'S');
+    building(526, 415, 1, 1, 'Armour Shop', 0x6a7a9a, null, 'S');
+    for (const [x, y] of [[478, 420], [522, 420]]) decor(x, y, 0x2a2a2a, 4, 'rect'); // coal heaps
+    for (const [x, y] of [[486, 420], [514, 420]]) decor(x, y, 0x7a6a5a, 4, 'rect'); // metal racks
 
-    // ---- GREENGATE (S gate ↔ farm road): crops from the southern farms ----
-    building(486, 499, 2, 1, 'Farming Shed', 0x6a8a3a, null, 'N');
-    building(472, 499, 2, 1, 'Grocer', 0x9a7a4a, null, 'N');
-    building(514, 499, 1, 1, 'Herbalist', 0x7a9a5a, null, 'N');
-    building(500, 501, 2, 1, 'General Store', 0x9a7a4a, null, 'N');
+    // ---- WHARF DISTRICT (E gate ↔ water, along the canal) ----
+    building(538, 448, 2, 1, 'Fishing Shack', 0x4f8fae, null, 'W');
+    building(538, 462, 2, 1, 'Cooking Range', 0xd2691e, 'Cooking', 'W');
+    building(547, 455, 1, 1, 'Fishmonger', 0x5a9ab0, null, 'W');
+    building(524, 468, 1, 1, 'Bait & Tackle', 0x3f8fb5, null, 'N');
+    for (const [x, y] of [[534, 452], [534, 466]]) decor(x, y, 0x6a5a3a, 4, 'rect'); // fish barrels
 
-    // ---- TIMBER ROW (W gate ↔ lumber road): logs from Chopper's Hollow west ----
-    building(460, 448, 2, 1, 'Sawmill', 0x8b6a3b, null, 'E');
-    building(460, 462, 2, 1, 'Crafting Bench', 0x8b5a2b, 'Crafting', 'E');
-    building(468, 455, 1, 1, 'Fletcher', 0xa98b5a, null, 'E');
-    building(452, 468, 1, 1, 'Lumber Stall', 0x8b6a3b, null, 'N');
+    // ---- GREEN DISTRICT (S gate ↔ farm road): plots, well, grocer ----
+    building(488, 498, 2, 1, 'Farming Shed', 0x6a8a3a, null, 'N');
+    building(474, 498, 2, 1, 'Grocer', 0x9a7a4a, null, 'N');
+    building(514, 498, 1, 1, 'Herbalist', 0x7a9a5a, null, 'N');
+    building(499, 501, 1, 1, 'General Store', 0x9a7a4a, null, 'N');   // quest goto (~499,501)
+    for (let y = 486; y <= 494; y++) for (let x = 505; x <= 512; x++) if (getT(x, y) === T.GRASS) setT(x, y, T.FIELD); // crop rows
+    setT(482, 490, T.WATER); for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) decor(482 + dx, 490 + dy, 0x8a8a7a, 3, 'rect'); // well
 
-    // ---- MARKET SQUARE (the plaza ring): trade, rest, prayer ----
-    building(482, 468, 2, 1, 'Crossroads Tavern', 0x8a6a4a, null, 'N');
-    building(516, 468, 1, 1, 'Prayer Idol', 0xc0b070, null, 'N');
-    for (const [x, y] of [[494, 449], [506, 449], [494, 461], [506, 461]]) structure(x, y, 'Market Stall', 0xbf9a5a);
-    structure(490, 452, 'Grand Exchange', 0xe3c45a);
+    // ---- TIMBER DISTRICT (W gate ↔ lumber road): log piles, sawhorses ----
+    building(462, 448, 2, 1, 'Sawmill', 0x8b6a3b, null, 'E');
+    building(462, 462, 2, 1, 'Crafting Bench', 0x8b5a2b, 'Crafting', 'E');
+    building(470, 455, 1, 1, 'Fletcher', 0xa98b5a, null, 'E');
+    building(456, 468, 1, 1, 'Lumber Stall', 0x8b6a3b, null, 'N');
+    for (const [x, y] of [[466, 452], [466, 466]]) decor(x, y, 0x7a5a2a, 5, 'rect'); // log piles
 
-    // ---- THE WARREN (back alleys): cramped goblin housing fills the gaps ----
-    const alley = (ax, ay, bx, by) => { const dx = Math.sign(bx - ax), dy = Math.sign(by - ay); let x = ax, y = ay; for (let i = 0; i < 40 && (x !== bx || y !== by); i++) { if (getT(x, y) === T.GRASS) setT(x, y, T.DIRT); if (x !== bx) x += dx; if (y !== by) y += dy; } };
-    for (const [x, y, d] of [[463, 428, 'S'], [537, 428, 'S'], [460, 483, 'N'], [468, 489, 'E'], [524, 483, 'N'], [532, 489, 'W']]) building(x, y, 1, 1, 'Goblin House', 0x6a5240, null, d);
-    alley(456, 478, 472, 478); alley(464, 483, 464, 494); alley(524, 478, 540, 478);
+    // ---- THE WARREN: cramped goblin housing + winding alleys in the gaps ----
+    const alley = (ax, ay, bx, by) => { const dx = Math.sign(bx - ax), dy = Math.sign(by - ay); let x = ax, y = ay; for (let i = 0; i < 60 && (x !== bx || y !== by); i++) { if (getT(x, y) === T.GRASS) setT(x, y, T.DIRT); if (x !== bx) x += dx; if (y !== by) y += dy; } };
+    // NW + NE + SW + SE housing clusters, each a knot of little houses on lanes
+    const houses = [
+      [460, 418, 'S'], [464, 424, 'E'], [458, 430, 'S'], [463, 436, 'S'],   // NW warren
+      [540, 418, 'S'], [536, 424, 'W'], [542, 430, 'S'], [537, 436, 'S'],   // NE warren
+      [458, 484, 'N'], [464, 490, 'E'], [459, 496, 'N'],                     // SW warren
+      [470, 484, 'N'], [530, 484, 'N'], [536, 490, 'W'],                     // more housing
+    ];
+    for (const [x, y, d] of houses) building(x, y, 1, 1, 'Goblin House', 0x6a5240, null, d);
+    // a Cook's hearth + a Weaver's loom you can actually use, tucked in the lanes
+    building(452, 484, 1, 1, "Cook's Hearth", 0xd2691e, 'Cooking', 'E');
+    building(544, 484, 1, 1, "Weaver's Loom", 0x8b5a2b, 'Crafting', 'W');
+    // lanes stitching the warren to the avenues; laundry + junk decor
+    alley(456, 424, 468, 424); alley(462, 418, 462, 442); alley(536, 424, 548, 424); alley(540, 418, 540, 442);
+    alley(456, 490, 470, 490); alley(462, 484, 462, 500); alley(528, 488, 540, 488);
+    for (const [x, y] of [[460, 421], [538, 421], [461, 487], [533, 487]]) decor(x, y, 0xb0a890, 3, 'rect');
 
-    // ---- GREENERY: trees, shrubs, wells so it reads lived-in, not paved ----
-    for (const [x, y] of [[458, 410], [542, 410], [458, 505], [542, 505], [470, 440], [530, 440], [476, 485], [524, 458]]) decor(x, y, 0x2f6b25, 6, 'circle');
-    for (const [x, y] of [[464, 420], [536, 420], [464, 490], [536, 494], [485, 445], [515, 445]]) decor(x, y, 0x3a7a3a, 4, 'circle');
-    for (const [x, y] of [[470, 458], [530, 448]]) { setT(x, y, T.WATER); for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) decor(x + dx, y + dy, 0x8a8a7a, 3, 'rect'); }
+    // ---- GARDENS + GREENERY so it breathes: corner groves, planters ----
+    for (const [x, y] of [[456, 410], [544, 410], [456, 505], [544, 505], [472, 430], [528, 430]]) decor(x, y, 0x2f6b25, 6, 'circle');
+    for (const [x, y] of [[462, 412], [538, 412], [462, 502], [538, 502]]) decor(x, y, 0x3a7a3a, 4, 'circle');
 
-    // ---- TRAINING YARD (SE corner, kept): dummies + starter rats ----
-    const tx = 520, ty = 490;
+    // ---- lamplight down both grand avenues, every 6 tiles ----
+    for (let y = y0 + 4; y <= y1 - 4; y += 6) { lamp(cx - 2, y); lamp(cx + 2, y); }
+    for (let x = x0 + 4; x <= x1 - 4; x += 6) { lamp(x, cy - 2); lamp(x, cy + 2); }
+
+    // ---- TRAINING YARD (SE, kept ~515,485 for the tutorial quest) ----
+    const tx = 517, ty = 487;
     for (let y = ty - 5; y <= ty + 5; y++) for (let x = tx - 6; x <= tx + 6; x++) { if (!inB(x, y)) continue; if (x === tx - 6 || x === tx + 6 || y === ty - 5 || y === ty + 5) { if (!(x === tx && y === ty - 5)) setT(x, y, T.WALL); } else if (getT(x, y) === T.GRASS) setT(x, y, T.DIRT); }
     structure(tx - 3, ty, 'Combat Dummy', 0x9a7a4a); structure(tx + 3, ty, 'Combat Dummy', 0x9a7a4a); structure(tx, ty + 3, 'Combat Dummy', 0x9a7a4a);
     enemySpawns.push({ type: 'rat', x: tx, y: ty - 3, name: 'Training Rat', _keep: true }, { type: 'rat', x: tx + 4, y: ty + 3, name: 'Training Rat', _keep: true });
