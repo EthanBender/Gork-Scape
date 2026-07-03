@@ -40,13 +40,20 @@ const CATEGORIES = [
   { key: 'dungeon',   label: 'Caves / entrances', ico: 'pin',    color: '#b0b0b0', re: /cave|mine entrance|ladder|mountain pass|grotto|dungeon|frozen cave/i },
   { key: 'transport', label: 'Transport',       ico: 'run',      color: '#c08a4a', re: /cart|boat|portal|route|ferry|dock|gate/i },
   { key: 'landmark',  label: 'Landmarks',       ico: 'star',     color: '#e0c050', re: /.*/ },  // catch-all for named structures
+  // Resource layer (Phase 3) — gather nodes, clustered per type. `res:true` keeps
+  // them out of classify(); hidden by default so the facility map stays clean.
+  { key: 'logs', label: 'Trees (woodcutting)', ico: 'woodcutting', color: '#6a8f3a', res: true, skill: 'Woodcutting' },
+  { key: 'ore',  label: 'Rocks (mining)',      ico: 'mining',      color: '#c08a5a', res: true, skill: 'Mining' },
+  { key: 'fish', label: 'Fishing spots',       ico: 'fishing',     color: '#4fa3c7', res: true, skill: 'Fishing' },
+  { key: 'crop', label: 'Farm patches',        ico: 'farming',     color: '#8aac4a', res: true, skill: 'Farming' },
 ];
 const CAT = Object.fromEntries(CATEGORIES.map((c) => [c.key, c]));
+const RES_BY_SKILL = { Woodcutting: 'logs', Mining: 'ore', Fishing: 'fish', Farming: 'crop' };
 
 function classify(label, skill) {
   if (!label) return null;
   for (const c of CATEGORIES) {
-    if (c.key === 'landmark') continue;          // catch-all handled by caller, not here
+    if (c.key === 'landmark' || c.res) continue; // catch-all + resource layer handled elsewhere
     if (c.re.test(label)) return c.key;
   }
   // skill-tagged stations without a keyword hit
@@ -96,6 +103,35 @@ function buildMarkers() {
   for (const [id, pos] of Object.entries(SHOP_POSTS)) {
     add(pos[0], pos[1], id.replace(/_/g, ' ').replace(/\b\w/g, (m) => m.toUpperCase()), 'shop');
   }
+  // 4) resource layer — gather nodes clustered per type on a coarse grid, so
+  // "where do I mine iron / chop oak / fish" is a few patch markers, not 29k.
+  const CELL = 56;
+  const clusters = new Map();  // key -> { sx, sy, n, name, cat }
+  for (const o of (Game.world && Game.world.objects) || []) {
+    if (o.type !== 'resource' && !(o.nodeId && o.skill)) continue;
+    const cat = RES_BY_SKILL[o.skill];
+    if (!cat) continue;                          // only the four core gathering skills
+    const name = String(o.label || o.resKey || o.nodeId || 'Resource').replace(/\s*\(Lv\s*\d+\)/i, '');
+    const key = `${cat}:${name}:${Math.floor(o.x / CELL)},${Math.floor(o.y / CELL)}`;
+    let c = clusters.get(key);
+    if (!c) { c = { sx: 0, sy: 0, n: 0, name, cat }; clusters.set(key, c); }
+    c.sx += o.x; c.sy += o.y; c.n++;
+  }
+  // Keep the richest patches PER RESOURCE TYPE (so common trees don't flood the
+  // map yet every type — Oak, Iron, each fish — stays visible and searchable).
+  const PER_TYPE = 12;
+  const byType = new Map();
+  for (const c of clusters.values()) {
+    const tk = c.cat + '|' + c.name;
+    if (!byType.has(tk)) byType.set(tk, []);
+    byType.get(tk).push(c);
+  }
+  for (const list of byType.values()) {
+    list.sort((a, b) => b.n - a.n);
+    for (const c of list.slice(0, PER_TYPE)) {
+      out.push({ x: Math.round(c.sx / c.n), y: Math.round(c.sy / c.n), name: c.name, cat: c.cat, count: c.n });
+    }
+  }
   return out;
 }
 
@@ -134,7 +170,7 @@ const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&l
 const view = { scale: 4, cx: 500, cy: 500 };  // scale = px per tile; (cx,cy) = world tile at canvas center
 let minScale = 0.5, maxScale = 12;
 let markers = [];
-let hidden = new Set();   // category keys toggled off
+let hidden = new Set(['logs', 'ore', 'fish', 'crop']);   // category keys toggled off (resource layer off by default)
 let els = null;           // cached DOM refs
 let dragging = null;
 
@@ -199,10 +235,10 @@ function makeMarkerEls() {
   for (const m of markers) {
     const c = CAT[m.cat] || CAT.landmark;
     const el = document.createElement('div');
-    el.className = 'zmap-mk';
-    el.title = `${m.name}  ·  ${c.label}`;
+    el.className = 'zmap-mk' + (c.res ? ' zmap-mk-res' : '');
+    el.title = m.count ? `${m.name}  ×${m.count}  ·  ${c.label}` : `${m.name}  ·  ${c.label}`;
     el.style.setProperty('--mk', c.color);
-    el.innerHTML = icon(c.ico) || '';
+    el.innerHTML = (icon(c.ico) || '') + (m.count > 1 ? `<span class="zmap-mk-n">${m.count}</span>` : '');
     layer.appendChild(el);
     m.el = el;
   }
@@ -307,7 +343,8 @@ function open() {
   if (p) { view.cx = p.tileX; view.cy = p.tileY; }
   view.scale = 4;
   els.overlay.hidden = false;
-  requestAnimationFrame(() => { sizeCanvas(); render(); });
+  sizeCanvas(); render();                                    // immediate first paint
+  requestAnimationFrame(() => { sizeCanvas(); render(); });  // re-fit once layout has settled
 }
 function close() { if (els) els.overlay.hidden = true; }
 function isOpen() { return els && !els.overlay.hidden; }
@@ -446,6 +483,10 @@ function injectCss() {
   .zmap-mk { position:absolute; width:22px; height:22px; margin:-11px 0 0 -11px; color:var(--mk);
     filter:drop-shadow(0 1px 1px #000) drop-shadow(0 0 2px #000); pointer-events:auto; cursor:help; }
   .zmap-mk svg { width:100%; height:100%; display:block; }
+  .zmap-mk-res { width:18px; height:18px; margin:-9px 0 0 -9px; }
+  .zmap-mk-n { position:absolute; right:-6px; bottom:-5px; min-width:11px; height:13px; padding:0 2px;
+    font:700 9px/13px "Baloo 2",system-ui,sans-serif; color:#1a1a12; background:var(--mk); border:1px solid #0d0c08;
+    border-radius:7px; text-align:center; }
   .zmap-you { position:absolute; width:16px; height:16px; margin:-8px 0 0 -8px; border:2px solid #fff; border-radius:50%;
     box-shadow:0 0 0 2px rgba(0,0,0,.6), 0 0 8px #fff; pointer-events:none; }
   .zmap-you::after { content:""; position:absolute; inset:5px; background:#fff; border-radius:50%; }
