@@ -72,7 +72,7 @@ for (let y = 2; y < H - 2; y++) for (let x = 2; x < W - 2; x++) {
       const c = q.pop(); cells.push(c); const cx = c % W, cy = (c - cx) / W;
       for (const [dx, dy] of N8) { const j = idx(cx + dx, cy + dy); if (TR[j] === T.FLOOR) floor = true; if (TR[j] === T.WALL && !seen[j]) { seen[j] = 1; q.push(j); } }
     }
-    if (!floor && cells.length >= 2 && cells.length <= 6) { const c0 = cells[0]; add('wall_stub', c0 % W, (c0 - c0 % W) / W); }
+    if (!floor && cells.length >= 2 && cells.length <= 6 && !cells.some((c) => nearStructure.has(c))) { const c0 = cells[0]; add('wall_stub', c0 % W, (c0 - c0 % W) / W); }
   }
 }
 
