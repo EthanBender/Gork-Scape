@@ -19,6 +19,7 @@ import { itemIcon, itemIconHTML } from '../data/itemIcons.js';
 import { icon, skillIcon } from './icons.js';
 import { openWiki } from './wiki.js'; // [economy lane] item Codex lookup
 import { openSkillGuide } from './skillGuide.js'; // [economy lane] per-skill guide (unlocks + recipes + locations)
+import { initWorldMap } from './worldMap.js'; // [economy lane] zoomable/pannable world map + POI markers (takes over #map-btn)
 import { recipesForStation, craft, stationTypes } from '../systems/crafting.js';
 import { rollMonsterDrops } from '../systems/drops.js';
 import { gather, resolveNode } from '../systems/gathering.js';
@@ -219,6 +220,7 @@ let els = {};
 
 export function initPanels() {
   buildLayout();
+  initWorldMap(); // [economy lane] zoomable world map hijacks the map button (idempotent)
   Game.ui = {
     appendLog,
     renderSkills,
