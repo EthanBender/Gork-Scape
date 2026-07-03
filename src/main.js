@@ -12,6 +12,7 @@ import {
   generateWorld, isWalkable, findPath, regionAt, objectsInView, addWorldObject,
   TILE_SIZE, WORLD_W, WORLD_H, TERRAIN_DEFS, T,
 } from './world/map.js';
+import { generateInterior } from './world/interiors.js'; // M2: dungeon sub-maps (enter/exit world swap)
 import { TOOLS, LANDMARKS, REGION_ANCHORS } from './world/worldData.js';
 
 // World-map overlay toggles (PASS 7)
@@ -663,10 +664,11 @@ function viewRange() {
     hx = rx; hy = ry;
   }
   return {
+    // clamp to the LIVE world's size — interiors are much smaller than the overworld
     x0: Math.max(0, Math.floor((cxw - hx) / TILE_SIZE) - 1),
     y0: Math.max(0, Math.floor((cyw - hy) / TILE_SIZE) - 1),
-    x1: Math.min(WORLD_W - 1, Math.ceil((cxw + hx) / TILE_SIZE) + 1),
-    y1: Math.min(WORLD_H - 1, Math.ceil((cyw + hy) / TILE_SIZE) + 1),
+    x1: Math.min(Game.world.W - 1, Math.ceil((cxw + hx) / TILE_SIZE) + 1),
+    y1: Math.min(Game.world.H - 1, Math.ceil((cyw + hy) / TILE_SIZE) + 1),
   };
 }
 
@@ -1436,6 +1438,10 @@ function performSkill(o, count) {
   // Interactive shortcut: spend materials to open a crossing (lay a bridge / clear a gate).
   if (o.shortcut) { tryOpenShortcut(o); return; }
 
+  // Dungeon doorways (checked BEFORE examine — entrances carry examine flavour too).
+  if (o.interior) { const p2 = Game.player; p2.interactTarget = null; enterInterior(o.interior, o); return; }
+  if (o.exit) { const p2 = Game.player; p2.interactTarget = null; exitInterior(); return; }
+
   // Wilderness encounter marker: read its flavour and pocket any one-time find.
   if (o.examine) { doExamine(o); return; }
 
@@ -1702,7 +1708,64 @@ function npcAttack(n, count) {
   if (Game.hp <= 0) playerDeath();
 }
 
+// ============================================================ dungeon interiors
+// M2: the four generated dungeons (src/world/interiors.js) are entered through
+// doorway objects in the overworld. Entering swaps Game.world for the interior
+// sub-map (same shape as the overworld, so the whole render/collision/path
+// pipeline just works), stashes the overworld + its NPCs + ground items, and
+// spawns the dungeon's own mobs. Stepping on the exit swaps everything back.
+let overworldStash = null;
+
+function spawnEnemyNpcs(world, prefix) {
+  world.enemySpawns.forEach((s, i) => {
+    const def = world.ENEMY_TYPES[s.type]; if (!def) return;
+    const m = s.boss ? 2 : 1; // bosses: doubled combat stats, 5× HP, aggressive
+    const levels = { attack: def.att * m, strength: def.str * m, defence: def.def * m, ranged: 1, hitpoints: def.hp * (s.boss ? 5 : 1) };
+    Game.npcs.push(new NPC({
+      id: prefix + i, name: s.name || def.name, type: 'guard', tileX: s.x, tileY: s.y,
+      color: s.boss ? 0xd04a4a : def.color, monsterId: null,
+      wanderRadius: 3, leashRadius: 12, aggressive: !!s.boss, aggroRange: s.boss ? 7 : 4,
+      attackSpeed: def.speed, weaponType: 'crush', levels, combatLevel: combatLevel(levels), lootTable: def.loot,
+      bonuses: Object.assign(emptyBonuses(), {
+        crush_atk: Math.floor(def.att * m / 2), melee_str: Math.floor(def.str * m / 3),
+        slash_def: def.def * m, crush_def: def.def * m, stab_def: def.def * m,
+      }),
+    }));
+  });
+}
+
+function enterInterior(kind, entry) {
+  if (Game.world.interior || overworldStash) return;
+  const inner = generateInterior(kind, { from: { x: entry.x, y: entry.y + 1 } });
+  inner.ENEMY_TYPES = Game.world.ENEMY_TYPES; // dungeon mobs use the shared stat blocks
+  overworldStash = { world: Game.world, npcs: Game.npcs, ground: Game.groundItems, tile: { x: entry.x, y: entry.y + 1 } };
+  Game.world = inner;
+  Game.npcs = []; Game.activeNpcs = []; Game.groundItems = [];
+  spawnEnemyNpcs(inner, 'dg');
+  const p = Game.player;
+  p.tileX = inner.spawn.x; p.tileY = inner.spawn.y; p.px = tilePx(p.tileX); p.py = tilePx(p.tileY);
+  clearTargets(p); p.path = [];
+  scene.cameras.main.setBounds(0, 0, inner.W * TILE_SIZE, inner.H * TILE_SIZE);
+  scene.cameras.main.centerOn(p.px, p.py);
+  Game.log(`You descend into the ${inner.name}… (the way out is behind you)`);
+}
+
+function exitInterior() {
+  if (!Game.world.interior || !overworldStash) return;
+  const back = overworldStash; overworldStash = null;
+  Game.world = back.world; Game.npcs = back.npcs; Game.groundItems = back.ground; Game.activeNpcs = [];
+  const p = Game.player;
+  p.tileX = back.tile.x; p.tileY = back.tile.y; p.px = tilePx(p.tileX); p.py = tilePx(p.tileY);
+  clearTargets(p); p.path = [];
+  scene.cameras.main.setBounds(0, 0, Game.world.W * TILE_SIZE, Game.world.H * TILE_SIZE);
+  scene.cameras.main.centerOn(p.px, p.py);
+  Game.log('You climb back into the daylight.');
+}
+
 function playerDeath() {
+  // Dying in a dungeon throws you out first: your dropped stacks land at the
+  // dungeon's overworld doorstep (no re-entry run required to recover them).
+  if (Game.world.interior) exitInterior();
   const count = Game.ticker ? Game.ticker.count : 0;
   const p = Game.player;
   const dx = p.tileX, dy = p.tileY;

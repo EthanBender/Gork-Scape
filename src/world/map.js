@@ -598,6 +598,28 @@ export function generateWorld(seed = DEFAULT_SEED, opts = {}) {
   runHub(willowLocal, 'willow', 285, 610);
   runHub(farmlandsLocal, 'farmlands', 510, 640);
 
+  // ---- Dungeon doorways (M2): one enterable interior per themed region ----
+  // Each is a non-blocking doorway object flagged `interior:` — main.js swaps
+  // Game.world for the generated sub-map (src/world/interiors.js) on click.
+  (function placeInteriorEntrances() {
+    const doors = [
+      ['deep_mine', 'Deep Mine Entrance', 0x3a3a44, A.minehills],
+      ['ruin_chapel', 'Old Ruin Chapel', 0x8a8a9a, A.ruins],
+      ['witch_hut', 'Witch-Goblin Hut', 0x8a5a7a, A.mushroom],
+      ['rival_camp', 'Rival War Camp', 0xb03030, A.rival],
+    ];
+    for (const [kind, label, color, a] of doors) {
+      let done = false;
+      for (let r = 3; r < 70 && !done; r += 2) for (let ang = 0; ang < 360; ang += 20) {
+        const x = Math.round(a.x + r * Math.cos(ang * Math.PI / 180)), y = Math.round(a.y + r * Math.sin(ang * Math.PI / 180));
+        if (getT(x, y) !== T.GRASS || occupied.has(okey(x, y)) || !landish(x, y + 1)) continue;
+        placeObj({ x, y, type: 'structure', label, color, skill: null, blocking: false, depleted: false, interior: kind, examine: 'A dark way down…' });
+        for (const dx of [-1, 1]) if (getT(x + dx, y) === T.GRASS) setT(x + dx, y, T.WALL); // door jambs
+        done = true; break;
+      }
+    }
+  })();
+
 
   // ---- forests (dense trees + clearings), tree density feathered at edges ----
   const clearing = (x, y) => vnoise(x / 30, y / 30, Sg + 4) > 0.66;
