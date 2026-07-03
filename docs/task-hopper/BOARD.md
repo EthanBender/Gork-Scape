@@ -3,8 +3,8 @@
 *Human-readable view of `HOPPER.jsonl`. The curator keeps this in sync with the feed.
 Last curated: 2026-07-03.*
 
-**Totals:** 4 · **owner-raised 1** · agent/auto-raised 3 · (gate-raised 0)
-**By status:** inbox 4 · ready 0 · picked 0 · done 0 · parked 0
+**Totals:** 7 · **owner-raised 4** · agent/auto-raised 3 · (gate-raised 0)
+**By status:** inbox 7 · ready 0 · picked 0 · done 0 · parked 0
 **Overnight-ready now (`ready` + `overnight-safe`):** 0
 
 > **Owner-raised items always list first, in their own section, and are never outranked
@@ -18,7 +18,10 @@ Last curated: 2026-07-03.*
 
 | id | title | kind | eligibility | P | effort | area / lane | status |
 |---|---|---|---|---|---|---|---|
+| GH-0006 | Players don't see the same monsters (mobs aren't shared) | design-spike | needs-owner | P1 | L | server / ops | inbox |
 | GH-0004 | Click-to-pick-up doesn't auto-walk to the ground item | fix | needs-strong-model | P1 | S | net / shared | inbox |
+| GH-0005 | Remote players lag/snap + clip through walls | fix | needs-strong-model | P2 | M | net / shared | inbox |
+| GH-0007 | Right-click a monster to view its drop table | content | needs-strong-model | P3 | M | ui / shared | inbox |
 
 ---
 
