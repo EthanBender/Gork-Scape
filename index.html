@@ -688,11 +688,16 @@
     .tab-btn .tab-icon { font-size: 18px; }
     .tab-btn .tab-label { font-size: 10px; }
 
-    /* Canvas HUD controls: keyboard hints are useless on touch; shrink the
-       buttons and split them to the top corners so they don't cover the map. */
+    /* Canvas HUD controls: keyboard hints are useless on touch. The minimap owns
+       the top-right and the quest toast the top-left, so cluster the action
+       buttons as one thumb-friendly row along the game view's BOTTOM-LEFT edge —
+       out of the minimap, off the toast, and no longer floating over the world
+       (home-btn had no mobile rule and was landing mid-screen). */
     #cam-hint { display: none; }
-    #map-btn { top: calc(8px + env(safe-area-inset-top)); right: 8px; left: auto; }
-    #run-btn { top: calc(8px + env(safe-area-inset-top)); left: 8px; right: auto; }
+    #map-btn, #run-btn, #home-btn { top: auto; bottom: 8px; }
+    #run-btn  { left: 8px;   right: auto; }
+    #home-btn { left: 58px;  right: auto; }
+    #map-btn  { left: 108px; right: auto; }
 
     /* Chat: a touch shorter; input big enough that iOS won't zoom on focus. */
     #chatlog { flex-basis: 84px; height: 84px; padding: 6px 12px; }

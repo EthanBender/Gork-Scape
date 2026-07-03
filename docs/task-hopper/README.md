@@ -43,6 +43,8 @@ prove it's done. That's what lets a runner act on it unattended and safely.
 |---|---|
 | `id` | `GH-####` stable id. Never reused. |
 | `created` | ISO date the item entered the hopper. |
+| **`source`** | **Who raised it** — `owner` (a human voiced it) \| `agent` (an AI generated/observed it) \| `gate` (surfaced by a failing/near-limit gate or audit). The anti-overshadow field. |
+| `source_detail` | Attribution: who/when/where (e.g. `owner — 2026-07-03 voice`, `agent: economy lane — spawn-visual session`). |
 | `status` | `inbox` → `triaged` → `ready` → `picked` → `done` \| `parked` \| `wontfix`. |
 | `title` | One-line imperative ("Add N…", "Fix…", "Audit…"). |
 | `raw` | The owner's words, **verbatim** — provenance / traceability. |
@@ -90,6 +92,22 @@ Derived from `CLAUDE.md` + `CRITICAL_PATH.md` ("NOT for the smaller models" list
 
 ---
 
+## Provenance & the anti-overshadow rule
+
+**Everything gets captured — nothing is dropped for being small or auto-generated —
+but `source` keeps human intent from being buried under agent noise:**
+
+- Every record is tagged `source: owner | agent | gate`.
+- **Owner-raised items are never outranked by agent/gate items of equal priority.** The
+  board lists `owner` items in their own section, first, with their own count; agent/gate
+  items sit in a separate "Agent/auto-raised" section below.
+- Priority is set independently of source, but when the runner or a human picks the next
+  task, ties break toward `owner`.
+- Agent/gate items default to `status: inbox` (they do **not** become `ready` — i.e.
+  overnight-runnable — until a human triages them). This makes promotion into the
+  overnight queue a human act, so the auto pile can grow without ever crowding the
+  live overnight workload.
+
 ## Guardrails every task inherits (from CLAUDE.md — non-negotiable)
 
 - **No build tooling, ever.** Vanilla ES modules, Phaser from CDN, JSON data. The browser gets files as-is.
@@ -112,7 +130,7 @@ Chain with `&&`; never pipe through `tail`/`grep` (pipes mask exit codes).
 
 ## Curator protocol (what the planning agent does per incoming item)
 
-1. **Capture** the owner's words verbatim → `raw`.
+1. **Capture** the words verbatim → `raw`, and stamp `source` (+ `source_detail`): `owner` when a human voiced it, `agent` when I noticed/derived it, `gate` when a validator surfaced it. Nothing is dropped for being small or auto-generated.
 2. **Interpret**: restate the real problem + desired outcome, unambiguous → `interpreted`.
 3. **Classify**: `area`, `lane`, `priority`, `effort`, and `eligibility` (route it).
 4. **Scope telemetry**: `work_kind`, `signals`, `gates`, `acceptance`.

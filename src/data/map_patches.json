@@ -6,7 +6,7 @@
  "patches": [
   {
    "id": "c0r2-west-shoulder-slivers",
-   "why": "Unreachable 1-9 tile walkable slivers in the west mountain shoulder (defect scanner: dead_pocket around 79-86,203-239). Filled to rock \u2014 they were never meant to be stood on.",
+   "why": "Unreachable 1-9 tile walkable slivers in the west mountain shoulder (defect scanner: dead_pocket around 79-86,203-239). Filled to rock — they were never meant to be stood on.",
    "ops": [
     {
      "op": "terrain",
@@ -34,50 +34,3159 @@
    "id": "wilds-ford-74-149",
    "why": "MACRO connectivity (owner-approved): the 7642-tile north 'Goblin Wilds' was stranded from spawn (audit_world warning). Its whole region touches reachable ground across ONE shallow-water tile at (74,149) — the natural narrowest crossing, flanked by deep water. A footbridge/ford here reclaims all ~7643 tiles, giving the Wilds its entrance and un-stranding the sealed_room + treeline slivers for local cleanup. trail lays dirt approaches + a bridge (runs before the texture pass, so the ford tile is still base WATER and bridges cleanly).",
    "ops": [
-    { "op": "trail", "from": [72, 149], "to": [76, 149] }
+    {
+     "op": "trail",
+     "from": [
+      72,
+      149
+     ],
+     "to": [
+      76,
+      149
+     ]
+    }
    ]
   },
   {
    "id": "wilds-fords-batch",
    "why": "MACRO connectivity (owner-approved): six more wilderness regions were fully stranded from spawn, each cut off by a single narrow river/swamp channel. Each ford is the region's NARROWEST crossing (water-only, no rock carved) so it reads as a natural footbridge/ford, not a gash. Reclaims ~7045 tiles (2815+1282+1187+786+551+424). The 424 ford at (70,107) also clears c0,r1's dead_pocket (67,105). Skipped: a 225-tile SE-corner islet at (995,99x) that needs a 4-tile span to the map edge — left for review (may be an intentional offshore feature).",
    "ops": [
-    { "op": "trail", "from": [174, 167], "to": [172, 167] },
-    { "op": "trail", "from": [502, 18], "to": [504, 18] },
-    { "op": "trail", "from": [336, 153], "to": [336, 151] },
-    { "op": "trail", "from": [553, 82], "to": [553, 84] },
-    { "op": "trail", "from": [926, 913], "to": [922, 913] },
-    { "op": "trail", "from": [71, 107], "to": [69, 107] }
+    {
+     "op": "trail",
+     "from": [
+      174,
+      167
+     ],
+     "to": [
+      172,
+      167
+     ]
+    },
+    {
+     "op": "trail",
+     "from": [
+      502,
+      18
+     ],
+     "to": [
+      504,
+      18
+     ]
+    },
+    {
+     "op": "trail",
+     "from": [
+      336,
+      153
+     ],
+     "to": [
+      336,
+      151
+     ]
+    },
+    {
+     "op": "trail",
+     "from": [
+      553,
+      82
+     ],
+     "to": [
+      553,
+      84
+     ]
+    },
+    {
+     "op": "trail",
+     "from": [
+      926,
+      913
+     ],
+     "to": [
+      922,
+      913
+     ]
+    },
+    {
+     "op": "trail",
+     "from": [
+      71,
+      107
+     ],
+     "to": [
+      69,
+      107
+     ]
+    }
    ]
   },
   {
    "id": "c5r5-center-tree-pocket",
    "why": "Center chunk c5,r5 (first stop on the spiral crawl): a single grass tile at (570,591) ringed by 4 trees, unreachable. Remove the west tree so it connects to the reachable ground at (568,591).",
    "ops": [
-    { "op": "remove_objects", "rect": [569, 591, 569, 591], "types": ["resource"] }
+    {
+     "op": "remove_objects",
+     "rect": [
+      569,
+      591,
+      569,
+      591
+     ],
+     "types": [
+      "resource"
+     ]
+    }
    ]
   },
   {
    "id": "c1r3-wall-rings",
    "why": "c1,r3: three hollow diamond rings of stray WALL tiles (no label, no floor, no structure = generation artifacts, not authored ruins), each flagged as ~8 wall_orphans enclosing a 5-tile dead_pocket. Convert each ring footprint to GRASS — clears the orphan walls and opens the enclosed pocket at once. Rects contain only wall/grass/decor (no water/rock/POI), so the fill is safe.",
    "ops": [
-    { "op": "terrain", "rect": [150, 306, 154, 310], "to": "GRASS" },
-    { "op": "terrain", "rect": [150, 343, 154, 347], "to": "GRASS" },
-    { "op": "terrain", "rect": [188, 349, 192, 353], "to": "GRASS" }
+    {
+     "op": "terrain",
+     "rect": [
+      150,
+      306,
+      154,
+      310
+     ],
+     "to": "GRASS"
+    },
+    {
+     "op": "terrain",
+     "rect": [
+      150,
+      343,
+      154,
+      347
+     ],
+     "to": "GRASS"
+    },
+    {
+     "op": "terrain",
+     "rect": [
+      188,
+      349,
+      192,
+      353
+     ],
+     "to": "GRASS"
+    }
    ]
   },
   {
    "id": "c0r2-crag-courtyards",
    "why": "c0,r2 (Goblin Wilds mountain edge): 8 dead_pockets + 43 sealed trees. The pockets are tree-walled grass courtyards pinned between the crag and the Willow river; a Charred Homestead and a Dropped Coin Purse were sealed inside/on the rock. Fix = open the treelines so each courtyard (and its POI) becomes reachable, clear the ~20 trees stranded on the bare rock shoulder, and cut a dirt doorstep to the coin purse the earlier rock-fill had buried. Removal-only + one un-rock cell, so no new slivers/orphans possible.",
    "ops": [
-    { "op": "remove_objects", "rect": [78, 201, 88, 215], "types": ["resource"] },
-    { "op": "terrain", "cells": [[78, 214]], "to": "DIRT" },
-    { "op": "remove_objects", "rect": [77, 214, 77, 214], "types": ["resource", "decor"] },
-    { "op": "remove_objects", "rect": [77, 216, 79, 217], "types": ["resource"] },
-    { "op": "remove_objects", "rect": [82, 235, 87, 240], "types": ["resource"] },
-    { "op": "remove_objects", "rect": [81, 241, 85, 249], "types": ["resource"] },
-    { "op": "remove_objects", "rect": [87, 253, 90, 258], "types": ["resource"] },
-    { "op": "remove_objects", "rect": [91, 258, 93, 262], "types": ["resource"] },
-    { "op": "remove_objects", "rect": [96, 267, 98, 269], "types": ["resource", "decor"] }
+    {
+     "op": "remove_objects",
+     "rect": [
+      78,
+      201,
+      88,
+      215
+     ],
+     "types": [
+      "resource"
+     ]
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       78,
+       214
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      77,
+      214,
+      77,
+      214
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      77,
+      216,
+      79,
+      217
+     ],
+     "types": [
+      "resource"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      82,
+      235,
+      87,
+      240
+     ],
+     "types": [
+      "resource"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      81,
+      241,
+      85,
+      249
+     ],
+     "types": [
+      "resource"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      87,
+      253,
+      90,
+      258
+     ],
+     "types": [
+      "resource"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      91,
+      258,
+      93,
+      262
+     ],
+     "types": [
+      "resource"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      96,
+      267,
+      98,
+      269
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "crawl-c6r5",
+   "why": "Spiral crawl c6,r5: clear 0 orphan wall(s) + connect 3/4 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "remove_objects",
+     "rect": [
+      615,
+      510,
+      615,
+      510
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      637,
+      523,
+      637,
+      523
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      633,
+      581,
+      633,
+      581
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "crawl-c6r6",
+   "why": "Spiral crawl c6,r6: clear 13 orphan wall(s) + connect 3/3 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "remove_objects",
+     "rect": [
+      633,
+      688,
+      633,
+      688
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       699,
+       657
+      ],
+      [
+       698,
+       658
+      ],
+      [
+       697,
+       659
+      ],
+      [
+       698,
+       660
+      ],
+      [
+       699,
+       661
+      ],
+      [
+       648,
+       667
+      ],
+      [
+       647,
+       668
+      ],
+      [
+       649,
+       668
+      ],
+      [
+       646,
+       669
+      ],
+      [
+       650,
+       669
+      ],
+      [
+       647,
+       670
+      ],
+      [
+       649,
+       670
+      ],
+      [
+       648,
+       671
+      ],
+      [
+       700,
+       658
+      ]
+     ],
+     "to": "GRASS"
+    }
+   ]
+  },
+  {
+   "id": "crawl-c5r6",
+   "why": "Spiral crawl c5,r6: clear 8 orphan wall(s) + connect 2/2 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "remove_objects",
+     "rect": [
+      503,
+      607,
+      503,
+      607
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       526,
+       636
+      ],
+      [
+       525,
+       637
+      ],
+      [
+       527,
+       637
+      ],
+      [
+       524,
+       638
+      ],
+      [
+       528,
+       638
+      ],
+      [
+       525,
+       639
+      ],
+      [
+       527,
+       639
+      ],
+      [
+       526,
+       640
+      ]
+     ],
+     "to": "GRASS"
+    }
+   ]
+  },
+  {
+   "id": "crawl-c4r5",
+   "why": "Spiral crawl c4,r5: clear 8 orphan wall(s) + connect 1/1 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       453,
+       585
+      ],
+      [
+       452,
+       586
+      ],
+      [
+       454,
+       586
+      ],
+      [
+       451,
+       587
+      ],
+      [
+       455,
+       587
+      ],
+      [
+       452,
+       588
+      ],
+      [
+       454,
+       588
+      ],
+      [
+       453,
+       589
+      ]
+     ],
+     "to": "GRASS"
+    }
+   ]
+  },
+  {
+   "id": "crawl-c4r4",
+   "why": "Spiral crawl c4,r4: clear 0 orphan wall(s) + connect 4/4 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "remove_objects",
+     "rect": [
+      492,
+      439,
+      492,
+      439
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      456,
+      442,
+      456,
+      442
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      475,
+      454,
+      475,
+      454
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      412,
+      463,
+      412,
+      463
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "crawl-c5r4",
+   "why": "Spiral crawl c5,r4: clear 0 orphan wall(s) + connect 1/1 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       592,
+       475
+      ]
+     ],
+     "to": "GRASS"
+    }
+   ]
+  },
+  {
+   "id": "crawl-c7r5",
+   "why": "Spiral crawl c7,r5: clear 0 orphan wall(s) + connect 1/1 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "remove_objects",
+     "rect": [
+      783,
+      590,
+      783,
+      590
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "crawl-c7r6",
+   "why": "Spiral crawl c7,r6: clear 3 orphan wall(s) + connect 0/0 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       700,
+       658
+      ],
+      [
+       701,
+       659
+      ],
+      [
+       700,
+       660
+      ]
+     ],
+     "to": "GRASS"
+    }
+   ]
+  },
+  {
+   "id": "crawl-c7r7",
+   "why": "Spiral crawl c7,r7: clear 0 orphan wall(s) + connect 1/1 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "remove_objects",
+     "rect": [
+      702,
+      761,
+      702,
+      761
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "crawl-c5r7",
+   "why": "Spiral crawl c5,r7: clear 0 orphan wall(s) + connect 1/1 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "remove_objects",
+     "rect": [
+      554,
+      767,
+      554,
+      767
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "crawl-c4r7",
+   "why": "Spiral crawl c4,r7: clear 0 orphan wall(s) + connect 1/1 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       480,
+       780
+      ]
+     ],
+     "to": "GRASS"
+    }
+   ]
+  },
+  {
+   "id": "crawl-c3r7",
+   "why": "Spiral crawl c3,r7: clear 0 orphan wall(s) + connect 3/3 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "remove_objects",
+     "rect": [
+      320,
+      703,
+      320,
+      703
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      388,
+      718,
+      388,
+      718
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      320,
+      776,
+      320,
+      776
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "crawl-c3r6",
+   "why": "Spiral crawl c3,r6: clear 0 orphan wall(s) + connect 1/1 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "remove_objects",
+     "rect": [
+      367,
+      641,
+      367,
+      641
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "crawl-c3r5",
+   "why": "Spiral crawl c3,r5: clear 9 orphan wall(s) + connect 2/2 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       328,
+       559
+      ],
+      [
+       327,
+       560
+      ],
+      [
+       329,
+       560
+      ],
+      [
+       326,
+       561
+      ],
+      [
+       330,
+       561
+      ],
+      [
+       327,
+       562
+      ],
+      [
+       329,
+       562
+      ],
+      [
+       328,
+       563
+      ],
+      [
+       390,
+       567
+      ],
+      [
+       393,
+       566
+      ]
+     ],
+     "to": "GRASS"
+    }
+   ]
+  },
+  {
+   "id": "crawl-c3r4",
+   "why": "Spiral crawl c3,r4: clear 0 orphan wall(s) + connect 2/2 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "remove_objects",
+     "rect": [
+      325,
+      464,
+      325,
+      464
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      323,
+      466,
+      323,
+      466
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "crawl-c3r3",
+   "why": "Spiral crawl c3,r3: clear 16 orphan wall(s) + connect 3/3 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       328,
+       326
+      ],
+      [
+       327,
+       327
+      ],
+      [
+       329,
+       327
+      ],
+      [
+       326,
+       328
+      ],
+      [
+       330,
+       328
+      ],
+      [
+       327,
+       329
+      ],
+      [
+       329,
+       329
+      ],
+      [
+       328,
+       330
+      ],
+      [
+       386,
+       372
+      ],
+      [
+       385,
+       373
+      ],
+      [
+       387,
+       373
+      ],
+      [
+       384,
+       374
+      ],
+      [
+       388,
+       374
+      ],
+      [
+       385,
+       375
+      ],
+      [
+       387,
+       375
+      ],
+      [
+       386,
+       376
+      ],
+      [
+       362,
+       302
+      ]
+     ],
+     "to": "GRASS"
+    }
+   ]
+  },
+  {
+   "id": "crawl-c5r3",
+   "why": "Spiral crawl c5,r3: clear 16 orphan wall(s) + connect 2/2 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       594,
+       350
+      ],
+      [
+       593,
+       351
+      ],
+      [
+       595,
+       351
+      ],
+      [
+       592,
+       352
+      ],
+      [
+       596,
+       352
+      ],
+      [
+       593,
+       353
+      ],
+      [
+       595,
+       353
+      ],
+      [
+       594,
+       354
+      ],
+      [
+       588,
+       394
+      ],
+      [
+       587,
+       395
+      ],
+      [
+       589,
+       395
+      ],
+      [
+       586,
+       396
+      ],
+      [
+       590,
+       396
+      ],
+      [
+       587,
+       397
+      ],
+      [
+       589,
+       397
+      ],
+      [
+       588,
+       398
+      ]
+     ],
+     "to": "GRASS"
+    }
+   ]
+  },
+  {
+   "id": "crawl-c6r3",
+   "why": "Spiral crawl c6,r3: clear 0 orphan wall(s) + connect 2/2 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "remove_objects",
+     "rect": [
+      642,
+      303,
+      642,
+      303
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      697,
+      369,
+      697,
+      369
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "crawl-c7r3",
+   "why": "Spiral crawl c7,r3: clear 0 orphan wall(s) + connect 1/1 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "remove_objects",
+     "rect": [
+      762,
+      341,
+      762,
+      341
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "crawl-c8r3",
+   "why": "Spiral crawl c8,r3: clear 0 orphan wall(s) + connect 1/1 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       848,
+       325
+      ]
+     ],
+     "to": "GRASS"
+    }
+   ]
+  },
+  {
+   "id": "crawl-c8r6",
+   "why": "Spiral crawl c8,r6: clear 0 orphan wall(s) + connect 4/4 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "remove_objects",
+     "rect": [
+      814,
+      636,
+      814,
+      636
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      874,
+      676,
+      874,
+      676
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       816,
+       611
+      ],
+      [
+       831,
+       672
+      ]
+     ],
+     "to": "GRASS"
+    }
+   ]
+  },
+  {
+   "id": "crawl-c8r7",
+   "why": "Spiral crawl c8,r7: clear 0 orphan wall(s) + connect 2/2 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "remove_objects",
+     "rect": [
+      828,
+      733,
+      828,
+      733
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      899,
+      752,
+      899,
+      752
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "crawl-c8r8",
+   "why": "Spiral crawl c8,r8: clear 0 orphan wall(s) + connect 5/5 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "remove_objects",
+     "rect": [
+      810,
+      801,
+      810,
+      801
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      872,
+      855,
+      872,
+      855
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      882,
+      898,
+      882,
+      898
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       809,
+       802
+      ],
+      [
+       854,
+       802
+      ]
+     ],
+     "to": "GRASS"
+    }
+   ]
+  },
+  {
+   "id": "crawl-c7r8",
+   "why": "Spiral crawl c7,r8: clear 0 orphan wall(s) + connect 1/1 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "remove_objects",
+     "rect": [
+      721,
+      855,
+      721,
+      855
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "crawl-c6r8",
+   "why": "Spiral crawl c6,r8: clear 0 orphan wall(s) + connect 4/4 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "remove_objects",
+     "rect": [
+      649,
+      806,
+      649,
+      806
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      680,
+      812,
+      680,
+      812
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      677,
+      845,
+      677,
+      845
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      618,
+      861,
+      618,
+      861
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "crawl-c5r8",
+   "why": "Spiral crawl c5,r8: clear 0 orphan wall(s) + connect 3/3 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "remove_objects",
+     "rect": [
+      572,
+      859,
+      572,
+      859
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      569,
+      874,
+      569,
+      874
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       565,
+       850
+      ]
+     ],
+     "to": "GRASS"
+    }
+   ]
+  },
+  {
+   "id": "crawl-c4r8",
+   "why": "Spiral crawl c4,r8: clear 0 orphan wall(s) + connect 3/3 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "remove_objects",
+     "rect": [
+      401,
+      828,
+      401,
+      828
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      403,
+      831,
+      403,
+      831
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      402,
+      832,
+      402,
+      832
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "crawl-c3r8",
+   "why": "Spiral crawl c3,r8: clear 5 orphan wall(s) + connect 9/9 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "remove_objects",
+     "rect": [
+      319,
+      813,
+      319,
+      813
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      334,
+      816,
+      334,
+      816
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      350,
+      824,
+      350,
+      824
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      374,
+      825,
+      374,
+      825
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      398,
+      825,
+      398,
+      825
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      372,
+      887,
+      372,
+      887
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       347,
+       855
+      ],
+      [
+       346,
+       856
+      ],
+      [
+       345,
+       857
+      ],
+      [
+       346,
+       858
+      ],
+      [
+       347,
+       859
+      ],
+      [
+       348,
+       856
+      ],
+      [
+       371,
+       888
+      ],
+      [
+       370,
+       891
+      ]
+     ],
+     "to": "GRASS"
+    }
+   ]
+  },
+  {
+   "id": "crawl-c2r8",
+   "why": "Spiral crawl c2,r8: clear 0 orphan wall(s) + connect 1/1 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       277,
+       874
+      ]
+     ],
+     "to": "GRASS"
+    }
+   ]
+  },
+  {
+   "id": "crawl-c2r7",
+   "why": "Spiral crawl c2,r7: clear 0 orphan wall(s) + connect 2/2 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "remove_objects",
+     "rect": [
+      220,
+      703,
+      220,
+      703
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      209,
+      747,
+      209,
+      747
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "crawl-c2r6",
+   "why": "Spiral crawl c2,r6: clear 8 orphan wall(s) + connect 1/1 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       231,
+       647
+      ],
+      [
+       230,
+       648
+      ],
+      [
+       232,
+       648
+      ],
+      [
+       229,
+       649
+      ],
+      [
+       233,
+       649
+      ],
+      [
+       230,
+       650
+      ],
+      [
+       232,
+       650
+      ],
+      [
+       231,
+       651
+      ]
+     ],
+     "to": "GRASS"
+    }
+   ]
+  },
+  {
+   "id": "crawl-c2r4",
+   "why": "Spiral crawl c2,r4: clear 0 orphan wall(s) + connect 5/5 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "remove_objects",
+     "rect": [
+      290,
+      401,
+      290,
+      401
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      294,
+      402,
+      294,
+      402
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      256,
+      452,
+      256,
+      452
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      262,
+      452,
+      262,
+      452
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      258,
+      455,
+      258,
+      455
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "crawl-c2r2",
+   "why": "Spiral crawl c2,r2: clear 0 orphan wall(s) + connect 1/1 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "remove_objects",
+     "rect": [
+      255,
+      272,
+      255,
+      272
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "crawl-c4r2",
+   "why": "Spiral crawl c4,r2: clear 8 orphan wall(s) + connect 1/1 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       481,
+       250
+      ],
+      [
+       480,
+       251
+      ],
+      [
+       482,
+       251
+      ],
+      [
+       479,
+       252
+      ],
+      [
+       483,
+       252
+      ],
+      [
+       480,
+       253
+      ],
+      [
+       482,
+       253
+      ],
+      [
+       481,
+       254
+      ]
+     ],
+     "to": "GRASS"
+    }
+   ]
+  },
+  {
+   "id": "crawl-c5r2",
+   "why": "Spiral crawl c5,r2: clear 7 orphan wall(s) + connect 0/1 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       548,
+       296
+      ],
+      [
+       550,
+       296
+      ],
+      [
+       547,
+       297
+      ],
+      [
+       551,
+       297
+      ],
+      [
+       548,
+       298
+      ],
+      [
+       550,
+       298
+      ],
+      [
+       549,
+       299
+      ]
+     ],
+     "to": "GRASS"
+    }
+   ]
+  },
+  {
+   "id": "crawl-c6r2",
+   "why": "Spiral crawl c6,r2: clear 0 orphan wall(s) + connect 3/3 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "remove_objects",
+     "rect": [
+      647,
+      296,
+      647,
+      296
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      648,
+      297,
+      648,
+      297
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "crawl-c7r2",
+   "why": "Spiral crawl c7,r2: clear 8 orphan wall(s) + connect 1/1 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       793,
+       232
+      ],
+      [
+       792,
+       233
+      ],
+      [
+       794,
+       233
+      ],
+      [
+       791,
+       234
+      ],
+      [
+       795,
+       234
+      ],
+      [
+       792,
+       235
+      ],
+      [
+       794,
+       235
+      ],
+      [
+       793,
+       236
+      ]
+     ],
+     "to": "GRASS"
+    }
+   ]
+  },
+  {
+   "id": "crawl-c8r2",
+   "why": "Spiral crawl c8,r2: clear 8 orphan wall(s) + connect 1/1 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       812,
+       236
+      ],
+      [
+       811,
+       237
+      ],
+      [
+       813,
+       237
+      ],
+      [
+       810,
+       238
+      ],
+      [
+       814,
+       238
+      ],
+      [
+       811,
+       239
+      ],
+      [
+       813,
+       239
+      ],
+      [
+       812,
+       240
+      ]
+     ],
+     "to": "GRASS"
+    }
+   ]
+  },
+  {
+   "id": "crawl-c9r4",
+   "why": "Spiral crawl c9,r4: clear 3 orphan wall(s) + connect 10/10 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "remove_objects",
+     "rect": [
+      954,
+      477,
+      954,
+      477
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      957,
+      479,
+      957,
+      479
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      917,
+      480,
+      917,
+      480
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      938,
+      480,
+      938,
+      480
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      954,
+      482,
+      954,
+      482
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      935,
+      482,
+      935,
+      482
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      938,
+      483,
+      938,
+      483
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      956,
+      482,
+      956,
+      482
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      954,
+      488,
+      954,
+      488
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       923,
+       497
+      ],
+      [
+       924,
+       498
+      ],
+      [
+       923,
+       499
+      ]
+     ],
+     "to": "GRASS"
+    }
+   ]
+  },
+  {
+   "id": "crawl-c9r7",
+   "why": "Spiral crawl c9,r7: clear 7 orphan wall(s) + connect 0/0 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       905,
+       798
+      ],
+      [
+       907,
+       798
+      ],
+      [
+       911,
+       798
+      ],
+      [
+       913,
+       798
+      ],
+      [
+       901,
+       799
+      ],
+      [
+       903,
+       799
+      ],
+      [
+       915,
+       799
+      ]
+     ],
+     "to": "GRASS"
+    }
+   ]
+  },
+  {
+   "id": "crawl-c9r9",
+   "why": "Spiral crawl c9,r9: clear 0 orphan wall(s) + connect 1/1 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "remove_objects",
+     "rect": [
+      919,
+      947,
+      919,
+      947
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      918,
+      947,
+      918,
+      947
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "crawl-c8r9",
+   "why": "Spiral crawl c8,r9: clear 3 orphan wall(s) + connect 1/1 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       824,
+       915
+      ],
+      [
+       823,
+       916
+      ],
+      [
+       824,
+       917
+      ],
+      [
+       826,
+       915
+      ]
+     ],
+     "to": "GRASS"
+    }
+   ]
+  },
+  {
+   "id": "crawl-c2r9",
+   "why": "Spiral crawl c2,r9: clear 0 orphan wall(s) + connect 10/10 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "remove_objects",
+     "rect": [
+      217,
+      930,
+      217,
+      930
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      275,
+      940,
+      275,
+      940
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      294,
+      941,
+      294,
+      941
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      256,
+      942,
+      256,
+      942
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      253,
+      946,
+      253,
+      946
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      300,
+      961,
+      300,
+      961
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      262,
+      963,
+      262,
+      963
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      261,
+      964,
+      261,
+      964
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      217,
+      987,
+      217,
+      987
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      207,
+      988,
+      207,
+      988
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "crawl-c1r9",
+   "why": "Spiral crawl c1,r9: clear 0 orphan wall(s) + connect 1/1 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "remove_objects",
+     "rect": [
+      175,
+      947,
+      175,
+      947
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "crawl-c1r8",
+   "why": "Spiral crawl c1,r8: clear 13 orphan wall(s) + connect 2/2 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "remove_objects",
+     "rect": [
+      105,
+      885,
+      105,
+      885
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       188,
+       832
+      ],
+      [
+       187,
+       833
+      ],
+      [
+       189,
+       833
+      ],
+      [
+       186,
+       834
+      ],
+      [
+       190,
+       834
+      ],
+      [
+       167,
+       835
+      ],
+      [
+       187,
+       835
+      ],
+      [
+       189,
+       835
+      ],
+      [
+       166,
+       836
+      ],
+      [
+       168,
+       836
+      ],
+      [
+       188,
+       836
+      ],
+      [
+       165,
+       837
+      ],
+      [
+       166,
+       838
+      ]
+     ],
+     "to": "GRASS"
+    }
+   ]
+  },
+  {
+   "id": "crawl-c1r7",
+   "why": "Spiral crawl c1,r7: clear 0 orphan wall(s) + connect 1/1 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "remove_objects",
+     "rect": [
+      120,
+      729,
+      120,
+      729
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "crawl-c1r6",
+   "why": "Spiral crawl c1,r6: clear 0 orphan wall(s) + connect 1/1 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "remove_objects",
+     "rect": [
+      108,
+      655,
+      108,
+      655
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "crawl-c1r5",
+   "why": "Spiral crawl c1,r5: clear 8 orphan wall(s) + connect 2/2 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       196,
+       569
+      ],
+      [
+       195,
+       570
+      ],
+      [
+       197,
+       570
+      ],
+      [
+       194,
+       571
+      ],
+      [
+       198,
+       571
+      ],
+      [
+       195,
+       572
+      ],
+      [
+       197,
+       572
+      ],
+      [
+       196,
+       573
+      ],
+      [
+       143,
+       501
+      ]
+     ],
+     "to": "GRASS"
+    }
+   ]
+  },
+  {
+   "id": "crawl-c1r4",
+   "why": "Spiral crawl c1,r4: clear 1 orphan wall(s) + connect 4/4 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "remove_objects",
+     "rect": [
+      150,
+      462,
+      150,
+      462
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      139,
+      468,
+      139,
+      468
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      134,
+      476,
+      134,
+      476
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       148,
+       412
+      ],
+      [
+       150,
+       410
+      ]
+     ],
+     "to": "GRASS"
+    }
+   ]
+  },
+  {
+   "id": "crawl-c1r2",
+   "why": "Spiral crawl c1,r2: clear 8 orphan wall(s) + connect 6/6 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "remove_objects",
+     "rect": [
+      140,
+      272,
+      140,
+      272
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      146,
+      273,
+      146,
+      273
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      123,
+      274,
+      123,
+      274
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      125,
+      274,
+      125,
+      274
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      172,
+      275,
+      172,
+      275
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      174,
+      275,
+      174,
+      275
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       123,
+       256
+      ],
+      [
+       121,
+       257
+      ],
+      [
+       125,
+       257
+      ],
+      [
+       120,
+       259
+      ],
+      [
+       126,
+       259
+      ],
+      [
+       121,
+       261
+      ],
+      [
+       125,
+       261
+      ],
+      [
+       123,
+       262
+      ]
+     ],
+     "to": "GRASS"
+    }
+   ]
+  },
+  {
+   "id": "crawl-c2r1",
+   "why": "Spiral crawl c2,r1: clear 7 orphan wall(s) + connect 0/0 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       275,
+       163
+      ],
+      [
+       257,
+       164
+      ],
+      [
+       258,
+       168
+      ],
+      [
+       271,
+       168
+      ],
+      [
+       256,
+       169
+      ],
+      [
+       257,
+       172
+      ],
+      [
+       253,
+       174
+      ]
+     ],
+     "to": "GRASS"
+    }
+   ]
+  },
+  {
+   "id": "crawl-c4r1",
+   "why": "Spiral crawl c4,r1: clear 0 orphan wall(s) + connect 1/1 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "remove_objects",
+     "rect": [
+      409,
+      106,
+      409,
+      106
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "crawl-c5r1",
+   "why": "Spiral crawl c5,r1: clear 16 orphan wall(s) + connect 2/2 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       593,
+       161
+      ],
+      [
+       592,
+       162
+      ],
+      [
+       594,
+       162
+      ],
+      [
+       591,
+       163
+      ],
+      [
+       595,
+       163
+      ],
+      [
+       592,
+       164
+      ],
+      [
+       594,
+       164
+      ],
+      [
+       593,
+       165
+      ],
+      [
+       566,
+       190
+      ],
+      [
+       565,
+       191
+      ],
+      [
+       567,
+       191
+      ],
+      [
+       564,
+       192
+      ],
+      [
+       568,
+       192
+      ],
+      [
+       565,
+       193
+      ],
+      [
+       567,
+       193
+      ],
+      [
+       566,
+       194
+      ]
+     ],
+     "to": "GRASS"
+    }
+   ]
+  },
+  {
+   "id": "crawl-c7r1",
+   "why": "Spiral crawl c7,r1: clear 4 orphan wall(s) + connect 0/0 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       770,
+       129
+      ],
+      [
+       769,
+       130
+      ],
+      [
+       768,
+       131
+      ],
+      [
+       769,
+       132
+      ]
+     ],
+     "to": "GRASS"
+    }
+   ]
+  },
+  {
+   "id": "crawl-c8r1",
+   "why": "Spiral crawl c8,r1: clear 8 orphan wall(s) + connect 1/1 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       871,
+       106
+      ],
+      [
+       870,
+       107
+      ],
+      [
+       872,
+       107
+      ],
+      [
+       869,
+       108
+      ],
+      [
+       873,
+       108
+      ],
+      [
+       870,
+       109
+      ],
+      [
+       872,
+       109
+      ],
+      [
+       871,
+       110
+      ]
+     ],
+     "to": "GRASS"
+    }
+   ]
+  },
+  {
+   "id": "crawl-c9r1",
+   "why": "Spiral crawl c9,r1: clear 8 orphan wall(s) + connect 2/2 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       916,
+       127
+      ],
+      [
+       915,
+       128
+      ],
+      [
+       917,
+       128
+      ],
+      [
+       914,
+       129
+      ],
+      [
+       918,
+       129
+      ],
+      [
+       915,
+       130
+      ],
+      [
+       917,
+       130
+      ],
+      [
+       916,
+       131
+      ],
+      [
+       919,
+       192
+      ]
+     ],
+     "to": "GRASS"
+    }
+   ]
+  },
+  {
+   "id": "crawl-c0r6",
+   "why": "Spiral crawl c0,r6: clear 1 orphan wall(s) + connect 3/3 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "remove_objects",
+     "rect": [
+      80,
+      616,
+      80,
+      616
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      47,
+      619,
+      47,
+      619
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       85,
+       638
+      ],
+      [
+       84,
+       637
+      ]
+     ],
+     "to": "GRASS"
+    }
+   ]
+  },
+  {
+   "id": "crawl-c0r5",
+   "why": "Spiral crawl c0,r5: clear 0 orphan wall(s) + connect 2/2 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "remove_objects",
+     "rect": [
+      64,
+      510,
+      64,
+      510
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      68,
+      589,
+      68,
+      589
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "crawl-c0r4",
+   "why": "Spiral crawl c0,r4: clear 0 orphan wall(s) + connect 1/1 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "remove_objects",
+     "rect": [
+      62,
+      475,
+      62,
+      475
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "crawl-c0r1",
+   "why": "Spiral crawl c0,r1: clear 3 orphan wall(s) + connect 14/14 tree/wall-sealed pocket(s). Auto-solved (object-removal + wall->grass only; no rock/water carved).",
+   "ops": [
+    {
+     "op": "remove_objects",
+     "rect": [
+      67,
+      133,
+      67,
+      133
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      68,
+      134,
+      68,
+      134
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      70,
+      138,
+      70,
+      138
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      71,
+      138,
+      71,
+      138
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      70,
+      139,
+      70,
+      139
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      72,
+      145,
+      72,
+      145
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      71,
+      154,
+      71,
+      154
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      72,
+      157,
+      72,
+      157
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      71,
+      158,
+      71,
+      158
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      72,
+      163,
+      72,
+      163
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      71,
+      165,
+      71,
+      165
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      70,
+      167,
+      70,
+      167
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      72,
+      181,
+      72,
+      181
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      77,
+      194,
+      77,
+      194
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      77,
+      196,
+      77,
+      196
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "remove_objects",
+     "rect": [
+      78,
+      196,
+      78,
+      196
+     ],
+     "types": [
+      "resource",
+      "decor"
+     ]
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       79,
+       106
+      ],
+      [
+       81,
+       106
+      ],
+      [
+       80,
+       107
+      ]
+     ],
+     "to": "GRASS"
+    }
    ]
   }
  ]
