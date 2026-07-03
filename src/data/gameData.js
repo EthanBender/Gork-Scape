@@ -20,8 +20,16 @@ const FILES = [
 // never brick the game's boot (top-level await would otherwise reject fatally,
 // which matters while another agent is developing against the same folder).
 async function fetchJson(name) {
+  const url = new URL(`./${name}.json`, import.meta.url);
   try {
-    const url = new URL(`./${name}.json`, import.meta.url);
+    // Node (the world server + audit/sim gates): fetch() can't read file:// URLs,
+    // which used to silently leave the SERVER running on empty tables. Read from
+    // disk so Node sees the exact same data the browser does.
+    if (typeof window === 'undefined') {
+      const { readFile } = await import('node:fs/promises');
+      const { fileURLToPath } = await import('node:url');
+      return JSON.parse(await readFile(fileURLToPath(url), 'utf8'));
+    }
     // `no-store`: with no build step and several agents editing these JSON packs
     // live, the browser's HTTP cache otherwise serves a stale table after an edit
     // (a real "I changed the JSON but the game didn't" trap). Always re-fetch.

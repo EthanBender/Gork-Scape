@@ -79,8 +79,10 @@
     border-left: 2px solid var(--bevel-lo); box-shadow: inset 1px 0 0 var(--bevel-hi); }
 
   #tabbar { display: flex; flex: 0 0 auto; background: var(--panel-lo);
-    border-bottom: 2px solid var(--bevel-lo); }
-  .tab-btn { flex: 1; padding: 7px 2px 5px; color: var(--muted);
+    border-bottom: 2px solid var(--bevel-lo);
+    overflow-x: auto; scrollbar-width: none; } /* world panels add up to 10 tabs — scroll, don't clip */
+  #tabbar::-webkit-scrollbar { display: none; }
+  .tab-btn { flex: 1 0 auto; min-width: 52px; padding: 7px 2px 5px; color: var(--muted);
     display: flex; flex-direction: column; align-items: center; gap: 2px;
     background: linear-gradient(180deg, var(--panel2), var(--panel));
     border: none; border-right: 1px solid var(--bevel-lo); border-bottom: 2px solid transparent;
