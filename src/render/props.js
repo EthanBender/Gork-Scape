@@ -27,6 +27,10 @@ export function propKind(label = '') {
   if (/weapon rack|armou?r|\brack\b/.test(n)) return 'weaponrack';
   if (/dummy/.test(n)) return 'dummy';
   if (/throne|high seat|\bdais\b/.test(n)) return 'throne';
+  if (/ladder/.test(n)) return 'ladder';
+  if (/lamp|lantern/.test(n)) return 'lamp';
+  if (/fence|paling|railing|hitch/.test(n)) return 'fence';
+  if (/bush|shrub|hedge|topiary/.test(n)) return 'bush';
   if (/banner|\bflag\b/.test(n)) return 'banner';
   if (/tower|watchtower/.test(n)) return 'tower';
   if (/\bwell\b/.test(n)) return 'well';
@@ -233,10 +237,36 @@ function hut(g, X, Y) {
   g.fillStyle(0xd8b25a, 0.85); g.fillRect(X + 3.5, Y + 1.5, 3, 3);      // lit window
 }
 
+function ladder(g, X, Y) {
+  g.fillStyle(WOOD_D, 1); g.fillRect(X - 4, Y - 16, 1.8, 28); g.fillRect(X + 2.2, Y - 16, 1.8, 28); // rails
+  g.fillStyle(WOOD, 1); for (let ry = -14; ry <= 10; ry += 4) g.fillRect(X - 4, Y + ry, 8, 1.6);    // rungs
+  g.fillStyle(shade(WOOD, 1.25), 1); g.fillRect(X - 4, Y - 16, 1.4, 28);                            // lit rail
+}
+function lamp(g, X, Y) {
+  g.fillStyle(0x1e1e22, 1); g.fillRect(X - 3, Y + 10, 6, 2.4);          // base
+  g.fillStyle(0x2a2a2e, 1); g.fillRect(X - 1, Y - 8, 2, 20);            // iron post
+  g.fillStyle(0x3a3a40, 1); g.fillRect(X - 3.5, Y - 14, 7, 7);          // lantern head
+  g.fillStyle(0xffd24d, 0.95); g.fillRect(X - 2.2, Y - 13, 4.4, 5);     // flame glow
+  g.fillStyle(0xfff2b0, 0.9); g.fillCircle(X, Y - 10.5, 1.5);
+  g.fillStyle(0x2a2a30, 1); g.fillTriangle(X - 4, Y - 14, X + 4, Y - 14, X, Y - 18); // cap
+}
+function fence(g, X, Y) {
+  g.fillStyle(WOOD_D, 1); g.fillRect(X - 8, Y - 4, 1.8, 14); g.fillRect(X - 1, Y - 4, 1.8, 14); g.fillRect(X + 6, Y - 4, 1.8, 14); // posts
+  g.fillStyle(WOOD, 1); g.fillRect(X - 8, Y - 2, 15.8, 1.8); g.fillRect(X - 8, Y + 4, 15.8, 1.8);   // rails
+  g.fillStyle(shade(WOOD, 1.2), 1); g.fillRect(X - 8, Y - 2, 15.8, 0.7);
+}
+function bush(g, X, Y, accent) {
+  const grn = accent || 0x2f5a2a;
+  g.fillStyle(grn, 1); g.fillCircle(X - 4, Y + 4, 5); g.fillCircle(X + 4, Y + 4, 5); g.fillCircle(X, Y + 1, 6);
+  g.fillStyle(shade(grn, 1.35), 1); g.fillCircle(X - 2, Y, 3); g.fillCircle(X + 3, Y + 3, 2.4);
+  g.fillStyle(shade(grn, 1.7), 0.6); g.fillCircle(X - 1, Y - 1, 1.6);   // highlight
+  g.fillStyle(0xc0432a, 0.9); g.fillCircle(X + 2.5, Y + 2, 1); g.fillCircle(X - 3, Y + 4, 0.9); // berries
+}
+
 const DRAW = {
   anvil, chest, barrel, stall, exchange, weaponrack, dummy, banner, tower, throne, well,
   shrine, cauldron, fire, coalheap, rockpile, logpile, cart, table, hiderack, bin,
-  entrance, sign, crate, hut,
+  entrance, sign, crate, hut, ladder, lamp, fence, bush,
 };
 
 // Entry point: draw the prop for object `o` at tile top-left (cx,cy).

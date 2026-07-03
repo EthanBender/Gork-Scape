@@ -1460,7 +1460,10 @@ if (!GEO2) {
   // AFTER the sanity pass (the patch author's word is final) and BEFORE the
   // texture pass (patched base terrain still gets textured naturally).
   // Ops: terrain (rect|cells, to), trail (from,to — lays dirt, bridges water),
-  // remove_objects (rect, types[]), object (a labelled structure), decor.
+  // remove_objects (rect, types[]), object (a labelled structure), decor,
+  // elevation (rect|cells, to — seeds the height field so authored landmarks can
+  // sit on a raised plinth that the blur passes let fall away around them).
+  const elevOverride = new Float32Array(WORLD_W * WORLD_H).fill(-1);
   (function applyMapPatches() {
     const list = (GameData.mapPatches || []);
     for (const patch of list) {
@@ -1480,6 +1483,10 @@ if (!GEO2) {
             if (op.examine) { const o = objectAt.get(okey(op.x, op.y)); if (o) { o.examine = op.examine; o.wild = op.wild || 'explore'; } }
           } else if (op.op === 'decor') {
             decor(op.x, op.y, op.color || 0x3f6e2c, op.size || 4, op.shape || 'circle');
+          } else if (op.op === 'elevation' && op.to != null) {
+            const v = Math.max(0, Math.min(255, op.to));
+            if (op.rect) { const [x0, y0, x1, y1] = op.rect; for (let y = Math.max(1, y0); y <= Math.min(WORLD_H - 2, y1); y++) for (let x = Math.max(1, x0); x <= Math.min(WORLD_W - 2, x1); x++) elevOverride[idx(x, y)] = v; }
+            for (const [x, y] of op.cells || []) if (x > 0 && y > 0 && x < WORLD_W - 1 && y < WORLD_H - 1) elevOverride[idx(x, y)] = v;
           }
         } catch (e) { if (typeof console !== 'undefined') console.warn('map patch op failed', patch.id, op.op, e && e.message); }
       }
@@ -1537,7 +1544,7 @@ if (!GEO2) {
       return base;                                                // grass/dirt/road/field ride the roll
     };
     let a = new Float32Array(WORLD_W * WORLD_H), b = new Float32Array(WORLD_W * WORLD_H);
-    for (let i = 0; i < a.length; i++) a[i] = pin(i);
+    for (let i = 0; i < a.length; i++) a[i] = elevOverride[i] >= 0 ? elevOverride[i] : pin(i); // patched plinths seed high, then blur falls away around them
     for (let pass = 0; pass < 2; pass++) {                        // sloped banks + foothill ramps
       for (let y = 1; y < WORLD_H - 1; y++) for (let x = 1; x < WORLD_W - 1; x++) { const i = idx(x, y); b[i] = (a[i] + a[i - 1] + a[i + 1] + a[i - WORLD_W] + a[i + WORLD_W]) * 0.2; }
       for (let x = 0; x < WORLD_W; x++) { b[idx(x, 0)] = a[idx(x, 0)]; b[idx(x, WORLD_H - 1)] = a[idx(x, WORLD_H - 1)]; }
@@ -1566,7 +1573,7 @@ if (!GEO2) {
       }
     };
     let a = new Float32Array(N), b = new Float32Array(N);
-    for (let y = 0; y < WORLD_H; y++) for (let x = 0; x < WORLD_W; x++) { const i = idx(x, y); a[i] = target(terrain[i], x, y); }
+    for (let y = 0; y < WORLD_H; y++) for (let x = 0; x < WORLD_W; x++) { const i = idx(x, y); a[i] = elevOverride[i] >= 0 ? elevOverride[i] : target(terrain[i], x, y); }
     const hiPin = (t) => t === T.ROCK ? 190 : t === T.ROCK2 ? 158 : t === T.CLIFF ? 122 : -1;
     const loPin = (t) => t === T.WATER_DEEP ? 8 : (t === T.WATER || t === T.WATER_SHALLOW) ? 20 : -1;
     for (let pass = 0; pass < 4; pass++) {
