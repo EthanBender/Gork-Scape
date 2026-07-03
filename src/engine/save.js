@@ -104,6 +104,8 @@ export function serialize() {
     gadgetMods: Array.isArray(Game.gadgetMods) ? Game.gadgetMods.slice() : [], // [economy lane] installed Tinker rig mods (crafted progression)
     trackedQuest: Game.trackedQuest || null, // the pinned/tracked quest
     openedShortcuts: Array.isArray(Game.openedShortcuts) ? Game.openedShortcuts.slice() : [], // opened bridges/gates
+    contract: Game.contract || null,               // M3: active slayer contract
+    contractStreak: Game.contractStreak || 0,      // M3: completed-contract streak
   };
 }
 
@@ -169,6 +171,8 @@ export function applySave(data) {
   Game.gadgetMods = Array.isArray(data.gadgetMods) ? data.gadgetMods.slice() : [];
   Game.trackedQuest = data.trackedQuest || null;
   Game.openedShortcuts = Array.isArray(data.openedShortcuts) ? data.openedShortcuts.slice() : [];
+  Game.contract = data.contract || null;           // M3: slayer contract survives logout
+  Game.contractStreak = data.contractStreak || 0;
   Game.selectedInv = null;
 }
 

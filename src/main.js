@@ -13,6 +13,7 @@ import {
   TILE_SIZE, WORLD_W, WORLD_H, TERRAIN_DEFS, T,
 } from './world/map.js';
 import { generateInterior } from './world/interiors.js'; // M2: dungeon sub-maps (enter/exit world swap)
+import { contractOnKill, contractDialog, contractState } from './systems/contracts.js'; // M3: slayer-lite contracts
 import { TOOLS, LANDMARKS, REGION_ANCHORS } from './world/worldData.js';
 
 // World-map overlay toggles (PASS 7)
@@ -190,14 +191,29 @@ function buildWorld() {
     }));
   });
 
+  // Sergeant Grimjaw — the Contract Master (M3). Stands by the training yard;
+  // talking to him assigns / reports slayer-lite contracts (systems/contracts.js).
+  Game.npcs.push(new NPC({
+    id: 'contract_master', name: 'Sergeant Grimjaw', type: 'elder',
+    tileX: 514 + TD.dx, tileY: 486 + TD.dy,
+    color: 0xa03a2a, aggressive: false,
+    dialog: 'Monsters need killing, goblin. I keep the list.',
+    levels: elderLevels, combatLevel: null, bonuses: emptyBonuses(),
+  }));
+
   // Enemies from region spawn points (name carries region flavour).
+  // M3: aggression comes from the monster DATABASE — 39 of the 60 monsters are
+  // flagged aggressive, so the wilderness finally attacks first. (Anything
+  // without a DB row stays passive, which covers the town/teaser mobs.)
   world.enemySpawns.forEach((s, i) => {
     const def = world.ENEMY_TYPES[s.type];
     const levels = { attack: def.att, strength: def.str, defence: def.def, ranged: 1, hitpoints: def.hp };
+    const dbMon = GameData.monster ? GameData.monster(monsterIdForSpawn(s)) : null;
     Game.npcs.push(new NPC({
       id: 'e' + i, name: s.name || def.name, type: 'guard', tileX: s.x, tileY: s.y, color: def.color,
       monsterId: monsterIdForSpawn(s), // [economy lane] -> database drop table
-      wanderRadius: 4, leashRadius: 8, aggressive: false, aggroRange: 4,
+      wanderRadius: 4, leashRadius: 8,
+      aggressive: !!(dbMon && dbMon.aggressive && !s._keep), aggroRange: dbMon && dbMon.aggressive ? 5 : 4,
       attackSpeed: def.speed, weaponType: 'crush', levels,
       combatLevel: combatLevel(levels), lootTable: def.loot,
       bonuses: Object.assign(emptyBonuses(), {
@@ -496,7 +512,7 @@ function create() {
     chip.style.cssText = 'position:absolute;left:10px;top:10px;z-index:30;max-width:46%;' +
       'padding:6px 10px;font:600 11px monospace;color:#e8c65a;background:rgba(20,19,15,.82);' +
       'border:1px solid #4a4331;border-radius:6px;box-shadow:0 2px 6px rgba(0,0,0,.4);' +
-      'pointer-events:none;display:none;text-shadow:0 1px 0 #000;line-height:1.35;';
+      'pointer-events:none;display:none;text-shadow:0 1px 0 #000;line-height:1.35;white-space:pre-line;';
     (document.getElementById('game-panel') || document.body).appendChild(chip);
   }
   initWiki(); // [economy lane] the item Codex/Wiki button
@@ -883,6 +899,8 @@ function talkTo(npc) {
   // [economy lane] Sprocket the Tinker — talking opens his Workbench (the overlay
   // itself gates on the intro-quest unlock).
   else if (npc.id === 'sprocket') { openWorkbench(); }
+  // M3: Sergeant Grimjaw hands out / reports slayer contracts.
+  else if (npc.id === 'contract_master') { Game.log(`Sergeant Grimjaw: "${contractDialog()}"`); }
 }
 
 // ---------------------------------------------------------------- tick logic
@@ -1614,6 +1632,7 @@ function playerAttack(npc, count) {
     if (Game.player.combatTarget === npc) Game.player.combatTarget = null;
     dropLoot(npc, count);
     questOnKill(npc.monsterId); // [economy lane] tally kills for active quests
+    contractOnKill(npc.monsterId); // M3: tally toward the active slayer contract
   }
 }
 
@@ -1623,6 +1642,7 @@ function killNpc(n, count) {
   if (Game.player.combatTarget === n) Game.player.combatTarget = null;
   dropLoot(n, count);
   questOnKill(n.monsterId);
+  contractOnKill(n.monsterId);
 }
 
 // Deal splash/chain damage to a secondary target and resolve its death.
@@ -2312,6 +2332,9 @@ function updateGoalChip() {
       text = `▶ New quest: ${q.name} — talk to ${q.giver.name} (!)`;
     }
   }
+  // M3: the active slayer contract rides the same chip (second line).
+  const c = contractState();
+  if (c && c.done < c.need) text += `${text ? '\n' : ''}📜 Contract: ${c.done}/${c.need} ${c.name} — ${c.region}`;
   if (text !== goalChipText) {
     goalChipText = text;
     chip.textContent = text;
