@@ -1201,6 +1201,22 @@ function gameTick(count, isLast = true) {
     if (n.aggressive && distPlayer <= n.aggroRange && distHome <= n.leashRadius) n.target = p;
     if (n.target && (n.target.dead || distHome > n.leashRadius || distPlayer > n.aggroRange + 4)) n.target = null;
 
+    // M3 boss special: a telegraphed SLAM. The boss roars and marks the player's
+    // tile; two ticks later the slam lands on that 3×3 — standing still eats a
+    // huge hit, stepping away dodges it entirely. Wind-up is loud on purpose.
+    if (n.bossSpec && n._windup && count >= n._windup.at) {
+      const w = n._windup; n._windup = null;
+      if (Math.abs(p.tileX - w.x) <= 1 && Math.abs(p.tileY - w.y) <= 1) {
+        const dmg = Math.max(4, Math.round(Game.maxHp * 0.35));
+        Game.hp = Math.max(0, Game.hp - dmg);
+        floatText(p, '-' + dmg, '#ff2b2b');
+        Game.log(`💥 The ${n.name}'s slam CRUSHES you for ${dmg}!`);
+        if (Game.hp <= 0) playerDeath();
+      } else {
+        Game.log(`💥 The ${n.name}'s slam shatters the ground where you stood!`);
+      }
+    }
+
     if (n.target) {
       // NPCs attack from their own weapon reach too — a ranged/spear enemy can
       // strike before closing to melee, but ranged enemies still need line-of-
@@ -1209,7 +1225,18 @@ function gameTick(count, isLast = true) {
       // reachFP: a big monster strikes from its footprint edge (1-tile mobs unchanged).
       if (reachFP(world, n, p.tileX, p.tileY, nRange)) {
         n.path = [];
-        if (count - n.lastAttackTick >= n.attackSpeed) { n.lastAttackTick = count; npcAttack(n, count); }
+        if (count - n.lastAttackTick >= n.attackSpeed) {
+          n.lastAttackTick = count;
+          // every few swings a boss winds up its special instead of attacking
+          if (n.bossSpec && !n._windup && ++n._specCount >= n.bossSpec.every) {
+            n._specCount = 0;
+            n._windup = { x: p.tileX, y: p.tileY, at: count + 2 };
+            floatText(n, '!!', '#ffd24d');
+            Game.log(`⚠️ The ${n.name} rears back — MOVE!`);
+          } else {
+            npcAttack(n, count);
+          }
+        }
       } else if (!snared) {
         n.path = findPath(world, n.tileX, n.tileY, p.tileX, p.tileY, true);
         stepAlongPath(n);
@@ -1614,6 +1641,15 @@ function playerAttack(npc, count) {
     if (r.hit) { total += r.damage; floatText(npc, '-' + r.damage, '#ffe14d'); }
     else floatText(npc, '0', '#cccccc');
   }
+  // M3 boss style weakness: the right combat style bites 50% harder. Hinted the
+  // first time you land it, so the puzzle is discoverable.
+  if (total > 0 && npc.weakTo) {
+    const style = weapon ? (weapon.weaponType || 'crush') : 'crush';
+    if (style === npc.weakTo) {
+      total = Math.round(total * 1.5);
+      if (!npc._weakHinted) { npc._weakHinted = true; Game.log(`The ${npc.name} STAGGERS — ${npc.weakTo} strikes bite deep!`); }
+    }
+  }
   npc.hp = Math.max(0, npc.hp - total);
   if (total > 0) {
     Game.log(`You ${results.length > 1 ? 'strike' : 'swing at'} the ${npc.name}... and hit for ${total} damage.`);
@@ -1682,7 +1718,15 @@ function dropLoot(npc, count) {
   // [world-continuity] A live world event (🌑 Blood Moon / 👹 Wandering Horde)
   // makes monsters drop more — scale stack sizes by the event's dropBonus.
   const ev = Game.worldEvents && Game.worldEvents.activeEvent && Game.worldEvents.activeEvent();
-  const dropBonus = ev && ev.effect && ev.effect.dropBonus > 1 ? ev.effect.dropBonus : 1;
+  let dropBonus = ev && ev.effect && ev.effect.dropBonus > 1 ? ev.effect.dropBonus : 1;
+  // M3 risk↔reward: kills in dangerous regions drop more. Region tier comes
+  // from the anchor's level band: 45+ regions pay 1.5×, 20+ pay 1.2×.
+  if (!Game.world.interior) {
+    const rn = regionAt(npc.tileX, npc.tileY);
+    const anchor = REGION_ANCHORS.find((a) => a.name === rn);
+    const tierMin = anchor ? parseInt(String(anchor.level), 10) || 1 : 1;
+    dropBonus *= tierMin >= 45 ? 1.5 : tierMin >= 20 ? 1.2 : 1;
+  }
   for (const d of drops) {
     const qty = dropBonus > 1 ? scaleQty(d.qty, dropBonus) : d.qty;
     spawnGroundItem(d.id, qty, npc.tileX, npc.tileY, count);
@@ -1760,6 +1804,8 @@ function spawnEnemyNpcs(world, prefix) {
       }),
     });
     if (s.bossDrop) npc.bossDrop = s.bossDrop; // guaranteed unique on kill (see dropLoot)
+    if (s.boss) { npc.bossSpec = { every: 4 }; npc._specCount = 0; }   // telegraphed slam every 4th swing
+    if (s.bossWeak) npc.weakTo = s.bossWeak;                           // 1.5x damage from this style
     Game.npcs.push(npc);
   });
 }
