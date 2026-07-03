@@ -263,66 +263,67 @@
   .stat-row span:last-child { color: #9fb04e; font-weight: 700; }
   .stat-row.neg span:last-child { color: #c98a8a; }
 
-  /* Combat */
+  /* Combat — AAA redesign: red HP bar, juicy gold attack-style buttons. */
   .hp-wrap { margin-bottom: 10px; }
-  .hp-label { font-size: 12px; margin-bottom: 4px; color: var(--text); font-weight: 600; }
-  .hpbar { height: 15px; background: var(--panel-lo); border-radius: 5px; overflow: hidden;
-    border: 1px solid var(--bevel-lo); box-shadow: var(--sink); }
-  .hpfill { height: 100%; background: linear-gradient(180deg,#e05a5a,#a02020);
+  .hp-label { font-size: 12px; margin-bottom: 4px; color: #ebdfc8; font-weight: 600; }
+  .hpbar { height: 15px; background: #17110a; border-radius: 99px; overflow: hidden;
+    border: 1px solid #4a3927; box-shadow: inset 0 1px 3px rgba(0,0,0,.5); }
+  .hpfill { height: 100%; background: linear-gradient(#d96a6a, #b34a4a);
     box-shadow: inset 0 1px 0 rgba(255,255,255,.35); transition: width .25s ease; }
   .hpfill.hurt { animation: hpHurt .45s ease-out; }
   @keyframes hpHurt { 0% { filter: brightness(2.4) saturate(1.5); }
     100% { filter: none; } }
   .hpbar.low { animation: hpLow 1s ease-in-out infinite; }
-  @keyframes hpLow { 0%, 100% { box-shadow: var(--sink); }
-    50% { box-shadow: var(--sink), 0 0 9px 1px rgba(224,60,60,.75); } }
-  .style-wrap { margin-bottom: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+  @keyframes hpLow { 0%, 100% { box-shadow: inset 0 1px 3px rgba(0,0,0,.5); }
+    50% { box-shadow: inset 0 1px 3px rgba(0,0,0,.5), 0 0 9px 1px rgba(217,106,106,.75); } }
+  .style-wrap { margin-bottom: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
   .style-wrap .stat-title { grid-column: 1 / -1; }
-  .style-btn { padding: 7px; color: var(--text); border: 1px solid var(--bevel-lo);
-    background: linear-gradient(180deg, var(--panel-hi), var(--panel2));
-    border-radius: 5px; cursor: pointer; font-size: 12px; font-weight: 600; box-shadow: var(--raise);
-    transition: transform .08s, background .1s; }
-  .style-btn:hover { background: linear-gradient(180deg, #47402f, var(--panel-hi)); }
-  .style-btn:active { transform: translateY(1px); }
-  .style-btn.active { color: #1a1710; font-weight: 700;
-    background: linear-gradient(180deg, #f2d774, var(--gold-dk));
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.5), 0 0 8px rgba(232,198,90,.35);
-    text-shadow: 0 1px 0 rgba(255,255,255,.3); }
+  .style-btn { padding: 9px; color: #ebdfc8; border: none;
+    background: linear-gradient(#3a2c1e, #2e2417);
+    border-radius: 12px; cursor: pointer; font-family: "Fredoka", sans-serif; font-size: 12px; font-weight: 600;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 3px 0 #1c150d;
+    transition: transform .07s, box-shadow .07s, filter .1s; }
+  .style-btn:hover { filter: brightness(1.09); }
+  .style-btn:active { transform: translateY(2px); box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 1px 0 #1c150d; }
+  .style-btn.active { color: #3a2a10; font-weight: 700;
+    background: linear-gradient(#e7c76b, #c99a2f);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.5), 0 3px 0 #8a6a2a; }
+  .style-btn.active:active { transform: translateY(2px); box-shadow: inset 0 1px 0 rgba(255,255,255,.5), 0 1px 0 #8a6a2a; }
   .target-info { font-size: 13px; }
   .target-info .tip-good, .target-info .tip-req { font-weight: 600; }
   /* Status colors usable outside the item tooltip (e.g. ammo line). */
-  .tip-good { color: var(--accent); }
+  .tip-good { color: #9fb04e; }
   .tip-req { color: #dd8a58; }
 
-  /* Stations */
-  .station-bar { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 6px; }
-  .station-btn { padding: 6px 9px; color: var(--muted); border: 1px solid var(--bevel-lo);
-    background: linear-gradient(180deg, var(--panel-hi), var(--panel2));
-    border-radius: 5px; cursor: pointer; font-size: 11px; font-weight: 600; box-shadow: var(--raise);
-    transition: color .1s, background .1s; }
-  .station-btn:hover { color: var(--text); background: linear-gradient(180deg, #47402f, var(--panel-hi)); }
-  .station-btn.active { color: #1a1710; font-weight: 700;
-    background: linear-gradient(180deg, #f2d774, var(--gold-dk));
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.5); text-shadow: 0 1px 0 rgba(255,255,255,.3); }
+  /* Stations — olive pill selects + warm recipe cards + juicy olive craft CTA. */
+  .station-bar { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+  .station-btn { padding: 7px 12px; color: #a89877; border: 1px solid #3c2e1f;
+    background: linear-gradient(#3a2c1e, #2e2417);
+    border-radius: 99px; cursor: pointer; font-family: "Fredoka", sans-serif; font-size: 11px; font-weight: 600;
+    transition: color .1s, background .1s, filter .1s; }
+  .station-btn:hover { color: #ebdfc8; filter: brightness(1.06); }
+  .station-btn.active { color: #2f3a12; font-weight: 700; border-color: transparent;
+    background: linear-gradient(#c3d46a, #9fb04e);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.45); }
   .recipe-row { display: flex; align-items: center; gap: 8px;
-    background: linear-gradient(180deg, var(--panel2), var(--panel));
-    border: 1px solid var(--bevel-lo); border-radius: 5px; padding: 5px 8px; margin-bottom: 4px;
-    box-shadow: var(--raise); transition: box-shadow .1s; }
-  .recipe-row:not(.locked):hover { box-shadow: var(--raise), 0 2px 6px rgba(0,0,0,.3); }
+    background: linear-gradient(#2a1f14, #231a11);
+    border: 1px solid #3c2e1f; border-radius: 12px; padding: 8px 10px; margin-bottom: 6px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.04); transition: box-shadow .1s; }
+  .recipe-row:not(.locked):hover { box-shadow: inset 0 0 0 1px rgba(159,176,78,.42); }
   .recipe-row.locked { opacity: 0.5; }
   .recipe-info { flex: 1; min-width: 0; }
-  .recipe-name { font-size: 12px; color: var(--text); font-weight: 600; }
-  .recipe-meta { font-size: 10px; color: var(--gold); }
-  .recipe-inputs { font-size: 10px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; }
-  .craft-btn { padding: 7px 12px; color: #0f1408; border: 1px solid var(--accent-dk);
-    background: linear-gradient(180deg, #93d95f, var(--accent-dk));
-    border-radius: 5px; cursor: pointer; font-size: 12px; font-weight: 700; white-space: nowrap;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.4); text-shadow: 0 1px 0 rgba(255,255,255,.25);
-    transition: transform .08s; }
-  .craft-btn:not(:disabled):hover { background: linear-gradient(180deg, #a6e872, #558833); }
-  .craft-btn:not(:disabled):active { transform: translateY(1px); }
-  .craft-btn:disabled { background: var(--panel); color: var(--muted); cursor: default;
-    border: 1px solid var(--bevel-lo); box-shadow: var(--sink); text-shadow: none; }
+  .recipe-name { font-family: "Nunito", sans-serif; font-size: 12.5px; color: #ebdfc8; font-weight: 700; }
+  .recipe-meta { font-size: 10px; color: #e0b44a; }
+  .recipe-inputs { font-size: 10px; color: #a89877; overflow: hidden; text-overflow: ellipsis; }
+  .craft-btn { padding: 9px 14px; color: #2f3a12; border: none;
+    background: linear-gradient(#c9db72, #9fb04e);
+    border-radius: 12px; cursor: pointer; font-family: "Fredoka", sans-serif; font-size: 12px; font-weight: 600; white-space: nowrap;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.5), 0 3px 0 #5c6b2c;
+    transition: transform .07s, box-shadow .07s, filter .12s; }
+  .craft-btn:not(:disabled):hover { filter: brightness(1.05); }
+  .craft-btn:not(:disabled):active { transform: translateY(3px); box-shadow: inset 0 1px 0 rgba(255,255,255,.5), 0 0 0 #5c6b2c; }
+  .craft-btn:disabled { background: #2e2417; color: #7a6b4f; cursor: default;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,.4); text-shadow: none; }
 
   /* Grand Exchange */
   .ge-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
