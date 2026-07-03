@@ -1,5 +1,16 @@
 # Deploying Goblin Empire
 
+> ✅ **LIVE STATUS (resolved 2026-07-03): the game is deployed via _Option C —
+> Cloudflare Pages_ at <https://gorkscape.ca>, auto-publishing on every push to
+> `main`.** The world server runs on the owner's laptop behind a Cloudflare Tunnel
+> (`api.gorkscape.ca`) — see [docs/VOYRA_HANDOFF.md](docs/VOYRA_HANDOFF.md). The
+> options below were scaffolded so the owner could pick one; **C is the chosen one.**
+> The green-gate protection lives in [`.github/workflows/ci.yml`](.github/workflows/ci.yml)
+> (runs the gates on every push + PR). The old GitHub Pages workflow (Option B,
+> `deploy.yml`) was **removed** — it auto-ran on every push and always failed because
+> Pages was never enabled (we went Cloudflare, not Pages), producing a misleading red
+> "Deploy ✗" that had nothing to do with the live site. Don't re-add it.
+
 The game is a **static site** — vanilla ES modules + JSON, Phaser from a CDN, no
 build step. That means it deploys to any static host with zero configuration. This
 also gives everyone **one shared URL** instead of fighting over local preview servers.
@@ -19,7 +30,13 @@ also gives everyone **one shared URL** instead of fighting over local preview se
 `netlify.toml` is already set (`publish = "."`, no build). To auto-redeploy on every
 change, instead use "Add new site → Import from Git" once the repo is on GitHub.
 
-## Option B — GitHub Pages with the smoke gate (recommended for the team) ⏱️ ~5 min
+## Option B — GitHub Pages with the smoke gate ⏱️ ~5 min — ⛔ NOT USED (workflow removed)
+> This was never adopted (we use Option C / Cloudflare). Its `deploy.yml` workflow
+> was deleted because it auto-ran on every push and always failed at
+> `actions/configure-pages` — GitHub Pages was never enabled. If you ever *do* want a
+> Pages mirror, re-create the workflow **and** complete step 2 below, or it will just
+> fail again.
+
 This wires the **"green master → live" rule** into CI: every push runs the boot
 smoke-check and only publishes if it passes.
 1. Create a GitHub repo and push this project to it:
