@@ -74,9 +74,11 @@ COORDINATION.md       historical multi-agent build log + "HOW IT GOES LIVE"
 goblin_*_pack/        original design documents (inputs, not code)
 ```
 
-**The map design pass** is fully tooled for smaller models — scanner, patch
-system, runbook: see [MAP_DESIGN_PASS.md](MAP_DESIGN_PASS.md). It is the ideal
-first work-stream for a local model: bounded, verifiable, per-chunk commits.
+**If a local model does feature work**, the execution order lives in
+[CRITICAL_PATH.md](CRITICAL_PATH.md) — start with the map design pass
+([MAP_DESIGN_PASS.md](MAP_DESIGN_PASS.md): scanner, patch system, runbook;
+bounded, verifiable, per-chunk commits), and note the "NOT for smaller
+models" list before touching anything else.
 
 **Objective for Voyra (owner's words):** manage "the hosting, the server statuses,
 and all of that stuff" — i.e. §3. Feature work (ROADMAP.md "Next") comes after the

@@ -48,6 +48,11 @@ also CI), `scripts/audit_world.mjs` (map invariants), `scripts/chain_audit.mjs` 
 
 ## Next (open work, roughly in order)
 
+**→ [docs/CRITICAL_PATH.md](docs/CRITICAL_PATH.md) is the authoritative
+execution order for local/smaller models** — what to work on, the macro map
+plan, and what to leave alone. The list below is the same work as a flat
+backlog.
+
 1. **Remaining shortcuts** — Grublake boat, Mine Cart + elevation-based agility
    crossings. Data stubs in `worldData.js SHORTCUTS`; anchor to *generated*
    terrain (probe first).
