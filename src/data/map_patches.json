@@ -50,6 +50,15 @@
    ]
   },
   {
+   "id": "c1r3-wall-rings",
+   "why": "c1,r3: three hollow diamond rings of stray WALL tiles (no label, no floor, no structure = generation artifacts, not authored ruins), each flagged as ~8 wall_orphans enclosing a 5-tile dead_pocket. Convert each ring footprint to GRASS — clears the orphan walls and opens the enclosed pocket at once. Rects contain only wall/grass/decor (no water/rock/POI), so the fill is safe.",
+   "ops": [
+    { "op": "terrain", "rect": [150, 306, 154, 310], "to": "GRASS" },
+    { "op": "terrain", "rect": [150, 343, 154, 347], "to": "GRASS" },
+    { "op": "terrain", "rect": [188, 349, 192, 353], "to": "GRASS" }
+   ]
+  },
+  {
    "id": "c0r2-crag-courtyards",
    "why": "c0,r2 (Goblin Wilds mountain edge): 8 dead_pockets + 43 sealed trees. The pockets are tree-walled grass courtyards pinned between the crag and the Willow river; a Charred Homestead and a Dropped Coin Purse were sealed inside/on the rock. Fix = open the treelines so each courtyard (and its POI) becomes reachable, clear the ~20 trees stranded on the bare rock shoulder, and cut a dirt doorstep to the coin purse the earlier rock-fill had buried. Removal-only + one un-rock cell, so no new slivers/orphans possible.",
    "ops": [

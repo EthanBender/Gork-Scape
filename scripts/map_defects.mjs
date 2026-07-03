@@ -160,7 +160,7 @@ for (const [k, v] of Object.entries(byChunk).sort((a, b) => b[1] - a[1]).slice(0
 // budgets: hard classes must be zero; soft classes have slack
 // Budgets = today's baseline + small slack. A regression FAILS CI; the design
 // pass RATCHETS these down as it fixes chunks (see docs/MAP_DESIGN_PASS.md).
-const BUDGET = { sealed_obj: 36, sealed_room: 0, fish_dry: 0, obj_water: 0, dead_pocket: 157, speckle: 5, wall_orphan: 260 };
+const BUDGET = { sealed_obj: 36, sealed_room: 0, fish_dry: 0, obj_water: 0, dead_pocket: 154, speckle: 5, wall_orphan: 207 };
 let fail = false;
 for (const [cls, max] of Object.entries(BUDGET)) if ((byClass[cls] || 0) > max) { console.log(`  ❌ ${cls}: ${byClass[cls]} exceeds budget ${max}`); fail = true; }
 console.log(fail ? '\nRESULT: FAIL (over budget)\n' : '\nRESULT: PASS (within budgets)\n');
