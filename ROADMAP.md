@@ -34,32 +34,41 @@ also CI), `scripts/audit_world.mjs` (map invariants), `scripts/chain_audit.mjs` 
 - Skills/XP, combat (3 styles), quests, Grand Exchange, shops, bank, farming,
   firemaking, tinkering; server-authoritative accounts, presence, chat, economy,
   and Stage-1 server-authoritative mobs
-- Interactive shortcut system (West Bridge wired + persisted)
-- Interior dungeon **generator** (`src/world/interiors.js` — 4 validated dungeons)
+- Interactive shortcut system (West Bridge + Troll Gate wired + persisted)
+- **4 open dungeons** — enter/exit world-swap in `main.js`, authored interiors with
+  telegraphed bosses (slam windup + dodge), style weaknesses, unique trophy drops
+- **M1–M3 loops**: keep-3 death drops + runback, goal chip, Grimjaw slayer
+  contracts (streak ×2), DB-driven aggression, deep-wilds drop bonuses
+- **XP pacing is measured, not vibes**: `pacing_sim.mjs` Part E simulates
+  hours-to-level from the live formulas (19/19 checks). Gathering rolls once per
+  3 ticks (1.8s OSRS cadence). Curve: L20 in 0.5–1.5h, L50 in 3–12h per skill —
+  deliberately ~4× faster than OSRS.
+- **Juice**: day/night light cycle, animated water shimmer, synth SFX
+  (`src/engine/sfx.js`, M mutes)
 
 ## Next (open work, roughly in order)
 
-1. **Interior enter/exit hook** — the generator is done; wire the scene-swap in
-   `main.js` (contract documented at top of `src/world/interiors.js`), then place
-   entrances (Deep Mine, Ruin Chapel, Witch Hut, Rival Camp) and author bosses/loot.
-2. **Remaining shortcuts** — Grublake boat, Mine Cart, Troll Gate (gate-kind clears
-   a WALL span) + elevation-based agility crossings. Data stubs in
-   `worldData.js SHORTCUTS`; anchor to *generated* terrain (probe first).
-3. **Verticality as gameplay** — steep elevation steps become impassable except at
+1. **Remaining shortcuts** — Grublake boat, Mine Cart + elevation-based agility
+   crossings. Data stubs in `worldData.js SHORTCUTS`; anchor to *generated*
+   terrain (probe first).
+2. **Verticality as gameplay** — steep elevation steps become impassable except at
    ramps/shortcuts; extend `audit_world.mjs` so no region soft-locks.
-4. **Interactive wonders** — make the 14 authored landmarks do things (search
+3. **Interactive wonders** — make the 14 authored landmarks do things (search
    graveyard, spring buff, fairy-ring teleports, lore).
-5. **Living surface** — weather/season/day-night visuals + spawn shifts tied to the
-   world clock and events.
-6. **Map design pass** — the chunk-by-chunk detail/decorating pass, fully tooled
+4. **Weather/season spawn shifts** — tie spawns/events to the world clock
+   (day/night *visuals* are in).
+5. **Map design pass** — the chunk-by-chunk detail/decorating pass, fully tooled
    for smaller models: `scripts/map_defects.mjs` finds every defect,
    `src/data/map_patches.json` fixes them (typed ops, no code), and
    **docs/MAP_DESIGN_PASS.md is the runbook**. The automatic sanity pass already
-   cut defects 5,993 → 511; the remaining tail is the work queue.
-7. **Mobile/iPad QA** — touch fixes are in (canvas `touch-action`, modal `[hidden]`);
+   cut defects 5,993 → ~475; the remaining tail is the work queue. Gorkholm
+   (town chunk) is the finished reference: zero defects.
+6. **Mobile/iPad QA** — touch fixes are in (canvas `touch-action`, modal `[hidden]`);
    needs a real-device pass.
-8. **Cross-lane gaps** — DB world-nodes gatherable (item-id bridge), richer POI
-   visuals (giant toadstools done; buildings could get distinct chest objects).
+7. **Cross-lane gaps** — DB world-nodes gatherable (item-id bridge), richer POI
+   visuals (giant toadstools done; buildings could get distinct chest objects);
+   `TOOLS` whitelist in `worldData.js` only accepts 2 axes/pickaxes while
+   `items.json` has a full tool ladder — sync them.
 
 ## Later / bigger
 
