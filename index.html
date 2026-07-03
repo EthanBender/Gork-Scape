@@ -725,7 +725,7 @@
     /* Compact HUD: drop the dev/ambient chips + the divider; keep avatar, name,
        combat pill, HP bar, gp, and log out. Fits 375px without scrolling. */
     #topbar #tb-tick, #topbar #tb-fps, #topbar #tb-worldtime, #topbar #tb-worldevent,
-    #topbar #tb-netstatus, #topbar .tb-div { display: none; }
+    #topbar #tb-netstatus, #topbar .tb-div, #topbar .tb:has(#tb-location) { display: none; }
     #topbar .tb-id { align-items: center; }
     #topbar .tb-hp { display: block; width: 78px; height: 6px; margin-top: 4px;
       background: #17110a; border-radius: 99px; overflow: hidden; box-shadow: inset 0 1px 2px rgba(0,0,0,.5); }
@@ -823,7 +823,7 @@
     #topbar #tb-name { font-size: 14px; line-height: 1.05; }
     #topbar .tb-avatar { width: 30px; height: 30px; }
     #topbar #tb-tick, #topbar #tb-fps, #topbar #tb-worldtime, #topbar #tb-worldevent,
-    #topbar #tb-netstatus, #topbar .tb-div { display: none; }
+    #topbar #tb-netstatus, #topbar .tb-div, #topbar .tb:has(#tb-location) { display: none; }
     #topbar .tb-hp { display: block; width: 70px; height: 6px; margin-top: 3px;
       background: #17110a; border-radius: 99px; overflow: hidden; }
     #topbar .tb-hp > i { display: block; height: 100%; background: linear-gradient(#d96a6a, #b34a4a); }
