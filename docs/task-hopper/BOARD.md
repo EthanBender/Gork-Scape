@@ -3,8 +3,8 @@
 *Human-readable view of `HOPPER.jsonl`. The curator keeps this in sync with the feed.
 Last curated: 2026-07-03.*
 
-**Totals:** 17 · **owner-raised 7** · agent/auto-raised 10 · (gate-raised 0)
-**By status:** inbox 17 · ready 0 · picked 0 · done 0 · parked 0
+**Totals:** 18 · **owner-raised 8** · agent/auto-raised 10 · (gate-raised 0)
+**By status:** inbox 17 · ready 0 · picked 0 · done 0 · parked 1
 **Overnight-ready now (`ready` + `overnight-safe`):** 0
 
 > **Avatar art overhaul (GH-0010 → GH-0017)** is filed as one program: a code enabler
@@ -26,8 +26,8 @@ Last curated: 2026-07-03.*
 | GH-0006 | Players don't see the same monsters (mobs aren't shared) | design-spike | needs-owner | P1 | L | server / ops | inbox |
 | GH-0012 | PILOT — 6 high-impact avatar assets for the first manual test | art | needs-owner | P1 | S | render / character-render | inbox |
 | GH-0004 | Click-to-pick-up doesn't auto-walk to the ground item | fix | needs-strong-model | P1 | S | net / shared | inbox |
+| GH-0018 | Disable the night darkening (permanent-day visuals) | fix | needs-strong-model | P1 | XS | render / shared | inbox |
 | GH-0005 | Remote players lag/snap + clip through walls | fix | needs-strong-model | P2 | M | net / shared | inbox |
-| GH-0008 | Night tint only covers the game view, not the whole screen | design-spike | needs-strong-model | P2 | S | render / shared | inbox |
 | GH-0009 | Minimap: many unclear arrows → keep one tracked-quest arrow | fix | needs-strong-model | P2 | S | ui / shared | inbox |
 | GH-0007 | Right-click a monster to view its drop table | content | needs-strong-model | P3 | M | ui / shared | inbox |
 
@@ -62,7 +62,11 @@ Last curated: 2026-07-03.*
 
 ## Done / parked
 
-*(none yet)*
+**Parked**
+
+| id | title | why | status |
+|---|---|---|---|
+| GH-0008 | Night tint only covers the game view, not the whole screen | superseded by GH-0018 (owner chose to disable night entirely) | parked |
 
 ---
 

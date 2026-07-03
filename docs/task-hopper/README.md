@@ -136,7 +136,7 @@ Chain with `&&`; never pipe through `tail`/`grep` (pipes mask exit codes).
 4. **Scope telemetry**: `work_kind`, `signals`, `gates`, `acceptance`.
 5. **Locate**: `files_likely` + inherited `guardrails` + `depends_on`.
 6. **Dedup** against the hopper; merge if it's the same root.
-7. **Archive**: assign next `GH-####`, append to `HOPPER.jsonl`, mirror a row into `BOARD.md`.
+7. **Archive**: assign the next id as **`max(existing ids in HOPPER.jsonl) + 1`** — always re-read the feed immediately before appending; **never assume a running counter** (multiple curators may append concurrently, so a stale counter collides). Append to `HOPPER.jsonl`, then mirror a row into `BOARD.md`. If you ever find a duplicate id, renumber the newer one to `max+1` and fix its cross-references.
 
 The curator does **not** edit application files, run gates, or execute tasks — it
 only files them. When a raw item is ambiguous, it's still captured (`status: inbox`)
