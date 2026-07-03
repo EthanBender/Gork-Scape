@@ -14,7 +14,9 @@ models" list in that doc is binding: don't touch `src/world/geo2.js`,
 
 For map work specifically, follow **[docs/MAP_DESIGN_PASS.md](docs/MAP_DESIGN_PASS.md)**
 step by step — fixes go in `src/data/map_patches.json` as typed ops, never
-into generator code.
+into generator code. Crawl the map in a **center-out spiral** driven by
+`node scripts/map_crawl.mjs` (it names the next chunk and shows defects +
+elevation for each); check elevation logic on every chunk.
 
 ## The loop (every unit of work)
 
@@ -24,7 +26,7 @@ into generator code.
    node scripts/smoke.mjs && node test/run.mjs && node scripts/economy_sim.mjs \
      && node scripts/quest_test.mjs && node scripts/pacing_sim.mjs \
      && node scripts/chain_audit.mjs && node scripts/audit_world.mjs \
-     && node scripts/map_defects.mjs
+     && node scripts/map_defects.mjs && node scripts/elevation_audit.mjs
    ```
    Never pipe gate output through `tail`/`grep` to check status — pipes mask
    exit codes.
