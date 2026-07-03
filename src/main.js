@@ -1143,6 +1143,10 @@ function gameTick(count, isLast = true) {
   // loop below iterates THIS, not all of Game.npcs — so total mob count never costs frames.
   refreshActiveNpcs();
 
+  // Lethal-HP safety net: combat calls playerDeath() directly, but damage-over-time
+  // effects (burns, future poisons) can also finish the player between attacks.
+  if (Game.hp <= 0) playerDeath();
+
   // --- NPC AI (only near the player) ---
   for (const n of Game.activeNpcs) {
     if (n.dead) continue; // revival handled in worldUpkeep()
@@ -1686,12 +1690,35 @@ function npcAttack(n, count) {
 }
 
 function playerDeath() {
-  Game.log('Oh dear, you are dead! You wake back at the settlement.');
+  const count = Game.ticker ? Game.ticker.count : 0;
+  const p = Game.player;
+  const dx = p.tileX, dy = p.tileY;
+  // OSRS-style death cost (M1): your 3 most valuable stacks stay with you;
+  // everything else drops WHERE YOU FELL and despawns in ~5 minutes of ticks —
+  // death now costs a tense run-back instead of nothing. Equipped gear is safe
+  // (beta kindness; revisit for the hardcore pass).
+  const slots = [];
+  for (let i = 0; i < Game.inventory.length; i++) {
+    const s = Game.inventory[i];
+    if (!s) continue;
+    const def = GameData.item(s.id) || {};
+    const unit = def.gp_value ?? (ITEMS[s.id] && ITEMS[s.id].value) ?? 1;
+    slots.push({ i, id: s.id, qty: s.qty || 1, total: unit * (s.qty || 1) });
+  }
+  slots.sort((a, b) => b.total - a.total);
+  const dropped = slots.slice(3);
+  for (const d of dropped) { spawnGroundItem(d.id, d.qty, dx, dy, count, 500); Game.inventory[d.i] = null; }
+  if (Game.selectedInv != null && !Game.inventory[Game.selectedInv]) Game.selectedInv = null;
+  if (dropped.length) {
+    Game.log(`Oh dear, you are dead! You kept your ${Math.min(3, slots.length)} most valuable stacks — ` +
+      `${dropped.length} stack${dropped.length > 1 ? 's' : ''} lie${dropped.length > 1 ? '' : 's'} where you fell. You have ~5 minutes to run back!`);
+  } else {
+    Game.log('Oh dear, you are dead! You wake back at the settlement.');
+  }
   Game.hp = Game.maxHp;
   Game.activePrayers = [];   // prayers switch off on death
   restorePrayer();           // ...and points recharge
   const s = Game.world.spawn;
-  const p = Game.player;
   p.tileX = s.x; p.tileY = s.y; p.px = tilePx(s.x); p.py = tilePx(s.y);
   clearTargets(p); p.path = [];
   for (const n of Game.npcs) n.target = null;
