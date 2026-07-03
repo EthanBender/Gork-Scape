@@ -182,47 +182,47 @@
      without this rule the display:flex above overrides hidden, so the invisible
      fullscreen overlay stays rendered and eats every tap ("can't exit the bank"). */
   .modal-overlay[hidden] { display: none; }
+  /* Modals — AAA redesign: warm panel, wood frame, Fredoka gold title. */
   .modal-panel { width: min(420px, 92vw); max-height: 82vh; display: flex; flex-direction: column;
-    background: linear-gradient(180deg, var(--panel-hi), var(--panel));
-    border: 2px solid var(--bevel-lo); border-radius: 8px;
-    box-shadow: var(--raise), 0 10px 34px rgba(0,0,0,.6); }
+    background: linear-gradient(#2b2117, #211910);
+    border: 1px solid #4a3927; border-radius: 16px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.05), 0 26px 60px rgba(0,0,0,.6); }
   .modal-head { display: flex; align-items: center; justify-content: space-between;
-    padding: 10px 12px; border-bottom: 1px solid var(--bevel-lo); }
-  .modal-title { color: var(--gold); font-weight: 700; text-shadow: 0 1px 0 #000;
-    font-family: var(--font-display); font-size: 15px; }
-  .modal-close { width: 26px; height: 26px; cursor: pointer; color: var(--muted);
-    background: var(--panel2); border: 1px solid var(--bevel-lo); border-radius: 4px; }
-  .modal-close:hover { color: var(--text); background: var(--panel-hi); }
-  .modal-sub { padding: 6px 12px; font-size: 11px; color: var(--muted);
-    border-bottom: 1px solid var(--bevel-lo); }
-  .modal-body { overflow-y: auto; padding: 8px; }
+    padding: 12px 14px; border-bottom: 1px solid #3c2e1f; }
+  .modal-title { color: #e0b44a; font-family: "Fredoka", sans-serif; font-weight: 600; font-size: 16px; }
+  .modal-close { width: 28px; height: 28px; cursor: pointer; color: #a89877;
+    background: #3a2c1e; border: 1px solid #4a3927; border-radius: 8px; transition: color .1s, filter .1s; }
+  .modal-close:hover { color: #ebdfc8; filter: brightness(1.18); }
+  .modal-sub { padding: 7px 14px; font-size: 11px; color: #a89877;
+    border-bottom: 1px solid #3c2e1f; }
+  .modal-body { overflow-y: auto; padding: 10px; }
   /* Bank modal: Bank | Inventory side-by-side */
   .bank-panel { width: min(760px, 95vw); max-height: 88vh; }
-  .bank-slots { font-size: 12px; font-weight: 700; }
-  .bank-actions { display: flex; gap: 8px; padding: 8px 12px; border-bottom: 1px solid var(--bevel-lo); }
+  .bank-slots { font-size: 12px; font-weight: 700; color: #e0b44a; }
+  .bank-actions { display: flex; gap: 8px; padding: 8px 12px; border-bottom: 1px solid #3c2e1f; }
   .bank-qty { display: flex; align-items: center; gap: 5px; padding: 6px 12px; font-size: 11px;
-    color: var(--muted); border-bottom: 1px solid var(--bevel-lo); }
-  .bank-q { min-width: 32px; padding: 4px 7px; font-size: 11px; font-weight: 700; cursor: pointer;
-    color: var(--muted); background: var(--panel2); border: 1px solid var(--bevel-lo); border-radius: 4px; }
-  .bank-q:hover { color: var(--text); background: var(--panel-hi); }
-  .bank-q.active { color: #1a1710; background: var(--gold); border-color: var(--gold-dk); text-shadow: none; }
+    color: #a89877; border-bottom: 1px solid #3c2e1f; }
+  .bank-q { min-width: 32px; padding: 5px 9px; font-family: "Fredoka", sans-serif; font-size: 11px; font-weight: 600; cursor: pointer;
+    color: #a89877; background: #3a2c1e; border: 1px solid #4a3927; border-radius: 99px; transition: color .1s, filter .1s; }
+  .bank-q:hover { color: #ebdfc8; filter: brightness(1.1); }
+  .bank-q.active { color: #3a2a10; background: linear-gradient(#e7c76b, #c99a2f); border-color: transparent; text-shadow: none; }
   .bank-cols { display: flex; gap: 12px; padding: 12px; overflow-y: auto; }
   .bank-col { flex: 1 1 0; min-width: 0; }
-  .bank-col-title { font-size: 11px; color: var(--muted); margin-bottom: 6px; text-align: center; }
+  .bank-col-title { font-size: 11px; color: #a89877; margin-bottom: 6px; text-align: center; }
   .bank-cols .inv-grid { grid-template-columns: repeat(4, 1fr); }
-  .skill-guide .sg-row { display: flex; align-items: center; gap: 8px; padding: 5px 8px;
-    border-radius: 4px; font-size: 12px; }
-  .skill-guide .sg-row + .sg-row { margin-top: 3px; }
-  .sg-lvl { flex: 0 0 32px; text-align: center; font-weight: 700; color: var(--gold);
-    background: var(--panel-lo); border-radius: 3px; padding: 2px 0; box-shadow: var(--sink); }
-  .sg-name { flex: 1; min-width: 0; }
-  .sg-kind { flex: 0 0 auto; font-size: 9px; color: var(--muted); text-transform: uppercase;
-    letter-spacing: .3px; opacity: .7; }
+  .skill-guide .sg-row { display: flex; align-items: center; gap: 8px; padding: 6px 9px;
+    border-radius: 9px; font-size: 12px; }
+  .skill-guide .sg-row + .sg-row { margin-top: 4px; }
+  .sg-lvl { flex: 0 0 32px; text-align: center; font-family: "Fredoka", sans-serif; font-weight: 700; color: #3a2a10;
+    background: linear-gradient(#e7c76b, #c99a2f); border-radius: 99px; padding: 2px 0; }
+  .sg-name { flex: 1; min-width: 0; color: #ebdfc8; }
+  .sg-kind { flex: 0 0 auto; font-family: "Space Mono", monospace; font-size: 9px; color: #a89877; text-transform: uppercase;
+    letter-spacing: .3px; opacity: .8; }
   .sg-state { flex: 0 0 auto; width: 16px; text-align: center; }
-  .sg-open { background: rgba(123,191,74,.09); }
-  .sg-open .sg-name { color: var(--text); }
+  .sg-open { background: rgba(159,176,78,.1); }
+  .sg-open .sg-name { color: #ebdfc8; }
   .sg-locked { opacity: .5; }
-  .sg-locked .sg-name { color: var(--muted); }
+  .sg-locked .sg-name { color: #a89877; }
   .sg-empty { padding: 16px; text-align: center; color: var(--muted); font-size: 12px; }
   /* World-panel header (shop / bank / exchange / station) */
   .wp-header { display: flex; align-items: center; justify-content: space-between;
