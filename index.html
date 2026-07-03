@@ -478,9 +478,9 @@
   }
   .levelup-banner { position: absolute; top: 38%; left: 50%;
     display: flex; align-items: center; gap: 14px; padding: 16px 26px;
-    background: linear-gradient(180deg, #3a3018, #241d0e);
-    border: 2px solid var(--gold); border-radius: 10px;
-    box-shadow: 0 0 0 1px var(--bevel-lo), 0 10px 40px rgba(0,0,0,.7), 0 0 30px rgba(232,198,90,.35);
+    background: linear-gradient(#3a3018, #241d0e);
+    border: 1px solid #e0b44a; border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0,0,0,.7), 0 0 30px rgba(224,180,74,.3);
     animation: luIn .5s cubic-bezier(.2,1.4,.4,1) both; }
   .levelup-banner.out { animation: luOut .5s ease-in forwards; }
   .levelup-banner .lu-icon { width: 44px; height: 44px; font-size: 40px; line-height: 1;
@@ -488,11 +488,10 @@
   .levelup-banner .lu-icon svg { width: 100%; height: 100%; display: block; }
   @keyframes luSpin { 0% { transform: scale(.3) rotate(-30deg); } 100% { transform: none; } }
   .levelup-banner .lu-text { display: flex; flex-direction: column; }
-  .levelup-banner .lu-text b { color: var(--gold); font-size: 21px; letter-spacing: .5px;
-    font-family: var(--font-display);
-    text-shadow: 0 2px 0 #000, 0 0 12px rgba(232,198,90,.5); }
-  .levelup-banner .lu-text span { color: var(--muted); font-size: 12px; margin-top: 2px; }
-  .quest-banner .lu-text b { color: var(--accent); }
+  .levelup-banner .lu-text b { color: #e0b44a; font-family: "Fredoka", sans-serif; font-weight: 600; font-size: 21px; letter-spacing: .5px;
+    text-shadow: 0 2px 0 #000, 0 0 12px rgba(224,180,74,.5); }
+  .levelup-banner .lu-text span { color: #a89877; font-size: 12px; margin-top: 2px; }
+  .quest-banner .lu-text b { color: #9fb04e; }
 
   /* Quest Journal — AAA redesign */
   .quest-header { display: flex; justify-content: space-between; align-items: baseline;
@@ -561,17 +560,17 @@
 
   /* Quest-giver speech box over the game view */
   #dialogue-box { position: absolute; left: 50%; bottom: 18px; transform: translateX(-50%);
-    z-index: 40; width: min(560px, 82%); padding: 12px 16px 8px; cursor: pointer;
-    background: linear-gradient(180deg, rgba(40,36,26,.97), rgba(28,25,18,.97));
-    border: 1px solid var(--gold-dk); border-radius: 8px;
-    box-shadow: 0 10px 30px rgba(0,0,0,.6), var(--raise); color: var(--text);
-    font-size: 13.5px; line-height: 1.45; animation: dlgIn .18s ease-out; }
+    z-index: 40; width: min(560px, 82%); padding: 13px 16px 9px; cursor: pointer;
+    background: linear-gradient(rgba(43,33,23,.97), rgba(33,25,16,.97));
+    border: 1px solid #b7862f; border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.05); color: #ebdfc8;
+    font-family: "Nunito", sans-serif; font-size: 13.5px; line-height: 1.45; animation: dlgIn .18s ease-out; }
   #dialogue-box[hidden] { display: none; }
-  #dialogue-box .dlg-speaker { font-weight: 800; color: var(--accent); font-size: 13px;
-    letter-spacing: .3px; margin-bottom: 4px; text-shadow: 0 1px 0 #000; }
+  #dialogue-box .dlg-speaker { font-family: "Fredoka", sans-serif; font-weight: 600; color: #9fb04e; font-size: 13.5px;
+    letter-spacing: .3px; margin-bottom: 4px; }
   #dialogue-box .dlg-line { margin: 2px 0; }
-  #dialogue-box .dlg-dismiss { margin-top: 6px; text-align: right; font-size: 10px;
-    color: var(--muted); }
+  #dialogue-box .dlg-dismiss { margin-top: 6px; text-align: right; font-family: "Space Mono", monospace; font-size: 10px;
+    color: #a89877; }
   @keyframes dlgIn { 0% { opacity: 0; transform: translate(-50%, 8px); }
     100% { opacity: 1; transform: translate(-50%, 0); } }
 
