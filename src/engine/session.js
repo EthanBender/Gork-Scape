@@ -564,12 +564,15 @@ function injectStyles() {
     .cs-sub { margin: 0 0 16px; font-size: 12px; line-height: 1.5; color: #6b5240; }
     .login-error { min-height: 16px; margin-top: 10px; font-size: 12.5px; font-weight: 700; color: #b34a4a; text-align: center; }
     #logout-btn {
-      margin-left: auto; margin-right: 12px; padding: 4px 12px; cursor: pointer;
-      font-size: 12px; font-weight: 700; border-radius: 6px;
-      background: var(--panel, #26221a); color: var(--muted, #a89c7d);
-      border: 1px solid var(--border, #4a4331);
+      margin-left: auto; padding: 9px 16px; cursor: pointer;
+      font-family: "Fredoka", sans-serif; font-weight: 600; font-size: 13px; color: #f0d9c0;
+      border: none; border-radius: 12px; background: linear-gradient(#5a3a3f, #482e33);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.15), 0 3px 0 #331f23;
+      transition: transform .07s, box-shadow .07s, filter .12s;
     }
-    #logout-btn:hover { color: #ff8a8a; border-color: #7a3030; }
+    #logout-btn:hover { filter: brightness(1.1); }
+    #logout-btn:active { transform: translateY(2px);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.15), 0 1px 0 #331f23; }
     #logout-btn[hidden] { display: none; }
     /* Login scene keyframes (consumed by loginFx.js DOM nodes). */
     @keyframes gob-aurora { 0%,100% { opacity:.45; transform:translateX(0) scale(1); }

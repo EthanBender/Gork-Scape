@@ -697,12 +697,11 @@
 
     /* Top bar: scroll horizontally instead of overflowing; hide dev tick;
        respect the notch. */
-    #topbar { gap: 0; padding: 0 calc(6px + env(safe-area-inset-left)) 0 calc(6px + env(safe-area-inset-left));
+    #topbar { gap: 9px; padding: 6px calc(8px + env(safe-area-inset-left));
       overflow-x: auto; overflow-y: hidden; white-space: nowrap; }
     #topbar::-webkit-scrollbar { display: none; }
     #topbar > * { flex: 0 0 auto; } /* keep width so the bar scrolls, not squishes */
-    #topbar .tb { padding: 0 11px; font-size: 13px; }
-    #topbar #tb-name { font-size: 15px; padding: 0 8px; }
+    #topbar #tb-name { font-size: 15px; }
     #tb-tick { display: none; }
 
     /* Bigger tab hit-targets for thumbs. */
@@ -754,7 +753,8 @@
   /* Landscape phones (short height): trim the fixed bars so the game/panel
      still get room; keep the side-by-side layout, which reads well wide. */
   @media (max-height: 500px) and (min-width: 561px) {
-    #topbar { height: 38px; flex-basis: 38px; }
+    #topbar { padding: 4px 12px; }
+    #topbar .tb-avatar { width: 28px; height: 28px; }
     #chatlog { flex-basis: 62px; height: 62px; }
   }
 
@@ -773,8 +773,14 @@
 <body>
 <div id="app">
   <div id="topbar">
-    <span id="tb-name">Gork</span>
-    <span class="tb"><span class="tb-ico"><svg viewBox="0 0 24 24"><polygon points="4,3 7,3 18,15 16,18" fill="#c7cfd8"/><polygon points="4,3 4,6 15,17 16,18" fill="#8d99a6"/><polygon points="20,3 17,3 6,15 8,18" fill="#c7cfd8"/><polygon points="20,3 20,6 9,17 8,18" fill="#8d99a6"/></svg></span><b id="tb-combat">Combat Lv 3</b></span>
+    <div class="tb-id">
+      <div class="tb-avatar"><img src="assets/ui/goblin_hero.png" alt=""></div>
+      <div>
+        <div id="tb-name">Gork</div>
+        <div class="tb-combat"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.6 2.5l-8 8 1 1 8-8V2.5h-1zM3 14l3 3-2 2 1.4 1.4 2-2 3 3 1-1-2.4-2.4 3-3-3.6-3.6-3 3L5 12 3 14z"/></svg><b id="tb-combat">Combat Lv 3</b></div>
+      </div>
+    </div>
+    <div class="tb-div"></div>
     <span class="tb"><span class="tb-ico"><svg viewBox="0 0 24 24"><path d="M12 2 C7.5 2 4.5 5.4 4.5 9.4 C4.5 14.4 12 22 12 22 S19.5 14.4 19.5 9.4 C19.5 5.4 16.5 2 12 2 Z" fill="#e0655c"/><path d="M12 2 C7.5 2 4.5 5.4 4.5 9.4 C4.5 14.4 12 22 12 22 L12 2 Z" fill="#a03028"/><circle cx="12" cy="9.2" r="3" fill="#efe8d4"/></svg></span><span id="tb-location">Goblin Settlement</span></span>
     <span class="tb tb-gp"><span class="tb-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5" fill="#c49b3a"/><circle cx="12" cy="12" r="7.6" fill="#f2d774"/><polygon points="7,9 12,5.4 13.8,7.8 8.6,11.4" fill="#fbeeb8" opacity=".9"/></svg></span><b id="tb-gp">0</b> gp</span>
     <span class="tb" id="tb-tick">Tick 0</span>
