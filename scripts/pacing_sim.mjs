@@ -168,8 +168,96 @@ auditCombat();
 
 const passed = results.filter((r) => r.pass).length;
 console.log('\n' + '─'.repeat(60));
-console.log(`${passed}/${results.length} pacing checks passed.`);
-if (passed !== results.length) {
+
+// =============================================================================
+// PART E — TIME-TO-LEVEL: hours of casual play to reach milestones, per skill.
+// Deterministic expected-value simulation using the game's OWN formulas
+// (success-roll interpolation, uniform combat rolls, the OSRS XP curve) and
+// LIVE data (RESOURCE_TYPES methods, ENEMY_TYPES stat blocks). This is the
+// check that answers "is the game actually paced like an RPG or a chore?"
+// =============================================================================
+const { XP_TABLE } = await import('../src/engine/skills.js');
+const { RESOURCE_TYPES, ENEMY_TYPES } = await import('../src/world/worldData.js');
+const { maxHit, maxAttackRoll, maxDefenceRoll, combatLevel } = await import('../src/engine/combat.js');
+
+const TICKS_PER_HOUR = 3600 / 0.6;
+const GATHER_UPTIME = 0.75;   // walking, banking, node-hopping
+const COMBAT_UPTIME = 0.65;   // respawns, travel, eating
+const succChance = (lvl, low, high) => Math.min(1, (1 + (high * (lvl - 1)) / 98 + (low * (99 - lvl)) / 98) / 256);
+// P(a > d) for uniform ints a in [0,A], d in [0,D]
+const pHit = (A, D) => { let hits = 0; for (let d = 0; d <= D; d++) hits += Math.max(0, A - d); return hits / ((A + 1) * (D + 1)); };
+
+function gatherRate(skill, lvl) { // best available method's expected xp/hour
+  let best = 0;
+  for (const m of Object.values(RESOURCE_TYPES)) {
+    if (m.skill !== skill || (m.level || 1) > lvl || !m.xp) continue;
+    const rate = succChance(lvl, m.low ?? 15, m.high ?? 40) * m.xp * (TICKS_PER_HOUR / 3) * GATHER_UPTIME; // one roll per 3 ticks (the game's gather cadence)
+    if (rate > best) best = rate;
+  }
+  return best;
+}
+function combatRate(lvl) { // expected style-xp/hour vs the best-fitting mob
+  const gear = Math.min(45, 3 + lvl * 0.55); // rough gear ladder: bonuses grow with level
+  const prof = { levels: { attack: lvl, strength: lvl, defence: lvl, ranged: 1, hitpoints: lvl + 3 },
+    style: 'Aggressive', weaponType: 'slash',
+    bonuses: { slash_atk: gear, melee_str: gear, stab_def: 0, slash_def: 0, crush_def: 0, magic_def: 0, range_def: 0, tinker_def: 0, stab_atk: 0, crush_atk: 0, magic_atk: 0, range_atk: 0, tinker_atk: 0, range_str: 0, tinker_str: 0, prayer: 0 } };
+  const myCL = combatLevel(prof.levels);
+  let bestMob = null, bd = Infinity;
+  for (const [, m] of Object.entries(ENEMY_TYPES)) {
+    const cl = combatLevel({ attack: m.att, strength: m.str, defence: m.def, ranged: 1, hitpoints: m.hp });
+    const fit = Math.abs(cl - myCL * 0.8);
+    if (cl <= myCL * 1.1 && fit < bd) { bd = fit; bestMob = m; }
+  }
+  if (!bestMob) { // nothing weak enough — train on the weakest thing alive
+    let wc = Infinity;
+    for (const [, m] of Object.entries(ENEMY_TYPES)) { const cl = combatLevel({ attack: m.att, strength: m.str, defence: m.def, ranged: 1, hitpoints: m.hp }); if (cl < wc) { wc = cl; bestMob = m; } }
+  }
+  if (!bestMob) return 0;
+  const def = { levels: { attack: bestMob.att, strength: bestMob.str, defence: bestMob.def, ranged: 1, hitpoints: bestMob.hp },
+    bonuses: { slash_def: bestMob.def, stab_def: bestMob.def, crush_def: bestMob.def, magic_def: 0, range_def: 0, tinker_def: 0 } };
+  const p = pHit(maxAttackRoll(prof), maxDefenceRoll(def, 'slash'));
+  const dmgPerSwing = p * maxHit(prof) / 2;
+  const swingsPerHour = TICKS_PER_HOUR / 4 * COMBAT_UPTIME; // 4-tick weapons
+  return dmgPerSwing * swingsPerHour * 4;                    // 4 xp per damage
+}
+function hoursTo(rateFn, target) {
+  let hours = 0;
+  for (let L = 1; L < target; L++) {
+    const rate = rateFn(L);
+    if (rate <= 0) return Infinity;
+    hours += (XP_TABLE[L + 1] - XP_TABLE[L]) / rate;
+  }
+  return hours;
+}
+
+console.log('\n── Part E: time-to-level (casual hours, expected value) ──');
+console.log('  skill          L20      L30      L50');
+const gatherSkills = ['Woodcutting', 'Fishing', 'Mining'];
+const t30 = {};
+for (const sk of gatherSkills) {
+  const h20 = hoursTo((l) => gatherRate(sk, l), 20), h30 = hoursTo((l) => gatherRate(sk, l), 30), h50 = hoursTo((l) => gatherRate(sk, l), 50);
+  t30[sk] = h30;
+  console.log(`  ${sk.padEnd(12)} ${h20.toFixed(1).padStart(5)}h  ${h30.toFixed(1).padStart(6)}h  ${h50.toFixed(1).padStart(6)}h`);
+}
+const c20 = hoursTo(combatRate, 20), c30 = hoursTo(combatRate, 30), c50 = hoursTo(combatRate, 50);
+console.log(`  ${'Combat/style'.padEnd(12)} ${c20.toFixed(1).padStart(5)}h  ${c30.toFixed(1).padStart(6)}h  ${c50.toFixed(1).padStart(6)}h`);
+
+for (const sk of gatherSkills) {
+  check(`${sk} L20 in a casual evening or two (0.3–8h)`, t30[sk] !== Infinity && hoursTo((l) => gatherRate(sk, l), 20) >= 0.3 && hoursTo((l) => gatherRate(sk, l), 20) <= 8,
+    `${hoursTo((l) => gatherRate(sk, l), 20).toFixed(1)}h`);
+}
+const spread = Math.max(...Object.values(t30)) / Math.min(...Object.values(t30));
+check('gatherer pacing spread ≤ 3.5× at L30', spread <= 3.5, `spread ${spread.toFixed(2)}×`);
+check('combat style L20 reachable in 0.3–8h', c20 >= 0.3 && c20 <= 8, `${c20.toFixed(1)}h`);
+check('L50 is a real journey everywhere (≥ 2.5h — deliberately ~4× faster than OSRS)', [...Object.keys(t30)].every((k) => hoursTo((l) => gatherRate(k, l), 50) >= 2.5) && c50 >= 2.5,
+  `combat ${c50.toFixed(1)}h`);
+let peak = 0;
+for (let L = 1; L <= 50; L++) { for (const sk of gatherSkills) peak = Math.max(peak, gatherRate(sk, L)); peak = Math.max(peak, combatRate(L)); }
+check('no sub-50 method exceeds 60k xp/hr (exploit ceiling)', peak <= 60000, `peak ${Math.round(peak).toLocaleString()} xp/hr`);
+
+const passedFinal = results.filter((r) => r.pass).length;
+console.log(`${passedFinal}/${results.length} pacing checks passed.`);
+if (passedFinal !== results.length) {
   console.log('❌ Pacing/balance drift detected.');
   process.exit(1);
 }

@@ -1135,7 +1135,15 @@ function gameTick(count, isLast = true) {
     // stays adjacency-only.
     const inReach = (o.fire || isCropPatch(o) || o.transport || o.shortcut || o.examine) ? dist <= 1 : dist === 1;
     if (!o.depleted && p.path.length === 0 && inReach) {
-      performSkill(o, count);
+      // Gathering rhythm (balance): resource nodes roll once per 3 ticks (1.8s),
+      // not every tick — the OSRS cadence. Without this the whole gathering
+      // ladder is consumed in an evening (pacing sim Part E caught it: L50
+      // woodcutting in 1.1h, 159k xp/hr peak). Stations/fires/crops stay instant.
+      if (o.type === 'resource') {
+        if (count - (p.lastGatherTick || 0) >= 3) { p.lastGatherTick = count; performSkill(o, count); }
+      } else {
+        performSkill(o, count);
+      }
     }
   }
 
