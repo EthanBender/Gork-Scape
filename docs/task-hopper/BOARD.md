@@ -3,8 +3,8 @@
 *Human-readable view of `HOPPER.jsonl`. The curator keeps this in sync with the feed.
 Last curated: 2026-07-03.*
 
-**Totals:** 3 · **owner-raised 0** · agent/auto-raised 3 · (gate-raised 0)
-**By status:** inbox 3 · ready 0 · picked 0 · done 0 · parked 0
+**Totals:** 4 · **owner-raised 1** · agent/auto-raised 3 · (gate-raised 0)
+**By status:** inbox 4 · ready 0 · picked 0 · done 0 · parked 0
 **Overnight-ready now (`ready` + `overnight-safe`):** 0
 
 > **Owner-raised items always list first, in their own section, and are never outranked
@@ -16,10 +16,9 @@ Last curated: 2026-07-03.*
 
 ## 🧑 Owner-raised
 
-*(none yet — send me feedback and it lands here, at the top)*
-
 | id | title | kind | eligibility | P | effort | area / lane | status |
 |---|---|---|---|---|---|---|---|
+| GH-0004 | Click-to-pick-up doesn't auto-walk to the ground item | fix | needs-strong-model | P1 | S | net / shared | inbox |
 
 ---
 
