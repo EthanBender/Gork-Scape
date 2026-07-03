@@ -32,7 +32,12 @@ isolated test runs).
 **Live deployment** (client on Cloudflare Pages at `gorkscape.ca`, server via a
 Cloudflare Tunnel at `api.gorkscape.ca`) is documented in
 [DEPLOY_SERVER.md](DEPLOY_SERVER.md). Agents: see `COORDINATION.md` → *HOW IT GOES
-LIVE* before touching deploy or networking.
+LIVE* before touching deploy or networking. **The pipeline in one line:** a green
+`scripts/smoke.mjs` tree auto-commits and auto-pushes to `origin/main` (Stop hook →
+`scripts/autocommit.sh`), and Cloudflare Pages deploys it to the domain in ~1 min.
+
+**Start here:** [ROADMAP.md](ROADMAP.md) — current state, open work, and the gates
+to run. Ops/migration handoff: [docs/VOYRA_HANDOFF.md](docs/VOYRA_HANDOFF.md).
 
 ## Controls
 
