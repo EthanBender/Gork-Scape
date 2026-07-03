@@ -51,8 +51,11 @@ also CI), `scripts/audit_world.mjs` (map invariants), `scripts/chain_audit.mjs` 
    graveyard, spring buff, fairy-ring teleports, lore).
 5. **Living surface** — weather/season/day-night visuals + spawn shifts tied to the
    world clock and events.
-6. **Map polish continuation** — chunk-by-chunk coherence walk
-   (`scripts/chunk_inspect.mjs`), remaining decor tuning.
+6. **Map design pass** — the chunk-by-chunk detail/decorating pass, fully tooled
+   for smaller models: `scripts/map_defects.mjs` finds every defect,
+   `src/data/map_patches.json` fixes them (typed ops, no code), and
+   **docs/MAP_DESIGN_PASS.md is the runbook**. The automatic sanity pass already
+   cut defects 5,993 → 511; the remaining tail is the work queue.
 7. **Mobile/iPad QA** — touch fixes are in (canvas `touch-action`, modal `[hidden]`);
    needs a real-device pass.
 8. **Cross-lane gaps** — DB world-nodes gatherable (item-id bridge), richer POI

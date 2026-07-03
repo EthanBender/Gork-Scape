@@ -1,0 +1,31 @@
+{
+ "_readme": "Map patches: small, typed fixes applied as the FINAL world-gen step. Each entry: {id, why, ops:[...]}. Ops: {op:'terrain', rect:[x0,y0,x1,y1]|cells:[[x,y]..], to:'GRASS'} | {op:'trail', from:[x,y], to:[x,y]} | {op:'remove_objects', rect:[x0,y0,x1,y1], types:['decor','resource','structure']} | {op:'object', x,y, label, color, examine} | {op:'decor', x,y, color, size, shape}. Terrain names must exist in worldData T. See docs/MAP_DESIGN_PASS.md.",
+ "patches": [
+  {
+   "id": "c0r2-west-shoulder-slivers",
+   "why": "Unreachable 1-9 tile walkable slivers in the west mountain shoulder (defect scanner: dead_pocket around 79-86,203-239). Filled to rock \u2014 they were never meant to be stood on.",
+   "ops": [
+    {
+     "op": "terrain",
+     "rect": [
+      78,
+      202,
+      87,
+      215
+     ],
+     "to": "ROCK"
+    },
+    {
+     "op": "terrain",
+     "rect": [
+      82,
+      235,
+      87,
+      240
+     ],
+     "to": "ROCK"
+    }
+   ]
+  }
+ ]
+}

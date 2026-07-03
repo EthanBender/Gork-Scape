@@ -13,7 +13,7 @@
 
 const FILES = [
   'items', 'recipes', 'world_nodes', 'monsters',
-  'drop_tables', 'shops', 'level_unlocks', 'firemaking',
+  'drop_tables', 'shops', 'level_unlocks', 'firemaking', 'map_patches',
 ];
 
 // Resilient loader: a missing/broken data file degrades tooltips etc. but must
@@ -79,8 +79,10 @@ export function parseInputs(v) {
 }
 
 const [
-  items, recipes, worldNodes, monsters, dropTables, shops, levelUnlocks, firemaking,
+  items, recipes, worldNodes, monsters, dropTables, shops, levelUnlocks, firemaking, mapPatchesRaw,
 ] = await Promise.all(FILES.map(fetchJson));
+// map_patches.json is { _readme, patches: [...] } — normalise to the array.
+const mapPatches = (mapPatchesRaw && mapPatchesRaw.patches) || [];
 
 const itemsById = indexBy(items, 'item_id');
 const nodesById = indexBy(worldNodes, 'node_id');
@@ -94,7 +96,7 @@ const firemakingByLog = indexBy(firemaking, 'log_id');
 
 export const GameData = {
   // raw tables (read-only use)
-  items, recipes, worldNodes, monsters, dropTables, shops, levelUnlocks, firemaking,
+  items, recipes, worldNodes, monsters, dropTables, shops, levelUnlocks, firemaking, mapPatches,
 
   // --- ID resolvers (the handshake API used across lanes) ---
   // item() resolves legacy short ids (logs, ore, raw_fish) through the alias

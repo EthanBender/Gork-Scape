@@ -1201,6 +1201,209 @@ if (!GEO2) {
     spray(566, 520, 60, 12, (x, y) => decor(x, y, 0x4f7a3a, 3, 'circle'));                                           // frogs — lakeshore
   })();
 
+  // ---- SANITY PASS: mechanical map-defect repair -------------------------------
+  // Runs after ALL placement, before the texture pass. Fixes the defect classes
+  // scripts/map_defects.mjs measures: land objects standing in water, lone
+  // terrain speckles, dead walkable pockets (filled or trail-connected), sealed
+  // FLOOR rooms (a door is punched), and unreachable interactive objects
+  // (relocated if gameplay-critical, culled if decorative). Every fix here is a
+  // fix a designer would make anyway — the pass just never gets bored.
+  (function sanityPass() {
+    const N = WORLD_W * WORLD_H;
+    let blocked = null; const reach = new Uint8Array(N);
+    const computeBlocked = () => {
+      blocked = new Uint8Array(N);
+      for (let i = 0; i < N; i++) blocked[i] = TERRAIN_DEFS[terrain[i]].walkable ? 0 : 1;
+      for (const o of objects) if (o.blocking) blocked[idx(o.x, o.y)] = 1;
+    };
+    const flood = () => {
+      reach.fill(0);
+      const q = [idx(500 + townOff.dx, 462 + townOff.dy)]; reach[q[0]] = 1; let head = 0;
+      while (head < q.length) {
+        const cI = q[head++]; const x = cI % WORLD_W, y = (cI - x) / WORLD_W;
+        for (const [dx2, dy2] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+          const nx = x + dx2, ny = y + dy2;
+          if (nx < 1 || ny < 1 || nx >= WORLD_W - 1 || ny >= WORLD_H - 1) continue;
+          const j = idx(nx, ny);
+          if (!reach[j] && !blocked[j]) { reach[j] = 1; q.push(j); }
+        }
+      }
+    };
+    const cullObj = (killObj) => {
+      if (!killObj.size) return;
+      for (const o of killObj) { objectAt.delete(okey(o.x, o.y)); occupied.delete(okey(o.x, o.y)); }
+      for (let i = objects.length - 1; i >= 0; i--) if (killObj.has(objects[i])) objects.splice(i, 1);
+    };
+
+    const runRound = () => {
+      // 1. objects standing in the wrong terrain (incl. water created by earlier fills)
+      const killObj = new Set();
+      for (const o of objects) {
+        const v = terrain[idx(o.x, o.y)];
+        const fishing = o.type === 'resource' && o.blocking === false;
+        if (fishing) { if (v !== T.WATER) killObj.add(o); continue; }
+        if (v === T.WATER && (o.type === 'resource' || o.type === 'decor' ||
+          (o.type === 'structure' && !/bridge|dock|boat|water|spring|waterfall/i.test(o.label || '')))) killObj.add(o);
+      }
+      cullObj(killObj);
+      // 2. terrain speckles
+      for (let y = 4; y < WORLD_H - 4; y++) for (let x = 4; x < WORLD_W - 4; x++) {
+        const i = idx(x, y), v = terrain[i];
+        if (v === T.WALL || v === T.FLOOR || v === T.ROAD || v === T.BRIDGE) continue;
+        const a = terrain[i - 1], b = terrain[i + 1], c = terrain[i - WORLD_W], d = terrain[i + WORLD_W];
+        if (a === b && b === c && c === d && a !== v && a !== T.WALL && a !== T.FLOOR) terrain[i] = a;
+      }
+      computeBlocked(); flood();
+      // 3. dead pockets: fill the tiny, trail-connect the mid-size
+      const seen = new Uint8Array(N);
+      for (let i0 = 0; i0 < N; i0++) {
+        if (blocked[i0] || reach[i0] || seen[i0]) continue;
+        { const x0 = i0 % WORLD_W, y0 = (i0 - x0) / WORLD_W; if (x0 < 2 || y0 < 2 || x0 >= WORLD_W - 2 || y0 >= WORLD_H - 2) continue; }
+        const q = [i0]; seen[i0] = 1; const cells = [];
+        while (q.length) {
+          const cI = q.pop(); cells.push(cI);
+          const x = cI % WORLD_W, y = (cI - x) / WORLD_W;
+          for (const [dx2, dy2] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+            const nx = x + dx2, ny = y + dy2;
+            if (nx < 1 || ny < 1 || nx >= WORLD_W - 1 || ny >= WORLD_H - 1) continue;
+            const j = idx(nx, ny);
+            if (!blocked[j] && !reach[j] && !seen[j]) { seen[j] = 1; q.push(j); }
+          }
+        }
+        if (cells.length < 10) {
+          const tally = new Map();
+          for (const cI of cells) { const x = cI % WORLD_W, y = (cI - x) / WORLD_W;
+            for (const [dx2, dy2] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const nx3 = x + dx2, ny3 = y + dy2; if (nx3 < 0 || ny3 < 0 || nx3 >= WORLD_W || ny3 >= WORLD_H) continue; const v = terrain[idx(nx3, ny3)]; if (TERRAIN_DEFS[v] && !TERRAIN_DEFS[v].walkable && v !== T.WALL) tally.set(v, (tally.get(v) || 0) + 1); } }
+          const fill = [...tally.entries()].sort((a2, b2) => b2[1] - a2[1])[0];
+          if (fill) for (const cI of cells) { terrain[cI] = fill[0]; blocked[cI] = 1; }
+        } else if (cells.length < 500) {
+          const par = new Map(); const q2 = [...cells]; const inQ = new Set(cells); let hit = -1;
+          for (let head = 0; head < q2.length && hit < 0 && head < 60000; head++) {
+            const cI = q2[head]; const x = cI % WORLD_W, y = (cI - x) / WORLD_W;
+            for (const [dx2, dy2] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+              const nx = x + dx2, ny = y + dy2;
+              if (nx < 2 || ny < 2 || nx >= WORLD_W - 2 || ny >= WORLD_H - 2) continue;
+              const j = idx(nx, ny);
+              if (inQ.has(j)) continue;
+              const v = terrain[j];
+              if (v === T.WALL || v === T.FLOOR) continue;
+              par.set(j, cI); inQ.add(j); q2.push(j);
+              if (reach[j]) { hit = j; break; }
+            }
+          }
+          if (hit < 0) {
+            // no route out — this ground was never really part of the world; fill it
+            for (const cI of cells) { terrain[cI] = T.ROCK; blocked[cI] = 1; }
+          } else for (let cI = hit; cI >= 0 && par.has(cI); cI = par.get(cI)) {
+            const v = terrain[cI];
+            if (v === T.WATER) terrain[cI] = T.BRIDGE;
+            else if (!TERRAIN_DEFS[v].walkable) terrain[cI] = T.DIRT;
+            blocked[cI] = 0;
+            const px2 = cI % WORLD_W, py2 = (cI - px2) / WORLD_W;
+            const ob = objectAt.get(okey(px2, py2));
+            if (ob && ob.blocking) cullObj(new Set([ob]));
+          }
+        }
+      }
+      computeBlocked(); flood();
+      // 4. sealed FLOOR rooms → punch a doorway
+      const fseen = new Uint8Array(N);
+      for (let y = 2; y < WORLD_H - 2; y++) for (let x = 2; x < WORLD_W - 2; x++) {
+        const i = idx(x, y);
+        if (terrain[i] !== T.FLOOR || fseen[i]) continue;
+        const q = [i]; fseen[i] = 1; const cells = []; let open = false;
+        while (q.length) {
+          const cI = q.pop(); cells.push(cI);
+          if (reach[cI]) open = true;
+          const cx = cI % WORLD_W, cy = (cI - cx) / WORLD_W;
+          for (const [dx2, dy2] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+            const j = idx(cx + dx2, cy + dy2);
+            if (terrain[j] === T.FLOOR && !fseen[j]) { fseen[j] = 1; q.push(j); }
+          }
+        }
+        if (open || cells.length < 4) continue;
+        outer: for (const cI of cells) {
+          const cx = cI % WORLD_W, cy = (cI - cx) / WORLD_W;
+          for (const [dx2, dy2] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+            const wx = cx + dx2, wy = cy + dy2, ox = cx + dx2 * 2, oy = cy + dy2 * 2;
+            if (terrain[idx(wx, wy)] === T.WALL && reach[idx(ox, oy)]) { terrain[idx(wx, wy)] = T.FLOOR; blocked[idx(wx, wy)] = 0; break outer; }
+          }
+        }
+      }
+      computeBlocked(); flood();
+      // 5. still-sealed interactive objects: relocate critical, cull decorative
+      const kill2 = new Set();
+      for (const o of objects) {
+        if (!o.label || o.type === 'decor') continue;
+        let ok = false;
+        for (const [dx2, dy2] of [[0, 0], [1, 0], [-1, 0], [0, 1], [0, -1]]) { const nx = o.x + dx2, ny = o.y + dy2; if (nx >= 0 && ny >= 0 && nx < WORLD_W && ny < WORLD_H && reach[idx(nx, ny)]) { ok = true; break; } }
+        if (ok) continue;
+        const critical = o.shortcut || o.interior || o.skill || o.altar || o.transport;
+        if (!critical) { kill2.add(o); continue; }
+        for (let r = 2; r < 40; r++) { let moved = false;
+          for (let a2 = 0; a2 < 360; a2 += 20) {
+            const nx = Math.round(o.x + r * Math.cos(a2 * Math.PI / 180)), ny = Math.round(o.y + r * Math.sin(a2 * Math.PI / 180));
+            if (nx < 2 || ny < 2 || nx >= WORLD_W - 2 || ny >= WORLD_H - 2) continue;
+            if (reach[idx(nx, ny)] && !occupied.has(okey(nx, ny))) {
+              objectAt.delete(okey(o.x, o.y)); occupied.delete(okey(o.x, o.y));
+              o.x = nx; o.y = ny; objectAt.set(okey(nx, ny), o); occupied.add(okey(nx, ny));
+              moved = true; break;
+            }
+          }
+          if (moved) break;
+        }
+      }
+      cullObj(kill2);
+    };
+    runRound();
+    runRound(); // round 2 mops up cascade effects (fills creating new water, etc.)
+    runRound(); // round 3: fragmented margins (map-edge shoulders) need the extra sweep
+    // final sweep: terrain fills above may have put water under objects — cull once more
+    {
+      const killObj = new Set();
+      for (const o of objects) {
+        const v = terrain[idx(o.x, o.y)];
+        const fishing = o.type === 'resource' && o.blocking === false;
+        if (fishing) { if (v !== T.WATER) killObj.add(o); continue; }
+        if ((v === T.WATER || v === T.ROCK) && (o.type === 'resource' || o.type === 'decor')) killObj.add(o);
+        else if (v === T.WATER && o.type === 'structure' && !/bridge|dock|boat|water|spring|waterfall/i.test(o.label || '')) killObj.add(o);
+      }
+      cullObj(killObj);
+    }
+  })();
+
+  // ---- MAP PATCHES: hand-authored fixes from src/data/map_patches.json --------
+  // The design-pass workflow for smaller models: the defect scanner finds a
+  // problem, the model writes a tiny typed op here, this pass applies it. Runs
+  // AFTER the sanity pass (the patch author's word is final) and BEFORE the
+  // texture pass (patched base terrain still gets textured naturally).
+  // Ops: terrain (rect|cells, to), trail (from,to — lays dirt, bridges water),
+  // remove_objects (rect, types[]), object (a labelled structure), decor.
+  (function applyMapPatches() {
+    const list = (GameData.mapPatches || []);
+    for (const patch of list) {
+      for (const op of patch.ops || []) {
+        try {
+          if (op.op === 'terrain') {
+            const to = T[op.to]; if (to === undefined) continue;
+            if (op.rect) { const [x0, y0, x1, y1] = op.rect; for (let y = Math.max(1, y0); y <= Math.min(WORLD_H - 2, y1); y++) for (let x = Math.max(1, x0); x <= Math.min(WORLD_W - 2, x1); x++) setT(x, y, to); }
+            for (const [x, y] of op.cells || []) setT(x, y, to);
+          } else if (op.op === 'trail' && op.from && op.to) {
+            trail([op.from, [(op.from[0] + op.to[0]) / 2, (op.from[1] + op.to[1]) / 2], op.to], op.hw || 0);
+          } else if (op.op === 'remove_objects' && op.rect) {
+            const [x0, y0, x1, y1] = op.rect; const types = new Set(op.types || ['decor', 'resource', 'structure']);
+            for (let i = objects.length - 1; i >= 0; i--) { const o = objects[i]; if (o.x >= x0 && o.x <= x1 && o.y >= y0 && o.y <= y1 && types.has(o.type)) { objectAt.delete(okey(o.x, o.y)); occupied.delete(okey(o.x, o.y)); objects.splice(i, 1); } }
+          } else if (op.op === 'object' && op.label) {
+            structure(op.x, op.y, op.label, op.color || 0xcfc0a0, op.skill || null, op.blocking !== false);
+            if (op.examine) { const o = objectAt.get(okey(op.x, op.y)); if (o) { o.examine = op.examine; o.wild = op.wild || 'explore'; } }
+          } else if (op.op === 'decor') {
+            decor(op.x, op.y, op.color || 0x3f6e2c, op.size || 4, op.shape || 'circle');
+          }
+        } catch (e) { if (typeof console !== 'undefined') console.warn('map patch op failed', patch.id, op.op, e && e.message); }
+      }
+    }
+  })();
+
   // ---- POLISH: terrain texture variants (FINAL, visual-only recolor) ----
   // Runs after ALL placement so no T.GRASS-based logic is affected. Variants
   // share their base tile's walkability, so collision/pathfinding is unchanged.
