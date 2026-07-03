@@ -26,6 +26,7 @@ export function propKind(label = '') {
   if (/stall|market|shack|bait|tackle|produce|grocer|fishmonger|fletcher|lumber stall|shop|store/.test(n)) return 'stall';
   if (/weapon rack|armou?r|\brack\b/.test(n)) return 'weaponrack';
   if (/dummy/.test(n)) return 'dummy';
+  if (/throne|high seat|\bdais\b/.test(n)) return 'throne';
   if (/banner|\bflag\b/.test(n)) return 'banner';
   if (/tower|watchtower/.test(n)) return 'tower';
   if (/\bwell\b/.test(n)) return 'well';
@@ -106,10 +107,40 @@ function banner(g, X, Y, accent) {
   g.fillStyle(0xe0c050, 1); g.fillCircle(X + 5, Y - 3, 1.6);           // emblem
 }
 function tower(g, X, Y) {
-  g.fillStyle(shade(WOOD, 0.8), 1); g.fillRect(X - 6, Y - 2, 12, 14);  // trunk
-  g.fillStyle(WOOD_D, 1); for (let i = -6; i < 6; i += 4) g.fillRect(X + i, Y - 2, 1.4, 14);
-  g.fillStyle(0x6a4a2a, 1); g.fillRect(X - 8, Y - 6, 16, 5);           // platform
-  g.fillStyle(0x8c2f2a, 1); g.fillTriangle(X - 8, Y - 6, X + 8, Y - 6, X, Y - 12); // roof
+  const STONE = 0x8f8a82, STONE_D = 0x6a655e, STONE_H = 0xa8a39a;
+  // tall stone shaft
+  g.fillStyle(STONE_D, 1); g.fillRect(X - 7, Y - 18, 14, 30);
+  g.fillStyle(STONE, 1); g.fillRect(X - 6, Y - 18, 12, 30);
+  g.fillStyle(STONE_H, 0.55); g.fillRect(X - 6, Y - 18, 2.4, 30);      // lit edge
+  g.lineStyle(0.8, STONE_D, 0.8);                                       // stone courses
+  for (let yy = -13; yy < 12; yy += 5) { g.beginPath(); g.moveTo(X - 6, Y + yy); g.lineTo(X + 6, Y + yy); g.strokePath(); }
+  g.fillStyle(0x141018, 1); g.fillRect(X - 1, Y - 9, 2, 7);            // arrow slit
+  // corbelled battlement + crenellations
+  g.fillStyle(STONE_D, 1); g.fillRect(X - 9, Y - 21, 18, 5);
+  g.fillStyle(STONE, 1); g.fillRect(X - 9, Y - 22, 18, 2);
+  for (const mx of [-9, -3.5, 2, 7.5]) { g.fillStyle(STONE, 1); g.fillRect(X + mx, Y - 26, 3.5, 5); g.fillStyle(STONE_H, 0.5); g.fillRect(X + mx, Y - 26, 3.5, 1.2); }
+  // pennant
+  g.fillStyle(WOOD_D, 1); g.fillRect(X - 0.6, Y - 33, 1.2, 8);
+  g.fillStyle(0x8c2f2a, 1); g.fillTriangle(X + 0.6, Y - 33, X + 0.6, Y - 28, X + 6, Y - 30.5);
+}
+function throne(g, X, Y, accent) {
+  const gold = accent || 0xcaa63a, IRON = 0x3a3540, IRON_D = 0x24212a, IRON_H = 0x585262;
+  g.fillStyle(0x5c5450, 1); g.fillRect(X - 10, Y + 8, 20, 5);          // stone dais step
+  g.fillStyle(0x6c6460, 1); g.fillRect(X - 10, Y + 8, 20, 1.6);
+  g.fillStyle(IRON_D, 1); g.fillRect(X - 7, Y - 16, 14, 24);           // tall back slab
+  g.fillStyle(IRON, 1); g.fillRect(X - 6, Y - 15, 12, 22);
+  g.fillStyle(IRON_H, 0.7); g.fillRect(X - 6, Y - 15, 12, 1.4);
+  g.fillStyle(IRON_D, 1); g.fillRect(X - 9, Y - 2, 3, 10); g.fillRect(X + 6, Y - 2, 3, 10); // arm rests
+  g.fillStyle(IRON_H, 0.6); g.fillRect(X - 9, Y - 2, 3, 1.4); g.fillRect(X + 6, Y - 2, 3, 1.4);
+  g.fillStyle(gold, 0.9); g.fillRect(X - 3, Y - 13, 6, 10);            // gold back inlay
+  g.fillStyle(shade(gold, 0.7), 1); g.fillRect(X - 3, Y - 13, 6, 1.2);
+  g.fillStyle(gold, 1); g.fillRect(X - 6, Y + 1, 12, 5);               // gold cushion / seat
+  g.fillStyle(shade(gold, 1.25), 1); g.fillRect(X - 6, Y + 1, 12, 1.4);
+  g.fillStyle(IRON_D, 1);                                               // spiked crest
+  g.fillTriangle(X - 7, Y - 16, X - 3, Y - 22, X + 1, Y - 16);
+  g.fillTriangle(X - 1, Y - 16, X + 3, Y - 23, X + 7, Y - 16);
+  g.fillStyle(0xd8d2c0, 1); g.fillCircle(X, Y - 17, 2.6);              // pale goblin skull
+  g.fillStyle(0x1a1a1e, 1); g.fillCircle(X - 1, Y - 17.5, 0.7); g.fillCircle(X + 1, Y - 17.5, 0.7);
 }
 function well(g, X, Y) {
   g.fillStyle(0x6a6a6a, 1); g.fillRect(X - 7, Y + 2, 14, 9);           // stone ring
@@ -203,7 +234,7 @@ function hut(g, X, Y) {
 }
 
 const DRAW = {
-  anvil, chest, barrel, stall, exchange, weaponrack, dummy, banner, tower, well,
+  anvil, chest, barrel, stall, exchange, weaponrack, dummy, banner, tower, throne, well,
   shrine, cauldron, fire, coalheap, rockpile, logpile, cart, table, hiderack, bin,
   entrance, sign, crate, hut,
 };
