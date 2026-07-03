@@ -74,6 +74,8 @@
     font-family: "Fredoka", sans-serif; font-size: 10.5px; font-weight: 800; letter-spacing: .3px;
     text-transform: uppercase; }
   #topbar .tb-combat svg { width: 11px; height: 11px; }
+  /* Compact HP bar — shown only in the mobile HUD (see the max-width:560 block). */
+  #topbar .tb-hp { display: none; }
   #topbar .tb-div { width: 1px; height: 26px; background: #4a3927; flex: 0 0 auto; }
   /* Stat chips (location, gp, world time/event, net status). */
   #topbar .tb { display: inline-flex; align-items: center; gap: 6px; flex: 0 0 auto;
@@ -815,6 +817,7 @@
       <div>
         <div id="tb-name">Gork</div>
         <div class="tb-combat"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.6 2.5l-8 8 1 1 8-8V2.5h-1zM3 14l3 3-2 2 1.4 1.4 2-2 3 3 1-1-2.4-2.4 3-3-3.6-3.6-3 3L5 12 3 14z"/></svg><b id="tb-combat">Combat Lv 3</b></div>
+        <div class="tb-hp" title="Hitpoints"><i id="tb-hp-fill"></i></div>
       </div>
     </div>
     <div class="tb-div"></div>
