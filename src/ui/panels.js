@@ -275,7 +275,17 @@ function buildLayout() {
     b.className = 'tab-btn';
     b.title = label;
     b.innerHTML = `<span class="tab-icon">${iconSvg}</span><span class="tab-label">${label}</span>`;
-    b.onclick = () => switchTab(id);
+    b.onclick = () => {
+      // Re-tapping the active tab minimizes/restores the panel (OSRS mobile
+      // idiom) so the game view can take the whole screen; the tab bar stays
+      // put so any tab re-opens it. Switching tabs always restores it.
+      if (id === activeTab) {
+        const app = document.getElementById('app');
+        if (app) app.classList.toggle('panel-collapsed');
+      } else {
+        switchTab(id);
+      }
+    };
     els.tabbar.appendChild(b);
     els.tabButtons[id] = b;
   }
