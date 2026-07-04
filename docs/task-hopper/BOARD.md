@@ -30,6 +30,7 @@ Last curated: 2026-07-03.*
 | GH-0005 | Remote players lag/snap + clip through walls | fix | needs-strong-model | P2 | M | net / shared | inbox |
 | GH-0009 | Minimap: many unclear arrows → keep one tracked-quest arrow | fix | needs-strong-model | P2 | S | ui / shared | inbox |
 | GH-0007 | Right-click a monster to view its drop table | content | needs-strong-model | P3 | M | ui / shared | inbox |
+| GH-0019 | Full/iron helms cover the whole face — leave face visible | polish | needs-strong-model | P3 | S | render / character-render | inbox |
 
 ---
 
