@@ -2093,25 +2093,40 @@ function tHash(x, y) {
 // for speed). Together these make walls read as capped stone, roads as cobble,
 // floors as flagstones, and grass/water/fields as varied ground. ----
 function detailWall(g, px, py, color, x, y) {
-  // Top-down 2.5D wall, neighbour-aware so a run reads as ONE wall, not a stack of
-  // striped tiles: the whole footprint shows a continuous stone TOP; the south-facing
-  // FRONT FACE is drawn ONLY where the wall ends to the south (no wall below), and the
-  // lit back-edge ONLY along the north rim. A vertical (N–S) run therefore shows top
-  // all the way down with a single face at its base — not cap/face repeated per tile.
-  const TS = TILE_SIZE, W = Game.world.W, H = Game.world.H, ter = Game.world.terrain;
-  const isWall = (xx, yy) => xx >= 0 && yy >= 0 && xx < W && yy < H && ter[yy * W + xx] === T.WALL;
-  const wN = isWall(x, y - 1), wS = isWall(x, y + 1);
-  g.fillStyle(shadeColor(color, 1.16), 1); g.fillRect(px, py, TS + 1, TS + 1);                // continuous stone top
-  const off = ((x + y) & 1) ? (TS >> 1) : 0;
-  g.fillStyle(shadeColor(color, 0.8), 0.35); g.fillRect(px + off, py, 1, TS + 1);             // vertical joint only (no horizontal banding)
-  if (!wN) { g.fillStyle(shadeColor(color, 1.7), 0.9); g.fillRect(px, py, TS + 1, 2.5); }     // lit back edge — north rim only
-  if (!wS) {                                                                                  // south-facing front face — only where the wall ends
-    const faceH = Math.round(TS * 0.5), fy = py + TS - faceH;
-    g.fillStyle(shadeColor(color, 0.95), 0.9); g.fillRect(px, fy - 1, TS + 1, 1.6);           // lit lip at the top of the face
-    g.fillStyle(shadeColor(color, 0.58), 1); g.fillRect(px, fy, TS + 1, faceH);               // face
-    g.fillStyle(shadeColor(color, 0.42), 1); g.fillRect(px, fy + faceH * 0.55, TS + 1, faceH * 0.45 + 1); // darker lower
-    g.fillStyle(0x000000, 0.16); g.fillRect(px, py + TS - 1.5, TS + 1, 2);                    // contact shadow
+  // THIN wall: render the wall as a ~14px band that CONNECTS to its wall-neighbours (a centre
+  // block + an arm toward each wall side) and paint the adjacent GROUND into the leftover
+  // margins, so the wall reads thin — not a chunky full tile. Collision stays a full tile.
+  // Neighbour-aware ("connected-tile"): straight runs stay continuous, corners/T/cross connect,
+  // and only a south-exposed edge gets a front face. Reads Game.world.terrain for neighbours.
+  const TS = TILE_SIZE, W = Game.world.W, H = Game.world.H, ter = Game.world.terrain, DEF = TERRAIN_DEFS;
+  const inb = (xx, yy) => xx >= 0 && yy >= 0 && xx < W && yy < H;
+  const wall = (xx, yy) => inb(xx, yy) && ter[yy * W + xx] === T.WALL;
+  const gcol = (xx, yy) => (inb(xx, yy) && DEF[ter[yy * W + xx]]) ? DEF[ter[yy * W + xx]].color : DEF[T.DIRT].color;
+  const wN = wall(x, y - 1), wS = wall(x, y + 1), wE = wall(x + 1, y), wW = wall(x - 1, y);
+  const TH = 14, m = (TS - TH) >> 1;                                            // 14px band, 9px margins
+  // 1) paint the ground into the non-wall margins (covers the wall base fill so the wall looks thin)
+  if (!wN) { g.fillStyle(gcol(x, y - 1), 1); g.fillRect(px, py, TS + 1, m); }
+  if (!wS) { g.fillStyle(gcol(x, y + 1), 1); g.fillRect(px, py + TS - m, TS + 1, m + 1); }
+  if (!wE) { g.fillStyle(gcol(x + 1, y), 1); g.fillRect(px + TS - m, py, m + 1, TS + 1); }
+  if (!wW) { g.fillStyle(gcol(x - 1, y), 1); g.fillRect(px, py, m, TS + 1); }
+  // 2) wall TOP band: centre block + an arm toward each wall neighbour (connected-tile)
+  g.fillStyle(shadeColor(color, 1.16), 1);
+  g.fillRect(px + m, py + m, TH, TH);                                           // centre
+  if (wN) g.fillRect(px + m, py, TH, m + 1);
+  if (wS) g.fillRect(px + m, py + m + TH, TH, m + 1);
+  if (wE) g.fillRect(px + m + TH, py + m, m + 1, TH);
+  if (wW) g.fillRect(px, py + m, m + 1, TH);
+  // horizontal extent of the band at its top/bottom rows (full width if it has E/W arms)
+  const bx0 = wW ? px : px + m, bw = (wE ? px + TS : px + m + TH) - bx0;
+  // 3) south-facing FRONT FACE where the band is exposed to ground below
+  if (!wS) {
+    const fy = py + m + TH;
+    g.fillStyle(shadeColor(color, 0.92), 0.85); g.fillRect(bx0, fy - 1, bw, 1.3);   // lit lip
+    g.fillStyle(shadeColor(color, 0.55), 1); g.fillRect(bx0, fy, bw, 5);            // face
+    g.fillStyle(0x000000, 0.16); g.fillRect(bx0, fy + 5, bw, 2);                    // contact shadow
   }
+  // 4) lit back-edge along the north top where exposed
+  if (!wN) { g.fillStyle(shadeColor(color, 1.75), 0.8); g.fillRect(bx0, py + m, bw, 2); }
 }
 function detailFloor(g, px, py, color) {
   const TS = TILE_SIZE;
