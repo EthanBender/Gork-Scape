@@ -43,10 +43,37 @@ animation. Same easy pipeline as the ground tiles.
   procedural, so ship one kind at a time.
 
 > **Status:** folder, manifest, loader (`src/render/objectArt.js`) **and the
-> in-game display** (bottom-anchored, trees overhang upward) are wired + verified
-> with placeholders. Drop `tree.png` in, list it, and every tree re-skins.
+> in-game display** (bottom-anchored, trees overhang upward) are wired + verified.
 > *Note:* the player currently draws in front of trees (same as today); true
 > walk-behind depth sorting is a later polish.
+
+## Variation — so a forest isn't clones (built-in)
+
+Three levers, in order of effort:
+
+1. **Free, automatic (no extra art):** every organic object (trees, rocks, plants —
+   not buildings) is drawn with a **stable per-tile mirror + gentle size jitter + a
+   tiny lean**, and a soft **contact shadow** underneath. One `tree.png` already
+   stops looking like a grid of identical stamps.
+2. **Per-species art (the big one):** the world has **~10 tree species** and **~10
+   ore types** and the game routes on them automatically. Author `tree_oak.png`,
+   `tree_willow.png`, `tree_fungal.png`, … (and `copper.png`, `iron.png`,
+   `coal.png`, `gold.png`, `meteor.png`, …), list them, and each region's trees/rocks
+   look like themselves. Anything without species art falls back to `tree` / `ore`,
+   so it always renders. Species keys = the node `resKey`:
+   `tree, tree_oak, tree_willow, tree_dead, tree_dense_oak, tree_fungal,
+   tree_blackroot, tree_ironbark, tree_rotwood, tree_moonwillow`.
+3. **Per-key size:** a `scales` block in the manifest draws a kind bigger/smaller
+   without re-authoring — e.g. `"scales": { "tree": 1.6, "tree_moonwillow": 1.8 }`.
+   Fixes the "reads as a shrub" scale problem.
+
+## On "lighting"
+
+Each PNG carries its **own** baked light, so they must all be lit the **same way**
+(soft light from the **top-left**, matte) or a grove looks inconsistent — that's a
+prompt-consistency thing (generate a whole set in one session). The engine now adds
+a contact shadow to ground each object; it does **not** re-light the sprite, so the
+art has to bring consistent light itself.
 
 ---
 

@@ -75,7 +75,7 @@ import { gearHints, weaponStyleFor, bodyTypeFor, footprintFor } from './render/g
 import { avatarStateFor, playerSkillTarget, drawSkillFx, AV_SCALE, AV_FEET, AV_TOP } from './render/characters.js';
 import { drawProp, propKind } from './render/props.js'; // [char-render] structure props (anvil/chest/stall/…) replace flat squares
 import { loadTerrainArt, terrainArtUrl, terrainGrid } from './render/terrainArt.js'; // [char-render] optional real ground-tile art (falls back to procedural)
-import { loadObjectArt, objectArtUrl } from './render/objectArt.js'; // [char-render] optional real world-object art (falls back to procedural)
+import { loadObjectArt, objectArtUrl, objectScale } from './render/objectArt.js'; // [char-render] optional real world-object art (falls back to procedural)
 
 const tilePx = (t) => t * TILE_SIZE + TILE_SIZE / 2;
 const manhattan = (ax, ay, bx, by) => Math.abs(ax - bx) + Math.abs(ay - by);
@@ -2298,18 +2298,31 @@ function drawAltar(g, cx, cy) {
 // Null keeps the object procedural (fishing spots, portals, altars, fires, plain
 // decor). When the key's texture is loaded, drawObjects blits a bottom-anchored
 // image (so trees overhang upward) instead of the procedural prop. See objectArt.js.
-function objectArtKey(o) {
+// Ordered art-key candidates for an object, MOST SPECIFIC first. Resources route
+// on their species/type (resKey: 'tree_oak', 'copper', …) then fall back to the
+// generic 'tree'/'ore', so a willow forest, an oak wood and a fungal grove look
+// different the moment species art exists — and still render (generic) before it
+// does. Structures route via propKind (+ any data-node id).
+function objectArtCandidates(o) {
   if (o.type === 'resource') {
-    if (o.blocking === false) return null;          // fishing-spot shimmer stays procedural
-    if (o.skill === 'Woodcutting') return 'tree';
-    if (o.skill === 'Mining') return 'ore';
-    return null;
+    if (o.blocking === false) return [];            // fishing-spot shimmer stays procedural
+    if (o.skill === 'Woodcutting') return [o.resKey, 'tree'];
+    if (o.skill === 'Mining') return [o.resKey, 'ore'];
+    return [];
   }
-  if (o.type === 'structure') return propKind(o.label);
+  if (o.type === 'structure') return o.nodeId ? [o.nodeId, propKind(o.label)] : [propKind(o.label)];
   if (o.type === 'decor') {
-    if (o.mush === 'giant') return 'mushroom';
-    if (o.scenery) return o.scenery;
+    if (o.mush === 'giant') return ['mushroom'];
+    if (o.scenery) return [o.scenery];
   }
+  return [];
+}
+// Stable per-tile hash → deterministic per-object variation (never shimmers).
+function objHash(o) { return (((o.x * 73856093) ^ (o.y * 19349663)) >>> 0); }
+// First candidate whose texture is loaded; null if none (draw procedural).
+function resolveObjectKey(o) {
+  const cands = objectArtCandidates(o);
+  for (const base of cands) if (base && objTexReady.has(base)) return base;
   return null;
 }
 let objectArtScene = null;
@@ -2323,14 +2336,22 @@ function initObjectArt(scene) {
 }
 // Draw an object sprite bottom-anchored on its tile ("128px = one tile"), so short
 // props sit in the tile and tall ones (trees) rise above it.
-function objectBlit(cx, cy, texKey) {
+function objectBlit(o, cx, cy, base, organic) {
   let img = objectArtPool[objectArtCursor];
   if (!img) {
-    img = objectArtScene.add.image(0, 0, texKey).setOrigin(0.5, 1).setDepth(1.05);
+    img = objectArtScene.add.image(0, 0, 'obj_' + base).setOrigin(0.5, 1).setDepth(1.05);
     if (uiCam) uiCam.ignore(img);     // world layer: main cam only, never the HUD cam
     objectArtPool[objectArtCursor] = img;
   }
-  img.setTexture(texKey).setOrigin(0.5, 1).setScale(TILE_SIZE / 128)
+  const h = objHash(o);
+  const s = (TILE_SIZE / 128) * objectScale(base);   // base "128px = one tile" × per-key scale
+  // per-instance variety (organic kinds only — trees/rocks/plants, never buildings):
+  // a stable mirror + gentle size jitter + a tiny lean so a forest isn't clones.
+  const flip = organic && (h & 1) ? -1 : 1;
+  const sj = organic ? (0.9 + ((h >>> 1) & 7) / 35) : 1;       // ~0.9..1.1
+  const rot = organic ? ((((h >>> 4) & 7) - 3.5) * 0.014) : 0; // ~ ±0.05 rad lean
+  img.setTexture('obj_' + base).setOrigin(0.5, 1)
+    .setScale(flip * s * sj, s * sj).setRotation(rot)
     .setPosition(cx + TILE_SIZE / 2, cy + TILE_SIZE).setVisible(true);
   objectArtCursor++;
 }
@@ -2344,7 +2365,17 @@ function drawObjects() {
     const cx = o.x * TILE_SIZE, cy = o.y * TILE_SIZE - elevLift(elevO, o.y * Wo + o.x);
     // real object art (if this kind's texture is loaded) replaces the procedural
     // prop; depleted nodes (stumps / mined rock) keep the procedural spent look.
-    if (!o.depleted) { const ak = objectArtKey(o); if (ak && objTexReady.has(ak)) { objectBlit(cx, cy, 'obj_' + ak); continue; } }
+    if (!o.depleted) {
+      const base = resolveObjectKey(o);
+      if (base) {
+        // soft contact shadow (on the graphics layer, under the sprite) grounds it
+        g.fillStyle(0x000000, 0.22);
+        if (g.fillEllipse) g.fillEllipse(cx + TILE_SIZE / 2, cy + TILE_SIZE - 2, TILE_SIZE * 0.72, TILE_SIZE * 0.28);
+        else g.fillCircle(cx + TILE_SIZE / 2, cy + TILE_SIZE - 2, TILE_SIZE * 0.3);
+        objectBlit(o, cx, cy, base, o.type !== 'structure'); // structures don't jitter
+        continue;
+      }
+    }
     if (o.type === 'decor') {
       if (o.mush === 'giant') { // giant toadstool: stem on this tile, cap overhangs the neighbours (drawn tree-style)
         const s = o.size;
