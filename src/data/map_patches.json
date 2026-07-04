@@ -54269,6 +54269,2254 @@
      "shape": "rect"
     }
    ]
+  },
+  {
+   "id": "district-bone-shrine",
+   "note": "Bone Shrine — Gorkholm's eerie sacred quarter (NE). An alien RING of 8 standing stones + bone pillars around a RAISED central Great Bone Idol on a dais (elevation op), a sacrificial altar with skull offerings before it, teal ritual braziers at the cardinal points, bone offerings + totem charm-poles scattered around, concentric flagstone ritual rings + teal wisp/bone-dust decor on a pale dirt precinct. Guarded onto land; reachability + coherence simulated.",
+   "ops": [
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       507,
+       358
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       508,
+       358
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       509,
+       358
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       510,
+       358
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       511,
+       358
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       503,
+       361
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       504,
+       361
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       505,
+       361
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       506,
+       361
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       507,
+       361
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       508,
+       361
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       509,
+       361
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       510,
+       361
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       511,
+       361
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       512,
+       361
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       513,
+       361
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       514,
+       361
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       515,
+       361
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       502,
+       362
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       503,
+       362
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       504,
+       362
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       505,
+       362
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       506,
+       362
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       507,
+       362
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       508,
+       362
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       509,
+       362
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       510,
+       362
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       511,
+       362
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       512,
+       362
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       513,
+       362
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       514,
+       362
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       515,
+       362
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       516,
+       362
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       502,
+       363
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       503,
+       363
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       504,
+       363
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       505,
+       363
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       506,
+       363
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       507,
+       363
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       508,
+       363
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       509,
+       363
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       510,
+       363
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       511,
+       363
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       512,
+       363
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       513,
+       363
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       514,
+       363
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       515,
+       363
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       516,
+       363
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       502,
+       364
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       503,
+       364
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       504,
+       364
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       505,
+       364
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       506,
+       364
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       507,
+       364
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       508,
+       364
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       509,
+       364
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       510,
+       364
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       511,
+       364
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       512,
+       364
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       513,
+       364
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       514,
+       364
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       515,
+       364
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       516,
+       364
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       501,
+       365
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       502,
+       365
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       503,
+       365
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       504,
+       365
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       505,
+       365
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       506,
+       365
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       507,
+       365
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       508,
+       365
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       509,
+       365
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       510,
+       365
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       511,
+       365
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       512,
+       365
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       513,
+       365
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       514,
+       365
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       515,
+       365
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       516,
+       365
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       517,
+       365
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       502,
+       366
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       503,
+       366
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       504,
+       366
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       505,
+       366
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       506,
+       366
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       507,
+       366
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       508,
+       366
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       509,
+       366
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       510,
+       366
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       511,
+       366
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       512,
+       366
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       513,
+       366
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       514,
+       366
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       515,
+       366
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       516,
+       366
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       502,
+       367
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       503,
+       367
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       504,
+       367
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       505,
+       367
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       506,
+       367
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       507,
+       367
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       508,
+       367
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       509,
+       367
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       510,
+       367
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       511,
+       367
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       512,
+       367
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       513,
+       367
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       514,
+       367
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       515,
+       367
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       516,
+       367
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       502,
+       368
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       503,
+       368
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       504,
+       368
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       505,
+       368
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       506,
+       368
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       507,
+       368
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       508,
+       368
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       509,
+       368
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       510,
+       368
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       511,
+       368
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       513,
+       368
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       514,
+       368
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       515,
+       368
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       516,
+       368
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       503,
+       369
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       504,
+       369
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       510,
+       369
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       511,
+       369
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       512,
+       369
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       513,
+       369
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       514,
+       369
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       515,
+       369
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       504,
+       370
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       510,
+       370
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       511,
+       370
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       512,
+       370
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       513,
+       370
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       514,
+       370
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       510,
+       371
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       511,
+       371
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       512,
+       371
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       513,
+       371
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       510,
+       372
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       511,
+       372
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "decor",
+     "x": 512,
+     "y": 365,
+     "color": 5925478,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 512,
+     "y": 366,
+     "color": 5925478,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 512,
+     "y": 366,
+     "color": 5925478,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 511,
+     "y": 367,
+     "color": 5925478,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 511,
+     "y": 367,
+     "color": 5925478,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 510,
+     "y": 368,
+     "color": 5925478,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 509,
+     "y": 368,
+     "color": 5925478,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 508,
+     "y": 368,
+     "color": 5925478,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 508,
+     "y": 367,
+     "color": 5925478,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 507,
+     "y": 367,
+     "color": 5925478,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 506,
+     "y": 366,
+     "color": 5925478,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 506,
+     "y": 366,
+     "color": 5925478,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 506,
+     "y": 365,
+     "color": 5925478,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 506,
+     "y": 364,
+     "color": 5925478,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 506,
+     "y": 364,
+     "color": 5925478,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 507,
+     "y": 363,
+     "color": 5925478,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 508,
+     "y": 363,
+     "color": 5925478,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 508,
+     "y": 362,
+     "color": 5925478,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 509,
+     "y": 362,
+     "color": 5925478,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 510,
+     "y": 362,
+     "color": 5925478,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 511,
+     "y": 363,
+     "color": 5925478,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 511,
+     "y": 363,
+     "color": 5925478,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 512,
+     "y": 364,
+     "color": 5925478,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 512,
+     "y": 364,
+     "color": 5925478,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 515,
+     "y": 365,
+     "color": 5925478,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 515,
+     "y": 366,
+     "color": 5925478,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 514,
+     "y": 368,
+     "color": 5925478,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 513,
+     "y": 369,
+     "color": 5925478,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 512,
+     "y": 370,
+     "color": 5925478,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 511,
+     "y": 370,
+     "color": 5925478,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 507,
+     "y": 370,
+     "color": 5925478,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 506,
+     "y": 370,
+     "color": 5925478,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 504,
+     "y": 368,
+     "color": 5925478,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 503,
+     "y": 366,
+     "color": 5925478,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 503,
+     "y": 365,
+     "color": 5925478,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 503,
+     "y": 364,
+     "color": 5925478,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 504,
+     "y": 362,
+     "color": 5925478,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 505,
+     "y": 361,
+     "color": 5925478,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 506,
+     "y": 360,
+     "color": 5925478,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 507,
+     "y": 360,
+     "color": 5925478,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 509,
+     "y": 360,
+     "color": 5925478,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 511,
+     "y": 360,
+     "color": 5925478,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 512,
+     "y": 360,
+     "color": 5925478,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 513,
+     "y": 361,
+     "color": 5925478,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 514,
+     "y": 362,
+     "color": 5925478,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 515,
+     "y": 364,
+     "color": 5925478,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 509,
+     "y": 358,
+     "label": "Bone Pillar",
+     "color": 14209728,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 514,
+     "y": 360,
+     "label": "Standing Stone",
+     "color": 9079426,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 516,
+     "y": 365,
+     "label": "Bone Pillar",
+     "color": 14209728,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 514,
+     "y": 370,
+     "label": "Standing Stone",
+     "color": 9079426,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 504,
+     "y": 370,
+     "label": "Standing Stone",
+     "color": 9079426,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 502,
+     "y": 365,
+     "label": "Bone Pillar",
+     "color": 14209728,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 504,
+     "y": 360,
+     "label": "Standing Stone",
+     "color": 9079426,
+     "blocking": false
+    },
+    {
+     "op": "elevation",
+     "rect": [
+      507,
+      363,
+      511,
+      367
+     ],
+     "to": 158
+    },
+    {
+     "op": "decor",
+     "x": 507,
+     "y": 363,
+     "color": 6974042,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 507,
+     "y": 364,
+     "color": 6974042,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 507,
+     "y": 365,
+     "color": 6974042,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 507,
+     "y": 366,
+     "color": 6974042,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 507,
+     "y": 367,
+     "color": 6974042,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 508,
+     "y": 363,
+     "color": 6974042,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 508,
+     "y": 364,
+     "color": 6974042,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 508,
+     "y": 365,
+     "color": 6974042,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 508,
+     "y": 366,
+     "color": 6974042,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 508,
+     "y": 367,
+     "color": 6974042,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 509,
+     "y": 363,
+     "color": 6974042,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 509,
+     "y": 364,
+     "color": 6974042,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 509,
+     "y": 365,
+     "color": 6974042,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 509,
+     "y": 366,
+     "color": 6974042,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 509,
+     "y": 367,
+     "color": 6974042,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 510,
+     "y": 363,
+     "color": 6974042,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 510,
+     "y": 364,
+     "color": 6974042,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 510,
+     "y": 365,
+     "color": 6974042,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 510,
+     "y": 366,
+     "color": 6974042,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 510,
+     "y": 367,
+     "color": 6974042,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 511,
+     "y": 363,
+     "color": 6974042,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 511,
+     "y": 364,
+     "color": 6974042,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 511,
+     "y": 365,
+     "color": 6974042,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 511,
+     "y": 366,
+     "color": 6974042,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 511,
+     "y": 367,
+     "color": 6974042,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 509,
+     "y": 365,
+     "label": "Great Bone Idol",
+     "color": 10132104,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 509,
+     "y": 368,
+     "label": "Sacrificial Altar",
+     "color": 9079410,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 508,
+     "y": 368,
+     "label": "Skull Offering",
+     "color": 15262416,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 510,
+     "y": 368,
+     "label": "Skull Offering",
+     "color": 15262416,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 509,
+     "y": 361,
+     "label": "Ritual Brazier Fire",
+     "color": 7069888,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 513,
+     "y": 365,
+     "label": "Ritual Brazier Fire",
+     "color": 7069888,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 505,
+     "y": 365,
+     "label": "Ritual Brazier Fire",
+     "color": 7069888,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 506,
+     "y": 363,
+     "label": "Bone Offering",
+     "color": 15262416,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 512,
+     "y": 363,
+     "label": "Bone Offering",
+     "color": 15262416,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 507,
+     "y": 370,
+     "label": "Bone Offering",
+     "color": 15262416,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 511,
+     "y": 370,
+     "label": "Bone Offering",
+     "color": 15262416,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 504,
+     "y": 364,
+     "label": "Bone Offering",
+     "color": 15262416,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 514,
+     "y": 367,
+     "label": "Bone Offering",
+     "color": 15262416,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 503,
+     "y": 368,
+     "label": "Totem Charm Pole",
+     "color": 6978122,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 515,
+     "y": 362,
+     "label": "Totem Charm Pole",
+     "color": 6978122,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 507,
+     "y": 361,
+     "color": 8380624,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 511,
+     "y": 368,
+     "color": 8380624,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 505,
+     "y": 367,
+     "color": 8380624,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 512,
+     "y": 360,
+     "color": 8380624,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 510,
+     "y": 363,
+     "color": 13617336,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 508,
+     "y": 367,
+     "color": 13617336,
+     "size": 3,
+     "shape": "circle"
+    }
+   ]
   }
  ]
 }
