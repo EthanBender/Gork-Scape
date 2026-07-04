@@ -2093,14 +2093,20 @@ function tHash(x, y) {
 // for speed). Together these make walls read as capped stone, roads as cobble,
 // floors as flagstones, and grass/water/fields as varied ground. ----
 function detailWall(g, px, py, color, x, y) {
-  const TS = TILE_SIZE, mid = py + Math.round(TS * 0.55);
-  g.fillStyle(shadeColor(color, 1.5), 1); g.fillRect(px, py, TS + 1, 6);            // sunlit top cap
-  g.fillStyle(shadeColor(color, 1.95), 0.9); g.fillRect(px, py, TS + 1, 2);         // bright top edge
-  g.fillStyle(shadeColor(color, 0.4), 1); g.fillRect(px, py + TS - 3, TS + 1, 4);   // base shadow
-  g.fillStyle(shadeColor(color, 0.6), 0.85); g.fillRect(px, mid, TS + 1, 1);        // mortar course
-  const off = ((x + y) & 1) ? (TS >> 1) : 0;                                        // staggered brick joints
-  g.fillRect(px + off, py + 6, 1, mid - (py + 6));
-  g.fillRect(px + ((off + (TS >> 1)) % TS), mid, 1, py + TS - 3 - mid);
+  // A wall reads as a wall (not a flat stone square) when it shows a lit TOP CAP
+  // plus a shaded FRONT FACE below it — the standard top-down 2.5D wall. We draw
+  // both inside the tile: top ~42% is the sunlit cap, the rest is the darker face,
+  // with a lit lip where they meet and a contact shadow grounding it.
+  const TS = TILE_SIZE, capH = Math.round(TS * 0.42), faceY = py + capH, faceH = TS - capH;
+  g.fillStyle(shadeColor(color, 1.34), 1); g.fillRect(px, py, TS + 1, capH);                 // wall top (cap), sunlit
+  g.fillStyle(shadeColor(color, 1.85), 0.9); g.fillRect(px, py, TS + 1, 2);                  // bright top edge
+  g.fillStyle(shadeColor(color, 1.06), 0.5); g.fillRect(px, py, 2, capH);                    // lit left corner
+  g.fillStyle(shadeColor(color, 0.62), 1); g.fillRect(px, faceY, TS + 1, faceH);             // front face
+  g.fillStyle(shadeColor(color, 0.44), 1); g.fillRect(px, faceY + faceH * 0.52, TS + 1, faceH * 0.48 + 1); // darker lower face (grounds it)
+  g.fillStyle(shadeColor(color, 0.95), 0.85); g.fillRect(px, faceY, TS + 1, 1.5);            // lit lip where cap meets face
+  const off = ((x + y) & 1) ? (TS >> 1) : 0;                                                 // staggered block joint on the face
+  g.fillStyle(shadeColor(color, 0.4), 0.6); g.fillRect(px + off, faceY, 1, faceH);
+  g.fillStyle(0x000000, 0.14); g.fillRect(px, py + TS - 2, TS + 1, 2);                        // contact shadow
 }
 function detailFloor(g, px, py, color) {
   const TS = TILE_SIZE;
@@ -2217,7 +2223,13 @@ function drawTerrain() {
       if (elev) {
         const eSouth = (y < H - 1) ? elev[i + W] : elev[i];
         const side = lift - (eSouth - ELEV_BASE) * ELEV_K; // px of front face exposed above the tile in front
-        if (side > 0.5) { g.fillStyle(shadeColor(color, 0.5), 1); g.fillRect(px, topY + TS - 1, TS + 1, side + 2); }
+        if (side > 0.5) {                                  // exposed south face → render it as a lit-capped stone wall, not a flat band
+          const fh = side + 2, fy = topY + TS - 1;
+          g.fillStyle(shadeColor(color, 0.52), 1); g.fillRect(px, fy, TS + 1, fh);                      // face body
+          g.fillStyle(shadeColor(color, 0.34), 1); g.fillRect(px, fy + fh * 0.5, TS + 1, fh * 0.5 + 1); // darker lower half → grounds the wall
+          g.fillStyle(shadeColor(color, 0.95), 0.85); g.fillRect(px, fy, TS + 1, 1.5);                  // lit cap edge where the top meets the face
+          g.fillStyle(0x000000, 0.16); g.fillRect(px, fy + fh, TS + 1, 2);                              // soft contact shadow at the base
+        }
       }
       // real ground art (if this tile's texture is loaded) replaces the procedural
       // fill+detail; the elevation side-face above still draws for 2.5D depth.
