@@ -69773,6 +69773,252 @@
      "to": 163
     }
    ]
+  },
+  {
+   "id": "city-village-green",
+   "note": "Village green (organic-city composed vignette) at [517,411] — the town's grown commons. Central goblin MOOT TOTEM + village WELL, benches ringing it (facing the totem), flower beds between the benches, worn desire-line paths converging on it, framed by hedges + lamps + a notice board, wildflowers + a resting cart/barrel. Everything relates. Guarded onto free grass; non-blocking; reachability + coherence simulated.",
+   "ops": [
+    {
+     "op": "object",
+     "x": 517,
+     "y": 411,
+     "label": "Moot Totem",
+     "color": 9075274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 518,
+     "y": 410,
+     "label": "Village Well",
+     "color": 6974058,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 515,
+     "y": 409,
+     "label": "Green Bench",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 519,
+     "y": 409,
+     "label": "Green Bench",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 515,
+     "y": 413,
+     "label": "Green Bench",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 519,
+     "y": 413,
+     "label": "Green Bench",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 517,
+     "y": 408,
+     "label": "Flower Bed",
+     "color": 14241658,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 517,
+     "y": 414,
+     "label": "Flower Bed",
+     "color": 14241658,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 514,
+     "y": 411,
+     "label": "Flower Bed",
+     "color": 14241658,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 520,
+     "y": 411,
+     "label": "Flower Bed",
+     "color": 14241658,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 514,
+     "y": 408,
+     "label": "Green Hedge",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 520,
+     "y": 408,
+     "label": "Green Hedge",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 514,
+     "y": 414,
+     "label": "Green Hedge",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 520,
+     "y": 414,
+     "label": "Green Hedge",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 514,
+     "y": 412,
+     "label": "Green Lamp",
+     "color": 16765517,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 520,
+     "y": 410,
+     "label": "Green Lamp",
+     "color": 16765517,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 518,
+     "y": 414,
+     "label": "Notice Board",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 520,
+     "y": 412,
+     "label": "Hand Cart",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 514,
+     "y": 410,
+     "label": "Ale Barrel",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 516,
+     "y": 410,
+     "color": 14241658,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 518,
+     "y": 412,
+     "color": 14241658,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 516,
+     "y": 412,
+     "color": 16777215,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 518,
+     "y": 409,
+     "color": 14241658,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       513,
+       411
+      ],
+      [
+       515,
+       411
+      ],
+      [
+       516,
+       411
+      ],
+      [
+       518,
+       411
+      ],
+      [
+       519,
+       411
+      ],
+      [
+       521,
+       411
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       517,
+       407
+      ],
+      [
+       517,
+       409
+      ],
+      [
+       517,
+       410
+      ],
+      [
+       517,
+       412
+      ],
+      [
+       517,
+       413
+      ]
+     ],
+     "to": "DIRT"
+    }
+   ]
   }
  ]
 }
