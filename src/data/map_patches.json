@@ -63720,7 +63720,7 @@
   },
   {
    "id": "town-grown-fill",
-   "note": "Gorkholm grown-town fill pass (settlement improvement 1/2/6/7). Fills dead space with relationship-based detail: 355 domestic yard items around homes (herb gardens, fences, wood piles, rain barrels, hay, washing lines, hen coops), 91 open-pocket greenery/wells/sheds/wayside-shrines/boulders, 15 roadside wagons/benches/stalls, 192 edge-thicket feathering. Three hand story-vignettes: a goblin GRAVEYARD (graves, boneyard shrine, fence, dead stump), a VILLAGE POND (shallow pond, reeds, willows, bench, well), a SCARECROW GARDEN (veg beds, scarecrow, hay, compost, fence). Worn desire-line footpaths break the grid (market->quarter, market->warren, toward the shrine). All non-blocking, guarded onto free grass; every road/building/quest/NPC preserved; reachability + coherence simulated.",
+   "note": "Gorkholm grown-town fill pass (settlement improvement 1/2/6/7). Fills dead space with relationship-based detail: 355 domestic yard items around homes (herb gardens, fences, wood piles, rain barrels, hay, washing lines, hen coops), 91 open-pocket greenery/wells/sheds/wayside-shrines/boulders, 8 roadside COMPOSITIONS (rest stops = two benches sharing a lamp, market pitches = a stall with its barrel+crate, wagon halts = a wagon with its hay+feed — never lone furniture), 192 edge-thicket feathering. Three hand story-vignettes: a goblin GRAVEYARD (graves, boneyard shrine, fence, dead stump), a VILLAGE POND (shallow pond, reeds, willows, bench, well), a SCARECROW GARDEN (veg beds, scarecrow, hay, compost, fence). Worn desire-line footpaths break the grid (market->quarter, market->warren, toward the shrine). All non-blocking, guarded onto free grass; every road/building/quest/NPC preserved; reachability + coherence simulated.",
    "ops": [
     {
      "op": "object",
@@ -64565,6 +64565,22 @@
      "blocking": false
     },
     {
+     "op": "object",
+     "x": 473,
+     "y": 355,
+     "label": "Wayside Lamp",
+     "color": 16765517,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 472,
+     "y": 356,
+     "label": "Roadside Bench",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
      "op": "decor",
      "x": 481,
      "y": 355,
@@ -65190,14 +65206,6 @@
     },
     {
      "op": "object",
-     "x": 521,
-     "y": 378,
-     "label": "Fruit Stall",
-     "color": 8016432,
-     "blocking": false
-    },
-    {
-     "op": "object",
      "x": 527,
      "y": 378,
      "label": "Cottage Bush",
@@ -65227,14 +65235,6 @@
      "color": 6974050,
      "size": 6,
      "shape": "rect"
-    },
-    {
-     "op": "object",
-     "x": 521,
-     "y": 379,
-     "label": "Parked Wagon",
-     "color": 8016432,
-     "blocking": false
     },
     {
      "op": "decor",
@@ -65408,8 +65408,16 @@
      "op": "object",
      "x": 472,
      "y": 384,
-     "label": "Fruit Stall",
+     "label": "Parked Wagon",
      "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 473,
+     "y": 385,
+     "label": "Hay Pile",
+     "color": 13279818,
      "blocking": false
     },
     {
@@ -65638,14 +65646,6 @@
     },
     {
      "op": "object",
-     "x": 520,
-     "y": 390,
-     "label": "Roadside Bush",
-     "color": 8016432,
-     "blocking": false
-    },
-    {
-     "op": "object",
      "x": 455,
      "y": 391,
      "label": "Thicket Bush",
@@ -65666,14 +65666,6 @@
      "y": 391,
      "label": "Cottage Bush",
      "color": 3103274,
-     "blocking": false
-    },
-    {
-     "op": "object",
-     "x": 520,
-     "y": 391,
-     "label": "Roadside Bench",
-     "color": 8016432,
      "blocking": false
     },
     {
@@ -65794,14 +65786,6 @@
      "y": 400,
      "label": "Wood Pile",
      "color": 9071172,
-     "blocking": false
-    },
-    {
-     "op": "object",
-     "x": 501,
-     "y": 401,
-     "label": "Roadside Bush",
-     "color": 8016432,
      "blocking": false
     },
     {
@@ -66024,7 +66008,23 @@
      "op": "object",
      "x": 472,
      "y": 409,
-     "label": "Roadside Bench",
+     "label": "Fruit Stall",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 473,
+     "y": 409,
+     "label": "Produce Barrel",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 472,
+     "y": 410,
+     "label": "Stacked Crate",
      "color": 8016432,
      "blocking": false
     },
@@ -66240,8 +66240,24 @@
      "op": "object",
      "x": 472,
      "y": 416,
-     "label": "Roadside Bush",
+     "label": "Parked Wagon",
      "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 473,
+     "y": 416,
+     "label": "Hay Pile",
+     "color": 13279818,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 472,
+     "y": 417,
+     "label": "Feed Barrel",
+     "color": 6965802,
      "blocking": false
     },
     {
@@ -66267,14 +66283,6 @@
      "color": 9071172,
      "size": 4,
      "shape": "circle"
-    },
-    {
-     "op": "object",
-     "x": 473,
-     "y": 417,
-     "label": "Roadside Bench",
-     "color": 8016432,
-     "blocking": false
     },
     {
      "op": "object",
@@ -66320,8 +66328,24 @@
      "op": "object",
      "x": 473,
      "y": 421,
-     "label": "Roadside Bush",
+     "label": "Parked Wagon",
      "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 474,
+     "y": 421,
+     "label": "Hay Pile",
+     "color": 13279818,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 473,
+     "y": 422,
+     "label": "Feed Barrel",
+     "color": 6965802,
      "blocking": false
     },
     {
@@ -66792,7 +66816,23 @@
      "op": "object",
      "x": 426,
      "y": 433,
-     "label": "Roadside Bench",
+     "label": "Fruit Stall",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 427,
+     "y": 433,
+     "label": "Produce Barrel",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 426,
+     "y": 434,
+     "label": "Stacked Crate",
      "color": 8016432,
      "blocking": false
     },
@@ -66952,7 +66992,23 @@
      "op": "object",
      "x": 468,
      "y": 436,
-     "label": "Roadside Bush",
+     "label": "Fruit Stall",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 468,
+     "y": 437,
+     "label": "Produce Barrel",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 467,
+     "y": 436,
+     "label": "Stacked Crate",
      "color": 8016432,
      "blocking": false
     },
@@ -66970,14 +67026,6 @@
      "y": 437,
      "label": "Hay Pile",
      "color": 13279818,
-     "blocking": false
-    },
-    {
-     "op": "object",
-     "x": 468,
-     "y": 437,
-     "label": "Roadside Bush",
-     "color": 8016432,
      "blocking": false
     },
     {
@@ -67104,7 +67152,23 @@
      "op": "object",
      "x": 424,
      "y": 440,
-     "label": "Parked Wagon",
+     "label": "Roadside Bench",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 424,
+     "y": 441,
+     "label": "Wayside Lamp",
+     "color": 16765517,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 423,
+     "y": 440,
+     "label": "Roadside Bench",
      "color": 8016432,
      "blocking": false
     },
