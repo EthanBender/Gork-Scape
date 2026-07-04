@@ -79,18 +79,34 @@ function makeCtx(g, cx, cy, opt) {
 function fill(ctx, color, alpha = 1) { ctx.g.fillStyle(color, alpha * ctx.a); }
 function disc(ctx, lx, ly, r, color, alpha = 1) {
   const [x, y] = ctx.P(lx, ly);
+  const u = ctx.unit();
+  if (r >= 3) { // body mass -> soft clay: shadow base, top-lit face, small highlight
+    fill(ctx, shade(color, 0.7), alpha);        ctx.g.fillCircle(x, y, r * u);
+    fill(ctx, color, alpha);                    ctx.g.fillCircle(x, y - r * 0.16 * u, r * 0.9 * u);
+    fill(ctx, shade(color, 1.18), alpha * 0.5); ctx.g.fillCircle(x, y - r * 0.34 * u, r * 0.42 * u);
+    return;
+  }
   fill(ctx, color, alpha);
-  ctx.g.fillCircle(x, y, r * ctx.unit());
+  ctx.g.fillCircle(x, y, r * u);
 }
 // thick capsule-ish limb between two local points
 function seg(ctx, x1, y1, x2, y2, w, color, alpha = 1) {
   const [ax, ay] = ctx.P(x1, y1);
   const [bx, by] = ctx.P(x2, y2);
-  ctx.g.lineStyle(w * ctx.unit(), color, alpha * ctx.a);
+  const u = ctx.unit();
+  if (w >= 2.2) { // thick limb -> soft clay: shadow underlay under the main stroke
+    ctx.g.lineStyle(w * u, shade(color, 0.72), alpha * ctx.a);
+    ctx.g.beginPath(); ctx.g.moveTo(ax, ay + w * 0.16 * u); ctx.g.lineTo(bx, by + w * 0.16 * u); ctx.g.strokePath();
+  }
+  ctx.g.lineStyle(w * u, color, alpha * ctx.a);
   ctx.g.beginPath(); ctx.g.moveTo(ax, ay); ctx.g.lineTo(bx, by); ctx.g.strokePath();
   fill(ctx, color, alpha);
-  ctx.g.fillCircle(ax, ay, (w / 2) * ctx.unit());
-  ctx.g.fillCircle(bx, by, (w / 2) * ctx.unit());
+  ctx.g.fillCircle(ax, ay, (w / 2) * u);
+  ctx.g.fillCircle(bx, by, (w / 2) * u);
+  if (w >= 2.2) { // top highlight for volume
+    ctx.g.lineStyle(w * 0.4 * u, shade(color, 1.16), alpha * ctx.a * 0.6);
+    ctx.g.beginPath(); ctx.g.moveTo(ax, ay - w * 0.22 * u); ctx.g.lineTo(bx, by - w * 0.22 * u); ctx.g.strokePath();
+  }
 }
 function poly(ctx, pts, color, alpha = 1) {
   fill(ctx, color, alpha);
