@@ -1,0 +1,21 @@
+{
+  "_note": "Skill-icon art at assets/skills/<key>.png (SKILL_KEY value). Listed keys use PNG in skillIcon(); others fall back to the inline SVG.",
+  "skills": [
+    "alchemy",
+    "attack",
+    "cooking",
+    "crafting",
+    "defence",
+    "farming",
+    "firemaking",
+    "fishing",
+    "hitpoints",
+    "mining",
+    "prayer",
+    "ranged",
+    "smithing",
+    "strength",
+    "tinkering",
+    "woodcutting"
+  ]
+}

@@ -279,4 +279,20 @@ const SKILL_KEY = {
   Alchemy: 'alchemy', Tinkering: 'tinkering', Hitpoints: 'hitpoints',
   Farming: 'farming',
 };
-export function skillIcon(skillName) { return icon(SKILL_KEY[skillName] || 'star'); }
+// Optional real skill-icon art at assets/skills/<key>.png (listed in the manifest).
+// PNG-preferring; falls back to the inline SVG for any skill with no art. Importing
+// changes nothing until loadSkillArt() populates the set — fully fallback-safe.
+const SKILL_ART = new Set();
+export function loadSkillArt(url = 'assets/skills/manifest.json') {
+  if (typeof fetch === 'undefined') return Promise.resolve();
+  return fetch(url).then((r) => (r.ok ? r.json() : null)).then((j) => {
+    const keys = Array.isArray(j) ? j : (j && Array.isArray(j.skills) ? j.skills : []);
+    for (const k of keys) if (typeof k === 'string') SKILL_ART.add(k);
+  }).catch(() => {});
+}
+loadSkillArt();
+export function skillIcon(skillName) {
+  const key = SKILL_KEY[skillName] || 'star';
+  if (SKILL_ART.has(key)) return `<img class="skill-art" src="assets/skills/${key}.png" alt="" style="width:1em;height:1em;vertical-align:-0.15em;object-fit:contain" onerror="this.remove()">`;
+  return icon(key);
+}
