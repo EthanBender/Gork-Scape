@@ -9,11 +9,9 @@
 //
 //   drawProp(g, cx, cy, o)   cx,cy = tile top-left in screen px (32px tile)
 
+import { shade } from './clay.js';   // shared warm-clay primitive (same one the character rig uses)
+
 const T = 32;
-const shade = (c, f) => {
-  const r = (c >> 16) & 255, g = (c >> 8) & 255, b = c & 255;
-  return ((Math.min(255, r * f) & 255) << 16) | ((Math.min(255, g * f) & 255) << 8) | (Math.min(255, b * f) & 255);
-};
 
 // label -> prop kind. Order matters (first match wins).
 export function propKind(label = '') {

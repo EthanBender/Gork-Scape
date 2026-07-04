@@ -71115,6 +71115,420 @@
      "to": "DIRT"
     }
    ]
+  },
+  {
+   "id": "town-north-homestead",
+   "note": "North homestead (town-edge \"grew naturally\" pass) at [509,341] — an outlying cottage + fenced KITCHEN GARDEN (veg field plot + garden beds + scarecrow), a cottage well, log pile, hay, hand cart, hedges, and a lane south to town. Guarded; reachability + coherence simulated.",
+   "ops": [
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       505,
+       338
+      ],
+      [
+       506,
+       338
+      ],
+      [
+       507,
+       338
+      ],
+      [
+       508,
+       338
+      ],
+      [
+       505,
+       339
+      ],
+      [
+       506,
+       339
+      ],
+      [
+       507,
+       339
+      ],
+      [
+       508,
+       339
+      ],
+      [
+       505,
+       340
+      ],
+      [
+       506,
+       340
+      ],
+      [
+       507,
+       340
+      ],
+      [
+       508,
+       340
+      ]
+     ],
+     "to": "FIELD"
+    },
+    {
+     "op": "object",
+     "x": 509,
+     "y": 341,
+     "label": "Homestead Cottage",
+     "color": 13416847,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 511,
+     "y": 341,
+     "label": "Cottage Well",
+     "color": 6974058,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 510,
+     "y": 339,
+     "label": "Log Pile",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 511,
+     "y": 343,
+     "label": "Hay Bale",
+     "color": 13279818,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 507,
+     "y": 344,
+     "label": "Hand Cart",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 506,
+     "y": 342,
+     "label": "Garden Bed",
+     "color": 14241658,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 508,
+     "y": 343,
+     "label": "Garden Bed",
+     "color": 14241658,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 504,
+     "y": 338,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 504,
+     "y": 339,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 504,
+     "y": 340,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 505,
+     "y": 341,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 513,
+     "y": 340,
+     "label": "Field Hedge",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 505,
+     "y": 345,
+     "label": "Field Hedge",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 513,
+     "y": 343,
+     "label": "Field Hedge",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 507,
+     "y": 337,
+     "label": "Scarecrow",
+     "color": 13350026,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 506,
+     "y": 338,
+     "color": 8030778,
+     "size": 2,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 507,
+     "y": 339,
+     "color": 8030778,
+     "size": 2,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 512,
+     "y": 342,
+     "color": 15258186,
+     "size": 2,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 510,
+     "y": 344,
+     "color": 16777215,
+     "size": 2,
+     "shape": "circle"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       509,
+       343
+      ],
+      [
+       509,
+       344
+      ],
+      [
+       509,
+       345
+      ],
+      [
+       509,
+       346
+      ],
+      [
+       509,
+       347
+      ]
+     ],
+     "to": "DIRT"
+    }
+   ]
+  },
+  {
+   "id": "town-east-waystation",
+   "note": "East waystation (town-edge \"grew naturally\" pass) at [540,375] — a resting place on the town's eastern approach: a wayfarer's hut, a waypost board, a wayside well, rest benches, a wayshrine, a traveller's fire, a hitching rail, hedges + wildflowers, and a lane west to town. Guarded; reachability + coherence simulated.",
+   "ops": [
+    {
+     "op": "object",
+     "x": 540,
+     "y": 375,
+     "label": "Wayfarer's Hut",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 538,
+     "y": 377,
+     "label": "Waypost Board",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 542,
+     "y": 375,
+     "label": "Wayside Well",
+     "color": 6974058,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 538,
+     "y": 374,
+     "label": "Rest Bench",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 542,
+     "y": 377,
+     "label": "Rest Bench",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 540,
+     "y": 373,
+     "label": "Wayshrine",
+     "color": 10132104,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 539,
+     "y": 376,
+     "label": "Traveler's Fire",
+     "color": 16742954,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 543,
+     "y": 374,
+     "label": "Hitching Rail",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 543,
+     "y": 375,
+     "label": "Hitching Rail",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 537,
+     "y": 373,
+     "label": "Field Hedge",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 544,
+     "y": 377,
+     "label": "Field Hedge",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 536,
+     "y": 376,
+     "label": "Field Hedge",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 541,
+     "y": 376,
+     "color": 15258186,
+     "size": 2,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 538,
+     "y": 375,
+     "color": 16777215,
+     "size": 2,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 542,
+     "y": 373,
+     "color": 14241658,
+     "size": 2,
+     "shape": "circle"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       538,
+       375
+      ],
+      [
+       537,
+       375
+      ],
+      [
+       536,
+       375
+      ],
+      [
+       535,
+       375
+      ],
+      [
+       534,
+       375
+      ],
+      [
+       533,
+       376
+      ],
+      [
+       532,
+       376
+      ],
+      [
+       531,
+       376
+      ],
+      [
+       530,
+       376
+      ],
+      [
+       529,
+       376
+      ],
+      [
+       528,
+       376
+      ]
+     ],
+     "to": "DIRT"
+    }
+   ]
   }
  ]
 }

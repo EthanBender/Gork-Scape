@@ -24,6 +24,7 @@
 // (main.js render loop) derives `state` from `Game` — see deriveAvatarState().
 
 import { gearHints, weaponStyleFor } from './gear.js';
+import { shade } from './clay.js';   // shared warm-clay primitive (also drives props.js)
 
 const TAU = Math.PI * 2;
 const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
@@ -43,18 +44,8 @@ const TORSO_W = 8;     // shoulder width (front view)
 
 // ---- palette --------------------------------------------------------------
 const SKIN = 0x6fbf3f;
-const clamp8 = (v) => (v < 0 ? 0 : v > 255 ? 255 : v | 0);
-// Warm clay ramp: darken (f<1) or lighten (f>1) a colour by f, biased WARM — shadows
-// keep their red + lose blue, highlights push warm — and CLAMP (the old `& 255` wrapped
-// bright highlights like gold/bronze past 255 back to near-black). Used everywhere, so
-// every creature + piece of gear inherits one cohesive warm-clay finish.
-const shade = (c, f) => {
-  const r = (c >> 16) & 255, g = (c >> 8) & 255, b = c & 255;
-  const k = Math.abs(f - 1);                     // distance from neutral
-  return (clamp8(r * (f + k * 0.05)) << 16)      // faint warm bias — keeps metals reading as metal
-       | (clamp8(g * f) << 8)
-       |  clamp8(b * (f - k * 0.06));
-};
+// `shade` (warm-clay ramp + clamp) now lives in ./clay.js so the character rig
+// and the procedural props render with one identical primitive. Imported above.
 
 // ---------------------------------------------------------------------------
 // A tiny drawing context that maps LOCAL puppet coords -> world px, applying
