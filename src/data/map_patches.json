@@ -69701,6 +69701,52 @@
      "shape": "circle"
     }
    ]
+  },
+  {
+   "id": "city-warward-plinth",
+   "note": "War Ward plinth (building-architecture composition step). Raises the gaol + armory onto a low plinth (town~135 -> 1-tile skirt ramp at 150 -> top at 163) so, with the capped-stone wall rendering, they read as raised walled buildings proud of the muster yard instead of rooms flush with the dirt. Visual-only elevation (collision/pathing unchanged -> zero reachability impact); gentle ramp keeps elev_spike at 0.",
+   "ops": [
+    {
+     "op": "elevation",
+     "rect": [
+      503,
+      415,
+      511,
+      422
+     ],
+     "to": 150
+    },
+    {
+     "op": "elevation",
+     "rect": [
+      504,
+      416,
+      510,
+      421
+     ],
+     "to": 163
+    },
+    {
+     "op": "elevation",
+     "rect": [
+      503,
+      422,
+      512,
+      430
+     ],
+     "to": 150
+    },
+    {
+     "op": "elevation",
+     "rect": [
+      504,
+      423,
+      511,
+      429
+     ],
+     "to": 163
+    }
+   ]
   }
  ]
 }
