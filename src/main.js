@@ -74,7 +74,7 @@ import { drawAvatar } from './render/avatar.js';
 import { gearHints, weaponStyleFor, bodyTypeFor, footprintFor } from './render/gear.js';
 import { avatarStateFor, playerSkillTarget, drawSkillFx, AV_SCALE, AV_FEET, AV_TOP } from './render/characters.js';
 import { drawProp, propKind } from './render/props.js'; // [char-render] structure props (anvil/chest/stall/…) replace flat squares
-import { loadTerrainArt, terrainArtUrl } from './render/terrainArt.js'; // [char-render] optional real ground-tile art (falls back to procedural)
+import { loadTerrainArt, terrainArtUrl, terrainGrid } from './render/terrainArt.js'; // [char-render] optional real ground-tile art (falls back to procedural)
 import { loadObjectArt, objectArtUrl } from './render/objectArt.js'; // [char-render] optional real world-object art (falls back to procedural)
 
 const tilePx = (t) => t * TILE_SIZE + TILE_SIZE / 2;
@@ -2161,7 +2161,34 @@ function loadArtTextures(scene, keys, prefix, urlFor, readySet) {
 // Load the terrain manifest, then its tile textures. No-op when the manifest is empty.
 function initTerrainArt(scene) {
   terrainArtScene = scene;
-  loadTerrainArt().then((keys) => { if (keys.length) loadArtTextures(scene, keys, 'terr_', terrainArtUrl, terrainTexReady); });
+  loadTerrainArt().then((keys) => {
+    if (!keys.length) return;
+    const singles = [];
+    for (const k of keys) {
+      const n = terrainGrid(k);
+      if (n > 1) loadTerrainGrid(scene, k, n);   // NxN super-tile set (cross-tile facets mask the grid)
+      else singles.push(k);                        // plain single tile
+    }
+    if (singles.length) loadArtTextures(scene, singles, 'terr_', terrainArtUrl, terrainTexReady);
+  });
+}
+// Load the N*N slice PNGs for a super-tiled ground (<key>_<idx>.png). Marks the base
+// key ready only once EVERY slice has decoded, so drawTerrain never blits a missing
+// slice — a failed/absent slice just leaves that whole key procedural.
+function loadTerrainGrid(scene, key, n) {
+  const total = n * n;
+  const markIfComplete = () => {
+    for (let idx = 0; idx < total; idx++) if (!scene.textures.exists('terr_' + key + '_' + idx)) return;
+    terrainTexReady.add(key);
+  };
+  for (let idx = 0; idx < total; idx++) {
+    const texKey = 'terr_' + key + '_' + idx;
+    if (scene.textures.exists(texKey)) { markIfComplete(); continue; }
+    const im = new Image();
+    im.onload = () => { if (!scene.textures.exists(texKey)) scene.textures.addImage(texKey, im); markIfComplete(); };
+    im.onerror = () => {}; // missing slice => key stays not-ready => procedural fallback
+    im.src = terrainArtUrl(key + '_' + idx);
+  }
 }
 function terrainBlit(px, topY, texKey) {
   let img = terrainArtPool[terrainArtCursor];
@@ -2195,7 +2222,11 @@ function drawTerrain() {
       // real ground art (if this tile's texture is loaded) replaces the procedural
       // fill+detail; the elevation side-face above still draws for 2.5D depth.
       const artKey = TERRAIN_DEFS[t].id; // 1:1 with the manifest tile-keys / filenames
-      if (terrainTexReady.has(artKey)) { terrainBlit(px, topY, 'terr_' + artKey); continue; }
+      if (terrainTexReady.has(artKey)) {
+        const gn = terrainGrid(artKey);  // >1 => NxN super-tile set; slice chosen by tile position
+        terrainBlit(px, topY, gn > 1 ? ('terr_' + artKey + '_' + ((x % gn) * gn + (y % gn))) : ('terr_' + artKey));
+        continue;
+      }
       g.fillStyle(color, 1);
       g.fillRect(px, topY, TS + 1, TS + 1);
       switch (t) {
