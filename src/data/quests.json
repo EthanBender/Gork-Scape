@@ -62,7 +62,13 @@
      "id": "bronze_helm"
     }
    ]
-  }
+  },
+  "thread": "local",
+  "teaches": [
+   "region:settlement",
+   "people:goblins",
+   "npc:elder"
+  ]
  },
  {
   "id": "first_pickaxe",
@@ -121,7 +127,12 @@
     }
    ],
    "items": []
-  }
+  },
+  "thread": "local",
+  "teaches": [
+   "people:goblins",
+   "region:settlement"
+  ]
  },
  {
   "id": "fish_for_chief",
@@ -172,7 +183,12 @@
     }
    ],
    "items": []
-  }
+  },
+  "thread": "local",
+  "teaches": [
+   "region:grublake",
+   "npc:elder"
+  ]
  },
  {
   "id": "goblin_pointy_stick",
@@ -223,7 +239,12 @@
      "id": "bronze_shield"
     }
    ]
-  }
+  },
+  "thread": "local",
+  "teaches": [
+   "npc:shopkeeper_weapon_shop",
+   "people:goblins"
+  ]
  },
  {
   "id": "cabbage_for_cowards",
@@ -282,7 +303,12 @@
     }
    ],
    "items": []
-  }
+  },
+  "thread": "local",
+  "teaches": [
+   "lore:cabbage_courage",
+   "region:settlement"
+  ]
  },
  {
   "id": "rats_in_the_storehouse",
@@ -342,7 +368,11 @@
     }
    ],
    "bankSpace": 10
-  }
+  },
+  "thread": "local",
+  "teaches": [
+   "region:settlement"
+  ]
  },
  {
   "id": "the_hollow_idol",
@@ -484,7 +514,12 @@
      "id": "hollow_idol_shard"
     }
    ]
-  }
+  },
+  "thread": "main",
+  "teaches": [
+   "mystery:hollow_idol",
+   "npc:elder"
+  ]
  },
  {
   "id": "bridge_over_dumb_water",
@@ -577,7 +612,11 @@
    ],
    "bankSpace": 10,
    "openShortcut": "west_bridge"
-  }
+  },
+  "thread": "local",
+  "teaches": [
+   "region:willow"
+  ]
  },
  {
   "id": "the_grubpit_problem",
@@ -651,7 +690,11 @@
      "id": "iron_legs"
     }
    ]
-  }
+  },
+  "thread": "local",
+  "teaches": [
+   "region:grubpit"
+  ]
  },
  {
   "id": "a_proper_goblin_axe",
@@ -717,7 +760,12 @@
      "id": "iron_shield"
     }
    ]
-  }
+  },
+  "thread": "local",
+  "teaches": [
+   "people:goblins",
+   "region:choppers"
+  ]
  },
  {
   "id": "the_farmers_bad_smell",
@@ -788,7 +836,13 @@
    ],
    "items": [],
    "bankSpace": 10
-  }
+  },
+  "thread": "local",
+  "teaches": [
+   "region:farmlands",
+   "npc:shopkeeper_farming_shed",
+   "lore:walking_scarecrow"
+  ]
  },
  {
   "id": "grublake_fish_thieves",
@@ -866,7 +920,12 @@
      "id": "iron_body"
     }
    ]
-  }
+  },
+  "thread": "local",
+  "teaches": [
+   "region:grublake",
+   "npc:shopkeeper_fishmonger"
+  ]
  },
  {
   "id": "tinker_intro",
@@ -919,7 +978,12 @@
      "amount": 60
     }
    ]
-  }
+  },
+  "thread": "local",
+  "teaches": [
+   "npc:sprocket",
+   "people:goblins"
+  ]
  },
  {
   "id": "tinker_powder",
@@ -978,7 +1042,12 @@
      "qty": 3
     }
    ]
-  }
+  },
+  "thread": "local",
+  "teaches": [
+   "npc:sprocket",
+   "people:goblins"
+  ]
  },
  {
   "id": "tinker_cannons",
@@ -1031,7 +1100,12 @@
      "amount": 320
     }
    ]
-  }
+  },
+  "thread": "local",
+  "teaches": [
+   "npc:sprocket",
+   "people:goblins"
+  ]
  },
  {
   "id": "tinker_tools",
@@ -1090,7 +1164,11 @@
      "qty": 1
     }
    ]
-  }
+  },
+  "thread": "local",
+  "teaches": [
+   "npc:sprocket"
+  ]
  },
  {
   "id": "scouts_in_the_oakwoods",
@@ -1169,7 +1247,12 @@
     }
    ],
    "bankSpace": 10
-  }
+  },
+  "thread": "main",
+  "teaches": [
+   "region:oakwoods",
+   "region:rival"
+  ]
  },
  {
   "id": "the_bog_bites_back",
@@ -1247,7 +1330,12 @@
      "id": "iron_shield"
     }
    ]
-  }
+  },
+  "thread": "main",
+  "teaches": [
+   "region:bog",
+   "mystery:dwarf_pumps"
+  ]
  },
  {
   "id": "heart_of_the_bog",
@@ -1385,6 +1473,11 @@
     }
    ],
    "bankSpace": 20
-  }
+  },
+  "thread": "main",
+  "teaches": [
+   "region:bog",
+   "mystery:dwarf_pumps"
+  ]
  }
 ]

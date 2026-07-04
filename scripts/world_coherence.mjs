@@ -14,9 +14,9 @@ const arr = (j, k) => Array.isArray(j) ? j : (j[k] || Object.values(j).find(Arra
 const opt = (p, k) => has(p) ? arr(load(p), k) : null;
 
 // ---- ratcheting knobs (may only move TOWARD the bible; see map_defects for the pattern) ----
-const TEACHES_UNTAGGED_BUDGET = 19;   // quests without a `teaches:[...]` link. Target 0. Ratchet DOWN as quests are tagged.
+const TEACHES_UNTAGGED_BUDGET = 0;    // quests without a `teaches:[...]` link. All 19 tagged 2026-07-04 → budget 0 (every new quest must teach).
 const IDENTITY_MIN_FIELDS = 2;         // non-empty identity fields every region must carry. Target ~5. Ratchet UP.
-const THREAD_MAIN_BAND = [0.10, 0.50]; // share of quests on the main/mystery thread. Bible target 0.30. Tighten toward it.
+const THREAD_MAIN_BAND = [0.15, 0.45]; // share of quests on the main/mystery thread. Bible target 0.30 (now at 0.21). Tighten toward it.
 const WONDER_MIN_NEVER = 3;            // mysteries that stay 'never' answered. The Rule of Wonder. Ratchet UP.
 
 const peoples = arr(load('src/data/peoples.json'), 'peoples');
