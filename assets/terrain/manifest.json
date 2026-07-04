@@ -1,4 +1,6 @@
 {
   "_note": "Terrain tile-keys that have real PNG art at assets/terrain/<key>.png. Empty = the game draws the procedural tiles. Add a key here once its PNG is dropped in and it re-skins that ground everywhere. See docs/TERRAIN_ART_SPEC.md.",
+  "_grids_note": "key -> N means an NxN super-tile set exists at <key>_<idx>.png (idx=(x%N)*N+(y%N)); the renderer places slices by tile position so facets span tiles and the single-tile grid is masked. Keys not listed use the single <key>.png.",
+  "grids": {"grass": 3, "grass2": 3, "grass3": 3, "grass_shadow": 3, "dirt": 3, "dirt_shadow": 3, "road": 3, "sand": 3, "sand_shadow": 3, "wet_sand": 3, "water": 3, "water_deep": 3, "water_shallow": 3, "rock": 3, "rock2": 3, "cliff": 3, "swamp": 3, "mud": 3, "field": 3, "floor": 3, "wall": 3, "bridge": 3},
   "tiles": ["grass", "grass2", "grass3", "grass_shadow", "water", "water_deep", "water_shallow", "dirt", "dirt_shadow", "road", "sand", "sand_shadow", "wet_sand", "rock", "rock2", "cliff", "swamp", "mud", "field", "floor", "wall", "bridge"]
 }
