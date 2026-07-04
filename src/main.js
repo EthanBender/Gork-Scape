@@ -73,8 +73,9 @@ import './data/questItems.js'; // [economy lane] register unique quest items int
 import { drawAvatar } from './render/avatar.js';
 import { gearHints, weaponStyleFor, bodyTypeFor, footprintFor } from './render/gear.js';
 import { avatarStateFor, playerSkillTarget, drawSkillFx, AV_SCALE, AV_FEET, AV_TOP } from './render/characters.js';
-import { drawProp } from './render/props.js'; // [char-render] structure props (anvil/chest/stall/…) replace flat squares
+import { drawProp, propKind } from './render/props.js'; // [char-render] structure props (anvil/chest/stall/…) replace flat squares
 import { loadTerrainArt, terrainArtUrl } from './render/terrainArt.js'; // [char-render] optional real ground-tile art (falls back to procedural)
+import { loadObjectArt, objectArtUrl } from './render/objectArt.js'; // [char-render] optional real world-object art (falls back to procedural)
 
 const tilePx = (t) => t * TILE_SIZE + TILE_SIZE / 2;
 const manhattan = (ax, ay, bx, by) => Math.abs(ax - bx) + Math.abs(ay - by);
@@ -493,6 +494,7 @@ function create() {
   uiCam.ignore([terrainGfx, objectsGfx, decorGfx, groundGfx, entitiesGfx, playerLabel]); // pooled NPC labels get uiCam.ignore on creation (see updateLabels)
   this.scale.on('resize', (size) => uiCam.setSize(size.width, size.height));
   initTerrainArt(this); // [char-render] load any real ground-tile art (no-op if none)
+  initObjectArt(this);  // [char-render] load any real world-object art (no-op if none)
 
   // Compass "N" marker — rides the HUD camera (screen-space, upright), repositioned
   // each frame around the compass dial to point at world-north. Main cam ignores it.
@@ -2141,18 +2143,25 @@ const terrainTexReady = new Set();       // art-keys whose PNG texture has loade
 const terrainArtPool = [];               // reused Phaser.Image bobs for arted tiles
 let terrainArtCursor = 0;                // per-frame pool cursor
 
-// Load the terrain manifest, preload each listed tile texture, mark it ready.
-// Called once from create(); safe no-op when the manifest is empty/absent.
+// Load a set of art PNGs straight into the texture manager and mark each ready as
+// it decodes. Deliberately NOT the scene LoaderPlugin: two features (terrain +
+// objects) resolve their manifests async and each would call load.start(), and
+// Phaser swallows a second start() while the first batch is mid-load — so the
+// later batch never finishes. A plain HTMLImage per key has no such race.
+function loadArtTextures(scene, keys, prefix, urlFor, readySet) {
+  for (const k of keys) {
+    const key = prefix + k;
+    if (scene.textures.exists(key)) { readySet.add(k); continue; }
+    const im = new Image();
+    im.onload = () => { if (!scene.textures.exists(key)) scene.textures.addImage(key, im); readySet.add(k); };
+    im.onerror = () => {}; // missing PNG => that art-key just stays procedural
+    im.src = urlFor(k);
+  }
+}
+// Load the terrain manifest, then its tile textures. No-op when the manifest is empty.
 function initTerrainArt(scene) {
   terrainArtScene = scene;
-  loadTerrainArt().then((keys) => {
-    if (!keys.length) return;
-    const need = keys.filter((k) => !scene.textures.exists('terr_' + k));
-    if (!need.length) { keys.forEach((k) => terrainTexReady.add(k)); return; }
-    need.forEach((k) => scene.load.image('terr_' + k, terrainArtUrl(k)));
-    scene.load.once('complete', () => keys.forEach((k) => { if (scene.textures.exists('terr_' + k)) terrainTexReady.add(k); }));
-    scene.load.start();
-  });
+  loadTerrainArt().then((keys) => { if (keys.length) loadArtTextures(scene, keys, 'terr_', terrainArtUrl, terrainTexReady); });
 }
 function terrainBlit(px, topY, texKey) {
   let img = terrainArtPool[terrainArtCursor];
@@ -2235,12 +2244,59 @@ function drawAltar(g, cx, cy) {
   g.fillStyle(0x9a7bff, 0.4 + 0.3 * Math.sin(t)); g.fillCircle(x, y - 3, 2.4); // rune glow
 }
 
+// [char-render] Optional real world-object art. Each object's art-key is its KIND:
+// resources -> 'tree' / 'ore'; structures -> propKind(label) (stall, barrel, chest,
+// anvil, well, hut, …); giant mushroom -> 'mushroom'; scenery -> its scenery key.
+// Null keeps the object procedural (fishing spots, portals, altars, fires, plain
+// decor). When the key's texture is loaded, drawObjects blits a bottom-anchored
+// image (so trees overhang upward) instead of the procedural prop. See objectArt.js.
+function objectArtKey(o) {
+  if (o.type === 'resource') {
+    if (o.blocking === false) return null;          // fishing-spot shimmer stays procedural
+    if (o.skill === 'Woodcutting') return 'tree';
+    if (o.skill === 'Mining') return 'ore';
+    return null;
+  }
+  if (o.type === 'structure') return propKind(o.label);
+  if (o.type === 'decor') {
+    if (o.mush === 'giant') return 'mushroom';
+    if (o.scenery) return o.scenery;
+  }
+  return null;
+}
+let objectArtScene = null;
+const objTexReady = new Set();       // object-keys whose PNG texture has loaded
+const objectArtPool = [];            // reused Phaser.Image bobs for arted objects
+let objectArtCursor = 0;
+
+function initObjectArt(scene) {
+  objectArtScene = scene;
+  loadObjectArt().then((keys) => { if (keys.length) loadArtTextures(scene, keys, 'obj_', objectArtUrl, objTexReady); });
+}
+// Draw an object sprite bottom-anchored on its tile ("128px = one tile"), so short
+// props sit in the tile and tall ones (trees) rise above it.
+function objectBlit(cx, cy, texKey) {
+  let img = objectArtPool[objectArtCursor];
+  if (!img) {
+    img = objectArtScene.add.image(0, 0, texKey).setOrigin(0.5, 1).setDepth(1.05);
+    if (uiCam) uiCam.ignore(img);     // world layer: main cam only, never the HUD cam
+    objectArtPool[objectArtCursor] = img;
+  }
+  img.setTexture(texKey).setOrigin(0.5, 1).setScale(TILE_SIZE / 128)
+    .setPosition(cx + TILE_SIZE / 2, cy + TILE_SIZE).setVisible(true);
+  objectArtCursor++;
+}
+
 function drawObjects() {
   const g = objectsGfx; g.clear();
+  objectArtCursor = 0;                 // recycle the object-art image pool this frame
   const v = viewRange();
   const elevO = Game.world.elevation, Wo = Game.world.W;
   for (const o of objectsInView(Game.world, v.x0, v.y0, v.x1, v.y1)) {
     const cx = o.x * TILE_SIZE, cy = o.y * TILE_SIZE - elevLift(elevO, o.y * Wo + o.x);
+    // real object art (if this kind's texture is loaded) replaces the procedural
+    // prop; depleted nodes (stumps / mined rock) keep the procedural spent look.
+    if (!o.depleted) { const ak = objectArtKey(o); if (ak && objTexReady.has(ak)) { objectBlit(cx, cy, 'obj_' + ak); continue; } }
     if (o.type === 'decor') {
       if (o.mush === 'giant') { // giant toadstool: stem on this tile, cap overhangs the neighbours (drawn tree-style)
         const s = o.size;
@@ -2274,6 +2330,8 @@ function drawObjects() {
     g.fillRect(cx + 4, cy + 4, TILE_SIZE - 8, TILE_SIZE - 8);
     if (o.label === 'Range' && !o.depleted) { g.fillStyle(0xffd24d, 0.8); g.fillCircle(cx + 16, cy + 16, 5); }
   }
+  // hide any pooled object-art images not used this frame
+  for (let k = objectArtCursor; k < objectArtPool.length; k++) objectArtPool[k].setVisible(false);
 
   // [economy lane] temporary firemaking fires: procedural flame that flickers
   // and shrinks as its lifespan (global-tick deadline) runs out. Character-render
