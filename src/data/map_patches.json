@@ -20883,6 +20883,164 @@
      "shape": "circle"
     }
    ]
+  },
+  {
+   "id": "square-south-crossroads",
+   "note": "South Gate Crossroads — a junction-square waystation where the King's Road S crosses the E-W road leaving town. A multi-way signpost at the centre, a travellers' well with benches facing it, a wayfarer's shelter + a wayshrine, corner lamps, planters + wildflowers, flagstone corners and milestones. The N-S and E-W through-routes are kept clear (props never on the road); guarded onto dry land. Reachability + coherence simulated.",
+   "ops": [
+    {
+     "op": "decor",
+     "x": 468,
+     "y": 483,
+     "color": 9078140,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 468,
+     "y": 487,
+     "color": 9078140,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 474,
+     "y": 483,
+     "color": 9078140,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 474,
+     "y": 487,
+     "color": 9078140,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 467,
+     "y": 485,
+     "color": 9078140,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 475,
+     "y": 485,
+     "color": 9078140,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 467,
+     "y": 486,
+     "label": "Crossroads Well",
+     "color": 6974058,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 468,
+     "y": 484,
+     "label": "Rest Bench",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 474,
+     "y": 487,
+     "label": "Rest Bench",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 475,
+     "y": 483,
+     "label": "Wayfarers Hut",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 466,
+     "y": 484,
+     "label": "Wayfarers Shrine",
+     "color": 10132104,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 467,
+     "y": 483,
+     "label": "Crossroads Lamp",
+     "color": 16765517,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 475,
+     "y": 487,
+     "label": "Crossroads Lamp",
+     "color": 16765517,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 467,
+     "y": 488,
+     "label": "Crossroads Lamp",
+     "color": 16765517,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 476,
+     "y": 484,
+     "label": "Crossroads Lamp",
+     "color": 16765517,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 469,
+     "y": 483,
+     "label": "Wayside Planter",
+     "color": 9067060,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 473,
+     "y": 488,
+     "label": "Wildflower Bed",
+     "color": 14241615,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 466,
+     "y": 487,
+     "color": 9078140,
+     "size": 5,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 476,
+     "y": 486,
+     "color": 9078140,
+     "size": 5,
+     "shape": "rect"
+    }
+   ]
   }
  ]
 }
