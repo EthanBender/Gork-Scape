@@ -21041,6 +21041,108 @@
      "shape": "rect"
     }
    ]
+  },
+  {
+   "id": "square-west-trailhead",
+   "note": "West Trailhead — a forest-gate junction marker where the West Road leaves town into dense Mossreach woods (too tree-choked for a plaza): a Mossreach trailhead signpost, a carved Forest Trail Totem, a wayfarer bench, flanking trail lamps, a woodpile (Mossreach timber), trail cairns, moss + trail-stone underfoot. Through-route kept clear; guarded around the trees. Reachability + coherence simulated.",
+   "ops": [
+    {
+     "op": "object",
+     "x": 416,
+     "y": 456,
+     "label": "Mossreach Trailhead Board",
+     "color": 9071162,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 414,
+     "y": 458,
+     "label": "Forest Trail Totem",
+     "color": 6978122,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 416,
+     "y": 458,
+     "label": "Wayfarers Bench",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 413,
+     "y": 456,
+     "label": "Trail Lamp",
+     "color": 16765517,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 421,
+     "y": 456,
+     "label": "Trail Lamp",
+     "color": 16765517,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 422,
+     "y": 456,
+     "label": "Woodpile",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 412,
+     "y": 458,
+     "label": "Rock Cairn",
+     "color": 9079426,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 420,
+     "y": 459,
+     "label": "Rock Cairn",
+     "color": 9079426,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 416,
+     "y": 457,
+     "color": 4876858,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 414,
+     "y": 457,
+     "color": 4876858,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 420,
+     "y": 457,
+     "color": 4876858,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 415,
+     "y": 457,
+     "color": 9078140,
+     "size": 5,
+     "shape": "rect"
+    }
+   ]
   }
  ]
 }
