@@ -1479,5 +1479,165 @@
    "region:bog",
    "mystery:dwarf_pumps"
   ]
+ },
+ {
+  "id": "bog_snail_derby",
+  "name": "The Great Snail Derby",
+  "act": 3,
+  "giver": {
+   "npc": "murk",
+   "name": "Murk the Bogling",
+   "where": {
+    "x": 685,
+    "y": 710
+   }
+  },
+  "summary": "Murk the bogling means to win the Great Snail Derby a tenth time. His champion is off his feed and the racetrack's thick with biters.",
+  "intro": "The Derby's near! Nine years running I've taken the ribbon, and I mean ten. But my Slugworth's off his feed and the run's crawling with skeeters. Fatten him on bog-beans, swat the biters off the track, and we ride to glory together.",
+  "outro": "TEN years! Slugworth crossed a clean snail-length ahead — the rival keepers are FURIOUS, which is the sweetest part of winning. Here. A bogling counts you a friend now, and out here in the muck that is no small thing.",
+  "requires": {
+   "quests": [
+    "the_bog_bites_back"
+   ]
+  },
+  "steps": [
+   {
+    "type": "goto",
+    "target": "bog",
+    "where": {
+     "x": 685,
+     "y": 710,
+     "name": "the Bog of Grub",
+     "radius": 60
+    },
+    "text": "Travel to the Bog of Grub",
+    "say": "South and east, past the willows, where the ground gives way to muck."
+   },
+   {
+    "type": "obtain",
+    "target": "bog_bean",
+    "count": 5,
+    "text": "Gather 5 Bog-beans to fatten Slugworth",
+    "say": "A champion won't race hungry. Bog-beans grow thick round the pools."
+   },
+   {
+    "type": "kill",
+    "target": "bog_mosquito",
+    "count": 6,
+    "text": "Clear 6 Bog Mosquitoes off the racetrack",
+    "say": "The skeeters pester the snails something awful. Swat the lot."
+   },
+   {
+    "type": "talk",
+    "target": "murk",
+    "name": "Murk the Bogling",
+    "text": "Return to Murk for race day",
+    "say": "Bring the beans back and we'll line up at the start."
+   }
+  ],
+  "rewards": {
+   "coins": 240,
+   "xp": [
+    {
+     "skill": "Farming",
+     "amount": 520
+    },
+    {
+     "skill": "Hitpoints",
+     "amount": 260
+    }
+   ],
+   "items": [
+    {
+     "id": "swamp_amber"
+    }
+   ]
+  },
+  "thread": "local",
+  "teaches": [
+   "region:bog",
+   "people:boglings",
+   "lore:sacred_rust"
+  ]
+ },
+ {
+  "id": "bog_pump_mystery",
+  "name": "What the Pumps Drain",
+  "act": 3,
+  "giver": {
+   "npc": "murk",
+   "name": "Murk the Bogling",
+   "where": {
+    "x": 685,
+    "y": 710
+   }
+  },
+  "summary": "The old dwarf pumps still turn out in the deep bog, draining water to nowhere anyone has followed. Murk never cared to know why. You might.",
+  "intro": "The pumps? Iron things, big as huts, out east in the deep muck — dwarf-work, older than boglings, older than the bog maybe. They pull the water down and down and no one's fool enough to follow the pipes. But you've got that look. Go on, then. Mind the horrors that nest in the warm iron.",
+  "outro": "So they still turn. So the water still goes... wherever the water goes. You see? Nobody follows the pipes and comes back the wiser — the old iron keeps its own counsel, friend, and maybe that's for the best. Come, there's rust to bless and a snail to feed.",
+  "requires": {
+   "quests": [
+    "bog_snail_derby"
+   ]
+  },
+  "steps": [
+   {
+    "type": "goto",
+    "target": "bog",
+    "where": {
+     "x": 735,
+     "y": 770,
+     "name": "the deep bog pumps",
+     "radius": 55
+    },
+    "text": "Find the dwarf pumps in the deep bog",
+    "say": "East, where the ground steams. You'll hear them turning before you see them."
+   },
+   {
+    "type": "kill",
+    "target": "grub_bog_horror",
+    "count": 3,
+    "text": "Clear 3 Bog Horrors nesting in the warm iron",
+    "say": "They love the heat of the old machines. Mind their reach."
+   },
+   {
+    "type": "obtain",
+    "target": "mudroot",
+    "count": 4,
+    "text": "Pull 4 Mudroot choking the pump intake",
+    "say": "The roots clog the intake. Clear them and watch the water run down."
+   },
+   {
+    "type": "talk",
+    "target": "murk",
+    "name": "Murk the Bogling",
+    "text": "Report back to Murk",
+    "say": "Come tell me what you found out there. Or what you didn’t."
+   }
+  ],
+  "rewards": {
+   "coins": 320,
+   "xp": [
+    {
+     "skill": "Mining",
+     "amount": 640
+    },
+    {
+     "skill": "Hitpoints",
+     "amount": 320
+    }
+   ],
+   "items": [
+    {
+     "id": "cut_swamp_amber"
+    }
+   ]
+  },
+  "thread": "main",
+  "teaches": [
+   "region:bog",
+   "mystery:dwarf_pumps",
+   "npc:murk"
+  ]
  }
 ]
