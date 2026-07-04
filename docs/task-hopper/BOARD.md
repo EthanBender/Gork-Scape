@@ -3,8 +3,8 @@
 *Human-readable view of `HOPPER.jsonl`. The curator keeps this in sync with the feed.
 Last curated: 2026-07-03.*
 
-**Totals:** 18 · **owner-raised 8** · agent/auto-raised 10 · (gate-raised 0)
-**By status:** inbox 17 · ready 0 · picked 0 · done 0 · parked 1
+**Totals:** 19 · **owner-raised 9** · agent/auto-raised 10 · (gate-raised 0)
+**By status:** inbox 18 · ready 0 · picked 0 · done 0 · parked 1
 **Overnight-ready now (`ready` + `overnight-safe`):** 0
 
 > **Avatar art overhaul (GH-0010 → GH-0017)** is filed as one program: a code enabler

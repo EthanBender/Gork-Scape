@@ -70749,6 +70749,372 @@
      "shape": "rect"
     }
    ]
+  },
+  {
+   "id": "town-west-woodcamp",
+   "note": "West woodcutter's camp (town-edge \"grew naturally\" pass) at [407,401] — where Gorkholm meets the western woods (a genuinely forested edge, 100+ trees). A trampled clearing worked for timber + charcoal: a woodcutter's HUT + camp FIRE + log bench, stacked LOG PILES, two CHARCOAL MOUNDS, a chopping STUMP, a timber CART, a split-rail fence penning the woodyard, wood-chip/sawdust ground and felled brush, framed by the existing forest, with a worn LANE east back to town. Everything relates; non-blocking, guarded; reachability + coherence simulated.",
+   "ops": [
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       406,
+       398
+      ],
+      [
+       407,
+       398
+      ],
+      [
+       408,
+       398
+      ],
+      [
+       405,
+       399
+      ],
+      [
+       406,
+       399
+      ],
+      [
+       407,
+       399
+      ],
+      [
+       408,
+       399
+      ],
+      [
+       409,
+       399
+      ],
+      [
+       404,
+       400
+      ],
+      [
+       405,
+       400
+      ],
+      [
+       406,
+       400
+      ],
+      [
+       407,
+       400
+      ],
+      [
+       408,
+       400
+      ],
+      [
+       409,
+       400
+      ],
+      [
+       410,
+       400
+      ],
+      [
+       404,
+       401
+      ],
+      [
+       405,
+       401
+      ],
+      [
+       406,
+       401
+      ],
+      [
+       407,
+       401
+      ],
+      [
+       408,
+       401
+      ],
+      [
+       409,
+       401
+      ],
+      [
+       410,
+       401
+      ],
+      [
+       404,
+       402
+      ],
+      [
+       405,
+       402
+      ],
+      [
+       406,
+       402
+      ],
+      [
+       407,
+       402
+      ],
+      [
+       408,
+       402
+      ],
+      [
+       409,
+       402
+      ],
+      [
+       410,
+       402
+      ],
+      [
+       405,
+       403
+      ],
+      [
+       406,
+       403
+      ],
+      [
+       407,
+       403
+      ],
+      [
+       408,
+       403
+      ],
+      [
+       409,
+       403
+      ],
+      [
+       406,
+       404
+      ],
+      [
+       407,
+       404
+      ],
+      [
+       408,
+       404
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "object",
+     "x": 407,
+     "y": 401,
+     "label": "Woodcutter's Hut",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 407,
+     "y": 403,
+     "label": "Camp Fire",
+     "color": 16742954,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 405,
+     "y": 402,
+     "label": "Log Bench",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 405,
+     "y": 400,
+     "label": "Log Pile",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 409,
+     "y": 400,
+     "label": "Log Pile",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 409,
+     "y": 402,
+     "label": "Log Pile",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 406,
+     "y": 404,
+     "label": "Log Pile",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 404,
+     "y": 404,
+     "label": "Charcoal Mound",
+     "color": 2763306,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 410,
+     "y": 404,
+     "label": "Charcoal Mound",
+     "color": 2763306,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 408,
+     "y": 399,
+     "label": "Chopping Stump",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 409,
+     "y": 401,
+     "label": "Timber Cart",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 411,
+     "y": 400,
+     "label": "Split-rail Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 411,
+     "y": 401,
+     "label": "Split-rail Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 411,
+     "y": 402,
+     "label": "Split-rail Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 406,
+     "y": 401,
+     "color": 13279850,
+     "size": 3,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 408,
+     "y": 402,
+     "color": 9071172,
+     "size": 3,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 407,
+     "y": 400,
+     "color": 13279850,
+     "size": 3,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 405,
+     "y": 403,
+     "color": 9071172,
+     "size": 3,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 409,
+     "y": 403,
+     "color": 9071172,
+     "size": 3,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 403,
+     "y": 400,
+     "label": "Brush Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 411,
+     "y": 399,
+     "label": "Brush Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 404,
+     "y": 398,
+     "label": "Brush Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       412,
+       401
+      ],
+      [
+       413,
+       401
+      ],
+      [
+       414,
+       400
+      ],
+      [
+       415,
+       400
+      ],
+      [
+       416,
+       400
+      ],
+      [
+       417,
+       399
+      ]
+     ],
+     "to": "DIRT"
+    }
+   ]
   }
  ]
 }
