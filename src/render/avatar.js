@@ -36,16 +36,24 @@ const HIP_Y = 11;      // hips / top of legs
 const SHOULDER_Y = 20; // shoulder line
 const NECK_Y = 21;
 const HEAD_Y = 26;     // head centre
-const HEAD_R = 5.2;
+const HEAD_R = 5.4;       // slightly big cute head, toward the ref
 const ARM_LEN = 8.5;
 const LEG_LEN = 11;
 const TORSO_W = 8;     // shoulder width (front view)
 
 // ---- palette --------------------------------------------------------------
 const SKIN = 0x6fbf3f;
-const shade = (c, f) => {          // darken a hex colour by factor f (0..1)
+const clamp8 = (v) => (v < 0 ? 0 : v > 255 ? 255 : v | 0);
+// Warm clay ramp: darken (f<1) or lighten (f>1) a colour by f, biased WARM — shadows
+// keep their red + lose blue, highlights push warm — and CLAMP (the old `& 255` wrapped
+// bright highlights like gold/bronze past 255 back to near-black). Used everywhere, so
+// every creature + piece of gear inherits one cohesive warm-clay finish.
+const shade = (c, f) => {
   const r = (c >> 16) & 255, g = (c >> 8) & 255, b = c & 255;
-  return ((r * f) & 255) << 16 | ((g * f) & 255) << 8 | ((b * f) & 255);
+  const k = Math.abs(f - 1);                     // distance from neutral
+  return (clamp8(r * (f + k * 0.05)) << 16)      // faint warm bias — keeps metals reading as metal
+       | (clamp8(g * f) << 8)
+       |  clamp8(b * (f - k * 0.06));
 };
 
 // ---------------------------------------------------------------------------
@@ -94,24 +102,42 @@ function seg(ctx, x1, y1, x2, y2, w, color, alpha = 1) {
   const [ax, ay] = ctx.P(x1, y1);
   const [bx, by] = ctx.P(x2, y2);
   const u = ctx.unit();
-  if (w >= 2.2) { // thick limb -> soft clay: shadow underlay under the main stroke
-    ctx.g.lineStyle(w * u, shade(color, 0.72), alpha * ctx.a);
-    ctx.g.beginPath(); ctx.g.moveTo(ax, ay + w * 0.16 * u); ctx.g.lineTo(bx, by + w * 0.16 * u); ctx.g.strokePath();
+  if (w >= 2.2) { // thick limb -> soft clay: a deep shadow underlay for round volume
+    ctx.g.lineStyle(w * u, shade(color, 0.6), alpha * ctx.a);
+    ctx.g.beginPath(); ctx.g.moveTo(ax, ay + w * 0.26 * u); ctx.g.lineTo(bx, by + w * 0.26 * u); ctx.g.strokePath();
   }
   ctx.g.lineStyle(w * u, color, alpha * ctx.a);
   ctx.g.beginPath(); ctx.g.moveTo(ax, ay); ctx.g.lineTo(bx, by); ctx.g.strokePath();
   fill(ctx, color, alpha);
   ctx.g.fillCircle(ax, ay, (w / 2) * u);
   ctx.g.fillCircle(bx, by, (w / 2) * u);
-  if (w >= 2.2) { // top highlight for volume
-    ctx.g.lineStyle(w * 0.4 * u, shade(color, 1.16), alpha * ctx.a * 0.6);
-    ctx.g.beginPath(); ctx.g.moveTo(ax, ay - w * 0.22 * u); ctx.g.lineTo(bx, by - w * 0.22 * u); ctx.g.strokePath();
+  if (w >= 2.2) { // bright, wide top highlight — clear top-lit rounded clay read
+    ctx.g.lineStyle(w * 0.52 * u, shade(color, 1.32), alpha * ctx.a * 0.75);
+    ctx.g.beginPath(); ctx.g.moveTo(ax, ay - w * 0.26 * u); ctx.g.lineTo(bx, by - w * 0.26 * u); ctx.g.strokePath();
   }
 }
+function worldPts(ctx, pts) {
+  return pts.map(([lx, ly]) => { const [x, y] = ctx.P(lx, ly); return { x, y }; });
+}
+// Soft-clay polygon. Big opaque masses (torso, cape, hood, shield, cobra-hood,
+// moth-wing, frog-belly…) get the same 3-tone treatment as disc/seg — a shadow base,
+// a top-lit core scaled toward the centroid and nudged UP toward the key light, and a
+// small highlight — so nothing reads as a flat cut-out. Small accents (tusks, boots,
+// nasal bars, snouts, markings) and anything translucent stay flat + crisp.
 function poly(ctx, pts, color, alpha = 1) {
+  let minx = 1e9, maxx = -1e9, miny = 1e9, maxy = -1e9, cx = 0, cy = 0;
+  for (const [x, y] of pts) { if (x < minx) minx = x; if (x > maxx) maxx = x; if (y < miny) miny = y; if (y > maxy) maxy = y; cx += x; cy += y; }
+  cx /= pts.length; cy /= pts.length;
+  const h = maxy - miny;
+  if ((maxx - minx) * h >= 15 && alpha >= 0.9) {          // big + opaque -> clay
+    const lay = (f, dy) => pts.map(([x, y]) => [cx + (x - cx) * f, cy + (y - cy) * f + dy]);
+    fill(ctx, shade(color, 0.74), alpha);       ctx.g.fillPoints(worldPts(ctx, pts), true);
+    fill(ctx, color, alpha);                    ctx.g.fillPoints(worldPts(ctx, lay(0.90, h * 0.10)), true);
+    fill(ctx, shade(color, 1.16), alpha * 0.5); ctx.g.fillPoints(worldPts(ctx, lay(0.55, h * 0.22)), true);
+    return;
+  }
   fill(ctx, color, alpha);
-  const world = pts.map(([lx, ly]) => { const [x, y] = ctx.P(lx, ly); return { x, y }; });
-  ctx.g.fillPoints(world, true);
+  ctx.g.fillPoints(worldPts(ctx, pts), true);
 }
 
 // ---------------------------------------------------------------------------
@@ -238,10 +264,10 @@ function drawLeg(ctx, rootX, angle, color, bootColor) {
   const kneeY = HIP_Y - Math.cos(angle) * LEG_LEN * 0.5;
   const footX = rootX + Math.sin(angle) * LEG_LEN;
   const footY = HIP_Y - Math.cos(angle) * LEG_LEN;
-  seg(ctx, rootX, HIP_Y, kneeX, kneeY, 3.2, color);
-  seg(ctx, kneeX, kneeY, footX, footY, 3.0, color);
-  // boot
-  poly(ctx, [[footX - 1.4, footY], [footX + 2.4, footY], [footX + 2.4, footY - 1.6], [footX - 1.4, footY - 1.6]], bootColor);
+  seg(ctx, rootX, HIP_Y, kneeX, kneeY, 3.9, color);
+  seg(ctx, kneeX, kneeY, footX, footY, 3.5, color);
+  // boot — a chunky rounded clay boot
+  poly(ctx, [[footX - 1.8, footY], [footX + 2.9, footY], [footX + 2.9, footY - 1.9], [footX - 1.8, footY - 1.9]], bootColor);
 }
 
 function drawArm(ctx, shoulderX, angle, color, len = ARM_LEN) {
@@ -249,8 +275,8 @@ function drawArm(ctx, shoulderX, angle, color, len = ARM_LEN) {
   const elbowY = SHOULDER_Y + Math.sin(angle) * len * 0.55;
   const handX = shoulderX + Math.cos(angle) * len;
   const handY = SHOULDER_Y + Math.sin(angle) * len;
-  seg(ctx, shoulderX, SHOULDER_Y, elbowX, elbowY, 2.6, color);
-  seg(ctx, elbowX, elbowY, handX, handY, 2.4, color);
+  seg(ctx, shoulderX, SHOULDER_Y, elbowX, elbowY, 3.2, color);
+  seg(ctx, elbowX, elbowY, handX, handY, 2.8, color);
   return [handX, handY];
 }
 
@@ -265,6 +291,7 @@ function drawHead(ctx, skin, head, facing, feat = {}) {
     poly(ctx, [[-HEAD_R, HEAD_Y + 1], [-HEAD_R - el, HEAD_Y + ey], [-HEAD_R, HEAD_Y + 3]], dark);
     poly(ctx, [[HEAD_R, HEAD_Y + 1], [HEAD_R + el, HEAD_Y + ey], [HEAD_R, HEAD_Y + 3]], dark);
   }
+  disc(ctx, 0, HEAD_Y - HEAD_R * 0.85, HEAD_R * 0.42, shade(skin, 0.5), 0.28); // soft neck/chin contact AO
   disc(ctx, 0, HEAD_Y, HEAD_R, skin);
   if (!back) {
     const ex = facing === 'E' ? 1.6 : facing === 'W' ? -1.6 : 0;
@@ -272,10 +299,15 @@ function drawHead(ctx, skin, head, facing, feat = {}) {
     if (feat.brow) seg(ctx, ex - 2.2, HEAD_Y + 1.8, ex + 2.2, HEAD_Y + 1.8, 1.4, shade(skin, 0.6));
     const eyeWhite = feat.eyeGlow ? feat.eyeGlow : 0xf2e9c0;
     const pupil = feat.eyeGlow ? feat.eyeGlow : (feat.eyeColor || 0x1a1a12);
-    disc(ctx, ex - 1.6, HEAD_Y + 0.6, 0.9, eyeWhite, feat.eyeGlow ? 0.55 : 1);
-    disc(ctx, ex + 1.6, HEAD_Y + 0.6, 0.9, eyeWhite, feat.eyeGlow ? 0.55 : 1);
-    disc(ctx, ex - 1.6, HEAD_Y + 0.6, 0.45, pupil);
-    disc(ctx, ex + 1.6, HEAD_Y + 0.6, 0.45, pupil);
+    const er = 1.15, pr = 0.72;                       // bigger, cuter eyes (the ref is big-eyed)
+    disc(ctx, ex - 1.7, HEAD_Y + 0.5, er, eyeWhite, feat.eyeGlow ? 0.55 : 1);
+    disc(ctx, ex + 1.7, HEAD_Y + 0.5, er, eyeWhite, feat.eyeGlow ? 0.55 : 1);
+    disc(ctx, ex - 1.7, HEAD_Y + 0.4, pr, pupil);
+    disc(ctx, ex + 1.7, HEAD_Y + 0.4, pr, pupil);
+    if (!feat.eyeGlow) {                              // wet-clay catchlight (upper-left, matches the key light)
+      disc(ctx, ex - 2.0, HEAD_Y + 0.85, 0.3, 0xffffff, 0.92);
+      disc(ctx, ex + 1.4, HEAD_Y + 0.85, 0.3, 0xffffff, 0.92);
+    }
     if (feat.eyeGlow) { // faint glow aura
       disc(ctx, ex - 1.6, HEAD_Y + 0.6, 1.4, feat.eyeGlow, 0.25);
       disc(ctx, ex + 1.6, HEAD_Y + 0.6, 1.4, feat.eyeGlow, 0.25);
@@ -304,8 +336,8 @@ function drawHead(ctx, skin, head, facing, feat = {}) {
     if (head.kind === 'full') {
       // full helm: covers the whole head (only the ear tips poke out), domed
       // crown, with a dark visor slit + nasal bar on the front.
-      disc(ctx, 0, HEAD_Y, HEAD_R + 0.4, head.color);
-      disc(ctx, 0, HEAD_Y + HEAD_R * 0.55, HEAD_R + 0.4, shade(head.color, 1.12));
+      disc(ctx, 0, HEAD_Y, HEAD_R + 0.4, head.color);                              // clay dome (already volumetric)
+      disc(ctx, 0, HEAD_Y + HEAD_R * 0.5, 2.4, shade(head.color, 1.18), 0.6);       // soft crown highlight (flat, no wash)
       if (!back) {
         const ex = facing === 'E' ? 1.4 : facing === 'W' ? -1.4 : 0;
         poly(ctx, [[ex - 2.8, HEAD_Y - 0.8], [ex + 2.8, HEAD_Y - 0.8], [ex + 2.8, HEAD_Y + 0.7], [ex - 2.8, HEAD_Y + 0.7]], 0x141414); // visor slit
@@ -326,6 +358,8 @@ function drawTorso(ctx, skin, body, p) {
   poly(ctx, [
     [-bw, HIP_Y], [bw, HIP_Y], [bw - 0.5, SHOULDER_Y + 0.5], [-bw + 0.5, SHOULDER_Y + 0.5],
   ], col);
+  disc(ctx, -bw + 0.8, SHOULDER_Y - 0.6, 1.6, shade(col, 0.6), 0.2);   // shoulder AO
+  disc(ctx,  bw - 0.8, SHOULDER_Y - 0.6, 1.6, shade(col, 0.6), 0.2);
   if (body && body.metal) { // a little plate highlight
     seg(ctx, -bw + 1, SHOULDER_Y - 1, -bw + 1, HIP_Y + 1, 1, shade(col, 1.25), 0.5);
   } else if (!body) {       // bare goblin loincloth
