@@ -16,9 +16,9 @@ test('terrain tile-keys map to the right asset path', () => {
   eq(terrainArtUrl('water'), 'assets/terrain/water.png');
 });
 
-test('terrain manifest.json is well-formed and starts empty', () => {
+test('terrain manifest.json is well-formed (array of tile-key strings)', () => {
   const url = new URL('../assets/terrain/manifest.json', import.meta.url);
   const data = JSON.parse(readFileSync(fileURLToPath(url), 'utf8'));
   assert(Array.isArray(data.tiles), 'manifest has a tiles array');
-  eq(data.tiles.length, 0, 'no tile art listed yet (fully procedural)');
+  assert(data.tiles.every((k) => typeof k === 'string'), 'every listed tile-key is a string');
 });

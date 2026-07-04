@@ -2130,16 +2130,12 @@ function detailField(g, px, py, color) {
   for (let fy = py + 4; fy < py + TS - 1; fy += 6) g.fillRect(px, fy, TS + 1, 1);
 }
 
-// [char-render] Optional real ground-tile art. Each tile id maps to an art-key
-// (the file stem); when that key's texture is loaded, drawTerrain blits a pooled
-// image instead of the procedural fill+detail. Empty manifest / no texture => the
-// map stays 100% procedural (this whole path is skipped). See terrainArt.js.
-const TERRAIN_ART_KEY = {
-  [T.GRASS]: 'grass', [T.GRASS2]: 'grass2', [T.GRASS3]: 'grass', [T.GRASS_SHADOW]: 'grass',
-  [T.WATER]: 'water', [T.WATER_DEEP]: 'water', [T.WATER_SHALLOW]: 'water',
-  [T.DIRT]: 'dirt', [T.ROAD]: 'dirt', [T.DIRT_SHADOW]: 'dirt',
-  [T.ROCK]: 'rock', [T.ROCK2]: 'rock', [T.CLIFF]: 'rock',
-};
+// [char-render] Optional real ground-tile art. Each tile's art-key is simply its
+// TERRAIN_DEFS id (grass, grass2, water, water_deep, road, cliff, sand, wall…) — a
+// 1:1 match with the filenames in assets/terrain/ and the keys in manifest.json.
+// When that key's texture is loaded, drawTerrain blits a pooled image instead of
+// the procedural fill+detail. No texture (unlisted / missing PNG) => that tile
+// stays procedural. See terrainArt.js.
 let terrainArtScene = null;              // scene ref for creating pooled images
 const terrainTexReady = new Set();       // art-keys whose PNG texture has loaded
 const terrainArtPool = [];               // reused Phaser.Image bobs for arted tiles
@@ -2189,8 +2185,8 @@ function drawTerrain() {
       }
       // real ground art (if this tile's texture is loaded) replaces the procedural
       // fill+detail; the elevation side-face above still draws for 2.5D depth.
-      const artKey = TERRAIN_ART_KEY[t];
-      if (artKey && terrainTexReady.has(artKey)) { terrainBlit(px, topY, 'terr_' + artKey); continue; }
+      const artKey = TERRAIN_DEFS[t].id; // 1:1 with the manifest tile-keys / filenames
+      if (terrainTexReady.has(artKey)) { terrainBlit(px, topY, 'terr_' + artKey); continue; }
       g.fillStyle(color, 1);
       g.fillRect(px, topY, TS + 1, TS + 1);
       switch (t) {
