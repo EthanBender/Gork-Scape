@@ -69701,6 +69701,70 @@
      "shape": "circle"
     }
    ]
+  },
+  {
+   "id": "city-gaol-keep",
+   "note": "Gaol architecture pilot — turn the flat-walled gaol into a corner-towered keep. Each of the 4 corners gets a small WALL build-out (a bastion — non-square footprint) with a corner TOWER standing in the crook, tied into the building by wall (built from walls, not floating). A built gatehouse at the south door: two gate-posts flanking the approach + a brazier. Additive; towers/posts stand on ground (obj_embedded unchanged); every tile still reachable (bastions strand nothing); reachability + coherence simulated.",
+   "ops": [
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       504,
+       415
+      ],
+      [
+       503,
+       416
+      ],
+      [
+       510,
+       415
+      ],
+      [
+       504,
+       422
+      ],
+      [
+       503,
+       421
+      ]
+     ],
+     "to": "WALL"
+    },
+    {
+     "op": "object",
+     "x": 503,
+     "y": 415,
+     "label": "Gaol Corner Tower",
+     "color": 9407106,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 511,
+     "y": 415,
+     "label": "Gaol Corner Tower",
+     "color": 9407106,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 503,
+     "y": 422,
+     "label": "Gaol Corner Tower",
+     "color": 9407106,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 511,
+     "y": 422,
+     "label": "Gaol Corner Tower",
+     "color": 9407106,
+     "blocking": false
+    }
+   ]
   }
  ]
 }
