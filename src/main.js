@@ -2093,20 +2093,25 @@ function tHash(x, y) {
 // for speed). Together these make walls read as capped stone, roads as cobble,
 // floors as flagstones, and grass/water/fields as varied ground. ----
 function detailWall(g, px, py, color, x, y) {
-  // A wall reads as a wall (not a flat stone square) when it shows a lit TOP CAP
-  // plus a shaded FRONT FACE below it — the standard top-down 2.5D wall. We draw
-  // both inside the tile: top ~42% is the sunlit cap, the rest is the darker face,
-  // with a lit lip where they meet and a contact shadow grounding it.
-  const TS = TILE_SIZE, capH = Math.round(TS * 0.42), faceY = py + capH, faceH = TS - capH;
-  g.fillStyle(shadeColor(color, 1.34), 1); g.fillRect(px, py, TS + 1, capH);                 // wall top (cap), sunlit
-  g.fillStyle(shadeColor(color, 1.85), 0.9); g.fillRect(px, py, TS + 1, 2);                  // bright top edge
-  g.fillStyle(shadeColor(color, 1.06), 0.5); g.fillRect(px, py, 2, capH);                    // lit left corner
-  g.fillStyle(shadeColor(color, 0.62), 1); g.fillRect(px, faceY, TS + 1, faceH);             // front face
-  g.fillStyle(shadeColor(color, 0.44), 1); g.fillRect(px, faceY + faceH * 0.52, TS + 1, faceH * 0.48 + 1); // darker lower face (grounds it)
-  g.fillStyle(shadeColor(color, 0.95), 0.85); g.fillRect(px, faceY, TS + 1, 1.5);            // lit lip where cap meets face
-  const off = ((x + y) & 1) ? (TS >> 1) : 0;                                                 // staggered block joint on the face
-  g.fillStyle(shadeColor(color, 0.4), 0.6); g.fillRect(px + off, faceY, 1, faceH);
-  g.fillStyle(0x000000, 0.14); g.fillRect(px, py + TS - 2, TS + 1, 2);                        // contact shadow
+  // Top-down 2.5D wall, neighbour-aware so a run reads as ONE wall, not a stack of
+  // striped tiles: the whole footprint shows a continuous stone TOP; the south-facing
+  // FRONT FACE is drawn ONLY where the wall ends to the south (no wall below), and the
+  // lit back-edge ONLY along the north rim. A vertical (N–S) run therefore shows top
+  // all the way down with a single face at its base — not cap/face repeated per tile.
+  const TS = TILE_SIZE, W = Game.world.W, H = Game.world.H, ter = Game.world.terrain;
+  const isWall = (xx, yy) => xx >= 0 && yy >= 0 && xx < W && yy < H && ter[yy * W + xx] === T.WALL;
+  const wN = isWall(x, y - 1), wS = isWall(x, y + 1);
+  g.fillStyle(shadeColor(color, 1.16), 1); g.fillRect(px, py, TS + 1, TS + 1);                // continuous stone top
+  const off = ((x + y) & 1) ? (TS >> 1) : 0;
+  g.fillStyle(shadeColor(color, 0.8), 0.35); g.fillRect(px + off, py, 1, TS + 1);             // vertical joint only (no horizontal banding)
+  if (!wN) { g.fillStyle(shadeColor(color, 1.7), 0.9); g.fillRect(px, py, TS + 1, 2.5); }     // lit back edge — north rim only
+  if (!wS) {                                                                                  // south-facing front face — only where the wall ends
+    const faceH = Math.round(TS * 0.5), fy = py + TS - faceH;
+    g.fillStyle(shadeColor(color, 0.95), 0.9); g.fillRect(px, fy - 1, TS + 1, 1.6);           // lit lip at the top of the face
+    g.fillStyle(shadeColor(color, 0.58), 1); g.fillRect(px, fy, TS + 1, faceH);               // face
+    g.fillStyle(shadeColor(color, 0.42), 1); g.fillRect(px, fy + faceH * 0.55, TS + 1, faceH * 0.45 + 1); // darker lower
+    g.fillStyle(0x000000, 0.16); g.fillRect(px, py + TS - 1.5, TS + 1, 2);                    // contact shadow
+  }
 }
 function detailFloor(g, px, py, color) {
   const TS = TILE_SIZE;
