@@ -2093,40 +2093,36 @@ function tHash(x, y) {
 // for speed). Together these make walls read as capped stone, roads as cobble,
 // floors as flagstones, and grass/water/fields as varied ground. ----
 function detailWall(g, px, py, color, x, y) {
-  // THIN wall: render the wall as a ~14px band that CONNECTS to its wall-neighbours (a centre
-  // block + an arm toward each wall side) and paint the adjacent GROUND into the leftover
-  // margins, so the wall reads thin — not a chunky full tile. Collision stays a full tile.
-  // Neighbour-aware ("connected-tile"): straight runs stay continuous, corners/T/cross connect,
-  // and only a south-exposed edge gets a front face. Reads Game.world.terrain for neighbours.
-  const TS = TILE_SIZE, W = Game.world.W, H = Game.world.H, ter = Game.world.terrain, DEF = TERRAIN_DEFS;
-  const inb = (xx, yy) => xx >= 0 && yy >= 0 && xx < W && yy < H;
+  // THIN + TALL wall: a ~14px connected-tile footprint (centre + an arm toward each wall
+  // neighbour) EXTRUDED upward by H, so the wall reads thin in plan but RISES like a real
+  // wall — a lit stone CAP on top and a dark south-facing FRONT FACE beneath it (same
+  // straight-up lift the elevation system uses). Ground is painted into the margins so the
+  // footprint stays thin; collision stays a full tile. Neighbour-aware -> runs/corners connect,
+  // and painter order (north→south) makes each wall's raised body occlude what's behind it.
+  const TS = TILE_SIZE, W = Game.world.W, WH = Game.world.H, ter = Game.world.terrain, DEF = TERRAIN_DEFS;
+  const inb = (xx, yy) => xx >= 0 && yy >= 0 && xx < W && yy < WH;
   const wall = (xx, yy) => inb(xx, yy) && ter[yy * W + xx] === T.WALL;
   const gcol = (xx, yy) => (inb(xx, yy) && DEF[ter[yy * W + xx]]) ? DEF[ter[yy * W + xx]].color : DEF[T.DIRT].color;
   const wN = wall(x, y - 1), wS = wall(x, y + 1), wE = wall(x + 1, y), wW = wall(x - 1, y);
-  const TH = 14, m = (TS - TH) >> 1;                                            // 14px band, 9px margins
-  // 1) paint the ground into the non-wall margins (covers the wall base fill so the wall looks thin)
+  const TH = 14, m = (TS - TH) >> 1, H = 12;                                    // 14px footprint, 12px tall
+  // 1) paint ground into the non-wall margins so the footprint reads thin
   if (!wN) { g.fillStyle(gcol(x, y - 1), 1); g.fillRect(px, py, TS + 1, m); }
   if (!wS) { g.fillStyle(gcol(x, y + 1), 1); g.fillRect(px, py + TS - m, TS + 1, m + 1); }
   if (!wE) { g.fillStyle(gcol(x + 1, y), 1); g.fillRect(px + TS - m, py, m + 1, TS + 1); }
   if (!wW) { g.fillStyle(gcol(x - 1, y), 1); g.fillRect(px, py, m, TS + 1); }
-  // 2) wall TOP band: centre block + an arm toward each wall neighbour (connected-tile)
-  g.fillStyle(shadeColor(color, 1.16), 1);
-  g.fillRect(px + m, py + m, TH, TH);                                           // centre
-  if (wN) g.fillRect(px + m, py, TH, m + 1);
-  if (wS) g.fillRect(px + m, py + m + TH, TH, m + 1);
-  if (wE) g.fillRect(px + m + TH, py + m, m + 1, TH);
-  if (wW) g.fillRect(px, py + m, m + 1, TH);
-  // horizontal extent of the band at its top/bottom rows (full width if it has E/W arms)
-  const bx0 = wW ? px : px + m, bw = (wE ? px + TS : px + m + TH) - bx0;
-  // 3) south-facing FRONT FACE where the band is exposed to ground below
-  if (!wS) {
-    const fy = py + m + TH;
-    g.fillStyle(shadeColor(color, 0.92), 0.85); g.fillRect(bx0, fy - 1, bw, 1.3);   // lit lip
-    g.fillStyle(shadeColor(color, 0.55), 1); g.fillRect(bx0, fy, bw, 5);            // face
-    g.fillStyle(0x000000, 0.16); g.fillRect(bx0, fy + 5, bw, 2);                    // contact shadow
-  }
-  // 4) lit back-edge along the north top where exposed
-  if (!wN) { g.fillStyle(shadeColor(color, 1.75), 0.8); g.fillRect(bx0, py + m, bw, 2); }
+  // 2) connected footprint bounds (arms reach the tile edge toward wall neighbours)
+  const fx0 = wW ? px : px + m, fx1 = wE ? px + TS + 1 : px + m + TH;
+  const fy0 = wN ? py : py + m, fy1 = wS ? py + TS + 1 : py + m + TH;
+  const fw = fx1 - fx0, fh = fy1 - fy0;
+  // 3) extrude the footprint UP by H: dark BODY (the visible front face / height)…
+  g.fillStyle(shadeColor(color, 0.5), 1); g.fillRect(fx0, fy0 - H, fw, fh + H);
+  g.fillStyle(shadeColor(color, 0.38), 1); g.fillRect(fx0, fy1 - 6, fw, 6);                 // darker at the base
+  // 4) …then the lit CAP on top (footprint raised by H)
+  g.fillStyle(shadeColor(color, 1.2), 1); g.fillRect(fx0, fy0 - H, fw, fh);
+  g.fillStyle(shadeColor(color, 1.78), 0.75); g.fillRect(fx0, fy0 - H, fw, 1.5);            // sunlit top edge
+  g.fillStyle(shadeColor(color, 0.95), 0.8); g.fillRect(fx0, fy1 - H - 1, fw, 1.3);         // lit lip where cap meets face
+  // 5) soft contact shadow where the wall meets the ground
+  g.fillStyle(0x000000, 0.18); g.fillRect(fx0, fy1, fw, 2);
 }
 function detailFloor(g, px, py, color) {
   const TS = TILE_SIZE;
