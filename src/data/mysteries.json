@@ -1,0 +1,17 @@
+{
+  "_note": "CANON: background mysteries. `answered` encodes the Rule of Wonder — 'never' means it is NEVER explained (it exists to inspire wonder); 'quest:<id>' means a quest addresses it; 'eventually' means it's a hook awaiting a future quest. The gate requires a healthy number stay 'never' — don't over-explain the world. Surfaced as unanswered Codex entries + environmental storytelling.",
+  "mysteries": [
+    { "id": "hollow_idol", "name": "The Hollow Idol", "region": "settlement", "answered": "quest:the_hollow_idol",
+      "hook": "Something older than the Warren sleeps under the training yard and whispers names. What named the player?" },
+    { "id": "the_builders", "name": "The Builders", "region": "ruins", "answered": "never",
+      "hook": "Clean-cut stone, doors sized for giants, machines that outlast their makers. Dwarves are never seen — only their leavings. Who were they, and where did they go?" },
+    { "id": "dwarf_pumps", "name": "The Bog Pumps", "region": "bog", "answered": "never",
+      "hook": "Ancient iron pumps still drain the deep bog into pipes nobody has followed. Draining it to WHERE, and for what that still needs doing?" },
+    { "id": "memory_mushrooms", "name": "Whose Memories", "region": "mushroom", "answered": "never",
+      "hook": "The great caps let you dream a stranger's day in perfect detail. Whose days are they — and how did a mushroom come to hold them?" },
+    { "id": "walking_scarecrow", "name": "The Walking Scarecrow", "region": "farmlands", "answered": "never",
+      "hook": "A field scarecrow that has, by unanimous and useless agreement, moved. No one has ever seen it move. It simply is not where it was." },
+    { "id": "deep_tunnels", "name": "How Deep It Goes", "region": "minehills", "answered": "eventually",
+      "hook": "Every goblin shaft eventually breaks into a older, straighter dwarf tunnel going further down than anyone has dared. Where does the last one end?" }
+  ]
+}

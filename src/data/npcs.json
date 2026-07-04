@@ -1,0 +1,18 @@
+{
+  "_note": "CANON: recurring characters. Seeded 2026-07 from the actual quest-givers in quests.json. The bible wants NPCs to reappear across regions and grow with the player — `appearsIn` lists where they show up (aspirationally >1 region for the recurring ones). Content references npcs by id (quests already do: giver.npc). Enforced by world_coherence.mjs (every quest giver must resolve here).",
+  "npcs": [
+    { "id": "elder", "name": "Goblin Elder", "home": "settlement", "appearsIn": ["settlement"], "recurring": true,
+      "role": "the chief's old advisor and Gorkholm's main quest-giver",
+      "arc": "He feels the world stirring under the everyday — the 30% mystery thread runs through him. Grows warier and stranger as the deep things wake." },
+    { "id": "sprocket", "name": "Sprocket the Tinker", "home": "settlement", "appearsIn": ["settlement"], "recurring": true,
+      "role": "inventor behind the tinkering questline",
+      "arc": "Goblin invention incarnate — each contraption is bigger, louder, and more likely to explode than the last. The face of 'goblins = optimistic tinkerers.'" },
+    { "id": "shopkeeper_general_store", "name": "General Store Keeper", "home": "settlement", "appearsIn": ["settlement"], "recurring": false, "role": "runs the general store; odd-job quests" },
+    { "id": "shopkeeper_fishmonger", "name": "Fishmonger", "home": "settlement", "appearsIn": ["settlement", "grublake"], "recurring": false, "role": "sells the catch; frets about the Grublake fish thieves" },
+    { "id": "shopkeeper_weapon_shop", "name": "Weapon Shop Keeper", "home": "settlement", "appearsIn": ["settlement"], "recurring": false, "role": "arms the goblins; wants a properly pointy stick" },
+    { "id": "shopkeeper_grocer", "name": "Grocer", "home": "settlement", "appearsIn": ["settlement"], "recurring": false, "role": "cabbage and turnips; cabbage-for-cowards" },
+    { "id": "shopkeeper_lumber_stall", "name": "Timber Row Foreman", "home": "settlement", "appearsIn": ["settlement", "choppers"], "recurring": false, "role": "runs the timber stall; complains through every Timber Glut" },
+    { "id": "shopkeeper_miner_camp", "name": "Miner Camp Boss", "home": "minehills", "appearsIn": ["minehills"], "recurring": false, "role": "runs the northern mine camp on the edge of the old dwarf tunnels" },
+    { "id": "shopkeeper_farming_shed", "name": "Farmhand", "home": "settlement", "appearsIn": ["settlement", "farmlands"], "recurring": false, "role": "works the farms; the one who swears the scarecrow moved" }
+  ]
+}

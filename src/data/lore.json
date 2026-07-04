@@ -1,0 +1,29 @@
+{
+  "_note": "CANON: campfire stories, rumors, legends. Each tagged truth: true | exaggerated | nonsense — the PLAYER never sees the tag, and should never immediately know which is which (bible: Campfire Stories). `region` ties it to a place; `links` may point at a mystery:<id> or quest:<id>. Surfaced via the Codex + NPC examine/dialogue; pull rumors FROM here rather than inlining them. Enforced by world_coherence.mjs (valid truth tag, resolvable region).",
+  "lore": [
+    { "id": "hollow_idol_whispers", "region": "settlement", "truth": "true", "links": ["mystery:hollow_idol", "quest:the_hollow_idol"],
+      "text": "There's an idol under the old training yard, older than the Warren. On quiet nights it whispers — and the Elder swears it whispers *names*." },
+    { "id": "cabbage_courage", "region": "settlement", "truth": "nonsense",
+      "text": "Everyone knows a goblin who eats a whole raw cabbage before a scrap can't feel fear. Everyone also knows what happens to that goblin's stomach." },
+    { "id": "memory_mushrooms", "region": "mushroom", "truth": "exaggerated", "links": ["mystery:memory_mushrooms"],
+      "text": "Eat one of the big caps and you'll dream a stranger's whole day — their lunch, their arguments, the face of someone they loved. Nobody agrees whose memories they are." },
+    { "id": "cap_festival_judge", "region": "mushroom", "truth": "true",
+      "text": "At the Great Cap Festival the head judge has worn the same hat for forty years. It is a very good hat. This is not disputed." },
+    { "id": "dwarf_pumps", "region": "bog", "truth": "true", "links": ["mystery:dwarf_pumps"],
+      "text": "Out in the deep bog, iron pumps the size of huts still turn, still draining water — into where, nobody's followed the pipes to find out." },
+    { "id": "sacred_rust", "region": "bog", "truth": "true",
+      "text": "To a bogling, rust is holy. Hand one a shiny new coin and a rusted nail and watch which they bow to." },
+    { "id": "lucky_frog_bandits", "region": "willow", "truth": "nonsense",
+      "text": "Carry a lucky frog on the river and the bandits leave you be. The frog does not corroborate this." },
+    { "id": "the_chopping_oak", "region": "choppers", "truth": "nonsense",
+      "text": "The oldest oak in the Hollow chops *back*, they say. Three loggers claim to have seen it. All three were, by their own account, extremely tired." },
+    { "id": "walking_scarecrow", "region": "farmlands", "truth": "exaggerated", "links": ["mystery:walking_scarecrow"],
+      "text": "There's a scarecrow in the far field that everyone agrees has moved. Nobody agrees where it started, or where it's going, or when it does it." },
+    { "id": "dwarf_doors", "region": "ruins", "truth": "true", "links": ["mystery:the_builders"],
+      "text": "The ruin doors are cut too clean and sized too tall — for something bigger than a troll. The forest sprites tend the place and won't say who they tend it for." },
+    { "id": "trolls_stone_argument", "region": "troll", "truth": "exaggerated",
+      "text": "The ridge trolls turn to stone by daylight, then spend the whole night arguing about whose fault it was." },
+    { "id": "red_ear_soft", "region": "rival", "truth": "nonsense",
+      "text": "The Red-Ears say Gorkholm's goblins have gone soft. Gorkholm says the Red-Ears learned to count last spring and haven't stopped bragging." }
+  ]
+}
