@@ -63667,6 +63667,54 @@
      "label": "Cutpurse Cache",
      "color": 6969930,
      "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 430,
+     "y": 375,
+     "label": "Warren Well",
+     "color": 6974058,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 444,
+     "y": 408,
+     "label": "Fence Stash Chest",
+     "color": 6969930,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 444,
+     "y": 405,
+     "label": "Cutpurse Cache",
+     "color": 6969930,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 443,
+     "y": 406,
+     "label": "Hidden Ladder",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 425,
+     "y": 367,
+     "label": "Alley Lamp",
+     "color": 16765517,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 442,
+     "y": 396,
+     "label": "Alley Lamp",
+     "color": 16765517,
+     "blocking": false
     }
    ]
   }
