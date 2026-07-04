@@ -70019,6 +70019,736 @@
      "to": "DIRT"
     }
    ]
+  },
+  {
+   "id": "town-south-farmstead",
+   "note": "South farmstead + field belt (town-edge \"grew naturally\" pass), placed in genuine open countryside (y462-473) between the town's domestic edge and the water at y475+. 83 tiles of furrowed crop FIELD in 3 plots, a farmstead COTTAGE + BARN, scarecrows watching the fields, paddock fences, a farmyard (well, hay, log pile, cart), a worn LANE back to town, and reeds + hedges fading to the waterside. Surrounded only by natural ambient; non-blocking, guarded; reachability + coherence simulated.",
+   "ops": [
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       474,
+       462
+      ],
+      [
+       475,
+       462
+      ],
+      [
+       477,
+       462
+      ],
+      [
+       478,
+       462
+      ],
+      [
+       474,
+       463
+      ],
+      [
+       475,
+       463
+      ],
+      [
+       476,
+       463
+      ],
+      [
+       477,
+       463
+      ],
+      [
+       478,
+       463
+      ],
+      [
+       480,
+       463
+      ],
+      [
+       474,
+       464
+      ],
+      [
+       475,
+       464
+      ],
+      [
+       476,
+       464
+      ],
+      [
+       477,
+       464
+      ],
+      [
+       478,
+       464
+      ],
+      [
+       479,
+       464
+      ],
+      [
+       480,
+       464
+      ],
+      [
+       474,
+       465
+      ],
+      [
+       475,
+       465
+      ],
+      [
+       477,
+       465
+      ],
+      [
+       478,
+       465
+      ],
+      [
+       480,
+       465
+      ],
+      [
+       474,
+       466
+      ],
+      [
+       475,
+       466
+      ],
+      [
+       476,
+       466
+      ],
+      [
+       477,
+       466
+      ],
+      [
+       478,
+       466
+      ],
+      [
+       480,
+       466
+      ],
+      [
+       485,
+       463
+      ],
+      [
+       486,
+       463
+      ],
+      [
+       487,
+       463
+      ],
+      [
+       488,
+       463
+      ],
+      [
+       489,
+       463
+      ],
+      [
+       490,
+       463
+      ],
+      [
+       491,
+       463
+      ],
+      [
+       485,
+       464
+      ],
+      [
+       486,
+       464
+      ],
+      [
+       487,
+       464
+      ],
+      [
+       488,
+       464
+      ],
+      [
+       489,
+       464
+      ],
+      [
+       490,
+       464
+      ],
+      [
+       485,
+       465
+      ],
+      [
+       486,
+       465
+      ],
+      [
+       487,
+       465
+      ],
+      [
+       488,
+       465
+      ],
+      [
+       489,
+       465
+      ],
+      [
+       490,
+       465
+      ],
+      [
+       491,
+       465
+      ],
+      [
+       485,
+       466
+      ],
+      [
+       487,
+       466
+      ],
+      [
+       488,
+       466
+      ],
+      [
+       489,
+       466
+      ],
+      [
+       490,
+       466
+      ],
+      [
+       491,
+       466
+      ],
+      [
+       485,
+       467
+      ],
+      [
+       486,
+       467
+      ],
+      [
+       487,
+       467
+      ],
+      [
+       488,
+       467
+      ],
+      [
+       489,
+       467
+      ],
+      [
+       490,
+       467
+      ],
+      [
+       491,
+       467
+      ],
+      [
+       478,
+       469
+      ],
+      [
+       479,
+       469
+      ],
+      [
+       480,
+       469
+      ],
+      [
+       481,
+       469
+      ],
+      [
+       482,
+       469
+      ],
+      [
+       485,
+       469
+      ],
+      [
+       478,
+       470
+      ],
+      [
+       479,
+       470
+      ],
+      [
+       480,
+       470
+      ],
+      [
+       481,
+       470
+      ],
+      [
+       482,
+       470
+      ],
+      [
+       485,
+       470
+      ],
+      [
+       478,
+       471
+      ],
+      [
+       479,
+       471
+      ],
+      [
+       480,
+       471
+      ],
+      [
+       482,
+       471
+      ],
+      [
+       485,
+       471
+      ],
+      [
+       478,
+       472
+      ],
+      [
+       479,
+       472
+      ],
+      [
+       480,
+       472
+      ],
+      [
+       481,
+       472
+      ],
+      [
+       482,
+       472
+      ]
+     ],
+     "to": "FIELD"
+    },
+    {
+     "op": "object",
+     "x": 477,
+     "y": 462,
+     "label": "Scarecrow",
+     "color": 13350026,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 476,
+     "y": 464,
+     "color": 8030778,
+     "size": 2,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 477,
+     "y": 464,
+     "color": 8030778,
+     "size": 2,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 478,
+     "y": 464,
+     "color": 8030778,
+     "size": 2,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 488,
+     "y": 463,
+     "label": "Scarecrow",
+     "color": 13350026,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 487,
+     "y": 465,
+     "color": 8030778,
+     "size": 2,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 488,
+     "y": 465,
+     "color": 8030778,
+     "size": 2,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 489,
+     "y": 465,
+     "color": 8030778,
+     "size": 2,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 481,
+     "y": 468,
+     "label": "Scarecrow",
+     "color": 13350026,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 480,
+     "y": 470,
+     "color": 8030778,
+     "size": 2,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 481,
+     "y": 470,
+     "color": 8030778,
+     "size": 2,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 482,
+     "y": 470,
+     "color": 8030778,
+     "size": 2,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 482,
+     "y": 467,
+     "label": "Farmstead Cottage",
+     "color": 13416847,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 487,
+     "y": 469,
+     "label": "Old Barn",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 481,
+     "y": 467,
+     "label": "Farm Well",
+     "color": 6974058,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 482,
+     "y": 465,
+     "label": "Log Pile",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 481,
+     "y": 462,
+     "label": "Paddock Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 481,
+     "y": 463,
+     "label": "Paddock Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 481,
+     "y": 464,
+     "label": "Paddock Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 477,
+     "y": 468,
+     "label": "Paddock Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 478,
+     "y": 468,
+     "label": "Paddock Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 479,
+     "y": 473,
+     "label": "Paddock Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       482,
+       464
+      ],
+      [
+       482,
+       463
+      ],
+      [
+       482,
+       462
+      ],
+      [
+       481,
+       461
+      ],
+      [
+       481,
+       460
+      ],
+      [
+       481,
+       459
+      ],
+      [
+       480,
+       457
+      ],
+      [
+       480,
+       456
+      ],
+      [
+       479,
+       455
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "object",
+     "x": 473,
+     "y": 473,
+     "label": "Field Hedge",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 480,
+     "y": 473,
+     "label": "Field Hedge",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 487,
+     "y": 473,
+     "label": "Field Hedge",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 490,
+     "y": 473,
+     "label": "Field Hedge",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 474,
+     "y": 474,
+     "label": "Field Hedge",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 481,
+     "y": 474,
+     "label": "Field Hedge",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 485,
+     "y": 474,
+     "color": 16777215,
+     "size": 2,
+     "shape": "circle"
+    },
+    {
+     "op": "object",
+     "x": 488,
+     "y": 474,
+     "label": "Field Hedge",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 491,
+     "y": 474,
+     "label": "Field Hedge",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 475,
+     "y": 475,
+     "label": "Field Hedge",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 482,
+     "y": 475,
+     "label": "Field Hedge",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 485,
+     "y": 475,
+     "label": "Field Hedge",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 486,
+     "y": 475,
+     "color": 16777215,
+     "size": 2,
+     "shape": "circle"
+    },
+    {
+     "op": "object",
+     "x": 492,
+     "y": 475,
+     "label": "Field Hedge",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 473,
+     "y": 476,
+     "label": "Field Hedge",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 486,
+     "y": 476,
+     "label": "Field Hedge",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 487,
+     "y": 476,
+     "color": 16777215,
+     "size": 2,
+     "shape": "circle"
+    },
+    {
+     "op": "object",
+     "x": 474,
+     "y": 477,
+     "label": "Field Hedge",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 477,
+     "y": 477,
+     "label": "Field Hedge",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 487,
+     "y": 477,
+     "label": "Field Hedge",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 491,
+     "y": 477,
+     "color": 5929530,
+     "size": 3,
+     "shape": "rect"
+    }
+   ]
   }
  ]
 }
