@@ -26,7 +26,9 @@ export function propKind(label = '') {
   if (/market cross|obelisk|monument|standing stone|memorial/.test(n)) return 'monument';
   if (/stall|market|shack|bait|tackle|produce|grocer|fishmonger|fletcher|lumber stall|shop|store/.test(n)) return 'stall';
   if (/weapon rack|armou?r|\brack\b/.test(n)) return 'weaponrack';
-  if (/dummy/.test(n)) return 'dummy';
+  if (/dummy|scarecrow/.test(n)) return 'dummy';
+  if (/hay\b|haystack|hay bale|straw pile|hay pile/.test(n)) return 'hay';
+  if (/grave|headstone|tombstone|gravestone|\bbarrow\b/.test(n)) return 'grave';
   if (/throne|high seat|\bdais\b/.test(n)) return 'throne';
   if (/ladder/.test(n)) return 'ladder';
   if (/market cross|obelisk|monument|standing stone|memorial/.test(n)) return 'monument';
@@ -188,6 +190,20 @@ function pile(g, X, Y, c, cd) {
   g.fillStyle(cd, 1); g.fillCircle(X - 4, Y + 6, 4); g.fillCircle(X + 4, Y + 6, 4);
   g.fillStyle(c, 1); g.fillCircle(X, Y + 3, 5); g.fillCircle(X - 5, Y + 5, 3); g.fillCircle(X + 5, Y + 5, 3);
   g.fillStyle(shade(c, 1.35), 1); g.fillCircle(X - 1, Y + 1, 1.6);
+}
+function hay(g, X, Y) {
+  g.fillStyle(0xb8923e, 1); g.fillEllipse(X, Y + 7, 18, 8);            // base mound
+  g.fillStyle(0xcaa24a, 1); g.fillEllipse(X, Y + 3, 15, 8);
+  g.fillStyle(0xdcb85e, 1); g.fillEllipse(X, Y - 2, 10, 6);           // top
+  g.lineStyle(0.6, 0x8a6a2a, 0.6); for (let i = -3; i <= 3; i++) { g.beginPath(); g.moveTo(X + i * 4, Y - 3); g.lineTo(X + i * 4, Y + 9); g.strokePath(); }
+  g.fillStyle(0x6a4a2a, 1); g.fillRect(X + 5, Y - 8, 1.4, 10);        // a stake/fork handle
+}
+function grave(g, X, Y) {
+  g.fillStyle(0x4a5a38, 1); g.fillEllipse(X, Y + 8, 12, 5);           // grass mound
+  g.fillStyle(0x8a857c, 1); g.fillRect(X - 4, Y - 5, 8, 12);          // headstone
+  g.fillStyle(0x9a948a, 1); g.fillRect(X - 4, Y - 5, 8, 2);
+  g.fillStyle(0x6a655e, 1); g.fillEllipse(X, Y - 5, 8, 4);            // rounded top
+  g.fillStyle(0x4a4a44, 0.8); g.fillRect(X - 2, Y - 1, 4, 1); g.fillRect(X - 2, Y + 1.5, 4, 1); // inscription
 }
 function trophy(g, X, Y) {
   g.fillStyle(WOOD_D, 1); g.fillRect(X - 5, Y - 3, 10, 13); g.fillStyle(WOOD, 1); g.fillRect(X - 4, Y - 2, 8, 11); // plaque post
@@ -356,7 +372,7 @@ function bush(g, X, Y, accent) {
 const DRAW = {
   anvil, chest, barrel, stall, exchange, weaponrack, dummy, banner, tower, throne, well,
   shrine, cauldron, fire, coalheap, rockpile, logpile, cart, table, hiderack, bin,
-  entrance, sign, crate, hut, ladder, lamp, fence, bush, monument, fountain, flowers, planter, bench, stump, boat, net, trophy, bones,
+  entrance, sign, crate, hut, ladder, lamp, fence, bush, monument, fountain, flowers, planter, bench, stump, boat, net, trophy, bones, hay, grave,
 };
 
 // Entry point: draw the prop for object `o` at tile top-left (cx,cy).

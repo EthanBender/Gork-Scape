@@ -63717,6 +63717,5740 @@
      "blocking": false
     }
    ]
+  },
+  {
+   "id": "town-grown-fill",
+   "note": "Gorkholm grown-town fill pass (settlement improvement 1/2/6/7). Fills dead space with relationship-based detail: 355 domestic yard items around homes (herb gardens, fences, wood piles, rain barrels, hay, washing lines, hen coops), 91 open-pocket greenery/wells/sheds/wayside-shrines/boulders, 15 roadside wagons/benches/stalls, 192 edge-thicket feathering. Three hand story-vignettes: a goblin GRAVEYARD (graves, boneyard shrine, fence, dead stump), a VILLAGE POND (shallow pond, reeds, willows, bench, well), a SCARECROW GARDEN (veg beds, scarecrow, hay, compost, fence). Worn desire-line footpaths break the grid (market->quarter, market->warren, toward the shrine). All non-blocking, guarded onto free grass; every road/building/quest/NPC preserved; reachability + coherence simulated.",
+   "ops": [
+    {
+     "op": "object",
+     "x": 451,
+     "y": 429,
+     "label": "Old Grave",
+     "color": 9078140,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 453,
+     "y": 429,
+     "label": "Old Grave",
+     "color": 9078140,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 455,
+     "y": 429,
+     "label": "Old Grave",
+     "color": 9078140,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 457,
+     "y": 429,
+     "label": "Old Grave",
+     "color": 9078140,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 451,
+     "y": 431,
+     "label": "Old Grave",
+     "color": 9078140,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 453,
+     "y": 431,
+     "label": "Old Grave",
+     "color": 9078140,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 455,
+     "y": 431,
+     "label": "Old Grave",
+     "color": 9078140,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 457,
+     "y": 431,
+     "label": "Old Grave",
+     "color": 9078140,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 454,
+     "y": 428,
+     "label": "Boneyard Shrine",
+     "color": 10132104,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 454,
+     "y": 432,
+     "label": "Bone Pile",
+     "color": 15262416,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 450,
+     "y": 428,
+     "label": "Grave Fence",
+     "color": 6974042,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 450,
+     "y": 430,
+     "label": "Grave Fence",
+     "color": 6974042,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 450,
+     "y": 432,
+     "label": "Grave Fence",
+     "color": 6974042,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 458,
+     "y": 428,
+     "label": "Grave Fence",
+     "color": 6974042,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 458,
+     "y": 430,
+     "label": "Grave Fence",
+     "color": 6974042,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 458,
+     "y": 432,
+     "label": "Grave Fence",
+     "color": 6974042,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 452,
+     "y": 433,
+     "label": "Dead Stump",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 454,
+     "y": 429,
+     "color": 5925450,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 456,
+     "y": 431,
+     "color": 5925450,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 452,
+     "y": 429,
+     "color": 5925450,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       499,
+       378
+      ],
+      [
+       500,
+       378
+      ],
+      [
+       501,
+       378
+      ],
+      [
+       499,
+       379
+      ],
+      [
+       500,
+       379
+      ],
+      [
+       501,
+       379
+      ]
+     ],
+     "to": "WATER_SHALLOW"
+    },
+    {
+     "op": "decor",
+     "x": 498,
+     "y": 378,
+     "color": 5929530,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 502,
+     "y": 378,
+     "color": 5929530,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 500,
+     "y": 377,
+     "color": 5929530,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 499,
+     "y": 380,
+     "color": 5929530,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 503,
+     "y": 378,
+     "label": "Willow Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 497,
+     "y": 379,
+     "label": "Willow Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 498,
+     "y": 377,
+     "label": "Pondside Bench",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 503,
+     "y": 380,
+     "label": "Village Well",
+     "color": 6974058,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 456,
+     "y": 413,
+     "label": "Veg Bed",
+     "color": 14267482,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 458,
+     "y": 413,
+     "label": "Veg Bed",
+     "color": 14267482,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 460,
+     "y": 413,
+     "label": "Veg Bed",
+     "color": 14267482,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 456,
+     "y": 415,
+     "label": "Veg Bed",
+     "color": 14267482,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 458,
+     "y": 415,
+     "label": "Veg Bed",
+     "color": 14267482,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 460,
+     "y": 415,
+     "label": "Veg Bed",
+     "color": 14267482,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 458,
+     "y": 414,
+     "label": "Scarecrow",
+     "color": 13350026,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 461,
+     "y": 414,
+     "label": "Hay Pile",
+     "color": 13279818,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 455,
+     "y": 415,
+     "label": "Compost Bin",
+     "color": 5917226,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 457,
+     "y": 412,
+     "label": "Garden Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 459,
+     "y": 412,
+     "label": "Garden Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 461,
+     "y": 412,
+     "label": "Garden Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 455,
+     "y": 416,
+     "label": "Garden Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 461,
+     "y": 416,
+     "label": "Garden Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 426,
+     "y": 349,
+     "label": "Wood Pile",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 433,
+     "y": 349,
+     "label": "Rain Barrel",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 435,
+     "y": 349,
+     "label": "Rain Barrel",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 453,
+     "y": 349,
+     "label": "Cottage Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 465,
+     "y": 349,
+     "label": "Herb Garden",
+     "color": 14241615,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 467,
+     "y": 349,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 487,
+     "y": 349,
+     "label": "Cottage Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 497,
+     "y": 349,
+     "color": 9075274,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 509,
+     "y": 349,
+     "label": "Cottage Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 518,
+     "y": 349,
+     "color": 9071172,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 432,
+     "y": 350,
+     "color": 9071172,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "object",
+     "x": 448,
+     "y": 350,
+     "label": "Hay Pile",
+     "color": 13279818,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 450,
+     "y": 350,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 478,
+     "y": 350,
+     "label": "Hay Pile",
+     "color": 13279818,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 479,
+     "y": 350,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 481,
+     "y": 350,
+     "color": 9075274,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 482,
+     "y": 350,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 492,
+     "y": 350,
+     "color": 9075274,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 493,
+     "y": 350,
+     "label": "Wood Pile",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 503,
+     "y": 350,
+     "label": "Hay Pile",
+     "color": 13279818,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 505,
+     "y": 350,
+     "label": "Hay Pile",
+     "color": 13279818,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 506,
+     "y": 350,
+     "label": "Hay Pile",
+     "color": 13279818,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 508,
+     "y": 350,
+     "label": "Wood Pile",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 509,
+     "y": 350,
+     "label": "Cottage Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 510,
+     "y": 350,
+     "label": "Cottage Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 514,
+     "y": 350,
+     "label": "Herb Garden",
+     "color": 14241615,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 518,
+     "y": 350,
+     "color": 9075274,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 521,
+     "y": 350,
+     "color": 9075274,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 423,
+     "y": 351,
+     "label": "Herb Garden",
+     "color": 14241615,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 429,
+     "y": 351,
+     "label": "Hay Pile",
+     "color": 13279818,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 435,
+     "y": 351,
+     "label": "Wood Pile",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 446,
+     "y": 351,
+     "label": "Wood Pile",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 447,
+     "y": 351,
+     "label": "Wood Pile",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 466,
+     "y": 351,
+     "color": 9071172,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "object",
+     "x": 475,
+     "y": 351,
+     "label": "Wood Pile",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 484,
+     "y": 351,
+     "label": "Herb Garden",
+     "color": 14241615,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 485,
+     "y": 351,
+     "label": "Herb Garden",
+     "color": 14241615,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 488,
+     "y": 351,
+     "label": "Herb Garden",
+     "color": 14241615,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 494,
+     "y": 351,
+     "color": 9071172,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "object",
+     "x": 498,
+     "y": 351,
+     "label": "Rain Barrel",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 500,
+     "y": 351,
+     "label": "Hay Pile",
+     "color": 13279818,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 506,
+     "y": 351,
+     "color": 9075274,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 443,
+     "y": 352,
+     "color": 9071172,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "object",
+     "x": 451,
+     "y": 352,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 458,
+     "y": 352,
+     "color": 9075274,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 461,
+     "y": 352,
+     "label": "Hay Pile",
+     "color": 13279818,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 487,
+     "y": 352,
+     "color": 9071172,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "object",
+     "x": 490,
+     "y": 352,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 491,
+     "y": 352,
+     "label": "Herb Garden",
+     "color": 14241615,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 493,
+     "y": 352,
+     "color": 9071172,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 497,
+     "y": 353,
+     "color": 9075274,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 436,
+     "y": 354,
+     "label": "Copse Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 490,
+     "y": 354,
+     "color": 9071172,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "object",
+     "x": 508,
+     "y": 354,
+     "label": "Old Well",
+     "color": 9075290,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 511,
+     "y": 354,
+     "color": 6974050,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 429,
+     "y": 355,
+     "label": "Thicket Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 451,
+     "y": 355,
+     "label": "Cottage Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 472,
+     "y": 355,
+     "label": "Roadside Bench",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 481,
+     "y": 355,
+     "color": 9071172,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "object",
+     "x": 509,
+     "y": 355,
+     "label": "Wayside Shrine",
+     "color": 9075290,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 435,
+     "y": 356,
+     "color": 6974050,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 443,
+     "y": 356,
+     "color": 9071172,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "object",
+     "x": 490,
+     "y": 356,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 496,
+     "y": 356,
+     "label": "Hay Pile",
+     "color": 13279818,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 510,
+     "y": 356,
+     "label": "Copse Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 428,
+     "y": 357,
+     "color": 6974050,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 434,
+     "y": 357,
+     "label": "Copse Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 438,
+     "y": 357,
+     "label": "Thicket Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 460,
+     "y": 357,
+     "label": "Rain Barrel",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 479,
+     "y": 357,
+     "label": "Herb Garden",
+     "color": 14241615,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 489,
+     "y": 357,
+     "label": "Herb Garden",
+     "color": 14241615,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 421,
+     "y": 358,
+     "label": "Herb Garden",
+     "color": 14241615,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 444,
+     "y": 358,
+     "label": "Wood Pile",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 449,
+     "y": 358,
+     "label": "Herb Garden",
+     "color": 14241615,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 451,
+     "y": 358,
+     "color": 9071172,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 452,
+     "y": 358,
+     "color": 9075274,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 454,
+     "y": 358,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 461,
+     "y": 358,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 475,
+     "y": 358,
+     "color": 9071172,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "object",
+     "x": 483,
+     "y": 358,
+     "label": "Cottage Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 490,
+     "y": 358,
+     "color": 9075274,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 501,
+     "y": 358,
+     "label": "Copse Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 489,
+     "y": 359,
+     "label": "Hay Pile",
+     "color": 13279818,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 495,
+     "y": 359,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 496,
+     "y": 359,
+     "color": 9075274,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 498,
+     "y": 359,
+     "label": "Rain Barrel",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 427,
+     "y": 360,
+     "label": "Hay Pile",
+     "color": 13279818,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 432,
+     "y": 360,
+     "label": "Wood Pile",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 451,
+     "y": 360,
+     "label": "Rain Barrel",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 522,
+     "y": 360,
+     "label": "Hay Pile",
+     "color": 13279818,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 455,
+     "y": 362,
+     "label": "Rain Barrel",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 518,
+     "y": 362,
+     "label": "Copse Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 492,
+     "y": 363,
+     "label": "Wayside Shrine",
+     "color": 9075290,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 494,
+     "y": 363,
+     "label": "Thicket Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 501,
+     "y": 363,
+     "label": "Thicket Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 454,
+     "y": 364,
+     "label": "Rain Barrel",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 496,
+     "y": 364,
+     "color": 6974050,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 518,
+     "y": 364,
+     "label": "Wayside Shrine",
+     "color": 9075290,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 518,
+     "y": 365,
+     "label": "Wayside Shrine",
+     "color": 9075290,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 486,
+     "y": 366,
+     "label": "Hay Pile",
+     "color": 13279818,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 524,
+     "y": 366,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 494,
+     "y": 367,
+     "color": 6974050,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 454,
+     "y": 368,
+     "label": "Herb Garden",
+     "color": 14241615,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 455,
+     "y": 368,
+     "label": "Wood Pile",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 451,
+     "y": 369,
+     "label": "Herb Garden",
+     "color": 14241615,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 516,
+     "y": 369,
+     "label": "Copse Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 492,
+     "y": 370,
+     "color": 6974050,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 516,
+     "y": 370,
+     "label": "Copse Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 452,
+     "y": 371,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 486,
+     "y": 371,
+     "label": "Herb Garden",
+     "color": 14241615,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 492,
+     "y": 371,
+     "label": "Thicket Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 493,
+     "y": 371,
+     "label": "Garden Shed",
+     "color": 9075290,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 497,
+     "y": 372,
+     "label": "Thicket Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 486,
+     "y": 373,
+     "label": "Hay Pile",
+     "color": 13279818,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 496,
+     "y": 373,
+     "label": "Thicket Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 497,
+     "y": 373,
+     "label": "Copse Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 510,
+     "y": 373,
+     "color": 9071172,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "object",
+     "x": 496,
+     "y": 374,
+     "label": "Thicket Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 499,
+     "y": 374,
+     "label": "Garden Shed",
+     "color": 9075290,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 523,
+     "y": 374,
+     "label": "Hay Pile",
+     "color": 13279818,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 453,
+     "y": 375,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 487,
+     "y": 375,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 522,
+     "y": 375,
+     "label": "Hay Pile",
+     "color": 13279818,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 455,
+     "y": 376,
+     "label": "Herb Garden",
+     "color": 14241615,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 486,
+     "y": 376,
+     "label": "Cottage Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 493,
+     "y": 376,
+     "label": "Copse Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 504,
+     "y": 376,
+     "label": "Cottage Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 505,
+     "y": 376,
+     "label": "Herb Garden",
+     "color": 14241615,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 508,
+     "y": 376,
+     "label": "Wood Pile",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 487,
+     "y": 377,
+     "label": "Herb Garden",
+     "color": 14241615,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 491,
+     "y": 377,
+     "label": "Garden Shed",
+     "color": 9075290,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 493,
+     "y": 377,
+     "label": "Old Well",
+     "color": 9075290,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 494,
+     "y": 377,
+     "label": "Copse Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 452,
+     "y": 378,
+     "label": "Herb Garden",
+     "color": 14241615,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 453,
+     "y": 378,
+     "label": "Cottage Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 498,
+     "y": 378,
+     "label": "Garden Shed",
+     "color": 9075290,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 521,
+     "y": 378,
+     "label": "Fruit Stall",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 527,
+     "y": 378,
+     "label": "Cottage Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 453,
+     "y": 379,
+     "label": "Wood Pile",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 498,
+     "y": 379,
+     "label": "Thicket Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 508,
+     "y": 379,
+     "color": 6974050,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 521,
+     "y": 379,
+     "label": "Parked Wagon",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 495,
+     "y": 380,
+     "color": 6974050,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 513,
+     "y": 380,
+     "label": "Thicket Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 459,
+     "y": 381,
+     "label": "Herb Garden",
+     "color": 14241615,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 467,
+     "y": 381,
+     "label": "Rain Barrel",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 485,
+     "y": 381,
+     "label": "Cottage Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 495,
+     "y": 381,
+     "label": "Wayside Shrine",
+     "color": 9075290,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 504,
+     "y": 381,
+     "label": "Garden Shed",
+     "color": 9075290,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 513,
+     "y": 381,
+     "label": "Wayside Shrine",
+     "color": 9075290,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 476,
+     "y": 382,
+     "color": 9071172,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "object",
+     "x": 477,
+     "y": 382,
+     "label": "Rain Barrel",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 485,
+     "y": 382,
+     "label": "Cottage Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 516,
+     "y": 382,
+     "label": "Thicket Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 458,
+     "y": 383,
+     "label": "Cottage Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 472,
+     "y": 383,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 483,
+     "y": 383,
+     "label": "Wood Pile",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 494,
+     "y": 383,
+     "label": "Old Well",
+     "color": 9075290,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 495,
+     "y": 383,
+     "label": "Thicket Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 496,
+     "y": 383,
+     "label": "Thicket Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 497,
+     "y": 383,
+     "label": "Thicket Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 502,
+     "y": 383,
+     "label": "Copse Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 507,
+     "y": 383,
+     "label": "Garden Shed",
+     "color": 9075290,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 472,
+     "y": 384,
+     "label": "Fruit Stall",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 527,
+     "y": 384,
+     "color": 9071172,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "object",
+     "x": 461,
+     "y": 386,
+     "label": "Garden Shed",
+     "color": 9075290,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 495,
+     "y": 386,
+     "color": 9075274,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 500,
+     "y": 386,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 510,
+     "y": 386,
+     "label": "Wood Pile",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 454,
+     "y": 387,
+     "label": "Thicket Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 458,
+     "y": 387,
+     "label": "Old Well",
+     "color": 9075290,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 481,
+     "y": 387,
+     "color": 9071172,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "object",
+     "x": 482,
+     "y": 387,
+     "label": "Hay Pile",
+     "color": 13279818,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 483,
+     "y": 387,
+     "label": "Hay Pile",
+     "color": 13279818,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 484,
+     "y": 387,
+     "label": "Cottage Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 485,
+     "y": 387,
+     "label": "Hay Pile",
+     "color": 13279818,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 495,
+     "y": 387,
+     "label": "Wood Pile",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 501,
+     "y": 387,
+     "color": 9071172,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 527,
+     "y": 387,
+     "color": 9075274,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 454,
+     "y": 388,
+     "label": "Thicket Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 455,
+     "y": 388,
+     "label": "Copse Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 480,
+     "y": 388,
+     "label": "Wood Pile",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 481,
+     "y": 388,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 491,
+     "y": 388,
+     "label": "Wood Pile",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 507,
+     "y": 388,
+     "label": "Wood Pile",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 514,
+     "y": 388,
+     "label": "Hay Pile",
+     "color": 13279818,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 515,
+     "y": 388,
+     "label": "Rain Barrel",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 494,
+     "y": 389,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 499,
+     "y": 389,
+     "label": "Hay Pile",
+     "color": 13279818,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 515,
+     "y": 389,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 501,
+     "y": 390,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 515,
+     "y": 390,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 520,
+     "y": 390,
+     "label": "Roadside Bush",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 455,
+     "y": 391,
+     "label": "Thicket Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 462,
+     "y": 391,
+     "label": "Old Well",
+     "color": 9075290,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 501,
+     "y": 391,
+     "label": "Cottage Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 520,
+     "y": 391,
+     "label": "Roadside Bench",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 489,
+     "y": 392,
+     "color": 9075274,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 516,
+     "y": 392,
+     "color": 9075274,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 489,
+     "y": 393,
+     "color": 9075274,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 500,
+     "y": 393,
+     "label": "Wood Pile",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 499,
+     "y": 394,
+     "label": "Wood Pile",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 490,
+     "y": 395,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 505,
+     "y": 395,
+     "color": 9071172,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "object",
+     "x": 490,
+     "y": 396,
+     "label": "Wood Pile",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 510,
+     "y": 396,
+     "label": "Herb Garden",
+     "color": 14241615,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 512,
+     "y": 396,
+     "label": "Cottage Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 478,
+     "y": 398,
+     "label": "Cottage Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 482,
+     "y": 400,
+     "color": 9075274,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 483,
+     "y": 400,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 486,
+     "y": 400,
+     "label": "Wood Pile",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 490,
+     "y": 400,
+     "label": "Wood Pile",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 501,
+     "y": 401,
+     "label": "Roadside Bush",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 511,
+     "y": 401,
+     "color": 9075274,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 513,
+     "y": 401,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 518,
+     "y": 401,
+     "label": "Wood Pile",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 523,
+     "y": 401,
+     "label": "Rain Barrel",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 505,
+     "y": 402,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 508,
+     "y": 402,
+     "color": 9071172,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "object",
+     "x": 512,
+     "y": 402,
+     "label": "Cottage Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 516,
+     "y": 402,
+     "label": "Cottage Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 522,
+     "y": 402,
+     "label": "Cottage Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 520,
+     "y": 403,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 504,
+     "y": 404,
+     "label": "Cottage Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 506,
+     "y": 404,
+     "label": "Wood Pile",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 485,
+     "y": 406,
+     "label": "Herb Garden",
+     "color": 14241615,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 489,
+     "y": 406,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 482,
+     "y": 407,
+     "color": 9071172,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "object",
+     "x": 489,
+     "y": 407,
+     "label": "Cottage Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 491,
+     "y": 407,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 506,
+     "y": 407,
+     "label": "Herb Garden",
+     "color": 14241615,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 524,
+     "y": 407,
+     "label": "Hay Pile",
+     "color": 13279818,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 453,
+     "y": 408,
+     "label": "Rain Barrel",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 456,
+     "y": 408,
+     "label": "Wood Pile",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 458,
+     "y": 408,
+     "color": 9071172,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "object",
+     "x": 487,
+     "y": 408,
+     "label": "Hay Pile",
+     "color": 13279818,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 488,
+     "y": 408,
+     "color": 9071172,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "object",
+     "x": 489,
+     "y": 408,
+     "label": "Hay Pile",
+     "color": 13279818,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 513,
+     "y": 408,
+     "color": 9071172,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "object",
+     "x": 524,
+     "y": 408,
+     "label": "Wood Pile",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 472,
+     "y": 409,
+     "label": "Roadside Bench",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 483,
+     "y": 409,
+     "color": 9075274,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 458,
+     "y": 410,
+     "color": 9075274,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 491,
+     "y": 410,
+     "label": "Rain Barrel",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 523,
+     "y": 410,
+     "label": "Cottage Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 489,
+     "y": 411,
+     "label": "Herb Garden",
+     "color": 14241615,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 523,
+     "y": 411,
+     "label": "Wood Pile",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 483,
+     "y": 412,
+     "label": "Hay Pile",
+     "color": 13279818,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 490,
+     "y": 412,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 462,
+     "y": 413,
+     "color": 6974050,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 463,
+     "y": 413,
+     "label": "Thicket Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 481,
+     "y": 413,
+     "color": 9071172,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "object",
+     "x": 498,
+     "y": 413,
+     "label": "Cottage Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 508,
+     "y": 413,
+     "label": "Cottage Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 509,
+     "y": 413,
+     "color": 9071172,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 512,
+     "y": 413,
+     "color": 9071172,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "object",
+     "x": 451,
+     "y": 414,
+     "label": "Hay Pile",
+     "color": 13279818,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 488,
+     "y": 414,
+     "label": "Hay Pile",
+     "color": 13279818,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 461,
+     "y": 415,
+     "label": "Copse Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 478,
+     "y": 415,
+     "label": "Thicket Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 485,
+     "y": 415,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 491,
+     "y": 415,
+     "color": 9075274,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 497,
+     "y": 415,
+     "color": 9075274,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 502,
+     "y": 415,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 522,
+     "y": 415,
+     "color": 9071172,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 451,
+     "y": 416,
+     "color": 9075274,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 463,
+     "y": 416,
+     "label": "Thicket Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 472,
+     "y": 416,
+     "label": "Roadside Bush",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 484,
+     "y": 416,
+     "label": "Wood Pile",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 491,
+     "y": 416,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 526,
+     "y": 416,
+     "color": 9071172,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "object",
+     "x": 473,
+     "y": 417,
+     "label": "Roadside Bench",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 463,
+     "y": 418,
+     "label": "Copse Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 526,
+     "y": 418,
+     "color": 9075274,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 462,
+     "y": 419,
+     "label": "Thicket Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 483,
+     "y": 420,
+     "label": "Wayside Shrine",
+     "color": 9075290,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 503,
+     "y": 420,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 473,
+     "y": 421,
+     "label": "Roadside Bush",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 477,
+     "y": 421,
+     "color": 6974050,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 491,
+     "y": 421,
+     "color": 9075274,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 524,
+     "y": 421,
+     "label": "Wood Pile",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 489,
+     "y": 422,
+     "label": "Rain Barrel",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 499,
+     "y": 422,
+     "label": "Wood Pile",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 477,
+     "y": 423,
+     "label": "Wayside Shrine",
+     "color": 9075290,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 490,
+     "y": 423,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 492,
+     "y": 423,
+     "color": 9075274,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 496,
+     "y": 423,
+     "label": "Rain Barrel",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 497,
+     "y": 424,
+     "color": 9071172,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 499,
+     "y": 424,
+     "color": 9071172,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "object",
+     "x": 524,
+     "y": 424,
+     "label": "Wood Pile",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 449,
+     "y": 425,
+     "label": "Thicket Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 454,
+     "y": 425,
+     "label": "Copse Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 456,
+     "y": 425,
+     "label": "Copse Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 460,
+     "y": 425,
+     "label": "Wayside Shrine",
+     "color": 9075290,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 489,
+     "y": 425,
+     "label": "Herb Garden",
+     "color": 14241615,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 524,
+     "y": 425,
+     "label": "Wood Pile",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 421,
+     "y": 426,
+     "label": "Rain Barrel",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 450,
+     "y": 426,
+     "label": "Wayside Shrine",
+     "color": 9075290,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 454,
+     "y": 426,
+     "label": "Old Well",
+     "color": 9075290,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 489,
+     "y": 426,
+     "label": "Rain Barrel",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 490,
+     "y": 426,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 501,
+     "y": 426,
+     "label": "Herb Garden",
+     "color": 14241615,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 441,
+     "y": 427,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 442,
+     "y": 427,
+     "color": 9071172,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "object",
+     "x": 447,
+     "y": 427,
+     "label": "Garden Shed",
+     "color": 9075290,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 461,
+     "y": 427,
+     "label": "Old Well",
+     "color": 9075290,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 462,
+     "y": 427,
+     "label": "Wayside Shrine",
+     "color": 9075290,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 482,
+     "y": 427,
+     "label": "Hay Pile",
+     "color": 13279818,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 483,
+     "y": 427,
+     "label": "Cottage Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 502,
+     "y": 427,
+     "label": "Rain Barrel",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 422,
+     "y": 428,
+     "label": "Cottage Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 482,
+     "y": 428,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 500,
+     "y": 428,
+     "label": "Wood Pile",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 427,
+     "y": 429,
+     "label": "Herb Garden",
+     "color": 14241615,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 428,
+     "y": 429,
+     "color": 9075274,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 446,
+     "y": 429,
+     "label": "Thicket Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 483,
+     "y": 429,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 497,
+     "y": 429,
+     "label": "Herb Garden",
+     "color": 14241615,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 522,
+     "y": 429,
+     "color": 9075274,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 526,
+     "y": 429,
+     "label": "Rain Barrel",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 433,
+     "y": 430,
+     "label": "Rain Barrel",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 453,
+     "y": 430,
+     "label": "Garden Shed",
+     "color": 9075290,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 460,
+     "y": 430,
+     "label": "Old Well",
+     "color": 9075290,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 482,
+     "y": 430,
+     "color": 9071172,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 522,
+     "y": 430,
+     "color": 9071172,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "object",
+     "x": 524,
+     "y": 430,
+     "label": "Herb Garden",
+     "color": 14241615,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 422,
+     "y": 431,
+     "label": "Herb Garden",
+     "color": 14241615,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 428,
+     "y": 431,
+     "label": "Herb Garden",
+     "color": 14241615,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 433,
+     "y": 431,
+     "color": 9075274,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 449,
+     "y": 431,
+     "label": "Thicket Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 450,
+     "y": 431,
+     "label": "Copse Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 477,
+     "y": 431,
+     "label": "Old Well",
+     "color": 9075290,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 478,
+     "y": 431,
+     "label": "Wayside Shrine",
+     "color": 9075290,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 459,
+     "y": 432,
+     "label": "Old Well",
+     "color": 9075290,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 478,
+     "y": 432,
+     "label": "Thicket Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 523,
+     "y": 432,
+     "color": 9071172,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "object",
+     "x": 426,
+     "y": 433,
+     "label": "Roadside Bench",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 442,
+     "y": 433,
+     "color": 9075274,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 446,
+     "y": 433,
+     "label": "Garden Shed",
+     "color": 9075290,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 450,
+     "y": 433,
+     "label": "Garden Shed",
+     "color": 9075290,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 454,
+     "y": 433,
+     "label": "Thicket Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 497,
+     "y": 433,
+     "label": "Hay Pile",
+     "color": 13279818,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 523,
+     "y": 433,
+     "label": "Hay Pile",
+     "color": 13279818,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 526,
+     "y": 433,
+     "label": "Herb Garden",
+     "color": 14241615,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 446,
+     "y": 434,
+     "label": "Copse Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 454,
+     "y": 434,
+     "color": 6974050,
+     "size": 6,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 482,
+     "y": 434,
+     "color": 9075274,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 483,
+     "y": 434,
+     "label": "Herb Garden",
+     "color": 14241615,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 497,
+     "y": 434,
+     "color": 9075274,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 498,
+     "y": 434,
+     "label": "Wood Pile",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 433,
+     "y": 435,
+     "label": "Rain Barrel",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 436,
+     "y": 435,
+     "label": "Cottage Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 502,
+     "y": 435,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 527,
+     "y": 435,
+     "label": "Wood Pile",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 433,
+     "y": 436,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 441,
+     "y": 436,
+     "color": 9071172,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "object",
+     "x": 468,
+     "y": 436,
+     "label": "Roadside Bush",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 522,
+     "y": 436,
+     "color": 9075274,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 448,
+     "y": 437,
+     "label": "Hay Pile",
+     "color": 13279818,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 468,
+     "y": 437,
+     "label": "Roadside Bush",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 437,
+     "y": 438,
+     "color": 9071172,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 438,
+     "y": 438,
+     "color": 9075274,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 446,
+     "y": 438,
+     "label": "Herb Garden",
+     "color": 14241615,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 455,
+     "y": 438,
+     "color": 9071172,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "object",
+     "x": 459,
+     "y": 438,
+     "label": "Wood Pile",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 461,
+     "y": 438,
+     "label": "Rain Barrel",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 464,
+     "y": 438,
+     "label": "Herb Garden",
+     "color": 14241615,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 503,
+     "y": 438,
+     "color": 9075274,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 522,
+     "y": 438,
+     "label": "Hay Pile",
+     "color": 13279818,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 526,
+     "y": 438,
+     "color": 9071172,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "object",
+     "x": 437,
+     "y": 439,
+     "label": "Hay Pile",
+     "color": 13279818,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 450,
+     "y": 439,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 454,
+     "y": 439,
+     "label": "Herb Garden",
+     "color": 14241615,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 466,
+     "y": 439,
+     "color": 9075274,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 499,
+     "y": 439,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 424,
+     "y": 440,
+     "label": "Parked Wagon",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 436,
+     "y": 440,
+     "label": "Wood Pile",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 438,
+     "y": 440,
+     "label": "Herb Garden",
+     "color": 14241615,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 449,
+     "y": 440,
+     "label": "Herb Garden",
+     "color": 14241615,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 466,
+     "y": 440,
+     "label": "Hay Pile",
+     "color": 13279818,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 479,
+     "y": 440,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 480,
+     "y": 440,
+     "label": "Cottage Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 492,
+     "y": 440,
+     "label": "Herb Garden",
+     "color": 14241615,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 493,
+     "y": 440,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 495,
+     "y": 440,
+     "label": "Rain Barrel",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 502,
+     "y": 440,
+     "label": "Herb Garden",
+     "color": 14241615,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 452,
+     "y": 442,
+     "label": "Hay Pile",
+     "color": 13279818,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 476,
+     "y": 442,
+     "color": 9071172,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "object",
+     "x": 501,
+     "y": 442,
+     "label": "Rain Barrel",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 502,
+     "y": 442,
+     "label": "Herb Garden",
+     "color": 14241615,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 510,
+     "y": 442,
+     "color": 9075274,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 526,
+     "y": 442,
+     "label": "Cottage Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 527,
+     "y": 442,
+     "label": "Cottage Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 423,
+     "y": 443,
+     "color": 9075274,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 432,
+     "y": 443,
+     "label": "Thicket Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 451,
+     "y": 443,
+     "label": "Hay Pile",
+     "color": 13279818,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 462,
+     "y": 443,
+     "color": 9071172,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "object",
+     "x": 487,
+     "y": 443,
+     "label": "Hay Pile",
+     "color": 13279818,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 489,
+     "y": 443,
+     "label": "Wood Pile",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 499,
+     "y": 443,
+     "label": "Cottage Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 518,
+     "y": 443,
+     "label": "Rain Barrel",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 521,
+     "y": 443,
+     "label": "Wood Pile",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 430,
+     "y": 444,
+     "label": "Thicket Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 452,
+     "y": 444,
+     "label": "Cottage Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 462,
+     "y": 444,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 474,
+     "y": 444,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 497,
+     "y": 444,
+     "label": "Hay Pile",
+     "color": 13279818,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 501,
+     "y": 444,
+     "label": "Rain Barrel",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 508,
+     "y": 444,
+     "color": 9075274,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 521,
+     "y": 444,
+     "label": "Cottage Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 448,
+     "y": 445,
+     "label": "Cottage Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 461,
+     "y": 445,
+     "label": "Hay Pile",
+     "color": 13279818,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 462,
+     "y": 445,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 476,
+     "y": 445,
+     "color": 9071172,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "object",
+     "x": 482,
+     "y": 445,
+     "label": "Wood Pile",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 488,
+     "y": 445,
+     "label": "Cottage Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 522,
+     "y": 445,
+     "color": 9075274,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 430,
+     "y": 446,
+     "label": "Thicket Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 438,
+     "y": 446,
+     "label": "Hay Pile",
+     "color": 13279818,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 443,
+     "y": 446,
+     "label": "Herb Garden",
+     "color": 14241615,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 446,
+     "y": 446,
+     "label": "Cottage Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 451,
+     "y": 446,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 460,
+     "y": 446,
+     "label": "Cottage Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 462,
+     "y": 446,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 489,
+     "y": 446,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 517,
+     "y": 446,
+     "label": "Cottage Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 443,
+     "y": 447,
+     "label": "Cottage Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 475,
+     "y": 447,
+     "label": "Hay Pile",
+     "color": 13279818,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 476,
+     "y": 447,
+     "label": "Rain Barrel",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 454,
+     "y": 448,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 459,
+     "y": 448,
+     "label": "Cottage Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 498,
+     "y": 448,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 499,
+     "y": 448,
+     "label": "Cottage Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 516,
+     "y": 448,
+     "color": 9075274,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 517,
+     "y": 448,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 446,
+     "y": 449,
+     "label": "Herb Garden",
+     "color": 14241615,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 449,
+     "y": 449,
+     "color": 9075274,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "decor",
+     "x": 455,
+     "y": 449,
+     "color": 9075274,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 472,
+     "y": 449,
+     "label": "Wood Pile",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 496,
+     "y": 449,
+     "color": 9071172,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "object",
+     "x": 429,
+     "y": 450,
+     "label": "Hay Pile",
+     "color": 13279818,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 433,
+     "y": 450,
+     "label": "Cottage Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 441,
+     "y": 450,
+     "color": 9071172,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "object",
+     "x": 452,
+     "y": 450,
+     "label": "Cottage Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 455,
+     "y": 450,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 474,
+     "y": 450,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 480,
+     "y": 450,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 490,
+     "y": 450,
+     "label": "Hay Pile",
+     "color": 13279818,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 492,
+     "y": 450,
+     "color": 9075274,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 493,
+     "y": 450,
+     "label": "Hay Pile",
+     "color": 13279818,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 504,
+     "y": 450,
+     "label": "Cottage Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 508,
+     "y": 450,
+     "color": 9075274,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 513,
+     "y": 450,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 522,
+     "y": 450,
+     "label": "Cottage Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 445,
+     "y": 451,
+     "label": "Herb Garden",
+     "color": 14241615,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 486,
+     "y": 451,
+     "label": "Cottage Bush",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 489,
+     "y": 451,
+     "label": "Wood Pile",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 492,
+     "y": 451,
+     "color": 9075274,
+     "size": 4,
+     "shape": "rect"
+    },
+    {
+     "op": "object",
+     "x": 493,
+     "y": 451,
+     "label": "Hay Pile",
+     "color": 13279818,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 494,
+     "y": 451,
+     "label": "Yard Fence",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 517,
+     "y": 451,
+     "color": 9071172,
+     "size": 4,
+     "shape": "circle"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       487,
+       401
+      ],
+      [
+       487,
+       402
+      ],
+      [
+       488,
+       402
+      ],
+      [
+       490,
+       403
+      ],
+      [
+       490,
+       404
+      ],
+      [
+       492,
+       405
+      ],
+      [
+       492,
+       406
+      ],
+      [
+       494,
+       406
+      ],
+      [
+       495,
+       407
+      ],
+      [
+       496,
+       408
+      ],
+      [
+       497,
+       409
+      ],
+      [
+       498,
+       409
+      ],
+      [
+       504,
+       414
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       452,
+       400
+      ],
+      [
+       451,
+       401
+      ],
+      [
+       439,
+       419
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "terrain",
+     "cells": [
+      [
+       490,
+       385
+      ],
+      [
+       491,
+       384
+      ],
+      [
+       491,
+       383
+      ],
+      [
+       492,
+       382
+      ],
+      [
+       494,
+       382
+      ],
+      [
+       494,
+       381
+      ],
+      [
+       496,
+       380
+      ],
+      [
+       496,
+       379
+      ],
+      [
+       499,
+       377
+      ],
+      [
+       500,
+       376
+      ],
+      [
+       501,
+       375
+      ],
+      [
+       502,
+       375
+      ],
+      [
+       503,
+       374
+      ],
+      [
+       504,
+       373
+      ]
+     ],
+     "to": "DIRT"
+    },
+    {
+     "op": "object",
+     "x": 421,
+     "y": 349,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 425,
+     "y": 349,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 428,
+     "y": 349,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 429,
+     "y": 349,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 430,
+     "y": 349,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 438,
+     "y": 349,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 443,
+     "y": 349,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 447,
+     "y": 349,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 454,
+     "y": 349,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 463,
+     "y": 349,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 474,
+     "y": 349,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 478,
+     "y": 349,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 482,
+     "y": 349,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 484,
+     "y": 349,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 488,
+     "y": 349,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 491,
+     "y": 349,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 493,
+     "y": 349,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 514,
+     "y": 349,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 517,
+     "y": 349,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 518,
+     "y": 349,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 519,
+     "y": 349,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 521,
+     "y": 349,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 527,
+     "y": 349,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 421,
+     "y": 350,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 425,
+     "y": 350,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 437,
+     "y": 350,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 444,
+     "y": 350,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 451,
+     "y": 350,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 453,
+     "y": 350,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 460,
+     "y": 350,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 477,
+     "y": 350,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 491,
+     "y": 350,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 494,
+     "y": 350,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 500,
+     "y": 350,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 504,
+     "y": 350,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 513,
+     "y": 350,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 430,
+     "y": 351,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 433,
+     "y": 351,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 437,
+     "y": 351,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 448,
+     "y": 351,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 453,
+     "y": 351,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 462,
+     "y": 351,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 464,
+     "y": 351,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 473,
+     "y": 351,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 476,
+     "y": 351,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 481,
+     "y": 351,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 515,
+     "y": 351,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 527,
+     "y": 351,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 422,
+     "y": 352,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 423,
+     "y": 352,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 430,
+     "y": 352,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 432,
+     "y": 352,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 436,
+     "y": 352,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 437,
+     "y": 352,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 439,
+     "y": 352,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 445,
+     "y": 352,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 446,
+     "y": 352,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 450,
+     "y": 352,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 456,
+     "y": 352,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 459,
+     "y": 352,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 462,
+     "y": 352,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 463,
+     "y": 352,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 476,
+     "y": 352,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 482,
+     "y": 352,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 488,
+     "y": 352,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 495,
+     "y": 352,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 499,
+     "y": 352,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 510,
+     "y": 352,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 516,
+     "y": 352,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 524,
+     "y": 353,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 524,
+     "y": 354,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 421,
+     "y": 355,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 423,
+     "y": 359,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 421,
+     "y": 360,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 423,
+     "y": 360,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 524,
+     "y": 360,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 524,
+     "y": 365,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 524,
+     "y": 372,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 524,
+     "y": 373,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 526,
+     "y": 377,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 527,
+     "y": 379,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 526,
+     "y": 380,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 527,
+     "y": 381,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 526,
+     "y": 383,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 527,
+     "y": 383,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 526,
+     "y": 384,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 527,
+     "y": 384,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 526,
+     "y": 387,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 527,
+     "y": 387,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 526,
+     "y": 394,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 527,
+     "y": 395,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 527,
+     "y": 396,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 526,
+     "y": 397,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 524,
+     "y": 400,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 524,
+     "y": 404,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 526,
+     "y": 405,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 527,
+     "y": 411,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 527,
+     "y": 412,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 524,
+     "y": 413,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 526,
+     "y": 413,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 526,
+     "y": 416,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 524,
+     "y": 417,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 524,
+     "y": 420,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 524,
+     "y": 423,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 421,
+     "y": 425,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 422,
+     "y": 425,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 422,
+     "y": 426,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 524,
+     "y": 426,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 421,
+     "y": 427,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 527,
+     "y": 427,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 527,
+     "y": 428,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 421,
+     "y": 429,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 526,
+     "y": 430,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 527,
+     "y": 431,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 526,
+     "y": 432,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 422,
+     "y": 434,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 422,
+     "y": 436,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 421,
+     "y": 437,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 524,
+     "y": 437,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 526,
+     "y": 437,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 524,
+     "y": 438,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 527,
+     "y": 438,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 527,
+     "y": 439,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 527,
+     "y": 440,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 524,
+     "y": 442,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 423,
+     "y": 444,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 526,
+     "y": 447,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 423,
+     "y": 448,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 424,
+     "y": 448,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 446,
+     "y": 448,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 458,
+     "y": 448,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 460,
+     "y": 448,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 462,
+     "y": 448,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 465,
+     "y": 448,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 468,
+     "y": 448,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 479,
+     "y": 448,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 487,
+     "y": 448,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 488,
+     "y": 448,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 491,
+     "y": 448,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 493,
+     "y": 448,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 496,
+     "y": 448,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 497,
+     "y": 448,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 509,
+     "y": 448,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 510,
+     "y": 448,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 512,
+     "y": 448,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 521,
+     "y": 448,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 426,
+     "y": 449,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 428,
+     "y": 449,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 436,
+     "y": 449,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 440,
+     "y": 449,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 455,
+     "y": 449,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 457,
+     "y": 449,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 458,
+     "y": 449,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 459,
+     "y": 449,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 462,
+     "y": 449,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 468,
+     "y": 449,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 478,
+     "y": 449,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 487,
+     "y": 449,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 488,
+     "y": 449,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 500,
+     "y": 449,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 513,
+     "y": 449,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 514,
+     "y": 449,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 526,
+     "y": 449,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 426,
+     "y": 450,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 430,
+     "y": 450,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 431,
+     "y": 450,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 432,
+     "y": 450,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 447,
+     "y": 450,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 449,
+     "y": 450,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 450,
+     "y": 450,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 453,
+     "y": 450,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 456,
+     "y": 450,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 461,
+     "y": 450,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 475,
+     "y": 450,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 478,
+     "y": 450,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 497,
+     "y": 450,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 500,
+     "y": 450,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 502,
+     "y": 450,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 520,
+     "y": 450,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 523,
+     "y": 450,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 526,
+     "y": 450,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 429,
+     "y": 451,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 430,
+     "y": 451,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 436,
+     "y": 451,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 442,
+     "y": 451,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 451,
+     "y": 451,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 477,
+     "y": 451,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 488,
+     "y": 451,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 496,
+     "y": 451,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 517,
+     "y": 451,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 519,
+     "y": 451,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 522,
+     "y": 451,
+     "label": "Edge Thicket",
+     "color": 3103274,
+     "blocking": false
+    }
+   ]
   }
  ]
 }
