@@ -69747,6 +69747,32 @@
      "to": 163
     }
    ]
+  },
+  {
+   "id": "city-guildhall-plinth",
+   "note": "Merchants' Guildhall plinth (plinth-plan roll-out). Raises the guildhall footprint [480,390,488,397] onto the same low plinth as the gaol/armory (town~135 -> skirt 150 -> top 163) so, with the capped-stone walls, it reads as a raised civic hall on the market. Visual-only elevation; elev_spike 0.",
+   "ops": [
+    {
+     "op": "elevation",
+     "rect": [
+      479,
+      389,
+      489,
+      398
+     ],
+     "to": 150
+    },
+    {
+     "op": "elevation",
+     "rect": [
+      480,
+      390,
+      488,
+      397
+     ],
+     "to": 163
+    }
+   ]
   }
  ]
 }
