@@ -69527,6 +69527,180 @@
      "blocking": false
     }
    ]
+  },
+  {
+   "id": "city-market-life",
+   "note": "Market-life pass (break-the-grid, additive on Plunder Market). The bazaar stalls ringed the plaza at even spacing standing bare; give each stall its GOODS on the aisle side (fish/spice/ale barrels, veg/curio/cloth/fur/charm crates, grain sacks, a grill-fire by the skewer stall) and scatter irregular bazaar life — market benches + a water trough clustered at the Market Cross, parked hand-carts + laden carts in the corners, stacks of empty crates tucked off-axis, lamps flanking the Highgate entrance, and dropped-fruit/grain/pigeon decor underfoot. Additive (moves no stall), all non-blocking on the cobbled DIRT plaza, never on the ceremonial road spine, keeps the spawn + Grand Exchange approach clear; reachability + coherence simulated.",
+   "ops": [
+    {
+     "op": "object",
+     "x": 466,
+     "y": 390,
+     "label": "Fish Barrel",
+     "color": 4876922,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 472,
+     "y": 390,
+     "label": "Veg Crate",
+     "color": 6982202,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 464,
+     "y": 396,
+     "label": "Curio Crate",
+     "color": 9075274,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 463,
+     "y": 399,
+     "label": "Cloth Bale",
+     "color": 9067114,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 466,
+     "y": 406,
+     "label": "Fur Bale",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 472,
+     "y": 406,
+     "label": "Grain Sack",
+     "color": 13279818,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 467,
+     "y": 385,
+     "label": "Spice Barrel",
+     "color": 10115626,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 472,
+     "y": 386,
+     "label": "Ale Keg",
+     "color": 6965802,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 465,
+     "y": 397,
+     "label": "Market Bench",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 461,
+     "y": 393,
+     "label": "Market Cart",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 476,
+     "y": 389,
+     "label": "Market Cart",
+     "color": 8016432,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 475,
+     "y": 392,
+     "label": "Crate Stack",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 476,
+     "y": 402,
+     "label": "Crate Stack",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 463,
+     "y": 393,
+     "label": "Crate Stack",
+     "color": 9071172,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 464,
+     "y": 395,
+     "label": "Market Lamp",
+     "color": 16765517,
+     "blocking": false
+    },
+    {
+     "op": "object",
+     "x": 465,
+     "y": 401,
+     "label": "Water Trough",
+     "color": 5925498,
+     "blocking": false
+    },
+    {
+     "op": "decor",
+     "x": 468,
+     "y": 393,
+     "color": 14256698,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 472,
+     "y": 398,
+     "color": 14256698,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 463,
+     "y": 389,
+     "color": 13214282,
+     "size": 3,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 475,
+     "y": 400,
+     "color": 9079434,
+     "size": 2,
+     "shape": "circle"
+    },
+    {
+     "op": "decor",
+     "x": 467,
+     "y": 392,
+     "color": 13214282,
+     "size": 3,
+     "shape": "circle"
+    }
+   ]
   }
  ]
 }
