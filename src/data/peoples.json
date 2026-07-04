@@ -1,0 +1,86 @@
+{
+  "_note": "CANON: the peoples of the world. 'cultures before races' — every entry leads with a WORLDVIEW, not a stat block. status:active = present in the game today; status:planned = written in the bible, not yet built. Enforced by scripts/world_coherence.mjs (every people needs a worldview). Content references peoples by id.",
+  "peoples": [
+    {
+      "id": "goblins",
+      "name": "Goblins",
+      "worldview": "Inventive, optimistic tinkerers who turn everyday life into adventure — every problem is a project, every failure a funnier prototype.",
+      "status": "active",
+      "playable": true,
+      "homeBiome": "settlement",
+      "homeRegion": "settlement",
+      "traits": ["tinkering", "scrappy", "communal", "irrepressibly cheerful"],
+      "relations": { "rival": "rival goblins (the Red-Ears) — same blood, opposite manners", "boglings": "trade partners in the marshes" }
+    },
+    {
+      "id": "ember_imps",
+      "name": "Ember Imps",
+      "worldview": "Friendly and enthusiastic, and accidentally set everything on fire — they mean well, which is precisely the danger.",
+      "status": "planned",
+      "playable": true,
+      "homeBiome": "ash_hills",
+      "homeRegion": null,
+      "traits": ["fire-touched", "eager", "hazardous helpfulness"]
+    },
+    {
+      "id": "forest_sprites",
+      "name": "Forest Sprites",
+      "worldview": "Tiny caretakers of old forests who treat nature like family — a felled tree is a funeral, a seedling is a birth.",
+      "status": "planned",
+      "playable": false,
+      "homeBiome": "old forest",
+      "homeRegion": "ruins",
+      "traits": ["tiny", "reverent", "long memory of the woods"]
+    },
+    {
+      "id": "moss_folk",
+      "name": "Moss Folk",
+      "worldview": "Grow moss instead of hair, sleep for years, and think everyone else is unbearably impatient.",
+      "status": "planned",
+      "playable": false,
+      "homeBiome": "damp forest",
+      "homeRegion": "mushroom",
+      "traits": ["slow", "mossy", "geologically calm"]
+    },
+    {
+      "id": "boglings",
+      "name": "Boglings",
+      "worldview": "Amphibious collectors who treasure polished junk and consider rust sacred — one goblin's scrap is a bogling's heirloom.",
+      "status": "planned",
+      "playable": true,
+      "homeBiome": "marsh",
+      "homeRegion": "bog",
+      "traits": ["amphibious", "hoarders", "reverent toward rust"]
+    },
+    {
+      "id": "pebblers",
+      "name": "Pebblers",
+      "worldview": "Living stone beings who speak slowly and measure time in seasons — a conversation may take a week and they consider that brisk.",
+      "status": "planned",
+      "playable": false,
+      "homeBiome": "stone hills",
+      "homeRegion": "minehills",
+      "traits": ["stone-bodied", "patient", "seasonal timekeepers"]
+    },
+    {
+      "id": "lantern_moths",
+      "name": "Lantern Moths",
+      "worldview": "Large nocturnal mothfolk who navigate by the stars and find darkness comforting — daylight is the frightening thing.",
+      "status": "planned",
+      "playable": false,
+      "homeBiome": "night forest",
+      "homeRegion": "mushroom",
+      "traits": ["nocturnal", "star-readers", "gentle in the dark"]
+    },
+    {
+      "id": "root_keepers",
+      "name": "Root Keepers",
+      "worldview": "Grow their homes instead of building them and negotiate with forests rather than cutting them — architecture is a conversation with something alive.",
+      "status": "planned",
+      "playable": false,
+      "homeBiome": "ancient woodland",
+      "homeRegion": "oakwoods",
+      "traits": ["arborists", "diplomats of the wood", "patient growers"]
+    }
+  ]
+}

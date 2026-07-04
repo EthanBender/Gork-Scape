@@ -1,0 +1,108 @@
+{
+  "_note": "CANON: one record per REGION_ANCHOR (src/world/worldData.js). 'culture before monsters' — each region carries an identity (professions/food/folklore/tradition/festival/architecture/humor). Empty strings = not-yet-authored (the coherence gate wants a minimum filled and ratchets up). Content + the Codex reference regions by id. Seeded 2026-07 from the live game + docs/WORLD_BIBLE.md.",
+  "regions": [
+    {
+      "id": "settlement", "name": "Goblin Settlement (Gorkholm)", "biome": "plains capital", "level": "1-15",
+      "peoples": ["goblins"],
+      "identity": {
+        "professions": "tinkering, smithing, trade, cabbage-farming",
+        "food": "cabbage everything, roast grubs, questionable ale",
+        "folklore": "the Hollow Idol beneath the training yard still whispers names",
+        "tradition": "every dispute is settled by a scheme that makes it worse",
+        "festival": "the Goblin Festival; the Merchant Caravan rolls through",
+        "architecture": "the Warren's alleys, the Plunder Market, Highgate keep astride the ceremonial way",
+        "humor": "confident optimism in the face of obvious catastrophe"
+      }
+    },
+    {
+      "id": "choppers", "name": "Chopper's Hollow", "biome": "forest", "level": "1-20",
+      "peoples": ["goblins"],
+      "identity": {
+        "professions": "logging, charcoal-burning", "food": "", "folklore": "the tallest oak is said to chop back",
+        "tradition": "", "festival": "Timber Glut when the loggers flood the market", "architecture": "timber camps and sawpits", "humor": ""
+      }
+    },
+    {
+      "id": "willow", "name": "Willow Riverlands", "biome": "river-marsh", "level": "10-30",
+      "peoples": ["goblins", "boglings"],
+      "identity": {
+        "professions": "fishing, foraging, ferrying", "food": "river mudfish, cattail root",
+        "folklore": "keep a lucky frog and the river bandits pass you by", "tradition": "", "festival": "", "architecture": "stilt huts and rope ferries", "humor": ""
+      }
+    },
+    {
+      "id": "mushroom", "name": "Mushroom Forest", "biome": "fungal forest", "level": "25-55",
+      "peoples": ["moss_folk", "lantern_moths"],
+      "identity": {
+        "professions": "mushroom-farming, dyeing, fashion", "food": "glowcaps, memory-truffles, fizzing spore-ale",
+        "folklore": "the big caps are believed to RECORD MEMORIES — eat one and dream a stranger's day",
+        "tradition": "you are what you wear; a plain hat is an insult", "festival": "the Great Cap Festival — the fashion capital of the world",
+        "architecture": "hollowed toadstool halls lit from within", "humor": "deadpan fungal snobbery"
+      }
+    },
+    {
+      "id": "grubpit", "name": "Grubpit Quarry", "biome": "quarry", "level": "1-25",
+      "peoples": ["goblins"],
+      "identity": {
+        "professions": "quarrying, stone-cutting", "food": "", "folklore": "", "tradition": "", "festival": "Ore Rush", "architecture": "terraced pits and spoil heaps", "humor": "" }
+    },
+    {
+      "id": "minehills", "name": "Northern Mine Hills", "biome": "stone hills", "level": "20-55",
+      "peoples": ["goblins", "pebblers"],
+      "identity": {
+        "professions": "deep mining, ore hauling", "food": "",
+        "folklore": "the deepest shafts follow DWARF tunnels — some machines down there are still turning, and nobody knows why",
+        "tradition": "", "festival": "", "architecture": "goblin headframes bolted onto abandoned dwarf stoneworks", "humor": "" }
+    },
+    {
+      "id": "troll", "name": "Troll Ridge", "biome": "high crags", "level": "50-80+",
+      "peoples": [],
+      "identity": { "professions": "", "food": "", "folklore": "trolls that turn to stone by day and argue about it by night", "tradition": "", "festival": "", "architecture": "a gate no goblin admits to fearing", "humor": "" }
+    },
+    {
+      "id": "grublake", "name": "Grublake", "biome": "great lake", "level": "15-45",
+      "peoples": ["goblins"],
+      "identity": {
+        "professions": "fishing, dock trade, boat-building", "food": "lake snapper, smoked eel",
+        "folklore": "someone is stealing the catch — the fishers blame the lake itself", "tradition": "", "festival": "", "architecture": "docks, jetties, and a fought-over lake island", "humor": "" }
+    },
+    {
+      "id": "oakwoods", "name": "Eastern Oakwoods", "biome": "ancient woodland", "level": "20-50",
+      "peoples": ["root_keepers", "forest_sprites"],
+      "identity": {
+        "professions": "hunting, foraging", "food": "oak-boar, forest honey", "folklore": "the Root Keepers grow their homes and won't say how old the oldest oak is",
+        "tradition": "you ask the wood before you take from it", "festival": "", "architecture": "grown, not built — houses that are still alive", "humor": "" }
+    },
+    {
+      "id": "farmlands", "name": "Main Farmlands", "biome": "farmland", "level": "1-35",
+      "peoples": ["goblins"],
+      "identity": {
+        "professions": "farming, herding", "food": "cabbage, turnips, honest bread",
+        "folklore": "a scarecrow that everyone agrees moved, and nobody agrees where", "tradition": "harvest is a competitive sport", "festival": "harvest fair", "architecture": "outlying farmsteads and a lakeside crop belt fading into the wild", "humor": "" }
+    },
+    {
+      "id": "bog", "name": "Bog of Grub (the Marshes)", "biome": "marsh", "level": "30-60",
+      "peoples": ["boglings", "goblins"],
+      "identity": {
+        "professions": "trapping, junk-diving, snail-herding", "food": "bog-snail stew, pickled everything",
+        "folklore": "rust is sacred to the boglings; the will-o-wisps lead you to the good junk (or to drown)",
+        "tradition": "SNAIL RACING is serious business; a lucky frog is a life partner", "festival": "the Snail Derby",
+        "architecture": "coven huts, skull-wards, and ancient DWARF PUMPS still draining water for reasons long forgotten",
+        "humor": "solemn ceremony over a polished spoon" }
+    },
+    {
+      "id": "rival", "name": "Rival Goblin Territory", "biome": "badlands", "level": "45-70+",
+      "peoples": ["goblins"],
+      "identity": {
+        "professions": "raiding, war-smithing", "food": "", "folklore": "the Red-Ears say Gorkholm's goblins went soft; Gorkholm says the Red-Ears went stupid",
+        "tradition": "everything is a duel", "festival": "", "architecture": "a captured anvil they will not shut up about", "humor": "sibling rivalry with axes" }
+    },
+    {
+      "id": "ruins", "name": "Old Forest Ruins", "biome": "ancient ruins", "level": "20-45",
+      "peoples": ["forest_sprites"],
+      "identity": {
+        "professions": "", "food": "", "folklore": "nobody built these — the stone is cut too clean, the doors sized for something taller than a troll",
+        "tradition": "the sprites tend the ruin-chapel but won't say who they tend it FOR", "festival": "", "architecture": "impossible dwarf stonework the forest is slowly eating", "humor": "" }
+    }
+  ]
+}
