@@ -63883,6 +63883,18 @@
      "shape": "circle"
     },
     {
+     "op": "remove_objects",
+     "rect": [
+      499,
+      377,
+      501,
+      380
+     ],
+     "types": [
+      "decor"
+     ]
+    },
+    {
      "op": "terrain",
      "cells": [
       [
