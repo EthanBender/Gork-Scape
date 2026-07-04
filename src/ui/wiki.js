@@ -109,6 +109,10 @@ function injectCss() {
   .wk-none { color:#a89877; font-style:italic; font-size:12px; }
   .wk-pill { display:inline-block; font-size:10px; color:#cdbf9e; background:#17110a; border:1px solid #3c2e1f;
     border-radius:99px; padding:2px 8px; margin:1px 3px 1px 0; }
+  .wk-tab { cursor:pointer; font-family:"Fredoka",sans-serif; font-size:11px; font-weight:600; color:#a89877;
+    background:#17110a; border:1px solid #3c2e1f; border-radius:8px; padding:5px 11px; transition:color .1s; }
+  .wk-tab:hover { color:#ebdfc8; }
+  .wk-tab.sel { color:#e0b44a; border-color:#6b4a2a; background:#3a2c1e; }
   `;
   document.head.appendChild(s);
 }
@@ -134,7 +138,68 @@ function catOf(id) {
 
 let selectedId = null;
 
+// ---- world-bible CANON — the "Lore" tab (peoples / regions / rumors / mysteries) ----
+let wikiMode = 'items';   // 'items' | 'lore'
+const prettyId = (id) => String(id).replace(/^[a-z]+:/, '').replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+const regionName = (rid) => { const r = (GameData.regions || []).find((x) => x.id === rid); return r ? r.name : prettyId(rid || '—'); };
+
+function canonEntries() {
+  const E = [];
+  for (const p of (GameData.peoples || [])) E.push({ kind: 'People', name: p.name, ref: p });
+  for (const r of (GameData.regions || [])) E.push({ kind: 'Region', name: r.name, ref: r });
+  for (const m of (GameData.mysteries || [])) E.push({ kind: 'Mystery', name: m.name, ref: m });
+  for (const l of (GameData.lore || [])) E.push({ kind: 'Rumor', name: prettyId(l.id), ref: l });
+  return E;
+}
+
+function renderCanonList(overlay, query) {
+  const q = (query || '').trim().toLowerCase();
+  const list = overlay.querySelector('.wk-list');
+  const kc = { People: 0x9fb04e, Region: 0x6a9ad0, Mystery: 0xc07ad0, Rumor: 0xd0a24a };
+  const entries = canonEntries()
+    .filter((e) => !q || e.name.toLowerCase().includes(q) || e.kind.toLowerCase().includes(q) || (e.ref.text || e.ref.hook || '').toLowerCase().includes(q))
+    .sort((a, b) => a.kind.localeCompare(b.kind) || a.name.localeCompare(b.name));
+  list.innerHTML = '';
+  for (const e of entries) {
+    const li = document.createElement('div');
+    li.className = 'wk-li';
+    li.innerHTML = `<span class="wk-sw" style="background:${hex(kc[e.kind])}"></span><span>${esc(e.name)}</span><span class="wk-cat">${e.kind}</span>`;
+    li.onclick = () => renderCanonDetail(overlay, e);
+    list.appendChild(li);
+  }
+  if (!entries.length) list.innerHTML = `<div class="wk-none" style="padding:10px">Nothing in the lore matches “${esc(q)}”.</div>`;
+}
+
+function renderCanonDetail(overlay, e) {
+  const d = overlay.querySelector('.wk-detail');
+  const r = e.ref;
+  const sec = (t, h) => h ? `<div class="wk-sec"><h3>${t}</h3>${h}</div>` : '';
+  const row = (s) => `<div class="wk-row">${s}</div>`;
+  let sub = e.kind, body = '';
+  if (e.kind === 'People') {
+    sub = 'People · ' + (r.status === 'active' ? 'in the world' : 'not yet seen');
+    body = row('<i>' + esc(r.worldview) + '</i>')
+      + sec('Home', row(esc(regionName(r.homeRegion) || r.homeBiome || '—')))
+      + sec('Known for', (r.traits || []).map((t) => `<span class="wk-pill">${esc(t)}</span>`).join(''));
+  } else if (e.kind === 'Region') {
+    sub = 'Region · ' + esc(r.biome || '');
+    const id = r.identity || {};
+    const rows = Object.entries({ professions: 'Trades', food: 'Food', tradition: 'Ways', festival: 'Festival', folklore: 'Folklore', architecture: 'Built like', humor: 'Humor' })
+      .filter(([k]) => id[k]).map(([k, lab]) => row(`<b>${lab}:</b> ${esc(id[k])}`)).join('');
+    body = sec('Its people', (r.peoples || []).map((pid) => `<span class="wk-pill">${esc(prettyId(pid))}</span>`).join('') || row('—'))
+      + sec('Culture', rows || row('<span class="wk-none">unwritten</span>'));
+  } else if (e.kind === 'Mystery') {
+    sub = 'An open question · ' + esc(regionName(r.region));
+    body = row(esc(r.hook)) + sec('Status', row(r.answered && r.answered.startsWith('quest:') ? 'Touched by a quest.' : '<span class="wk-none">Unsolved. Perhaps it always will be.</span>'));
+  } else {
+    sub = 'Overheard · ' + esc(regionName(r.region));
+    body = row('“' + esc(r.text) + '”') + row('<span class="wk-none">— a campfire tale. True? Who can say.</span>');
+  }
+  d.innerHTML = `<div class="wk-title">${esc(e.name)}</div><div class="wk-sub">${sub}</div>${body}`;
+}
+
 function renderList(overlay, query) {
+  if (wikiMode === 'lore') return renderCanonList(overlay, query);
   const q = (query || '').trim().toLowerCase();
   const list = overlay.querySelector('.wk-list');
   const ids = allItemIds()
@@ -236,6 +301,8 @@ export function openWiki(focusId = null) {
     overlay.id = 'wiki-overlay';
     overlay.innerHTML = `<div class="wk-panel">
       <div class="wk-head"><h2>Codex</h2>
+        <button class="wk-tab sel" data-mode="items">Items</button>
+        <button class="wk-tab" data-mode="lore">Lore</button>
         <input class="wk-search" placeholder="Search items…" />
         <button class="wk-x" title="Close">✕</button></div>
       <div class="wk-body"><div class="wk-list"></div>
@@ -246,6 +313,13 @@ export function openWiki(focusId = null) {
     overlay.querySelector('.wk-x').onclick = () => { overlay.hidden = true; };
     const search = overlay.querySelector('.wk-search');
     search.oninput = () => renderList(overlay, search.value);
+    overlay.querySelectorAll('.wk-tab').forEach((t) => { t.onclick = () => {
+      wikiMode = t.dataset.mode;
+      overlay.querySelectorAll('.wk-tab').forEach((x) => x.classList.toggle('sel', x === t));
+      search.placeholder = wikiMode === 'lore' ? 'Search the lore…' : 'Search items…';
+      overlay.querySelector('.wk-detail').innerHTML = `<div class="wk-none">${wikiMode === 'lore' ? 'The peoples, regions, rumors, and mysteries of the world. Some rumors are true. Some are not.' : 'Search or pick an item to see what it is, where it comes from, and what it\\'s for.'}</div>`;
+      renderList(overlay, search.value);
+    }; });
   }
   overlay.hidden = false;
   renderList(overlay, overlay.querySelector('.wk-search').value);

@@ -14,6 +14,8 @@
 const FILES = [
   'items', 'recipes', 'world_nodes', 'monsters',
   'drop_tables', 'shops', 'level_unlocks', 'firemaking', 'map_patches',
+  // world-bible CANON (docs/WORLD_BIBLE.md) — enforced by scripts/world_coherence.mjs
+  'peoples', 'regions', 'npcs', 'lore', 'mysteries',
 ];
 
 // Resilient loader: a missing/broken data file degrades tooltips etc. but must
@@ -80,9 +82,16 @@ export function parseInputs(v) {
 
 const [
   items, recipes, worldNodes, monsters, dropTables, shops, levelUnlocks, firemaking, mapPatchesRaw,
+  peoplesRaw, regionsRaw, npcsRaw, loreRaw, mysteriesRaw,
 ] = await Promise.all(FILES.map(fetchJson));
 // map_patches.json is { _readme, patches: [...] } — normalise to the array.
 const mapPatches = (mapPatchesRaw && mapPatchesRaw.patches) || [];
+// canon files are { _note, <key>: [...] } — normalise each to its array.
+const peoples = (peoplesRaw && peoplesRaw.peoples) || [];
+const regions = (regionsRaw && regionsRaw.regions) || [];
+const npcs = (npcsRaw && npcsRaw.npcs) || [];
+const lore = (loreRaw && loreRaw.lore) || [];
+const mysteries = (mysteriesRaw && mysteriesRaw.mysteries) || [];
 
 const itemsById = indexBy(items, 'item_id');
 const nodesById = indexBy(worldNodes, 'node_id');
@@ -97,6 +106,8 @@ const firemakingByLog = indexBy(firemaking, 'log_id');
 export const GameData = {
   // raw tables (read-only use)
   items, recipes, worldNodes, monsters, dropTables, shops, levelUnlocks, firemaking, mapPatches,
+  // world-bible canon
+  peoples, regions, npcs, lore, mysteries,
 
   // --- ID resolvers (the handshake API used across lanes) ---
   // item() resolves legacy short ids (logs, ore, raw_fish) through the alias
