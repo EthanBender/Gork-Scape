@@ -74,6 +74,40 @@ geo.setAttribute('uv', new THREE.Float32BufferAttribute(uv,2));
 geo.setIndex(idx); geo.computeVertexNormals();
 scene.add(new THREE.Mesh(geo, new THREE.MeshLambertMaterial({map:groundTex, flatShading:true})));
 
+// --- filled river surface that FOLLOWS the slope: each water tile's surface sits
+//     just below its local bank lip (min nearby land), so a descending river fills
+//     its bed to a natural waterline instead of beading at the channel bottom.
+//     Built as one shared-vertex mesh (no cracks), lightly smoothed. ---
+const MARGIN = (+q.get('wl')||8), WOP = (+q.get('wo')||0.82);   // raw elev below the bank lip + opacity
+const isW = new Uint8Array(w*h);
+for (let k=0;k<w*h;k++) isW[k] = WATER.has(terr[k]) ? 1 : 0;
+const wsurf = new Float32Array(w*h);
+for (let j=0;j<h;j++) for (let i=0;i<w;i++){ const k=j*w+i; if(!isW[k]) continue;
+  let lip = Infinity;                                            // lowest surrounding LAND = the bank
+  for (let dj=-2;dj<=2;dj++) for (let di=-2;di<=2;di++){ const x=i+di,y=j+dj; if(x<0||y<0||x>=w||y>=h)continue; const kk=y*w+x; if(!isW[kk]) lip=Math.min(lip,E[kk]); }
+  wsurf[k] = Math.max((lip===Infinity ? E[k]+18 : lip - MARGIN), E[k]+2);  // below lip, but above bed
+}
+for (let p=0;p<3;p++){ const N=wsurf.slice();                    // flatten cross-channel + along flow
+  for (let j=0;j<h;j++) for (let i=0;i<w;i++){ const k=j*w+i; if(!isW[k])continue; let s=0,n=0;
+    for (let dj=-1;dj<=1;dj++) for (let di=-1;di<=1;di++){ const x=i+di,y=j+dj; if(x<0||y<0||x>=w||y>=h)continue; const kk=y*w+x; if(isW[kk]){s+=wsurf[kk];n++;} }
+    N[k]=s/n; } wsurf.set(N); }
+// per-tile quads (slightly overlapping to hide seams) so EVERY water tile — even
+// 1-tile-wide rivers — gets a filled surface at its slope-following waterline.
+const wpos=[], wnorm=[], widx=[]; let wc=0;
+for (let j=0;j<h;j++) for (let i=0;i<w;i++){ const k=j*w+i; if(!isW[k]) continue;
+  const x=i-w/2, z=j-h/2, y=(wsurf[k]/255)*HEIGHT, s=0.62;
+  wpos.push(x-s,y,z-s, x+s,y,z-s, x+s,y,z+s, x-s,y,z+s);
+  wnorm.push(0,1,0, 0,1,0, 0,1,0, 0,1,0);
+  widx.push(wc,wc+2,wc+1, wc,wc+3,wc+2); wc+=4;
+}
+if (wc){ const wg=new THREE.BufferGeometry();
+  wg.setAttribute('position', new THREE.Float32BufferAttribute(wpos,3));
+  wg.setAttribute('normal', new THREE.Float32BufferAttribute(wnorm,3));
+  wg.setIndex(widx);
+  const wmesh=new THREE.Mesh(wg, new THREE.MeshLambertMaterial({color:0x3f7fc4, emissive:0x11365e, transparent:true, opacity:WOP, side:THREE.DoubleSide, depthWrite:false}));
+  wmesh.renderOrder=2; scene.add(wmesh);
+}
+
 // --- one world-fixed key light (clay top-left) + soft fill ---
 const sun = new THREE.DirectionalLight(0xfff4e0, 2.1); sun.position.set(-70,120,-30); scene.add(sun);
 scene.add(new THREE.HemisphereLight(0xdcecff, 0x54633a, 1.05)); scene.add(new THREE.AmbientLight(0xffffff, 0.35));
