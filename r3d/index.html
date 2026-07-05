@@ -158,13 +158,16 @@ const HAND={ pos:[num('hx',0.95), num('hy',1.3), num('hz',0.42)],
 // DEFAULT = the fused geared goblin (the beloved live look). ?equip=sword|spear|pickaxe|none
 // (or ?base=body) swaps to the equippable BASE body with gear attached at sockets.
 const equip = q.get('equip');
-const useBase = equip!==null || q.get('base')==='body';
-const baseModel = useBase ? './models/goblin_base.glb' : './models/goblin_i23.glb';
+const anim = q.get('anim');           // walk | run — plays the rigged skeleton animation
+const useBase = equip!==null || q.get('base')==='body' || !!anim;
+const baseModel = anim ? ('./models/goblin_'+anim+'.glb') : (useBase ? './models/goblin_base.glb' : './models/goblin_i23.glb');
+let mixer=null;
 loader.load(baseModel, gl=>{ const m=gl.scene;
   const b=new THREE.Box3().setFromObject(m), sz=b.getSize(new THREE.Vector3());
   m.scale.setScalar(GSCALE/Math.max(sz.x,sz.y,sz.z));
   const b2=new THREE.Box3().setFromObject(m); m.position.y=-b2.min.y;   // feet on the ground
   goblin.add(m);
+  if (anim && gl.animations && gl.animations.length){ mixer=new THREE.AnimationMixer(m); mixer.clipAction(gl.animations[0]).play(); goblin._animRoot=m; }
 }, undefined, e=>{ console.log('base load err',e);   // fallback to the fused goblin
   loader.load('./models/goblin_i23.glb', gl=>{ const m=gl.scene; const b=new THREE.Box3().setFromObject(m),sz=b.getSize(new THREE.Vector3()); m.scale.setScalar(GSCALE/Math.max(sz.x,sz.y,sz.z)); const b2=new THREE.Box3().setFromObject(m); m.position.y=-b2.min.y; goblin.add(m); }); });
 // equip a weapon into the hand socket
@@ -191,7 +194,10 @@ if(q.get('tx')!==null){ const tx=+q.get('tx'), tz=+q.get('tz'), gx=tx-w/2, gz=tz
 controls.update();
 
 addEventListener('resize',()=>{ camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight); });
+const clock=new THREE.Clock();
 let last=performance.now(), frames=0, fpsEl=document.getElementById('fps');
-renderer.setAnimationLoop(()=>{ controls.update(); renderer.render(scene,camera);
+renderer.setAnimationLoop(()=>{ const dt=clock.getDelta(); if(mixer){ mixer.update(dt);
+    if(goblin._animRoot){ goblin._animRoot.position.x=0; goblin._animRoot.position.z=0; } }  // walk in place
+  controls.update(); renderer.render(scene,camera);
   frames++; const t=performance.now(); if(t-last>=500){ fpsEl.textContent=Math.round(frames*1000/(t-last))+' fps · '+w+'×'+h+' tiles'; frames=0; last=t; } });
 </script></body></html>
