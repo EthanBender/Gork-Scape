@@ -19,6 +19,9 @@
       "arc": "Keeper of a champion racing snail and the sacred rust — the player's way into bogling culture, and the one who only shrugs at the ancient pumps no one understands." },
     { "id": "morel", "name": "Old Judge Morel", "home": "mushroom", "appearsIn": ["mushroom"], "recurring": true,
       "role": "moss-folk milliner and forty-year head judge of the Great Cap Festival",
-      "arc": "The player's way into moss-folk culture — fashion first, then the older mushroom secrets the moss-folk keep from outsiders: the memory caps, and what no one has ever learned from them." }
+      "arc": "The player's way into moss-folk culture — fashion first, then the older mushroom secrets the moss-folk keep from outsiders: the memory caps, and what no one has ever learned from them." },
+    { "id": "thistle", "name": "Thistle the Sprite", "home": "ruins", "appearsIn": ["ruins"], "recurring": true,
+      "role": "a forest-sprite caretaker of the ruin-chapel in the Old Forest Ruins",
+      "arc": "The player's way into the forest-sprites — everyday tending first, then the edge of the great question they guard: who built the ruins, and who still expects them kept. Thistle knows only that the sprites have always tended, and warns against seeking the who." }
   ]
 }

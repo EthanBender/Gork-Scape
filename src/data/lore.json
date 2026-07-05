@@ -28,6 +28,8 @@
     { "id": "snail_derby_champion", "region": "bog", "truth": "true",
       "text": "Murk's snail has won the Great Snail Derby nine years running. Rival keepers swear it's the sacred rust he feeds it. Murk says it's love." },
     { "id": "moss_folk_character", "region": "mushroom", "truth": "exaggerated",
-      "text": "The moss-folk swear a goblin's whole character shows in their choice of cap. They also swear the Red-Ears have no character — which the Red-Ears, capless, take as a compliment." }
+      "text": "The moss-folk swear a goblin's whole character shows in their choice of cap. They also swear the Red-Ears have no character — which the Red-Ears, capless, take as a compliment." },
+    { "id": "sprite_tending_forever", "region": "ruins", "truth": "true", "links": ["mystery:the_builders"],
+      "text": "Ask a forest-sprite how long they've tended the ruins and they'll say 'always,' and mean it. Ask who taught them and they go quiet — because no one did. They simply started, the way moss starts." }
   ]
 }

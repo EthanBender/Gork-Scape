@@ -1807,5 +1807,166 @@
    "mystery:memory_mushrooms",
    "npc:morel"
   ]
+ },
+ {
+  "id": "ruins_chapel_tending",
+  "name": "What the Sprites Tend",
+  "act": 3,
+  "giver": {
+   "npc": "thistle",
+   "name": "Thistle the Sprite",
+   "where": {
+    "x": 245,
+    "y": 150
+   }
+  },
+  "summary": "The forest-sprites keep the old ruin-chapel swept and lit, though they won't say why. Thistle needs a hand — the ruin-wisps have grown bold and scattered the chapel's records.",
+  "intro": "Oh — a visitor, and a big one. We keep the chapel, we sprites. Sweep it, light it, mind the stone. Don't ask us why; that's not for telling. But you could HELP, couldn't you — the ruin-wisps have gone bold, blown out our lanterns and carried off scraps of the old chapel-map. Drive them from the nave and bring back what they stole, and we'll call you a friend of the ruin.",
+  "outro": "Lanterns lit, map-scraps home, wisps seen off — the chapel's proper again. You've a gentle hand for a goblin, and the ruin knows it now. Come back when you can; there's always tending to do. And perhaps, one day, I'll tell you a little of the why.",
+  "requires": {
+   "level": {
+    "skill": "Attack",
+    "level": 15
+   }
+  },
+  "steps": [
+   {
+    "type": "goto",
+    "target": "ruins",
+    "where": {
+     "x": 245,
+     "y": 150,
+     "name": "the Old Forest Ruins",
+     "radius": 60
+    },
+    "text": "Travel to the Old Forest Ruins",
+    "say": "North and west, where the forest swallows old stone. Mind the guardians."
+   },
+   {
+    "type": "kill",
+    "target": "ruin_wisp",
+    "count": 8,
+    "text": "Drive 8 Ruin-wisps from the chapel",
+    "say": "They blow out the lanterns and scatter our things. Chase them from the nave."
+   },
+   {
+    "type": "obtain",
+    "target": "old_forest_ruins_map_piece",
+    "count": 2,
+    "text": "Recover 2 stolen chapel map-scraps",
+    "say": "The wisps carried off pieces of our old map. Bring them back to me."
+   },
+   {
+    "type": "talk",
+    "target": "thistle",
+    "name": "Thistle the Sprite",
+    "text": "Return to Thistle",
+    "say": "Bring the scraps to the chapel door and we’ll set things right."
+   }
+  ],
+  "rewards": {
+   "coins": 240,
+   "xp": [
+    {
+     "skill": "Firemaking",
+     "amount": 480
+    },
+    {
+     "skill": "Attack",
+     "amount": 280
+    }
+   ],
+   "items": [
+    {
+     "id": "bone_amulet"
+    }
+   ]
+  },
+  "thread": "local",
+  "teaches": [
+   "region:ruins",
+   "people:forest_sprites",
+   "lore:dwarf_doors"
+  ]
+ },
+ {
+  "id": "ruins_the_builders",
+  "name": "Sized for Giants",
+  "act": 3,
+  "giver": {
+   "npc": "thistle",
+   "name": "Thistle the Sprite",
+   "where": {
+    "x": 245,
+    "y": 150
+   }
+  },
+  "summary": "The ruin doors are cut too clean and sized too tall — for something bigger than a troll. Thistle won't say who for, but says fresh orders in an unreadable hand still appear when the tending's done. Someone still expects this place kept.",
+  "intro": "You want to know the why, don't you. I said I might tell you... but the truth is we don't KNOW, not truly. We tend because we've always tended. Only — there are notes. Orders, in a hand none of us can read, that appear when the work is done. Someone still expects this place KEPT. The guardians hold the key to the deep vault where the last of them lie. Get past them, take the key, and see for yourself. Then... let it lie.",
+  "outro": "So. Fresh ink on stone older than the forest, in a hand sized for a hand far bigger than yours or mine — an order to keep the ruins kept, signed by no name we can read. Someone still writes them. Someone still expects. Who? We don't know, friend — not the sprites, not the trolls, not the oldest oak. And I'll tell you true: the ones who go looking for the who don't come back the same. Let it lie. Help us tend, and let it lie.",
+  "requires": {
+   "quests": [
+    "ruins_chapel_tending"
+   ]
+  },
+  "steps": [
+   {
+    "type": "goto",
+    "target": "ruins",
+    "where": {
+     "x": 265,
+     "y": 170,
+     "name": "the deep ruin-halls",
+     "radius": 50
+    },
+    "text": "Enter the deep ruin-halls",
+    "say": "Past the chapel, down where the guardians walk. Bring a light."
+   },
+   {
+    "type": "kill",
+    "target": "old_guardian",
+    "count": 3,
+    "text": "Get past 3 Old Guardians",
+    "say": "They wake for intruders. Put them back to their sleep."
+   },
+   {
+    "type": "obtain",
+    "target": "old_forest_ruins_rusted_key",
+    "count": 1,
+    "text": "Take the rusted key to the deep vault",
+    "say": "A guardian keeps the vault key. Prise it loose and open the deep door."
+   },
+   {
+    "type": "talk",
+    "target": "thistle",
+    "name": "Thistle the Sprite",
+    "text": "Bring what you found to Thistle",
+    "say": "Come tell me what the order said. Or that you’ve chosen not to."
+   }
+  ],
+  "rewards": {
+   "coins": 360,
+   "xp": [
+    {
+     "skill": "Mining",
+     "amount": 620
+    },
+    {
+     "skill": "Defence",
+     "amount": 320
+    }
+   ],
+   "items": [
+    {
+     "id": "voidshard"
+    }
+   ]
+  },
+  "thread": "main",
+  "teaches": [
+   "region:ruins",
+   "mystery:the_builders",
+   "npc:thistle"
+  ]
  }
 ]
