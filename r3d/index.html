@@ -8,10 +8,11 @@
 "three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
 "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 </head><body>
-<div id="fps">…</div><div id="hint">Gork Scape · 3D terrain preview — one finger to orbit · two fingers / scroll to zoom</div>
+<div id="fps">…</div><div id="hint">Gork Scape · 3D preview — your goblin, in your world · one finger to orbit · two fingers / scroll to zoom</div>
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 const q = new URLSearchParams(location.search);
 const region = await fetch('./region.json').then(r=>r.json());
@@ -143,7 +144,13 @@ for (let n=0;n<40;n++){ const i=(rnd()*w)|0,j=(rnd()*h)|0; const id=terr[j*w+i];
   const x=i-w/2,z=j-h/2,y=heightAt(i,j);
   const t=new THREE.Mesh(new THREE.CylinderGeometry(0.35,0.5,2.4,6),trunkMat); t.position.set(x,y+1.2,z); scene.add(t);
   const l=new THREE.Mesh(new THREE.ConeGeometry(2.1,4,8),leafMat); l.position.set(x,y+4,z); scene.add(l); }
-// (goblin character is being rebuilt from your reference via image-to-3D — omitted here so this preview is purely the terrain look)
+// goblin (placeholder capsule) at spawn
+const GX=spawn.x-w/2, GZ=spawn.y-h/2, GY=heightAt(spawn.x,spawn.y);
+new GLTFLoader().load('./models/goblin_i23.glb', gl=>{ const m=gl.scene;
+  const b=new THREE.Box3().setFromObject(m), sz=b.getSize(new THREE.Vector3());
+  m.scale.setScalar(3.0/Math.max(sz.x,sz.y,sz.z));
+  const b2=new THREE.Box3().setFromObject(m); m.position.set(GX, GY-b2.min.y, GZ); scene.add(m);
+}, undefined, e=>console.log('gob err',e));
 
 // --- camera + orbit (screenshot-controllable via ?az=&pol=&r=) ---
 const camera=new THREE.PerspectiveCamera(52, innerWidth/innerHeight, 0.5, 2000);
