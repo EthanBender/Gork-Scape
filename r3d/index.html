@@ -17,12 +17,32 @@ const q = new URLSearchParams(location.search);
 const region = await fetch('./region.json').then(r=>r.json());
 const { w, h, terr, el, colors, spawn } = region;
 
-// --- smooth the heightmap (kills the authored 1-tile cliffs -> clay hills) ---
+// --- tile classes (shared by elevation prep, texture bake, water & bridges) ---
+const GRASS=new Set([0,11,12,19]), PATH=new Set([3,6,7,20]), WATER=new Set([1,13,14]), FIELD=new Set([8]);
+const isWater=new Uint8Array(w*h), isBridge=new Uint8Array(w*h), isStruct=new Uint8Array(w*h), isChan=new Uint8Array(w*h);
+for (let k=0;k<w*h;k++){ const t=terr[k];
+  isWater[k]=WATER.has(t)?1:0; isBridge[k]=(t===6)?1:0; isStruct[k]=(t===9||t===10)?1:0;
+  isChan[k]=(isWater[k]||isBridge[k])?1:0; }          // channel = river flows here (also UNDER bridges)
+
+// bank lip = lowest surrounding LAND, per channel tile (radius 3 on raw elevation)
+const bankLip=new Float32Array(w*h);
+for (let j=0;j<h;j++) for (let i=0;i<w;i++){ const k=j*w+i; if(!isChan[k]) continue;
+  let lip=Infinity;
+  for (let dj=-3;dj<=3;dj++) for (let di=-3;di<=3;di++){ const x=i+di,y=j+dj; if(x<0||y<0||x>=w||y>=h)continue; const kk=y*w+x; if(!isChan[kk]) lip=Math.min(lip,el[kk]); }
+  bankLip[k]=(lip===Infinity? el[k]+20 : lip);
+}
+
+// --- terrain bed: SHALLOWER riverbeds (raise the too-deep channel toward its banks);
+//     STRUCTURES keep their authored (hard) elevation so they cut off crisply; natural
+//     ground gets smoothed for GRADUAL banks. Smoothing never averages across a
+//     structure edge, so buildings/walls stay sharp while nature slopes. ---
+const CHANNEL_DEPTH = (+q.get('cd')||18), SM = (+q.get('sm')||2);
 let E = el.slice();
-for (let p=0;p<1;p++){ const N=E.slice();
-  for (let j=0;j<h;j++) for (let i=0;i<w;i++){ let s=0,n=0;
-    for (let dj=-1;dj<=1;dj++) for (let di=-1;di<=1;di++){ const x=i+di,y=j+dj; if(x<0||y<0||x>=w||y>=h)continue; s+=E[y*w+x]; n++; }
-    N[j*w+i]=s/n; } E=N; }
+for (let k=0;k<w*h;k++){ if(isChan[k]) E[k]=Math.max(el[k], bankLip[k]-CHANNEL_DEPTH); }   // shallow bed
+for (let p=0;p<SM;p++){ const N=E.slice();
+  for (let j=0;j<h;j++) for (let i=0;i<w;i++){ const k=j*w+i; if(isStruct[k]) continue;       // structs stay hard
+    let s=0,n=0; for (let dj=-1;dj<=1;dj++) for (let di=-1;di<=1;di++){ const x=i+di,y=j+dj; if(x<0||y<0||x>=w||y>=h)continue; const kk=y*w+x; if(isStruct[kk])continue; s+=E[kk]; n++; }
+    if(n) N[k]=s/n; } E=N; }
 
 const renderer = new THREE.WebGLRenderer({antialias:true});
 renderer.setPixelRatio(Math.min(devicePixelRatio,2));
@@ -40,7 +60,6 @@ const hexInt = s => parseInt(String(s).slice(1),16);
 const shade = (ci,f)=>{ const r=(ci>>16)&255,gg=(ci>>8)&255,b=ci&255; return 'rgb('+(Math.min(255,r*f)|0)+','+(Math.min(255,gg*f)|0)+','+(Math.min(255,b*f)|0)+')'; };
 const tHash=(x,y)=>{ let hh=(Math.imul(x,374761393)+Math.imul(y,668265263))^0x9e3779b9; hh=Math.imul(hh^(hh>>>13),1274126177); return ((hh^(hh>>>16))>>>0)/4294967295; };
 const rc=(x,y,ww,hh)=>g2.fillRect(x,y,Math.max(1,ww),Math.max(1,hh));
-const GRASS=new Set([0,11,12,19]), PATH=new Set([3,6,7,20]), WATER=new Set([1,13,14]), FIELD=new Set([8]);
 for(let j=0;j<h;j++)for(let i=0;i<w;i++){
   const id=terr[j*w+i], hex=colors[id]||'#4a7c3a', ci=hexInt(hex), px=i*TSPX, py=j*TSPX;
   g2.globalAlpha=1; g2.fillStyle=hex; rc(px,py,TSPX+1,TSPX+1);
@@ -74,38 +93,42 @@ geo.setAttribute('uv', new THREE.Float32BufferAttribute(uv,2));
 geo.setIndex(idx); geo.computeVertexNormals();
 scene.add(new THREE.Mesh(geo, new THREE.MeshLambertMaterial({map:groundTex, flatShading:true})));
 
-// --- filled river surface that FOLLOWS the slope: each water tile's surface sits
-//     just below its local bank lip (min nearby land), so a descending river fills
-//     its bed to a natural waterline instead of beading at the channel bottom.
-//     Built as one shared-vertex mesh (no cracks), lightly smoothed. ---
-const MARGIN = (+q.get('wl')||8), WOP = (+q.get('wo')||0.82);   // raw elev below the bank lip + opacity
-const isW = new Uint8Array(w*h);
-for (let k=0;k<w*h;k++) isW[k] = WATER.has(terr[k]) ? 1 : 0;
+// --- filled river surface, slope-following: sits just below the local bank lip and
+//     flows through every channel AND under the bridges. Per-tile overlapping quads
+//     cover even 1-tile rivers; smoothed to flatten cross-channel + along flow. ---
+const MARGIN = (+q.get('wl')||6), WOP = (+q.get('wo')||0.82);   // raw elev below the bank lip + opacity
 const wsurf = new Float32Array(w*h);
-for (let j=0;j<h;j++) for (let i=0;i<w;i++){ const k=j*w+i; if(!isW[k]) continue;
-  let lip = Infinity;                                            // lowest surrounding LAND = the bank
-  for (let dj=-2;dj<=2;dj++) for (let di=-2;di<=2;di++){ const x=i+di,y=j+dj; if(x<0||y<0||x>=w||y>=h)continue; const kk=y*w+x; if(!isW[kk]) lip=Math.min(lip,E[kk]); }
-  wsurf[k] = Math.max((lip===Infinity ? E[k]+18 : lip - MARGIN), E[k]+2);  // below lip, but above bed
-}
-for (let p=0;p<3;p++){ const N=wsurf.slice();                    // flatten cross-channel + along flow
-  for (let j=0;j<h;j++) for (let i=0;i<w;i++){ const k=j*w+i; if(!isW[k])continue; let s=0,n=0;
-    for (let dj=-1;dj<=1;dj++) for (let di=-1;di<=1;di++){ const x=i+di,y=j+dj; if(x<0||y<0||x>=w||y>=h)continue; const kk=y*w+x; if(isW[kk]){s+=wsurf[kk];n++;} }
+for (let k=0;k<w*h;k++){ if(!isChan[k]) continue; wsurf[k]=Math.max(bankLip[k]-MARGIN, E[k]+2); }
+for (let p=0;p<4;p++){ const N=wsurf.slice();
+  for (let j=0;j<h;j++) for (let i=0;i<w;i++){ const k=j*w+i; if(!isChan[k])continue; let s=0,n=0;
+    for (let dj=-1;dj<=1;dj++) for (let di=-1;di<=1;di++){ const x=i+di,y=j+dj; if(x<0||y<0||x>=w||y>=h)continue; const kk=y*w+x; if(isChan[kk]){s+=wsurf[kk];n++;} }
     N[k]=s/n; } wsurf.set(N); }
-// per-tile quads (slightly overlapping to hide seams) so EVERY water tile — even
-// 1-tile-wide rivers — gets a filled surface at its slope-following waterline.
-const wpos=[], wnorm=[], widx=[]; let wc=0;
-for (let j=0;j<h;j++) for (let i=0;i<w;i++){ const k=j*w+i; if(!isW[k]) continue;
-  const x=i-w/2, z=j-h/2, y=(wsurf[k]/255)*HEIGHT, s=0.62;
-  wpos.push(x-s,y,z-s, x+s,y,z-s, x+s,y,z+s, x-s,y,z+s);
-  wnorm.push(0,1,0, 0,1,0, 0,1,0, 0,1,0);
-  widx.push(wc,wc+2,wc+1, wc,wc+3,wc+2); wc+=4;
+{ const wpos=[], wnorm=[], widx=[]; let wc=0;
+  for (let j=0;j<h;j++) for (let i=0;i<w;i++){ const k=j*w+i; if(!isChan[k]) continue;
+    const x=i-w/2, z=j-h/2, y=(wsurf[k]/255)*HEIGHT, s=0.62;
+    wpos.push(x-s,y,z-s, x+s,y,z-s, x+s,y,z+s, x-s,y,z+s);
+    wnorm.push(0,1,0, 0,1,0, 0,1,0, 0,1,0);
+    widx.push(wc,wc+2,wc+1, wc,wc+3,wc+2); wc+=4; }
+  if (wc){ const wg=new THREE.BufferGeometry();
+    wg.setAttribute('position', new THREE.Float32BufferAttribute(wpos,3));
+    wg.setAttribute('normal', new THREE.Float32BufferAttribute(wnorm,3));
+    wg.setIndex(widx);
+    const wmesh=new THREE.Mesh(wg, new THREE.MeshLambertMaterial({color:0x3f7fc4, emissive:0x11365e, transparent:true, opacity:WOP, side:THREE.DoubleSide, depthWrite:true}));
+    wmesh.renderOrder=2; scene.add(wmesh); }
 }
-if (wc){ const wg=new THREE.BufferGeometry();
-  wg.setAttribute('position', new THREE.Float32BufferAttribute(wpos,3));
-  wg.setAttribute('normal', new THREE.Float32BufferAttribute(wnorm,3));
-  wg.setIndex(widx);
-  const wmesh=new THREE.Mesh(wg, new THREE.MeshLambertMaterial({color:0x3f7fc4, emissive:0x11365e, transparent:true, opacity:WOP, side:THREE.DoubleSide, depthWrite:false}));
-  wmesh.renderOrder=2; scene.add(wmesh);
+
+// --- bridge decks: a solid wooden plank BOX (real thickness → lit top, shaded sides)
+//     at road level over each bridge tile, so roads visibly CROSS the river on a
+//     bridge with the water flowing underneath, instead of dipping into the channel. ---
+let bridgeC=null;
+{ const deckGeo=new THREE.BoxGeometry(1.3, 0.55, 1.3);
+  const deckMat=new THREE.MeshLambertMaterial({color:0x855a2c, flatShading:true});   // plank wood, distinct from tan roads
+  let bx=0,bz=0,bn=0;
+  for (let j=0;j<h;j++) for (let i=0;i<w;i++){ const k=j*w+i; if(!isBridge[k]) continue;
+    const x=i-w/2, z=j-h/2, y=(bankLip[k]/255)*HEIGHT + 0.08;         // deck top ~road level, just above water
+    const m=new THREE.Mesh(deckGeo, deckMat); m.position.set(x,y,z); m.renderOrder=3; scene.add(m);
+    bx+=x; bz+=z; bn++; }
+  if(bn) bridgeC=[bx/bn, (bankLip.reduce((a,v,idx)=>isBridge[idx]?a+v:a,0)/bn/255)*HEIGHT, bz/bn];
 }
 
 // --- one world-fixed key light (clay top-left) + soft fill ---
@@ -130,6 +153,10 @@ const az=(+q.get('az')||35)*Math.PI/180, pol=(+q.get('pol')||58)*Math.PI/180, R=
 camera.position.set(Math.sin(az)*Math.sin(pol)*R, Math.cos(pol)*R, Math.cos(az)*Math.sin(pol)*R);
 if(q.get('gob')){ const gx=spawn.x-w/2,gz=spawn.y-h/2,gy=heightAt(spawn.x,spawn.y); controls.target.set(gx,gy+3,gz);
   const rr=+q.get('r')||30; camera.position.set(gx+Math.sin(az)*rr, gy+rr*0.6, gz+Math.cos(az)*rr); }
+if(q.get('bt') && bridgeC){ const [gx,gy,gz]=bridgeC; controls.target.set(gx,gy,gz);
+  const rr=+q.get('r')||34; camera.position.set(gx+Math.sin(az)*rr, gy+rr*0.55, gz+Math.cos(az)*rr); }
+if(q.get('tx')!==null){ const tx=+q.get('tx'), tz=+q.get('tz'), gx=tx-w/2, gz=tz-h/2, gy=heightAt(tx,tz); controls.target.set(gx,gy,gz);
+  const rr=+q.get('r')||22; camera.position.set(gx+Math.sin(az)*rr, gy+rr*0.5, gz+Math.cos(az)*rr); }
 controls.update();
 
 addEventListener('resize',()=>{ camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight); });
