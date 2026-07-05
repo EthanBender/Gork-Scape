@@ -1639,5 +1639,173 @@
    "mystery:dwarf_pumps",
    "npc:murk"
   ]
+ },
+ {
+  "id": "mushroom_cap_festival",
+  "name": "The Great Cap Festival",
+  "act": 3,
+  "giver": {
+   "npc": "morel",
+   "name": "Old Judge Morel",
+   "where": {
+    "x": 250,
+    "y": 800
+   }
+  },
+  "summary": "The Great Cap Festival is the fashion event of the year — and the spore-crawlers have chewed Old Judge Morel's centerpiece caps to lace with the show hours away.",
+  "intro": "Disaster, darling, DISASTER — the crawlers have gnawed my centerpiece to ruin and the Festival is UPON us! Forty years I've judged in this very hat and I shan't see the show spoilt. Bring me the reddest redcaps and one witchcap for drama, then clear those wretches from the show-grove. The finest heads in the realm are counting on us.",
+  "outro": "Sublime. SUBLIME. The redcaps caught the light and the witchcap drew audible gasps — the Red-Ear delegation actually applauded, the brutes. You've a moss-folk's eye for a cap, friend, and out here that is the highest praise there is. Wear this one with pride.",
+  "requires": {
+   "level": {
+    "skill": "Crafting",
+    "level": 20
+   }
+  },
+  "steps": [
+   {
+    "type": "goto",
+    "target": "mushroom",
+    "where": {
+     "x": 250,
+     "y": 800,
+     "name": "the Mushroom Forest",
+     "radius": 60
+    },
+    "text": "Travel to the Mushroom Forest",
+    "say": "Far to the southwest, where the canopy glows. Follow the spores in."
+   },
+   {
+    "type": "obtain",
+    "target": "redcap",
+    "count": 5,
+    "text": "Gather 5 Redcaps for the centerpiece",
+    "say": "The reddest you can find — presentation is EVERYTHING."
+   },
+   {
+    "type": "obtain",
+    "target": "witchcap",
+    "count": 1,
+    "text": "Find 1 Witchcap for dramatic flair",
+    "say": "One perfect witchcap. It simply must have PRESENCE."
+   },
+   {
+    "type": "kill",
+    "target": "spore_crawler",
+    "count": 5,
+    "text": "Clear 5 Spore-crawlers from the show-grove",
+    "say": "Shoo the little wretches before they lace another cap."
+   },
+   {
+    "type": "talk",
+    "target": "morel",
+    "name": "Old Judge Morel",
+    "text": "Return to Old Judge Morel",
+    "say": "Bring the caps to the festival pavilion — quickly, quickly!"
+   }
+  ],
+  "rewards": {
+   "coins": 260,
+   "xp": [
+    {
+     "skill": "Crafting",
+     "amount": 540
+    },
+    {
+     "skill": "Woodcutting",
+     "amount": 260
+    }
+   ],
+   "items": [
+    {
+     "id": "witchcap"
+    }
+   ]
+  },
+  "thread": "local",
+  "teaches": [
+   "region:mushroom",
+   "people:moss_folk",
+   "lore:cap_festival_judge"
+  ]
+ },
+ {
+  "id": "mushroom_memory_caps",
+  "name": "A Stranger's Afternoon",
+  "act": 3,
+  "giver": {
+   "npc": "morel",
+   "name": "Old Judge Morel",
+   "where": {
+    "x": 250,
+    "y": 800
+   }
+  },
+  "summary": "Now that you've earned a moss-folk's trust, Old Judge Morel shares the secret of the mooncaps: eat one and dream a stranger's whole afternoon. Whose, no one has ever learned.",
+  "intro": "You've earned a moss-folk's trust, so I'll tell you what we don't tell outsiders. The big pale mooncaps — eat one and you'll live an afternoon that isn't yours. A stranger's lunch, their quarrel, the face of someone they loved. We've dreamed these dreams for generations and never once learned whose lives they are. Gather three ripe mooncaps and dream for yourself. Just... don't go looking too hard for the who of it. That way lies a kind of madness.",
+  "outro": "So. You dreamed it — the crooked little kitchen, the argument about the leaking roof, the child's laugh you'd swear you knew. And you've no more notion whose life it was than I do, than my grandmother did. That's the way of the mooncaps, friend: some afternoons belong to no one we'll ever name. Best we leave them their peace.",
+  "requires": {
+   "quests": [
+    "mushroom_cap_festival"
+   ]
+  },
+  "steps": [
+   {
+    "type": "goto",
+    "target": "mushroom",
+    "where": {
+     "x": 238,
+     "y": 818,
+     "name": "the mooncap grove",
+     "radius": 55
+    },
+    "text": "Find the mooncap grove",
+    "say": "Deeper in, where the caps glow palest. Mind the crawlers underfoot."
+   },
+   {
+    "type": "kill",
+    "target": "fungal_rat",
+    "count": 5,
+    "text": "Drive off 5 Fungal Rats gnawing the mooncaps",
+    "say": "The rats reach the ripe ones first. Shoo them off."
+   },
+   {
+    "type": "obtain",
+    "target": "mooncap",
+    "count": 3,
+    "text": "Gather 3 ripe Mooncaps to dream by",
+    "say": "Pale and heavy — those are the ripe ones. Three should do."
+   },
+   {
+    "type": "talk",
+    "target": "morel",
+    "name": "Old Judge Morel",
+    "text": "Return to Old Judge Morel",
+    "say": "Come back when you've dreamed. Tell me what you saw. Or don't."
+   }
+  ],
+  "rewards": {
+   "coins": 340,
+   "xp": [
+    {
+     "skill": "Prayer",
+     "amount": 600
+    },
+    {
+     "skill": "Hitpoints",
+     "amount": 300
+    }
+   ],
+   "items": [
+    {
+     "id": "mooncap"
+    }
+   ]
+  },
+  "thread": "main",
+  "teaches": [
+   "region:mushroom",
+   "mystery:memory_mushrooms",
+   "npc:morel"
+  ]
  }
 ]

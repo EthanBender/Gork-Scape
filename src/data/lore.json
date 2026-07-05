@@ -26,6 +26,8 @@
     { "id": "red_ear_soft", "region": "rival", "truth": "nonsense",
       "text": "The Red-Ears say Gorkholm's goblins have gone soft. Gorkholm says the Red-Ears learned to count last spring and haven't stopped bragging." },
     { "id": "snail_derby_champion", "region": "bog", "truth": "true",
-      "text": "Murk's snail has won the Great Snail Derby nine years running. Rival keepers swear it's the sacred rust he feeds it. Murk says it's love." }
+      "text": "Murk's snail has won the Great Snail Derby nine years running. Rival keepers swear it's the sacred rust he feeds it. Murk says it's love." },
+    { "id": "moss_folk_character", "region": "mushroom", "truth": "exaggerated",
+      "text": "The moss-folk swear a goblin's whole character shows in their choice of cap. They also swear the Red-Ears have no character — which the Red-Ears, capless, take as a compliment." }
   ]
 }

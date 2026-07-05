@@ -16,6 +16,9 @@
     { "id": "shopkeeper_farming_shed", "name": "Farmhand", "home": "settlement", "appearsIn": ["settlement", "farmlands"], "recurring": false, "role": "works the farms; the one who swears the scarecrow moved" },
     { "id": "murk", "name": "Murk the Bogling", "home": "bog", "appearsIn": ["bog"], "recurring": true,
       "role": "a bogling snail-keeper and rust-trader in the Bog of Grub",
-      "arc": "Keeper of a champion racing snail and the sacred rust — the player's way into bogling culture, and the one who only shrugs at the ancient pumps no one understands." }
+      "arc": "Keeper of a champion racing snail and the sacred rust — the player's way into bogling culture, and the one who only shrugs at the ancient pumps no one understands." },
+    { "id": "morel", "name": "Old Judge Morel", "home": "mushroom", "appearsIn": ["mushroom"], "recurring": true,
+      "role": "moss-folk milliner and forty-year head judge of the Great Cap Festival",
+      "arc": "The player's way into moss-folk culture — fashion first, then the older mushroom secrets the moss-folk keep from outsiders: the memory caps, and what no one has ever learned from them." }
   ]
 }
