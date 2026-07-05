@@ -167,7 +167,9 @@ loader.load(baseModel, gl=>{ const m=gl.scene;
   m.scale.setScalar(GSCALE/Math.max(sz.x,sz.y,sz.z));
   const b2=new THREE.Box3().setFromObject(m); m.position.y=-b2.min.y;   // feet on the ground
   goblin.add(m);
-  if (anim && gl.animations && gl.animations.length){ mixer=new THREE.AnimationMixer(m); mixer.clipAction(gl.animations[0]).play(); goblin._animRoot=m; }
+  if (anim && gl.animations && gl.animations.length){ const clip=gl.animations[0];
+    clip.tracks=clip.tracks.filter(t=>!/head|neck/i.test(t.name));   // freeze head/neck → the tall pointed hood stops whipping/distorting as he walks
+    mixer=new THREE.AnimationMixer(m); mixer.clipAction(clip).play(); goblin._animRoot=m; }
 }, undefined, e=>{ console.log('base load err',e);   // fallback to the fused goblin
   loader.load('./models/goblin_i23.glb', gl=>{ const m=gl.scene; const b=new THREE.Box3().setFromObject(m),sz=b.getSize(new THREE.Vector3()); m.scale.setScalar(GSCALE/Math.max(sz.x,sz.y,sz.z)); const b2=new THREE.Box3().setFromObject(m); m.position.y=-b2.min.y; goblin.add(m); }); });
 // equip a weapon into the hand socket
