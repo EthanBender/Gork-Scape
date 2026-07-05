@@ -110,6 +110,9 @@ const ROT_STEP = Math.PI / 12; // 15° per key tap / wheel notch
 let targetZoom = 1;            // smoothed-toward values; main cam eases to these
 let targetRot = 0;            // radians, accumulates (not wrapped)
 const csCamPx = { x: null, y: null }; // [economy lane] eased cutscene camera position
+// [r3d] real-3D render mode, opt-in via ?r3d=1. Read ONCE. When off, the two guarded
+// hooks below are dead code and the 2D path is byte-identical (three.js never loads).
+const R3D = typeof location !== 'undefined' && /[?&]r3d=1/.test(location.search);
 
 // ---------------------------------------------------------------- world setup
 function buildWorld() {
@@ -568,6 +571,10 @@ function create() {
 
   // Persistence/idle/autosave may start now that saved state is applied.
   notifyGameReady();
+
+  // [r3d] mount the real-3D overlay ONLY under ?r3d=1. Dynamic import keeps three.js
+  // out of the 2D bundle entirely; failure is caught and never affects the 2D game.
+  if (R3D) import('./render3d/mount3d.js').then(m => m.mount3d(Game)).catch(e => console.error('[r3d] load failed', e));
 }
 
 // [economy lane] Restore + fast-forward the shared Grand Exchange on login, and
@@ -2058,6 +2065,8 @@ function update(time, delta) {
   updateLabels();
   drawMinimap();
   updateRunHud();
+  // [r3d] hand the frame to the 3D overlay (render-only) when ?r3d=1. One boolean when off.
+  if (R3D && window.__r3d) window.__r3d.frame();
 }
 
 function approach(o, key, target, maxStep) {
@@ -3141,6 +3150,7 @@ function startGame() {
 }
 function stopGame() {
   stopPresence(); // [presence lane] end heartbeat + clear remote players on logout
+  if (R3D && window.__r3d) { try { window.__r3d.dispose(); } catch (_) {} } // [r3d] tear down the 3D canvas
   if (Game.ticker) Game.ticker.stop();
   if (phaserGame) { phaserGame.destroy(true); phaserGame = null; }
   scene = null;

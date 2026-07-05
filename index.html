@@ -13,6 +13,10 @@
 <!-- Redesign type voices: Fredoka (juicy display), Nunito (body), Space Mono (system/labels) -->
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js"></script>
+<!-- [r3d] three.js import map (inert until ?r3d=1 dynamically imports 'three'; 2D players never fetch it) -->
+<script type="importmap">{"imports":{
+  "three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 <style>
   :root {
     --font-display: "Baloo 2", "Segoe UI", Tahoma, sans-serif;
