@@ -60,8 +60,42 @@ function _mount(Game) {
   scene.background = new THREE.Color('#bcd8e8');
   scene.fog = new THREE.Fog('#a9c7d6', WIN * 0.8, WIN * 1.8);
   const sun = new THREE.DirectionalLight(0xfff4e0, 2.1); sun.position.set(-70, 120, -30); scene.add(sun);
-  scene.add(new THREE.HemisphereLight(0xdcecff, 0x54633a, 1.05));
-  scene.add(new THREE.AmbientLight(0xffffff, 0.35));
+  const hemi = new THREE.HemisphereLight(0xdcecff, 0x54633a, 1.05); scene.add(hemi);
+  const amb = new THREE.AmbientLight(0xffffff, 0.35); scene.add(amb);
+
+  // ---------- day/night in real light: the 2D game's daylight film (#daylight-overlay,
+  // a DOM multiply layer) is hidden while 3D runs; instead the SAME worldClock curve
+  // multiplies the 3D sky/fog/sun/ambient — dawn gold, clear noon, amber dusk, moonlit
+  // blue night — with real shading instead of a flat grey wash. ----------
+  const dlFilm = document.getElementById('daylight-overlay');
+  if (dlFilm) dlFilm.style.display = 'none';
+  const BASE = { sky: new THREE.Color('#bcd8e8'), fog: new THREE.Color('#a9c7d6'),
+    sun: new THREE.Color(0xfff4e0), hemiSky: new THREE.Color(0xdcecff), hemiGnd: new THREE.Color(0x54633a), amb: new THREE.Color(0xffffff) };
+  const tintC = new THREE.Color(), tint2 = new THREE.Color();
+  let lastMin = -1;
+  function daylight3d() {
+    const wc = Game.worldClock; if (!wc || !wc.timeOfDay) return;
+    let t; try { t = wc.timeOfDay(); } catch (_) { return; }
+    const minute = (t * 24 * 60) | 0; if (minute === lastMin) return; lastMin = minute;
+    const h = t * 24, lerp = (a, b, k) => a + (b - a) * Math.max(0, Math.min(1, k));
+    const NIGHT = [125, 135, 190], DAY = [255, 255, 255], DAWN = [255, 216, 165], DUSK = [255, 190, 140];
+    let c;
+    if (h < 5) c = NIGHT;
+    else if (h < 6.5) c = NIGHT.map((v, i) => lerp(v, DAWN[i], (h - 5) / 1.5));
+    else if (h < 8) c = DAWN.map((v, i) => lerp(v, DAY[i], (h - 6.5) / 1.5));
+    else if (h < 18) c = DAY;
+    else if (h < 19.5) c = DAY.map((v, i) => lerp(v, DUSK[i], (h - 18) / 1.5));
+    else if (h < 21) c = DUSK.map((v, i) => lerp(v, NIGHT[i], (h - 19.5) / 1.5));
+    else c = NIGHT;
+    if (Game.world && Game.world.interior) c = [205, 180, 150];   // torch-lit interiors
+    tintC.setRGB(c[0] / 255, c[1] / 255, c[2] / 255);
+    tint2.copy(tintC).multiply(tintC);                 // squared for the LIGHTS: tonemapping washes a single multiply out
+    scene.background.copy(BASE.sky).multiply(tintC);   // sky keeps the softer single tint
+    scene.fog.color.copy(BASE.fog).multiply(tintC);
+    sun.color.copy(BASE.sun).multiply(tint2);
+    hemi.color.copy(BASE.hemiSky).multiply(tint2); hemi.groundColor.copy(BASE.hemiGnd).multiply(tint2);
+    amb.color.copy(BASE.amb).multiply(tint2);
+  }
 
   const heightAt = (tx, ty) => { tx = Math.max(0, Math.min(W - 1, tx | 0)); ty = Math.max(0, Math.min(H - 1, ty | 0)); return (elev[ty * W + tx] / 255) * HEIGHT; };
 
@@ -213,6 +247,7 @@ function _mount(Game) {
       const wx = p ? p.px / TILE_SIZE : winCX, wz = p ? p.py / TILE_SIZE : winCY;
       const wy = heightAt(wx, wz);
       if (Math.abs(wx - winCX) > REBUILD || Math.abs(wz - winCY) > REBUILD) buildWindow(wx | 0, wz | 0);
+      daylight3d();                                            // world-clock lighting (once per game minute)
       const dt = clock.getDelta();
       if (p) {
         goblin.visible = true;
@@ -276,7 +311,7 @@ function _mount(Game) {
 
   window.__r3d = {
     frame() {},   // legacy hook from update() — self-driving loop renders now; kept so the guarded call is harmless
-    dispose() { try { renderer.setAnimationLoop(null); renderer.dispose(); cv.remove(); chip.remove(); window.__r3d = null; } catch (_) {} }
+    dispose() { try { if (dlFilm) dlFilm.style.display = ''; renderer.setAnimationLoop(null); renderer.dispose(); cv.remove(); chip.remove(); window.__r3d = null; } catch (_) {} }
   };
 
   const px0 = (Game.player && Game.player.px / TILE_SIZE | 0) || (W >> 1);
