@@ -2938,5 +2938,169 @@
    "npc:knot",
    "lore:the_chopping_oak"
   ]
+ },
+ {
+  "id": "grublake_dont_blame_the_lake",
+  "name": "Don't Blame the Lake",
+  "act": 3,
+  "giver": {
+   "npc": "shopkeeper_fishmonger",
+   "name": "Fishmonger",
+   "where": {
+    "x": 735,
+    "y": 495
+   }
+  },
+  "summary": "A new crew is robbing the Grublake docks — organized, boats, hooks, the lot — and the dock-folk have concluded it's the lake taking her due. The Fishmonger has seen the cut nets. Lakes don't carry knives.",
+  "intro": "You sorted the crazed ones for me once — this is worse. There's a CREW working the lake now: boats, hooks, lookouts, the lot. And you know what the dock-folk say? 'The lake's taking her due.' The LAKE. I've held the cut nets in my own hands, friend. Lakes don't carry KNIVES. Break up the thieving crew and bring back what's left of my catch, and maybe — MAYBE — this dock will stop apologizing to the water.",
+  "outro": "Cut nets mended, hooks confiscated, my pike back on the slab. And the dock-folk looked at the thieves you dragged in — looked RIGHT at them — and said 'aye, but who SENT them?' ...You can't win. The lake gets the credit and the alibi both, and it's been that way since my grandmother ran this wharf. Sell the fish. Thank the water. Don't ask questions. It's a living.",
+  "requires": {
+   "quests": [
+    "grublake_fish_thieves"
+   ]
+  },
+  "steps": [
+   {
+    "type": "goto",
+    "target": "grublake",
+    "where": {
+     "x": 735,
+     "y": 495,
+     "name": "Grublake",
+     "radius": 50
+    },
+    "text": "Return to Grublake",
+    "say": "East past the Oakwoods, back to the docks you know."
+   },
+   {
+    "type": "kill",
+    "target": "lake_thief",
+    "count": 6,
+    "text": "Break up 6 Lake Thieves working the docks",
+    "say": "They work off little boats after dark. Sink their evening."
+   },
+   {
+    "type": "obtain",
+    "target": "raw_pike",
+    "count": 3,
+    "text": "Recover 3 Raw Pike from the stolen catch",
+    "say": "They have not even SOLD it yet. It is right there in their boats."
+   },
+   {
+    "type": "talk",
+    "target": "shopkeeper_fishmonger",
+    "name": "Fishmonger",
+    "text": "Report back to the Fishmonger",
+    "say": "Come find me at the lake stall, counting what I have left."
+   }
+  ],
+  "rewards": {
+   "coins": 260,
+   "xp": [
+    {
+     "skill": "Fishing",
+     "amount": 520
+    },
+    {
+     "skill": "Attack",
+     "amount": 260
+    }
+   ],
+   "items": [
+    {
+     "id": "lake_thief_banner"
+    }
+   ]
+  },
+  "thread": "local",
+  "teaches": [
+   "region:grublake",
+   "npc:shopkeeper_fishmonger",
+   "lore:lake_owes"
+  ]
+ },
+ {
+  "id": "grublake_wreck_below",
+  "name": "The Wreck Below",
+  "act": 3,
+  "giver": {
+   "npc": "pike",
+   "name": "Old Pike",
+   "where": {
+    "x": 735,
+    "y": 495
+   }
+  },
+  "summary": "Forty years Old Pike has dived the wreck at the bottom of Grublake — a ship too large for any lake, letters nobody reads, boilers still shut tight. This season the snappers have nested in her hold and bullied him off his own dive.",
+  "intro": "Forty years I've dived her. Oh aye — there's a SHIP down there, friend. Bigger than anything that's ever floated this lake. Masts like bridge-timbers. Fittings sized for hands — not our size of hands. Letters on her stern that aren't anybody's letters. I know every plank of her and I don't know her NAME. ...And this season the snappers have nested in her hold and bullied me off my own dive. I'm too old to argue with a snapper. Clear the nest, bring me shell for proof, and I'll show you what she gives me.",
+  "outro": "Nest cleared. Good work, that. Here — came up on my last good dive. A piston. STEAM-work, shut-boiler steam-work, off a ship at the bottom of a lake no river could have carried her into, five hundred miles from any sea. You want to know how she got here. So did I, forty years back — wanted it so bad I near drowned twice looking for her name. Now I keep a rule, and it's the lake's rule too: first fish of the morning goes back in, and the wreck keeps her name. We get along fine on those terms, her and me. Take the piston. She won't miss it. She has never once missed ME.",
+  "requires": {
+   "quests": [
+    "grublake_dont_blame_the_lake"
+   ],
+   "level": {
+    "skill": "Fishing",
+    "level": 30
+   }
+  },
+  "steps": [
+   {
+    "type": "goto",
+    "target": "grublake",
+    "where": {
+     "x": 750,
+     "y": 510,
+     "name": "the deep water over the wreck",
+     "radius": 45
+    },
+    "text": "Row out to the deep water over the wreck",
+    "say": "Past the island, where the water goes black and the birds will not follow."
+   },
+   {
+    "type": "kill",
+    "target": "lake_snapper",
+    "count": 4,
+    "text": "Clear 4 Lake Snappers nested in the hold",
+    "say": "They are big, old, and rude. The hold made them worse."
+   },
+   {
+    "type": "obtain",
+    "target": "snapper_shell",
+    "count": 2,
+    "text": "Bring up 2 Snapper Shells as proof",
+    "say": "Shell for proof. I will know the nest by its shells."
+   },
+   {
+    "type": "talk",
+    "target": "pike",
+    "name": "Old Pike",
+    "text": "Return to Old Pike on the dock",
+    "say": "I will be at the end of the long jetty. I am always at the end of the long jetty."
+   }
+  ],
+  "rewards": {
+   "coins": 340,
+   "xp": [
+    {
+     "skill": "Fishing",
+     "amount": 620
+    },
+    {
+     "skill": "Strength",
+     "amount": 300
+    }
+   ],
+   "items": [
+    {
+     "id": "steam_piston"
+    }
+   ]
+  },
+  "thread": "main",
+  "teaches": [
+   "region:grublake",
+   "mystery:the_wreck",
+   "npc:pike"
+  ]
  }
 ]

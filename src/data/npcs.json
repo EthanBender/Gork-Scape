@@ -40,6 +40,9 @@
       "arc": "Fare is whatever Eddy feels the crossing was worth — three polished spoons for a merchant, one good story for a penniless whelp. The player's way into the riverlands' pace, and a cousin-web that reaches every bogling in the marshes." },
     { "id": "knot", "name": "Knot the Logger", "home": "choppers", "appearsIn": ["choppers"], "recurring": true,
       "role": "Chopper's Hollow's most reliable worker and least reliable witness",
-      "arc": "Three loggers swear the tallest oak chops back, and Knot is all three of them at heart. He KNOWS WHAT HE SAW. Every camp needs its tall-tale engine — the Hollow's is the best, and the strange thing is, his stories keep almost checking out." }
+      "arc": "Three loggers swear the tallest oak chops back, and Knot is all three of them at heart. He KNOWS WHAT HE SAW. Every camp needs its tall-tale engine — the Hollow's is the best, and the strange thing is, his stories keep almost checking out." },
+    { "id": "pike", "name": "Old Pike", "home": "grublake", "appearsIn": ["grublake"], "recurring": true,
+      "role": "Grublake's last wreck-diver — forty years dredging the ship at the bottom of the lake",
+      "arc": "Knows every plank of the wreck and not her name. His rule is the lake's rule: the first fish of the morning goes back in, and the wreck keeps her name. The player's window into what the lake keeps — and what it returns, on its own calendar." }
   ]
 }

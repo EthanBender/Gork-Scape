@@ -14,6 +14,8 @@
     { "id": "deep_tunnels", "name": "How Deep It Goes", "region": "minehills", "answered": "eventually",
       "hook": "Every goblin shaft eventually breaks into a older, straighter dwarf tunnel going further down than anyone has dared. Where does the last one end?" },
     { "id": "the_oldest_oak", "name": "The Oldest Oak", "region": "oakwoods", "answered": "never",
-      "hook": "The Root Keepers grow their homes from living wood and won't say how old the oldest oak is — or whether it grew the first root-keeper, or the other way around. Even they may no longer know." }
+      "hook": "The Root Keepers grow their homes from living wood and won't say how old the oldest oak is — or whether it grew the first root-keeper, or the other way around. Even they may no longer know." },
+    { "id": "the_wreck", "name": "The Wreck Below", "region": "grublake", "answered": "never",
+      "hook": "At the bottom of Grublake lies a ship far too large for any lake — masts like bridge-timbers, fittings sized for the wrong hands, letters on the stern that nobody reads, boilers still shut tight. No river could have brought her in. What sea did she sail, and how did she come to rest HERE?" }
   ]
 }
