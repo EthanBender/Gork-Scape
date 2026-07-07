@@ -15,9 +15,9 @@ const opt = (p, k) => has(p) ? arr(load(p), k) : null;
 
 // ---- ratcheting knobs (may only move TOWARD the bible; see map_defects for the pattern) ----
 const TEACHES_UNTAGGED_BUDGET = 0;    // quests without a `teaches:[...]` link. All 19 tagged 2026-07-04 → budget 0 (every new quest must teach).
-const IDENTITY_MIN_FIELDS = 2;         // non-empty identity fields every region must carry. Target ~5. Ratchet UP.
-const THREAD_MAIN_BAND = [0.15, 0.45]; // share of quests on the main/mystery thread. Bible target 0.30 (now at 0.21). Tighten toward it.
-const WONDER_MIN_NEVER = 3;            // mysteries that stay 'never' answered. The Rule of Wonder. Ratchet UP.
+const IDENTITY_MIN_FIELDS = 5;         // non-empty identity fields every region must carry. AT TARGET (ratcheted 2→5 after the 7-region enrichment 2026-07-04).
+const THREAD_MAIN_BAND = [0.20, 0.40]; // share of quests on the main/mystery thread. Bible target 0.30 (at 0.28 after 3 region slices). Tightened from [0.15,0.45].
+const WONDER_MIN_NEVER = 4;            // mysteries that stay 'never' answered. The Rule of Wonder. To answer one later, ADD a new never-mystery first — wonder never shrinks.
 
 const peoples = arr(load('src/data/peoples.json'), 'peoples');
 const regions = arr(load('src/data/regions.json'), 'regions');
