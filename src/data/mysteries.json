@@ -12,6 +12,8 @@
     { "id": "walking_scarecrow", "name": "The Walking Scarecrow", "region": "farmlands", "answered": "never",
       "hook": "A field scarecrow that has, by unanimous and useless agreement, moved. No one has ever seen it move. It simply is not where it was." },
     { "id": "deep_tunnels", "name": "How Deep It Goes", "region": "minehills", "answered": "eventually",
-      "hook": "Every goblin shaft eventually breaks into a older, straighter dwarf tunnel going further down than anyone has dared. Where does the last one end?" }
+      "hook": "Every goblin shaft eventually breaks into a older, straighter dwarf tunnel going further down than anyone has dared. Where does the last one end?" },
+    { "id": "the_oldest_oak", "name": "The Oldest Oak", "region": "oakwoods", "answered": "never",
+      "hook": "The Root Keepers grow their homes from living wood and won't say how old the oldest oak is — or whether it grew the first root-keeper, or the other way around. Even they may no longer know." }
   ]
 }

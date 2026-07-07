@@ -2129,5 +2129,172 @@
    "mystery:deep_tunnels",
    "people:pebblers"
   ]
+ },
+ {
+  "id": "oakwoods_ask_the_wood",
+  "name": "Ask the Wood",
+  "act": 3,
+  "giver": {
+   "npc": "taproot",
+   "name": "Old Taproot",
+   "where": {
+    "x": 820,
+    "y": 330
+   }
+  },
+  "summary": "Old Taproot the root-keeper will teach a goblin to take from the Oakwoods properly: ask first, use all of it, thank after. The boars are goring saplings faster than the wood can grow them — a cull the oaks themselves have asked for.",
+  "intro": "You came through here once with a blade, chasing Red-Ears. The wood remembers — no, don't look like that; it remembers KINDLY. But if you'd take from the Oakwoods, you'll take our way: ask first, use all of it, thank after. The boars are goring saplings faster than the wood can grow them back — that's a cull the oaks have asked for themselves. Bring me the meat; nothing asked-for goes to waste. And gather oak while you're out. The trees will show you which.",
+  "outro": "Meat for the table, oak for the beam, and the saplings breathing again. That is taking done properly — the wood ends heavier by what you left and lighter by what you carried. You goblins usually have that backwards. Come deeper into the wood sometime. There's someone I tend that you ought to meet. Bring patience.",
+  "requires": {
+   "quests": [
+    "scouts_in_the_oakwoods"
+   ]
+  },
+  "steps": [
+   {
+    "type": "goto",
+    "target": "oakwoods",
+    "where": {
+     "x": 820,
+     "y": 330,
+     "name": "the Eastern Oakwoods",
+     "radius": 60
+    },
+    "text": "Travel to the Eastern Oakwoods",
+    "say": "East, past the lake road, in under the old canopy."
+   },
+   {
+    "type": "kill",
+    "target": "oak_boar",
+    "count": 6,
+    "text": "Cull 6 Oak Boars goring the saplings",
+    "say": "The wood has asked. Make it quick and make it count."
+   },
+   {
+    "type": "obtain",
+    "target": "boar_meat",
+    "count": 4,
+    "text": "Bring back 4 Boar Meat — nothing goes to waste",
+    "say": "What is asked for is used, all of it. That is the bargain."
+   },
+   {
+    "type": "obtain",
+    "target": "oak_logs",
+    "count": 3,
+    "text": "Gather 3 Oak Logs the asked way",
+    "say": "Take from the trees that offer. You will know them when you look."
+   },
+   {
+    "type": "talk",
+    "target": "taproot",
+    "name": "Old Taproot",
+    "text": "Return to Old Taproot",
+    "say": "Come back to my porch — mind the roots, they move a little."
+   }
+  ],
+  "rewards": {
+   "coins": 250,
+   "xp": [
+    {
+     "skill": "Woodcutting",
+     "amount": 520
+    },
+    {
+     "skill": "Attack",
+     "amount": 260
+    }
+   ],
+   "items": [
+    {
+     "id": "boar_tusk_spear_tip"
+    }
+   ]
+  },
+  "thread": "local",
+  "teaches": [
+   "region:oakwoods",
+   "people:root_keepers",
+   "lore:growing_house"
+  ]
+ },
+ {
+  "id": "oakwoods_oldest_oak",
+  "name": "The Oldest Oak",
+  "act": 3,
+  "giver": {
+   "npc": "taproot",
+   "name": "Old Taproot",
+   "where": {
+    "x": 820,
+    "y": 330
+   }
+  },
+  "summary": "In the deepest Oakwoods stands the tree the root-keepers have tended since before remembering — and lately, black root-things gnaw where its oldest roots run. Taproot won't say how old it is. Taproot doesn't know.",
+  "intro": "This is the one I tend. Older than the Ridge trolls, older than the ruins — how much older I won't say, partly because we don't say, and partly, friend, because I don't KNOW. My grandmother tended it. Hers did. Somewhere down the years someone must have asked it, but the answer isn't in the family anymore. Only the tending is. Now — black root-things stalk its floor, gnawing where the oldest roots run. Clear them off and bring me the blackroot they shed. The oak won't thank you aloud. It never does. But watch for a leaf or two coming down where you stand. That's it, saying.",
+  "outro": "Blackroot burned, floor cleared — and its leaves came down for you; I saw. You want to ask it, don't you. How old. What it's seen. Whether it grew the first of us, or we planted it. I asked once, when I was green — it dropped an acorn on my head. Sixty years I've thought about that answer, and here's where I've landed: some things aren't secrets. They're just too big for the door of a word. Let it be old. Let it be kind. That's enough to be going on with.",
+  "requires": {
+   "quests": [
+    "oakwoods_ask_the_wood"
+   ]
+  },
+  "steps": [
+   {
+    "type": "goto",
+    "target": "oakwoods",
+    "where": {
+     "x": 835,
+     "y": 345,
+     "name": "the oldest oak",
+     "radius": 50
+    },
+    "text": "Walk to the oldest oak",
+    "say": "Deepest part of the wood, where the canopy goes quiet. You will know it. Everyone does."
+   },
+   {
+    "type": "kill",
+    "target": "blackroot_stalker",
+    "count": 3,
+    "text": "Destroy 3 Blackroot Stalkers gnawing the roots",
+    "say": "They gnaw where the oldest roots run. The oak cannot ask them to stop. You can."
+   },
+   {
+    "type": "obtain",
+    "target": "blackroot_logs",
+    "count": 2,
+    "text": "Gather 2 Blackroot the stalkers shed",
+    "say": "Bring me what they leave behind. It burns hot, and it deserves to."
+   },
+   {
+    "type": "talk",
+    "target": "taproot",
+    "name": "Old Taproot",
+    "text": "Return to Old Taproot beneath the oak",
+    "say": "I will be under the old one, watching the leaves."
+   }
+  ],
+  "rewards": {
+   "coins": 350,
+   "xp": [
+    {
+     "skill": "Woodcutting",
+     "amount": 640
+    },
+    {
+     "skill": "Defence",
+     "amount": 300
+    }
+   ],
+   "items": [
+    {
+     "id": "blackroot_bow"
+    }
+   ]
+  },
+  "thread": "main",
+  "teaches": [
+   "region:oakwoods",
+   "mystery:the_oldest_oak",
+   "npc:taproot"
+  ]
  }
 ]

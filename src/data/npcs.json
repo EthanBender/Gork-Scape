@@ -25,6 +25,9 @@
       "arc": "The player's way into the forest-sprites — everyday tending first, then the edge of the great question they guard: who built the ruins, and who still expects them kept. Thistle knows only that the sprites have always tended, and warns against seeking the who." },
     { "id": "cairn", "name": "Cairn the Pebbler", "home": "minehills", "appearsIn": ["minehills"], "recurring": true,
       "role": "a pebbler older than the mine camp who measures conversation in seasons",
-      "arc": "The pebblers remember what the hills remember. Ask Cairn who built the tunnels and he'll tell you — he began the answer forty years ago and is up to the second word. The player's way into pebbler patience, and the slow, slow road toward what's down there." }
+      "arc": "The pebblers remember what the hills remember. Ask Cairn who built the tunnels and he'll tell you — he began the answer forty years ago and is up to the second word. The player's way into pebbler patience, and the slow, slow road toward what's down there." },
+    { "id": "taproot", "name": "Old Taproot", "home": "oakwoods", "appearsIn": ["oakwoods"], "recurring": true,
+      "role": "a root-keeper whose house has been growing longer than goblin memory",
+      "arc": "Architecture as a conversation with something alive. Taproot teaches taking-by-asking first, then stands the player before the oldest oak — the question even root-keepers no longer know the answer to, and have made their peace with not asking twice." }
   ]
 }
