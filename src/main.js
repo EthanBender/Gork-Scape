@@ -829,6 +829,30 @@ function onPointerDown(pointer) {
   walkTo(tx, ty);
 }
 
+// [r3d] World-tile click entry for the 3D overlay: the 3D canvas raycasts its own
+// picks down to a tile, then routes through the SAME interaction logic as
+// onPointerDown (talk/attack/interact/pickup/walk). Additive; inert without ?r3d=1.
+function clickWorldTile(tx, ty) {
+  unlockAudio();
+  if (tx < 0 || ty < 0 || tx >= WORLD_W || ty >= WORLD_H) return;
+  const npc = Game.npcs.find((n) => !n.dead && n.tileX === tx && n.tileY === ty)
+    || Game.npcs.find((n) => !n.dead && npcFR(n) > 0 && inFootprint(n, tx, ty));
+  const obj = Game.world.objectAt.get(tx + ',' + ty);
+  const usableObj = obj && !obj.depleted ? obj : null;
+  const ground = Game.groundItems.filter((g) => g.x === tx && g.y === ty);
+  const fire = fireAt(tx, ty);
+  if (npc && npc.type === 'elder') return startTalk(npc);
+  if (npc && npc.type === 'guard') return startAttack(npc);
+  if (usableObj && (usableObj.skill || usableObj.altar || usableObj.transport || usableObj.shortcut || usableObj.examine)) return startInteract(usableObj);
+  if (usableObj && isCropPatch(usableObj)) return startInteract(usableObj);
+  if (usableObj && usableObj.nodeId) return startInteract(usableObj);
+  if (usableObj) { Game.log(`${usableObj.label}. (Nothing to do here yet.)`); return walkTo(tx, ty); }
+  if (fire) return startInteract(fire);
+  if (ground.length) return startPickup(tx, ty);
+  walkTo(tx, ty);
+}
+Game._clickWorldTile = clickWorldTile;
+
 // Mouse wheel zooms toward / away from the player.
 function onWheel(pointer, over, dx, dy) {
   // scrolling over the minimap zooms the MINIMAP (not the world camera)

@@ -40,10 +40,21 @@ function _mount(Game) {
 
   const renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-  renderer.setSize(innerWidth, innerHeight);
   renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.35;
-  const cv = renderer.domElement; cv.id = 'r3d-canvas'; cv.style.cssText = 'position:fixed;inset:0;z-index:5;';
+  const cv = renderer.domElement; cv.id = 'r3d-canvas'; cv.style.cssText = 'position:fixed;z-index:5;';
   document.body.appendChild(cv);
+  // Fit the 3D canvas over the GAME viewport (the #game-canvas area), not the whole
+  // window — so the sidebar/chat/HUD keep their place and nothing spills behind them.
+  let vw = innerWidth, vh = innerHeight;
+  function fitCanvas() {
+    const gc = document.getElementById('game-canvas');
+    const r = gc ? gc.getBoundingClientRect() : { left: 0, top: 0, width: innerWidth, height: innerHeight };
+    vw = Math.max(1, r.width | 0); vh = Math.max(1, r.height | 0);
+    cv.style.left = r.left + 'px'; cv.style.top = r.top + 'px';
+    cv.style.width = vw + 'px'; cv.style.height = vh + 'px';
+    renderer.setSize(vw, vh, false);
+  }
+  fitCanvas();
 
   const scene = new THREE.Scene();
   scene.background = new THREE.Color('#bcd8e8');
@@ -113,12 +124,12 @@ function _mount(Game) {
 
   // ---------- the player goblin (rigged, walk/idle) ----------
   const goblin = new THREE.Group(); scene.add(goblin);
-  let mixer = null, walkAction = null;
+  let mixer = null, walkAction = null, animRoot = null;
   new GLTFLoader().load('/r3d/models/goblin_walk.glb', gl => {
     const m = gl.scene, b = new THREE.Box3().setFromObject(m), sz = b.getSize(new THREE.Vector3());
     m.scale.setScalar(2.2 / Math.max(sz.x, sz.y, sz.z));
-    const b2 = new THREE.Box3().setFromObject(m), c = b2.getCenter(new THREE.Vector3());
-    m.position.set(-c.x, -b2.min.y, -c.z); goblin.add(m);   // center X/Z on the group origin, feet on ground
+    const b2 = new THREE.Box3().setFromObject(m);
+    m.position.y = -b2.min.y; goblin.add(m); animRoot = m;    // feet on ground; x/z zeroed per-frame (root motion)
     if (gl.animations && gl.animations.length) { const clip = gl.animations[0];
       clip.tracks = clip.tracks.filter(t => !/head|neck/i.test(t.name));   // steady the tall hood
       mixer = new THREE.AnimationMixer(m); walkAction = mixer.clipAction(clip); walkAction.play();
@@ -126,11 +137,31 @@ function _mount(Game) {
   }, undefined, e => console.error('[r3d] goblin load failed', e));
 
   // ---------- camera (manual follow, mirrors the 2D camera's rotation) ----------
-  const camera = new THREE.PerspectiveCamera(52, innerWidth / innerHeight, 0.5, 4000);
-  const pol = 58 * Math.PI / 180;
+  const camera = new THREE.PerspectiveCamera(52, vw / vh, 0.5, 4000);
   const camTarget = new THREE.Vector3();
   let inited = false;
-  addEventListener('resize', () => { camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); });
+  function onResize() { fitCanvas(); camera.aspect = vw / vh; camera.updateProjectionMatrix(); }
+  addEventListener('resize', onResize);
+  setTimeout(onResize, 500); setTimeout(onResize, 2500);   // layout settles after login/HUD mounts
+
+  // ---------- OSRS-style click: raycast the 3D pick down to a world tile, then route
+  // through the game's real interaction logic (walk/attack/interact/pickup). ----------
+  const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
+  let downAt = null;
+  cv.addEventListener('pointerdown', (e) => { downAt = { x: e.clientX, y: e.clientY }; });
+  cv.addEventListener('pointerup', (e) => {
+    if (!downAt) return;
+    const moved = Math.hypot(e.clientX - downAt.x, e.clientY - downAt.y); downAt = null;
+    if (moved > 6 || e.button !== 0) return;               // a drag or non-left click, not a pick
+    const r = cv.getBoundingClientRect();
+    ndc.x = ((e.clientX - r.left) / r.width) * 2 - 1;
+    ndc.y = -((e.clientY - r.top) / r.height) * 2 + 1;
+    ray.setFromCamera(ndc, camera);
+    const hit = terrainMesh ? ray.intersectObject(terrainMesh)[0] : null;
+    if (!hit) return;
+    const tx = Math.floor(hit.point.x), ty = Math.floor(hit.point.z);
+    try { if (Game._clickWorldTile) Game._clickWorldTile(tx, ty); } catch (err) { console.error('[r3d] click route failed', err); }
+  });
 
   // ---------- on-screen status chip: never fly blind — success shows fps, failure shows WHY ----------
   const chip = document.createElement('div');
@@ -160,13 +191,18 @@ function _mount(Game) {
           goblin.rotation.y = (FACE[st.facing] !== undefined ? FACE[st.facing] : 0) + Math.PI;
           if (mixer && walkAction) { const moving = st.anim === 'walk'; walkAction.paused = !moving; if (moving) mixer.update(dt); else { walkAction.time = 0; mixer.update(0); } }
         }
+        // The walk clip carries ROOT MOTION — without this the model drifts off its
+        // anchor (the goblin ends up in a screen corner). Walk in place, always.
+        if (animRoot) { animRoot.position.x = 0; animRoot.position.z = 0; }
       } else goblin.visible = false;
       const camMain = Game.scene && Game.scene.cameras && Game.scene.cameras.main;
       const az = camMain ? camMain.rotation : 0, zoom = camMain ? (camMain.zoom || 1) : 1;
-      const rr = 13 / Math.sqrt(zoom);                           // third-person distance
-      const goal = new THREE.Vector3(wx, wy + 1.6, wz);          // aim at the goblin's torso → centered
+      // OSRS framing: character centered (slightly below middle), camera well back and
+      // high, orbiting with the 2D camera's rotation (arrow keys / Q / E / compass).
+      const rr = 16 / Math.sqrt(zoom);
+      const goal = new THREE.Vector3(wx, wy + 1.0, wz);
       if (!inited) { camTarget.copy(goal); inited = true; } else camTarget.lerp(goal, 0.2);
-      camera.position.set(wx + Math.sin(az) * rr, wy + rr * 0.7, wz + Math.cos(az) * rr);
+      camera.position.set(camTarget.x + Math.sin(az) * rr, camTarget.y + rr * 0.85, camTarget.z + Math.cos(az) * rr);
       camera.lookAt(camTarget);
       renderer.render(scene, camera);
       frames++; const t = performance.now();
