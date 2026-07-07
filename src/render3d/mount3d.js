@@ -16,7 +16,17 @@ const GRASS = new Set([0, 11, 12, 19]), PATH = new Set([3, 6, 7, 20]), WATER = n
 const isChanId = id => WATER.has(id) || id === 6;                 // river flows here (+ under bridges)
 const FACE = { S: 0, W: Math.PI / 2, N: Math.PI, E: -Math.PI / 2 };
 
-export function mount3d(Game) { try { _mount(Game); } catch (e) { console.error('[r3d] mount failed', e); } }
+export function mount3d(Game) {
+  try { _mount(Game); } catch (e) {
+    console.error('[r3d] mount failed', e);
+    try {   // surface the failure ON-SCREEN so a broken mount is never a silent black box
+      const d = document.createElement('div');
+      d.style.cssText = 'position:fixed;top:8px;left:10px;z-index:9;font:12px monospace;color:#ff8a8a;text-shadow:0 1px 2px #000;';
+      d.textContent = '3D MOUNT FAILED: ' + ((e && e.message) || e);
+      document.body.appendChild(d);
+    } catch (_) {}
+  }
+}
 
 function _mount(Game) {
   const world = Game && Game.world;
@@ -122,31 +132,55 @@ function _mount(Game) {
   let inited = false;
   addEventListener('resize', () => { camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); });
 
+  // ---------- on-screen status chip: never fly blind — success shows fps, failure shows WHY ----------
+  const chip = document.createElement('div');
+  chip.id = 'r3d-status';
+  chip.style.cssText = 'position:fixed;top:8px;left:10px;z-index:6;font:12px/1.4 monospace;color:#9fe08a;text-shadow:0 1px 2px #000;pointer-events:none;';
+  chip.textContent = '3D: mounting…';
+  document.body.appendChild(chip);
+  const chipErr = (msg) => { chip.style.color = '#ff8a8a'; chip.textContent = '3D ERROR: ' + msg; };
+
+  // ---------- SELF-DRIVING render loop. Deliberately NOT dependent on the game's update()
+  // reaching our hook (any early-return there would black-screen us — that bug shipped once).
+  // Reads live sim state each frame; renders terrain even before the player exists. ----------
   const clock = new THREE.Clock();
-  window.__r3d = {
-    frame() {
-      try {
-        const p = Game.player; if (!p) return;
-        const wx = p.px / TILE_SIZE, wz = p.py / TILE_SIZE, wy = heightAt(wx, wz);
-        if (Math.abs(wx - winCX) > REBUILD || Math.abs(wz - winCY) > REBUILD) buildWindow(wx | 0, wz | 0);
+  let frames = 0, lastFps = performance.now(), lastErr = '';
+  function step() {
+    try {
+      const p = Game.player;
+      const wx = p ? p.px / TILE_SIZE : winCX, wz = p ? p.py / TILE_SIZE : winCY;
+      const wy = heightAt(wx, wz);
+      if (Math.abs(wx - winCX) > REBUILD || Math.abs(wz - winCY) > REBUILD) buildWindow(wx | 0, wz | 0);
+      const dt = clock.getDelta();
+      if (p) {
+        goblin.visible = true;
         goblin.position.set(wx, wy, wz);
-        const dt = clock.getDelta();
         let st = null; try { st = avatarStateFor(p, true, performance.now()); } catch (_) {}
         if (st) {
           goblin.rotation.y = (FACE[st.facing] !== undefined ? FACE[st.facing] : 0) + Math.PI;
           if (mixer && walkAction) { const moving = st.anim === 'walk'; walkAction.paused = !moving; if (moving) mixer.update(dt); else { walkAction.time = 0; mixer.update(0); } }
         }
-        const camMain = Game.scene && Game.scene.cameras && Game.scene.cameras.main;
-        const az = camMain ? camMain.rotation : 0, zoom = camMain ? (camMain.zoom || 1) : 1;
-        const rr = 13 / Math.sqrt(zoom);                           // third-person distance
-        const goal = new THREE.Vector3(wx, wy + 1.6, wz);          // aim at the goblin's torso → centered
-        if (!inited) { camTarget.copy(goal); inited = true; } else camTarget.lerp(goal, 0.2);
-        camera.position.set(wx + Math.sin(az) * rr, wy + rr * 0.7, wz + Math.cos(az) * rr);
-        camera.lookAt(camTarget);
-        renderer.render(scene, camera);
-      } catch (e) { if (!window.__r3dErr) { window.__r3dErr = 1; console.error('[r3d] frame error', e); } }
-    },
-    dispose() { try { renderer.dispose(); cv.remove(); window.__r3d = null; } catch (_) {} }
+      } else goblin.visible = false;
+      const camMain = Game.scene && Game.scene.cameras && Game.scene.cameras.main;
+      const az = camMain ? camMain.rotation : 0, zoom = camMain ? (camMain.zoom || 1) : 1;
+      const rr = 13 / Math.sqrt(zoom);                           // third-person distance
+      const goal = new THREE.Vector3(wx, wy + 1.6, wz);          // aim at the goblin's torso → centered
+      if (!inited) { camTarget.copy(goal); inited = true; } else camTarget.lerp(goal, 0.2);
+      camera.position.set(wx + Math.sin(az) * rr, wy + rr * 0.7, wz + Math.cos(az) * rr);
+      camera.lookAt(camTarget);
+      renderer.render(scene, camera);
+      frames++; const t = performance.now();
+      if (t - lastFps >= 500) { chip.textContent = '3D α · ' + Math.round(frames * 1000 / (t - lastFps)) + ' fps' + (p ? '' : ' · waiting for player…'); frames = 0; lastFps = t; }
+    } catch (e) {
+      const msg = (e && e.message) ? e.message : String(e);
+      if (msg !== lastErr) { lastErr = msg; console.error('[r3d] frame error', e); chipErr(msg); }
+    }
+  }
+  renderer.setAnimationLoop(step);
+
+  window.__r3d = {
+    frame() {},   // legacy hook from update() — self-driving loop renders now; kept so the guarded call is harmless
+    dispose() { try { renderer.setAnimationLoop(null); renderer.dispose(); cv.remove(); chip.remove(); window.__r3d = null; } catch (_) {} }
   };
 
   const px0 = (Game.player && Game.player.px / TILE_SIZE | 0) || (W >> 1);
