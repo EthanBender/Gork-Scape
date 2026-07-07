@@ -362,6 +362,53 @@ function _mount(Game) {
     for (const [n, a] of actorPool) if (!seen.has(n)) { scene.remove(a.g); actorPool.delete(n); }
   }
 
+  // ---------- equipment on the goblin: procedural clay weapon in a hand socket +
+  // shield on the off-arm, tinted by the item's metal, rebuilt when gear changes.
+  // Hints come from the SAME avatarStateFor().gear the 2D uses (kind/color/len). ----
+  const handSocket = new THREE.Group(); handSocket.position.set(0.62, 1.02, 0.34); handSocket.rotation.set(0.15, 0, -0.3); goblin.add(handSocket);
+  const shieldSocket = new THREE.Group(); shieldSocket.position.set(-0.62, 1.0, 0.28); shieldSocket.rotation.set(0, 0.25, 0); goblin.add(shieldSocket);
+  let gearKey = null;
+  const wood = 0x6b4a2a, darkWood = 0x54381e;
+  function buildWeapon(hint) {
+    const g = new THREE.Group();
+    if (!hint || hint.kind === 'fist' || !hint.len) return g;
+    const L = Math.max(0.5, hint.len / 12);                    // 2D px len -> world units
+    const mk = (geo, color, y, rx = 0, rz = 0, x = 0, z = 0) => { const m = new THREE.Mesh(geo, matFor(color)); m.position.set(x, y, z); m.rotation.set(rx, 0, rz); g.add(m); return m; };
+    const grip = () => mk(new THREE.CylinderGeometry(0.045, 0.055, 0.3, 6), darkWood, 0);
+    switch (hint.kind) {
+      case 'sword': grip(); mk(new THREE.BoxGeometry(0.24, 0.05, 0.07), 0x8a6a3a, 0.18); mk(new THREE.BoxGeometry(0.1, L, 0.03), hint.color, 0.2 + L / 2); break;
+      case 'dagger': grip(); mk(new THREE.BoxGeometry(0.09, L * 0.7, 0.03), hint.color, 0.18 + L * 0.35); break;
+      case 'spear': mk(new THREE.CylinderGeometry(0.04, 0.045, L * 1.7, 6), wood, L * 0.45); mk(new THREE.ConeGeometry(0.09, 0.34, 6), hint.color, L * 1.3 + 0.17); break;
+      case 'axe': mk(new THREE.CylinderGeometry(0.045, 0.055, L, 6), wood, L * 0.3); mk(new THREE.BoxGeometry(0.28, 0.2, 0.05), hint.color, L * 0.72, 0, 0, 0.13); break;
+      case 'pick': mk(new THREE.CylinderGeometry(0.045, 0.055, L, 6), wood, L * 0.3);
+        mk(new THREE.ConeGeometry(0.06, 0.3, 5), hint.color, L * 0.78, 0, Math.PI / 2, 0.16); mk(new THREE.ConeGeometry(0.06, 0.3, 5), hint.color, L * 0.78, 0, -Math.PI / 2, -0.16); break;
+      case 'mace': mk(new THREE.CylinderGeometry(0.045, 0.055, L, 6), wood, L * 0.3); mk(new THREE.DodecahedronGeometry(0.14, 0), hint.color, L * 0.78); break;
+      case 'staff': mk(new THREE.CylinderGeometry(0.045, 0.055, L * 1.5, 6), wood, L * 0.4); mk(new THREE.SphereGeometry(0.11, 8, 6), hint.color, L * 1.12); break;
+      case 'bow': case 'cbow': { const arc = new THREE.Mesh(new THREE.TorusGeometry(L * 0.5, 0.035, 6, 12, Math.PI * 1.15), matFor(hint.color)); arc.rotation.z = Math.PI * 0.92; g.add(arc); break; }
+      default: mk(new THREE.CylinderGeometry(0.05, 0.09, L, 6), wood, L * 0.35); break;   // club
+    }
+    return g;
+  }
+  function buildShield(hint) {
+    const g = new THREE.Group();
+    if (!hint) return g;
+    if (hint.shape === 'round') { const d = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 0.06, 14), matFor(hint.color)); d.rotation.x = Math.PI / 2; g.add(d);
+      const b = new THREE.Mesh(new THREE.SphereGeometry(0.07, 8, 6), matFor(darkWood)); b.position.z = 0.05; g.add(b); }
+    else { const k = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.58, 0.05), matFor(hint.color)); g.add(k);
+      const tip = new THREE.Mesh(new THREE.ConeGeometry(0.21, 0.2, 4), matFor(hint.color)); tip.position.y = -0.38; tip.rotation.set(Math.PI, Math.PI / 4, 0); g.add(tip); }
+    return g;
+  }
+  function syncPlayerGear(gear) {
+    const w = gear && gear.weapon, s = gear && gear.shield;
+    const key = (w ? w.kind + ':' + w.color + ':' + w.len : 'none') + '|' + (s ? s.shape + ':' + s.color : 'none');
+    if (key === gearKey) return;
+    gearKey = key;
+    while (handSocket.children.length) handSocket.remove(handSocket.children[0]);
+    while (shieldSocket.children.length) shieldSocket.remove(shieldSocket.children[0]);
+    handSocket.add(buildWeapon(w));
+    shieldSocket.add(buildShield(s));
+  }
+
   // ---------- walk feedback: gold ring on the destination tile + white dots along the
   // live path (read from p.travelTarget / p.path every frame, same data the 2D uses) ----
   const destMarker = new THREE.Mesh(
@@ -459,6 +506,7 @@ function _mount(Game) {
         goblin.visible = true;
         goblin.position.set(wx, wy, wz);
         let st = null; try { st = avatarStateFor(p, true, performance.now()); } catch (_) {}
+        if (st && st.gear) syncPlayerGear(st.gear);            // weapon/shield follow Game.equipment
         // FACING: turn toward the actual direction of travel (smooth shortest-arc),
         // like OSRS — the 4-way _facing map is only the idle fallback.
         const mdx = wx - lastWX, mdz = wz - lastWZ;
