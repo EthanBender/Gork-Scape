@@ -853,6 +853,19 @@ function clickWorldTile(tx, ty) {
 }
 Game._clickWorldTile = clickWorldTile;
 
+// [r3d] Right-click entry for the 3D overlay: resolves the tile exactly like
+// clickWorldTile, then opens the SAME DOM context menu the 2D game uses.
+Game._rightClickWorldTile = (tx, ty, clientX, clientY) => {
+  if (tx < 0 || ty < 0 || tx >= WORLD_W || ty >= WORLD_H) return;
+  const npc = Game.npcs.find((n) => !n.dead && n.tileX === tx && n.tileY === ty)
+    || Game.npcs.find((n) => !n.dead && npcFR(n) > 0 && inFootprint(n, tx, ty));
+  const obj = Game.world.objectAt.get(tx + ',' + ty);
+  const usableObj = obj && !obj.depleted ? obj : null;
+  const ground = Game.groundItems.filter((g) => g.x === tx && g.y === ty);
+  const fire = fireAt(tx, ty);
+  rightClickMenu({ event: { clientX, clientY } }, tx, ty, npc, usableObj, ground, fire);
+};
+
 // Mouse wheel zooms toward / away from the player.
 function onWheel(pointer, over, dx, dy) {
   // scrolling over the minimap zooms the MINIMAP (not the world camera)

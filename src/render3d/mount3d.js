@@ -264,6 +264,70 @@ function _mount(Game) {
   }
   const actorPool = new Map();   // npc object -> { g, lastX, lastZ, yaw }
   let npcShown = 0;
+
+  // ---------- floating labels + HP bars (DOM, projected from 3D each frame):
+  // enemies show name+bar when hurt/aggroed, other players always show their name,
+  // and whatever the mouse is over shows its name — OSRS-style readability. ----------
+  const labelLayer = document.createElement('div');
+  labelLayer.id = 'r3d-labels';
+  labelLayer.style.cssText = 'position:fixed;inset:0;z-index:6;pointer-events:none;overflow:hidden;';
+  document.body.appendChild(labelLayer);
+  const labelPool = [];
+  const getLabel = (i) => {
+    let L = labelPool[i];
+    if (!L) {
+      const el = document.createElement('div');
+      el.style.cssText = 'position:absolute;transform:translate(-50%,-100%);font:600 11px monospace;color:#ffe97a;text-shadow:0 1px 2px #000,0 0 3px #000;text-align:center;white-space:nowrap;';
+      const bar = document.createElement('div');
+      bar.style.cssText = 'height:4px;width:42px;background:#551111;border-radius:2px;margin:2px auto 0;overflow:hidden;display:none;';
+      const fill = document.createElement('div');
+      fill.style.cssText = 'height:100%;width:100%;background:#33cc33;';
+      bar.appendChild(fill); el.appendChild(bar);
+      const txt = document.createElement('span'); el.insertBefore(txt, bar);
+      labelLayer.appendChild(el);
+      L = { el, txt, bar, fill }; labelPool[i] = L;
+    }
+    return L;
+  };
+  let hoverNpc = null, lastHoverCheck = 0;
+  const projV = new THREE.Vector3();
+  function updateLabels3d() {
+    const r = cv.getBoundingClientRect();
+    // hover pick (throttled): which actor is under the mouse?
+    const now = performance.now();
+    if (mouseX >= 0 && now - lastHoverCheck > 120) {
+      lastHoverCheck = now;
+      ndc.x = ((mouseX - r.left) / r.width) * 2 - 1;
+      ndc.y = -((mouseY - r.top) / r.height) * 2 + 1;
+      if (ndc.x >= -1 && ndc.x <= 1 && ndc.y >= -1 && ndc.y <= 1) {
+        ray.setFromCamera(ndc, camera);
+        const groups = []; for (const [, a] of actorPool) groups.push(a.g);
+        const hits = ray.intersectObjects(groups, true);
+        hoverNpc = null;
+        if (hits.length) { let o = hits[0].object; while (o && !o.userData.npc) o = o.parent; hoverNpc = o ? o.userData.npc : null; }
+      } else hoverNpc = null;
+    }
+    let li = 0;
+    for (const [n, a] of actorPool) {
+      if (li >= 24) break;
+      const isPlayerType = n.type === 'player';
+      const hurt = n.type === 'guard' && n.maxHp && (n.hp < n.maxHp || n.target);
+      const show = hurt || isPlayerType || n === hoverNpc;
+      if (!show) continue;
+      projV.setFromMatrixPosition(a.g.matrixWorld); projV.y += 2.1 * a.g.scale.y;
+      projV.project(camera);
+      if (projV.z > 1 || projV.x < -1 || projV.x > 1 || projV.y < -1 || projV.y > 1) continue;
+      const L = getLabel(li++);
+      L.el.style.left = (r.left + (projV.x + 1) / 2 * r.width) + 'px';
+      L.el.style.top = (r.top + (1 - projV.y) / 2 * r.height) + 'px';
+      L.el.style.display = 'block';
+      L.txt.textContent = n.combatLevel && !isPlayerType ? `${n.name} (Lv ${n.combatLevel})` : (n.name || '');
+      L.txt.style.color = isPlayerType ? '#9fd4ff' : '#ffe97a';
+      if (hurt) { L.bar.style.display = 'block'; L.fill.style.width = Math.max(0, Math.min(100, (n.hp / n.maxHp) * 100)) + '%'; }
+      else L.bar.style.display = 'none';
+    }
+    for (let i = li; i < labelPool.length; i++) if (labelPool[i]) labelPool[i].el.style.display = 'none';
+  }
   function syncActors(time, dt) {
     const list = Game.activeNpcs || [];
     const seen = new Set();
@@ -274,7 +338,7 @@ function _mount(Game) {
       let st = null; try { st = avatarStateFor(n, false, time); } catch (_) { continue; }
       seen.add(n);
       let a = actorPool.get(n);
-      if (!a) { a = { g: makeActor(st.bodyType, st.skin), lastX: n.px / TILE_SIZE, lastZ: n.py / TILE_SIZE, yaw: 0 }; scene.add(a.g); actorPool.set(n, a); }
+      if (!a) { a = { g: makeActor(st.bodyType, st.skin), lastX: n.px / TILE_SIZE, lastZ: n.py / TILE_SIZE, yaw: 0 }; a.g.userData.npc = n; scene.add(a.g); actorPool.set(n, a); }
       const ax = n.px / TILE_SIZE, az2 = n.py / TILE_SIZE, ay = heightAt(ax, az2);
       const sizeMul = Math.max(0.35, st.scale / AV_SCALE);
       a.g.scale.setScalar(sizeMul);
@@ -338,6 +402,18 @@ function _mount(Game) {
   const endMid = (e) => { if (e.button === 1 || e.type === 'pointercancel') midDrag = null; };
   cv.addEventListener('pointerup', endMid); cv.addEventListener('pointercancel', endMid);
   cv.addEventListener('auxclick', (e) => { if (e.button === 1) e.preventDefault(); });
+  cv.addEventListener('contextmenu', (e) => {                // right-click = the game's own context menu
+    e.preventDefault();
+    const r = cv.getBoundingClientRect();
+    ndc.x = ((e.clientX - r.left) / r.width) * 2 - 1;
+    ndc.y = -((e.clientY - r.top) / r.height) * 2 + 1;
+    ray.setFromCamera(ndc, camera);
+    const hit = terrainMesh ? ray.intersectObject(terrainMesh)[0] : null;
+    if (!hit) return;
+    try { if (Game._rightClickWorldTile) Game._rightClickWorldTile(Math.floor(hit.point.x), Math.floor(hit.point.z), e.clientX, e.clientY); } catch (err) { console.error('[r3d] menu route failed', err); }
+  });
+  let mouseX = -1, mouseY = -1;
+  cv.addEventListener('pointermove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
   cv.addEventListener('wheel', (e) => {                      // scroll = zoom (drives the shared 2D targetZoom)
     e.preventDefault();
     try { if (Game._camZoomWheel) Game._camZoomWheel(e.deltaY); } catch (_) {}
@@ -429,6 +505,7 @@ function _mount(Game) {
         camTarget.y + Math.cos(pol) * R,
         camTarget.z + Math.cos(az) * Math.sin(pol) * R);
       camera.lookAt(camTarget);
+      updateLabels3d();                                        // names + HP bars over actors
       renderer.render(scene, camera);
       frames++; const t = performance.now();
       if (t - lastFps >= 500) { chip.textContent = '3D α · ' + Math.round(frames * 1000 / (t - lastFps)) + ' fps · ' + npcShown + ' npcs' + (p ? '' : ' · waiting for player…'); frames = 0; lastFps = t; }
@@ -441,7 +518,7 @@ function _mount(Game) {
 
   window.__r3d = {
     frame() {},   // legacy hook from update() — self-driving loop renders now; kept so the guarded call is harmless
-    dispose() { try { if (dlFilm) dlFilm.style.display = ''; renderer.setAnimationLoop(null); renderer.dispose(); cv.remove(); chip.remove(); window.__r3d = null; } catch (_) {} }
+    dispose() { try { if (dlFilm) dlFilm.style.display = ''; renderer.setAnimationLoop(null); renderer.dispose(); cv.remove(); chip.remove(); labelLayer.remove(); window.__r3d = null; } catch (_) {} }
   };
 
   const px0 = (Game.player && Game.player.px / TILE_SIZE | 0) || (W >> 1);
