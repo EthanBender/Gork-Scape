@@ -3266,5 +3266,173 @@
    "mystery:rings_back",
    "npc:mallet"
   ]
+ },
+ {
+  "id": "rival_a_proper_duel",
+  "name": "A Proper Duel",
+  "act": 3,
+  "giver": {
+   "npc": "ruza",
+   "name": "Red-Ear Ruza",
+   "where": {
+    "x": 850,
+    "y": 825
+   }
+  },
+  "summary": "At the Red-Ear border moot, everything is a duel — passage, water, directions, all of it. Ruza the duel-warden sets the terms: beat five of her warband fair and bring her the fragments of their blades.",
+  "intro": "Halt, soft-towner. You're in Red-Ear country now, and here, EVERYTHING is a duel. You want passage? Duel. Water? Duel. You want to know the way to the anvil-shed you're pretending not to look at? DUEL. Moot rules: five of my warband, fair bouts, and bring me the fragments of their blades as proof. Win, and you've earned a Red-Ear's respect — which is worth more than a Red-Ear's love, which for Gorkholm-folk does not exist.",
+  "outro": "Five bouts, five fragments, and not one word of whining. You fight like the OLD stock, Gorkholm. That's not a compliment — it's an accusation. You soft-towners weren't supposed to still HAVE it. ...Well. Respect is respect, and mine's yours, which around here opens more doors than keys do. Your lot say we only learned to count last spring, you know. We learned SUMMERS ago. Tell them that. Tell them Ruza said so, and watch them count on their fingers.",
+  "requires": {
+   "level": {
+    "skill": "Attack",
+    "level": 45
+   }
+  },
+  "steps": [
+   {
+    "type": "goto",
+    "target": "rival",
+    "where": {
+     "x": 850,
+     "y": 825,
+     "name": "the Red-Ear border moot",
+     "radius": 60
+    },
+    "text": "Travel to the Red-Ear border moot",
+    "say": "Far southeast, into the badlands. Walk loud — sneaking is for people who lose duels."
+   },
+   {
+    "type": "kill",
+    "target": "rival_goblin_warrior",
+    "count": 5,
+    "text": "Win 5 fair bouts against the warband",
+    "say": "Fair bouts, soft-towner. They will not go easy. Neither should you."
+   },
+   {
+    "type": "obtain",
+    "target": "rival_blade_fragment",
+    "count": 2,
+    "text": "Collect 2 blade fragments as proof",
+    "say": "A beaten blade leaves fragments. Bring them. The moot counts fragments, not stories."
+   },
+   {
+    "type": "talk",
+    "target": "ruza",
+    "name": "Red-Ear Ruza",
+    "text": "Present the fragments to Ruza",
+    "say": "I will be at the moot-stone, telling everyone how you are doing. Loudly."
+   }
+  ],
+  "rewards": {
+   "coins": 380,
+   "xp": [
+    {
+     "skill": "Attack",
+     "amount": 780
+    },
+    {
+     "skill": "Defence",
+     "amount": 380
+    }
+   ],
+   "items": [
+    {
+     "id": "steel_spear"
+    }
+   ]
+  },
+  "thread": "local",
+  "teaches": [
+   "region:rival",
+   "npc:ruza",
+   "lore:red_ear_soft"
+  ]
+ },
+ {
+  "id": "rival_the_captured_anvil",
+  "name": "The Captured Anvil",
+  "act": 3,
+  "giver": {
+   "npc": "shopkeeper_weapon_shop",
+   "name": "Weapon Shop Keeper",
+   "where": {
+    "x": 476,
+    "y": 412
+   }
+  },
+  "summary": "The Red-Ears have paraded the Captured Anvil at every war-moot for three generations — Grandfather's anvil, notch and all. Now that a Red-Ear owes you respect, the Weapon Shop Keeper wants you to march in and get it BACK.",
+  "intro": "Three generations they've paraded it. GRANDFATHER'S anvil — the Captured Anvil, they call it, like capturing it was the craft. Every war-moot, out it comes, and every war-moot my family's name rings on someone else's hammer. You've got standing at their moot now — I heard. A Red-Ear owes you respect. So use it: get past their captains, get to that anvil-shed, and bring me back proof my grandfather's anvil still exists. The notch, friend. Look for the NOTCH.",
+  "outro": "NINE? They've got NINE anvils in that shed, all stamped THE CAPTURED ANVIL? They made COPIES to gloat in bulk?! ...Which one had the notch? Don't tell me. DON'T tell me. If we steal the wrong one back they'll gloat about keeping the real one; if we steal the right one they'll SAY it was the wrong one. It's not an anvil anymore, friend — it's the argument, and the argument is the family heirloom now, theirs and ours both. ...Keep the captain's key. Next moot, we're not stealing my grandfather's anvil back. We're stealing ALL NINE. Then let's see whose forge it is.",
+  "requires": {
+   "quests": [
+    "rival_a_proper_duel"
+   ],
+   "level": {
+    "skill": "Attack",
+    "level": 50
+   }
+  },
+  "steps": [
+   {
+    "type": "goto",
+    "target": "rival",
+    "where": {
+     "x": 865,
+     "y": 840,
+     "name": "the anvil-shed camp",
+     "radius": 45
+    },
+    "text": "Push through to the anvil-shed camp",
+    "say": "Past the moot, into the war-camp proper. Respect gets you to the door. The captains ARE the door."
+   },
+   {
+    "type": "kill",
+    "target": "red_ear_captain",
+    "count": 2,
+    "text": "Defeat the 2 Red-Ear Captains guarding the shed",
+    "say": "The captains hold the shed keys and the shed pride. Relieve them of both."
+   },
+   {
+    "type": "obtain",
+    "target": "captains_banner",
+    "count": 2,
+    "text": "Take the captains' banners as proof",
+    "say": "A captain without a banner has some explaining to do at the moot. Take both."
+   },
+   {
+    "type": "talk",
+    "target": "shopkeeper_weapon_shop",
+    "name": "Weapon Shop Keeper",
+    "text": "Report what you found in the shed",
+    "say": "Back to my shop in Gorkholm. I will be at the forge, not pacing. NOT pacing."
+   }
+  ],
+  "rewards": {
+   "coins": 500,
+   "xp": [
+    {
+     "skill": "Strength",
+     "amount": 900
+    },
+    {
+     "skill": "Smithing",
+     "amount": 450
+    }
+   ],
+   "items": [
+    {
+     "id": "captured_anvil_key"
+    },
+    {
+     "id": "star_alloy"
+    }
+   ]
+  },
+  "thread": "main",
+  "teaches": [
+   "region:rival",
+   "npc:shopkeeper_weapon_shop",
+   "lore:the_captured_anvil"
+  ]
  }
 ]

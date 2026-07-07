@@ -46,6 +46,9 @@
       "arc": "Knows every plank of the wreck and not her name. His rule is the lake's rule: the first fish of the morning goes back in, and the wreck keeps her name. The player's window into what the lake keeps — and what it returns, on its own calendar." },
     { "id": "mallet", "name": "Old Mallet", "home": "grubpit", "appearsIn": ["grubpit"], "recurring": true,
       "role": "master-cutter of Grubpit Quarry; blunts every new cutter's first chisel with his own hand",
-      "arc": "Sixty years in the pit — every bench, every seam, every note. The player's teacher in the cutter's way, and the keeper of the quarry's quietest fact: strike the deepest bench and something rings back, corrected, and Mallet has stopped pretending it's an echo." }
+      "arc": "Sixty years in the pit — every bench, every seam, every note. The player's teacher in the cutter's way, and the keeper of the quarry's quietest fact: strike the deepest bench and something rings back, corrected, and Mallet has stopped pretending it's an echo." },
+    { "id": "ruza", "name": "Red-Ear Ruza", "home": "rival", "appearsIn": ["rival"], "recurring": true,
+      "role": "duel-warden of the Red-Ear border moot — everything is a duel, and Ruza sets the terms",
+      "arc": "The first Red-Ear a Gorkholm goblin can talk to — over crossed blades, but talking. Sibling rivalry with axes, and under it a grudging respect neither side will name first." }
   ]
 }

@@ -46,6 +46,8 @@
     { "id": "lake_owes", "region": "grublake", "truth": "exaggerated", "links": ["mystery:the_wreck"],
       "text": "Lose a thing overboard in Grublake and hold your peace: it comes back when it comes back. Berya's wedding ring washed up eleven years on, polished, inside a snapper. The lake pays its debts on its own calendar." },
     { "id": "blunted_chisel", "region": "grubpit", "truth": "true",
-      "text": "A new cutter's first chisel comes blunted from Old Mallet's own hand. The cutters say it's because nothing worth carving comes easy. Mallet says it's because the first thing every young fool carves is their name." }
+      "text": "A new cutter's first chisel comes blunted from Old Mallet's own hand. The cutters say it's because nothing worth carving comes easy. Mallet says it's because the first thing every young fool carves is their name." },
+    { "id": "the_captured_anvil", "region": "rival", "truth": "exaggerated",
+      "text": "The Red-Ears parade the Captured Anvil at every war-moot. Gorkholm's smiths swear theirs had a notch; the Red-Ears swear the notch was always theirs. Generations on, both sides have sworn oaths on an anvil that may be neither's." }
   ]
 }
