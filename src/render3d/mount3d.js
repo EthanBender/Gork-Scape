@@ -8,7 +8,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { TERRAIN_DEFS } from '../world/worldData.js';
-import { TILE_SIZE } from '../world/map.js';
+import { TILE_SIZE, objectsInView } from '../world/map.js';
 import { avatarStateFor, AV_SCALE } from '../render/characters.js';
 
 const HEIGHT = 13, WIN = 176, TSPX = 12, REBUILD = 40, MARGIN = 6;
@@ -154,6 +154,7 @@ function _mount(Game) {
     if (wc) { const wg = new THREE.BufferGeometry(); wg.setAttribute('position', new THREE.Float32BufferAttribute(wpos, 3)); wg.setAttribute('normal', new THREE.Float32BufferAttribute(wnorm, 3)); wg.setIndex(widx);
       waterMesh = new THREE.Mesh(wg, new THREE.MeshLambertMaterial({ color: 0x3f7fc4, emissive: 0x11365e, transparent: true, opacity: 0.82, side: THREE.DoubleSide, depthWrite: true })); waterMesh.renderOrder = 2; scene.add(waterMesh); }
     winCX = cx; winCY = cy;
+    propBounds = { x0, y0, x1, y1 }; buildProps();      // props follow the terrain window
   }
 
   // ---------- the player goblin (rigged, walk/idle) ----------
@@ -169,6 +170,69 @@ function _mount(Game) {
       mixer = new THREE.AnimationMixer(m); walkAction = mixer.clipAction(clip); walkAction.play();
     }
   }, undefined, e => console.error('[r3d] goblin load failed', e));
+
+  // ---------- world objects: instanced clay props tinted from each object's own colour.
+  // Trees/ore/fishing spots/structures from objectsInView; tiny 'decor' scatter is
+  // skipped (the baked ground texture already carries it). Rebuilt with the terrain
+  // window and every 2s so depleted trees vanish and respawns reappear. ----------
+  const P_CAP = { leaf: 4096, trunk: 4096, dead: 512, rock: 512, base: 1024, roof: 1024, fence: 768, fish: 256 };
+  const P_GEO = {
+    leaf: new THREE.ConeGeometry(1.05, 2.0, 7),
+    trunk: new THREE.CylinderGeometry(0.16, 0.22, 1.0, 6),
+    dead: new THREE.CylinderGeometry(0.12, 0.2, 1.5, 6),
+    rock: new THREE.DodecahedronGeometry(0.55, 0),
+    base: new THREE.BoxGeometry(1.2, 1.1, 1.2),
+    roof: new THREE.ConeGeometry(1.05, 0.8, 4),
+    fence: new THREE.BoxGeometry(0.9, 0.55, 0.14),
+    fish: new THREE.RingGeometry(0.18, 0.34, 12),
+  };
+  const props = {};
+  for (const k of Object.keys(P_GEO)) {
+    const m = new THREE.InstancedMesh(P_GEO[k], new THREE.MeshLambertMaterial({ flatShading: true, ...(k === 'fish' ? { transparent: true, opacity: 0.7, side: THREE.DoubleSide, depthWrite: false } : {}) }), P_CAP[k]);
+    m.count = 0; m.instanceMatrix.setUsage(THREE.DynamicDrawUsage); scene.add(m); props[k] = m;
+  }
+  const pM = new THREE.Matrix4(), pP = new THREE.Vector3(), pS = new THREE.Vector3(), pC = new THREE.Color();
+  const pQ0 = new THREE.Quaternion(), pQflat = new THREE.Quaternion().setFromEuler(new THREE.Euler(-Math.PI / 2, 0, 0));
+  const hash01 = (x, y) => { let h = (Math.imul(x, 668265263) + Math.imul(y, 374761393)) >>> 0; return ((h ^ (h >>> 13)) % 1000) / 1000; };
+  let propBounds = null, lastPropBuild = 0;
+  function put(kind, x, z, y, sx, sy, sz, color, rotY) {
+    const m = props[kind]; if (m.count >= P_CAP[kind]) return;
+    pP.set(x, y, z); pS.set(sx, sy, sz);
+    const q = kind === 'fish' ? pQflat : pQ0.setFromEuler(new THREE.Euler(0, rotY || 0, 0));
+    pM.compose(pP, q, pS); m.setMatrixAt(m.count, pM);
+    pC.set(color); m.setColorAt(m.count, pC);
+    m.count++;
+  }
+  function buildProps() {
+    if (!propBounds) return;
+    for (const k of Object.keys(props)) props[k].count = 0;
+    const list = objectsInView(world, propBounds.x0, propBounds.y0, propBounds.x1, propBounds.y1);
+    for (const o of list) {
+      if (o.type === 'decor' || o.depleted) continue;
+      if (o.x < propBounds.x0 || o.x > propBounds.x1 || o.y < propBounds.y0 || o.y > propBounds.y1) continue;
+      const x = o.x + 0.5, z = o.y + 0.5, y = heightAt(o.x, o.y), lbl = o.label || '', col = o.color || 0x8a7a5a;
+      const r = hash01(o.x, o.y), rot = r * Math.PI * 2;
+      if (o.skill === 'Fishing') { put('fish', x, z, y + 0.06, 1, 1, 1, 0x9fd4ff); continue; }
+      if (o.skill === 'Mining' || /Coal|Iron|Gold|Copper|Tin|Rock/.test(lbl)) { const s = 0.8 + r * 0.5; put('rock', x, z, y + 0.28 * s, s, s * 0.8, s, col, rot); continue; }
+      if (/Dead Tree/.test(lbl)) { put('dead', x, z, y + 0.75, 1, 1, 1, 0x5a4a38, rot); continue; }
+      if (o.skill === 'Woodcutting' || /Tree|Willow|Oak|Thicket|Bush|Hedge|Copse/.test(lbl)) {
+        const big = /Oak/.test(lbl) ? 1.35 : /Willow/.test(lbl) ? 1.2 : /Bush|Hedge|Thicket|Copse/.test(lbl) ? 0.55 : 1.0;
+        const s = big * (0.85 + r * 0.35);
+        put('trunk', x, z, y + 0.5 * s, s, s, s, 0x6b4a2a, rot);
+        put('leaf', x, z, y + (1.0 + 1.0) * s * 0.95, s, s, s, col, rot);
+        continue;
+      }
+      if (/Fence|Hedge Row|Rail/.test(lbl)) { put('fence', x, z, y + 0.3, 1, 1, 1, col, rot < Math.PI ? 0 : Math.PI / 2); continue; }
+      if (o.type === 'structure') {
+        const tall = o.blocking ? 1 : 0.55, s = 0.9 + r * 0.25;
+        put('base', x, z, y + 0.55 * tall * s, s, tall * s, s, col, 0);
+        if (o.blocking) put('roof', x, z, y + (1.1 * s) + 0.4 * s, s * 1.1, s, s * 1.1, 0x7a5a40, Math.PI / 4);
+        continue;
+      }
+    }
+    for (const k of Object.keys(props)) { props[k].instanceMatrix.needsUpdate = true; if (props[k].instanceColor) props[k].instanceColor.needsUpdate = true; }
+    lastPropBuild = performance.now();
+  }
 
   // ---------- NPCs, monsters & other players: pooled low-poly clay bodies. One shared
   // geometry set; per-creature tint from the SAME avatarStateFor state the 2D uses
@@ -312,6 +376,7 @@ function _mount(Game) {
       const wy = heightAt(wx, wz);
       if (Math.abs(wx - winCX) > REBUILD || Math.abs(wz - winCY) > REBUILD) buildWindow(wx | 0, wz | 0);
       daylight3d();                                            // world-clock lighting (once per game minute)
+      if (performance.now() - lastPropBuild > 2000) buildProps();   // depleted trees vanish, respawns return
       const dt = clock.getDelta();
       syncActors(performance.now(), dt);                       // NPCs / monsters / other players
       if (p) {
