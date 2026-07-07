@@ -14,7 +14,7 @@ import { avatarStateFor } from '../render/characters.js';
 const HEIGHT = 13, WIN = 176, TSPX = 12, REBUILD = 40, MARGIN = 6;
 const GRASS = new Set([0, 11, 12, 19]), PATH = new Set([3, 6, 7, 20]), WATER = new Set([1, 13, 14]);
 const isChanId = id => WATER.has(id) || id === 6;                 // river flows here (+ under bridges)
-const FACE = { S: 0, W: Math.PI / 2, N: Math.PI, E: -Math.PI / 2 };
+const FACE = { S: 0, N: Math.PI, E: Math.PI / 2, W: -Math.PI / 2 };  // model rest faces +Z (south); yaw = atan2(dx, dz)
 
 export function mount3d(Game) {
   try { _mount(Game); } catch (e) {
@@ -136,10 +136,24 @@ function _mount(Game) {
     }
   }, undefined, e => console.error('[r3d] goblin load failed', e));
 
+  // ---------- walk feedback: gold ring on the destination tile + white dots along the
+  // live path (read from p.travelTarget / p.path every frame, same data the 2D uses) ----
+  const destMarker = new THREE.Mesh(
+    new THREE.RingGeometry(0.30, 0.46, 24),
+    new THREE.MeshBasicMaterial({ color: 0xffd94a, transparent: true, opacity: 0.95, depthWrite: false }));
+  destMarker.rotation.x = -Math.PI / 2; destMarker.visible = false; destMarker.renderOrder = 3; scene.add(destMarker);
+  const dots = new THREE.InstancedMesh(
+    new THREE.CircleGeometry(0.11, 10),
+    new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.45, depthWrite: false }), 64);
+  dots.renderOrder = 3; dots.count = 0; scene.add(dots);
+  const dotM = new THREE.Matrix4(), dotP = new THREE.Vector3(), dotS = new THREE.Vector3(1, 1, 1);
+  const dotQ = new THREE.Quaternion().setFromEuler(new THREE.Euler(-Math.PI / 2, 0, 0));
+
   // ---------- camera (manual follow, mirrors the 2D camera's rotation) ----------
   const camera = new THREE.PerspectiveCamera(52, vw / vh, 0.5, 4000);
   const camTarget = new THREE.Vector3();
   let inited = false;
+  let lastWX = 0, lastWZ = 0, yaw = 0, targetYaw = 0;       // movement-based facing state
   function onResize() { fitCanvas(); camera.aspect = vw / vh; camera.updateProjectionMatrix(); }
   addEventListener('resize', onResize);
   setTimeout(onResize, 500); setTimeout(onResize, 2500);   // layout settles after login/HUD mounts
@@ -204,14 +218,39 @@ function _mount(Game) {
         goblin.visible = true;
         goblin.position.set(wx, wy, wz);
         let st = null; try { st = avatarStateFor(p, true, performance.now()); } catch (_) {}
-        if (st) {
-          goblin.rotation.y = (FACE[st.facing] !== undefined ? FACE[st.facing] : 0) + Math.PI;
-          if (mixer && walkAction) { const moving = st.anim === 'walk'; walkAction.paused = !moving; if (moving) mixer.update(dt); else { walkAction.time = 0; mixer.update(0); } }
+        // FACING: turn toward the actual direction of travel (smooth shortest-arc),
+        // like OSRS — the 4-way _facing map is only the idle fallback.
+        const mdx = wx - lastWX, mdz = wz - lastWZ;
+        const speed = dt > 0 ? Math.hypot(mdx, mdz) / dt : 0;      // tiles/sec
+        if (mdx * mdx + mdz * mdz > 1e-6) targetYaw = Math.atan2(mdx, mdz);
+        else if (st && FACE[st.facing] !== undefined) targetYaw = FACE[st.facing];
+        lastWX = wx; lastWZ = wz;
+        let dy = targetYaw - yaw; dy = Math.atan2(Math.sin(dy), Math.cos(dy));
+        yaw += dy * Math.min(1, dt * 12);
+        goblin.rotation.y = yaw;
+        if (st && mixer && walkAction) {
+          const moving = st.anim === 'walk';
+          walkAction.paused = !moving;
+          if (moving) { walkAction.timeScale = Math.min(2.4, Math.max(0.6, speed / 1.5)); mixer.update(dt); }  // stride matches ground speed
+          else { walkAction.time = 0; mixer.update(0); }
         }
         // The walk clip carries ROOT MOTION — without this the model drifts off its
         // anchor (the goblin ends up in a screen corner). Walk in place, always.
         if (animRoot) { animRoot.position.x = 0; animRoot.position.z = 0; }
-      } else goblin.visible = false;
+        // destination ring (gently pulsing) + path dots from the live pathfinder state
+        const tt = p.travelTarget;
+        if (tt) { destMarker.visible = true;
+          destMarker.position.set(tt.x + 0.5, heightAt(tt.x, tt.y) + 0.08, tt.y + 0.5);
+          const ps = 1 + 0.15 * Math.sin(performance.now() * 0.006); destMarker.scale.set(ps, ps, 1);
+        } else destMarker.visible = false;
+        let dn = 0;
+        if (p.path && p.path.length) for (let i = 0; i < p.path.length && dn < 64; i++) {
+          const stp = p.path[i];
+          dotP.set(stp[0] + 0.5, heightAt(stp[0], stp[1]) + 0.06, stp[1] + 0.5);
+          dotM.compose(dotP, dotQ, dotS); dots.setMatrixAt(dn++, dotM);
+        }
+        dots.count = dn; if (dn) dots.instanceMatrix.needsUpdate = true;
+      } else { goblin.visible = false; destMarker.visible = false; dots.count = 0; }
       const camMain = Game.scene && Game.scene.cameras && Game.scene.cameras.main;
       const az = camMain ? camMain.rotation : 0, zoom = camMain ? (camMain.zoom || 1) : 1;
       // OSRS framing: character centered (slightly below middle); spherical orbit —
