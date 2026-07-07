@@ -7,6 +7,7 @@
 // here can never touch the untouched 2D game.
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { TERRAIN_DEFS } from '../world/worldData.js';
 import { TILE_SIZE, objectsInView } from '../world/map.js';
 import { avatarStateFor, AV_SCALE } from '../render/characters.js';
@@ -160,13 +161,16 @@ function _mount(Game) {
   // ---------- the player goblin (rigged, walk/idle) ----------
   const goblin = new THREE.Group(); scene.add(goblin);
   let mixer = null, walkAction = null, animRoot = null;
-  new GLTFLoader().load('/r3d/models/goblin_walk.glb', gl => {
+  const gltf = new GLTFLoader(); gltf.setMeshoptDecoder(MeshoptDecoder);   // compressed models (~95% smaller)
+  gltf.load('/r3d/models/goblin_walk.glb', gl => {
     const m = gl.scene, b = new THREE.Box3().setFromObject(m), sz = b.getSize(new THREE.Vector3());
     m.scale.setScalar(2.2 / Math.max(sz.x, sz.y, sz.z));
     const b2 = new THREE.Box3().setFromObject(m);
     m.position.y = -b2.min.y; goblin.add(m); animRoot = m;    // feet on ground; x/z zeroed per-frame (root motion)
     if (gl.animations && gl.animations.length) { const clip = gl.animations[0];
       clip.tracks = clip.tracks.filter(t => !/head|neck/i.test(t.name));   // steady the tall hood
+      // NOTE: the meshopt/optimized goblin breaks its rig (scale tracks + bind units) —
+      // player model stays the original GLB until the skinned-compression pass is solved.
       mixer = new THREE.AnimationMixer(m); walkAction = mixer.clipAction(clip); walkAction.play();
     }
   }, undefined, e => console.error('[r3d] goblin load failed', e));
@@ -191,6 +195,28 @@ function _mount(Game) {
     const m = new THREE.InstancedMesh(P_GEO[k], new THREE.MeshLambertMaterial({ flatShading: true, ...(k === 'fish' ? { transparent: true, opacity: 0.7, side: THREE.DoubleSide, depthWrite: false } : {}) }), P_CAP[k]);
     m.count = 0; m.instanceMatrix.setUsage(THREE.DynamicDrawUsage); scene.add(m); props[k] = m;
   }
+  // real generated models for the numerous props: load compressed GLBs, normalize
+  // (feet at y=0, ~unit height), and swap them into the instancing in place of the
+  // procedural cones — the whole forest becomes the owner's actual tree model.
+  function instanceGLB(url, kind, cap, targetH) {
+    const ld = new GLTFLoader(); ld.setMeshoptDecoder(MeshoptDecoder);
+    ld.load(url, gl => {
+      let best = null;
+      gl.scene.updateMatrixWorld(true);
+      gl.scene.traverse(o => { if (o.isMesh && (!best || o.geometry.attributes.position.count > best.geometry.attributes.position.count)) best = o; });
+      if (!best) return;
+      const geo = best.geometry.clone(); geo.applyMatrix4(best.matrixWorld);
+      geo.computeBoundingBox(); const bb = geo.boundingBox, size = new THREE.Vector3(); bb.getSize(size);
+      const s = targetH / (size.y || 1), c = new THREE.Vector3(); bb.getCenter(c);
+      geo.translate(-c.x, -bb.min.y, -c.z); geo.scale(s, s, s);
+      const m = new THREE.InstancedMesh(geo, best.material, cap);
+      m.count = 0; m.instanceMatrix.setUsage(THREE.DynamicDrawUsage); scene.add(m);
+      P_CAP[kind] = cap; props[kind] = m;
+      buildProps();                                        // re-lay props with the real model
+    }, undefined, e => console.error('[r3d] prop model failed', url, e));
+  }
+  instanceGLB('/r3d/models/opt/tree.glb', 'treeG', 4096, 2.4);
+  instanceGLB('/r3d/models/opt/bush.glb', 'bushG', 1024, 0.9);
   const pM = new THREE.Matrix4(), pP = new THREE.Vector3(), pS = new THREE.Vector3(), pC = new THREE.Color();
   const pQ0 = new THREE.Quaternion(), pQflat = new THREE.Quaternion().setFromEuler(new THREE.Euler(-Math.PI / 2, 0, 0));
   const hash01 = (x, y) => { let h = (Math.imul(x, 668265263) + Math.imul(y, 374761393)) >>> 0; return ((h ^ (h >>> 13)) % 1000) / 1000; };
@@ -215,9 +241,16 @@ function _mount(Game) {
       if (o.skill === 'Fishing') { put('fish', x, z, y + 0.06, 1, 1, 1, 0x9fd4ff); continue; }
       if (o.skill === 'Mining' || /Coal|Iron|Gold|Copper|Tin|Rock/.test(lbl)) { const s = 0.8 + r * 0.5; put('rock', x, z, y + 0.28 * s, s, s * 0.8, s, col, rot); continue; }
       if (/Dead Tree/.test(lbl)) { put('dead', x, z, y + 0.75, 1, 1, 1, 0x5a4a38, rot); continue; }
-      if (o.skill === 'Woodcutting' || /Tree|Willow|Oak|Thicket|Bush|Hedge|Copse/.test(lbl)) {
-        const big = /Oak/.test(lbl) ? 1.35 : /Willow/.test(lbl) ? 1.2 : /Bush|Hedge|Thicket|Copse/.test(lbl) ? 0.55 : 1.0;
+      if (/Bush|Hedge|Thicket|Copse/.test(lbl)) {
+        const s = 0.8 + r * 0.5;
+        if (props.bushG) put('bushG', x, z, y, s, s, s, 0xffffff, rot);
+        else { put('leaf', x, z, y + 0.55 * s, s * 0.55, s * 0.55, s * 0.55, col, rot); }
+        continue;
+      }
+      if (o.skill === 'Woodcutting' || /Tree|Willow|Oak/.test(lbl)) {
+        const big = /Oak/.test(lbl) ? 1.35 : /Willow/.test(lbl) ? 1.15 : 1.0;
         const s = big * (0.85 + r * 0.35);
+        if (props.treeG) { put('treeG', x, z, y, s, s, s, 0xffffff, rot); continue; }
         put('trunk', x, z, y + 0.5 * s, s, s, s, 0x6b4a2a, rot);
         put('leaf', x, z, y + (1.0 + 1.0) * s * 0.95, s, s, s, col, rot);
         continue;
