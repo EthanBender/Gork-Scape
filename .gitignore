@@ -7,3 +7,8 @@ server/world-state.json
 server/world-state.json.tmp
 server/accounts.json
 server/accounts.json.tmp
+
+# CI-only playwright install (npm i --no-save playwright) — the game itself is
+# zero-build; never commit node artifacts
+node_modules/
+package-lock.json

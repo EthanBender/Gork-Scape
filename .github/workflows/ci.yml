@@ -1,7 +1,17 @@
-# CI — runs the full local gate on EVERY branch push and pull request, so a
-# regression is caught where it's introduced, not only at the master deploy.
-# Same three checks the economy lane runs locally; all are pure Node, no browser,
-# no build (~2s total). deploy.yml re-runs them as the master deploy gate.
+# CI — runs the full gate on EVERY branch push and pull request, so a
+# regression is caught where it's introduced, not only at the main deploy.
+#
+# Two tiers:
+#   1. The four pure-Node checks the lanes run locally (~2s, no browser).
+#   2. A REAL-browser parse gate (headless Chromium via playwright, ~1 min):
+#      `node --check` PASSED the \'-in-a-template-expression bug that
+#      black-screened prod all day on 2026-07-04 (hotfix 1d509ad) — only a
+#      browser engine is the authority on "will the browser parse this".
+#      Playwright is a CI-only dep; the game itself stays zero-build.
+#
+# ⚠️ KNOWN HOLE: Cloudflare Pages publishes every push to main REGARDLESS of
+# this workflow's result — a red CI does not stop a deploy. See DEPLOY.md
+# § "Deploy gating" for the risk and the owner-side fix.
 name: CI
 
 on:
@@ -25,3 +35,19 @@ jobs:
         run: node scripts/quest_test.mjs
       - name: XP / progression pacing validator (equipment + gather↔process + combat)
         run: node scripts/pacing_sim.mjs
+
+      # --- browser-engine parse gate (the 2026-07-04 class of outage) ---
+      - name: Install playwright (CI-only dep — no package.json, the game is zero-build)
+        run: npm install --no-save playwright
+      - name: Resolve playwright version (browser cache key)
+        id: pw
+        run: echo "version=$(node -p "require('playwright/package.json').version")" >> "$GITHUB_OUTPUT"
+      - name: Cache playwright chromium
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ms-playwright-chromium-${{ steps.pw.outputs.version }}
+      - name: Install chromium
+        run: npx playwright install --with-deps chromium
+      - name: Browser-engine parse gate (real Chromium parses /src/main.js's module graph)
+        run: node scripts/browser_parse_check.mjs

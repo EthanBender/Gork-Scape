@@ -11,6 +11,56 @@
 > Pages was never enabled (we went Cloudflare, not Pages), producing a misleading red
 > "Deploy ✗" that had nothing to do with the live site. Don't re-add it.
 
+## ⚠️ Deploy gating — red CI does NOT stop a deploy (2026-07-04 outage)
+
+**The risk:** Cloudflare Pages' Git integration publishes every push to `main` on
+its own schedule — it never looks at GitHub Actions. A commit that fails CI (or
+whose CI hasn't finished) is live at gorkscape.ca ~1 minute after the push.
+
+**How it bit us:** on 2026-07-04 the game was down **all day**. `src/ui/wiki.js`
+contained a `\'` escape inside a single-quoted string inside a template
+expression — browser V8 rejects it (`SyntaxError: Missing } in template
+expression`) but `node --check` accepts the full file (context-dependent parser
+divergence: the extracted line alone *fails* `node --check`; the whole file
+passes). So `scripts/smoke.mjs` green-lit the commit, Pages published it, and
+`main.js`'s static import graph failed to parse — black canvas for every player.
+Hotfix: `1d509ad`.
+
+**What's fixed in-repo:** CI now runs
+[`scripts/browser_parse_check.mjs`](scripts/browser_parse_check.mjs) — headless
+Chromium (playwright) dynamically imports `/src/main.js` and fails the build on
+any `SyntaxError` in the module graph (runtime errors like `Phaser is not
+defined` are expected and pass — the check page loads no CDN scripts). A real
+browser engine, not `node --check`, is now the authority on "will the browser
+parse this". Verified against the actual outage commit: the gate fails `1d509ad^`
+and pinpoints `wiki.js`. Playwright is CI-only (`npm i --no-save`) — the game
+itself stays zero-build. Run it locally the same way CI does:
+`npm install --no-save playwright && npx playwright install chromium && node scripts/browser_parse_check.mjs`.
+
+**What's still open (needs the owner's Cloudflare dashboard — I can't reach it):**
+Pages will still publish a red push. Two ways to close it, pick one:
+
+1. **Quick (~1 min):** Pages project → *Settings → Builds & deployments → Build
+   command* → set to
+   `node scripts/smoke.mjs && node scripts/economy_sim.mjs && node scripts/quest_test.mjs && node scripts/pacing_sim.mjs`.
+   A failing command aborts the publish, so the four pure-Node gates become
+   deploy-blocking. **Limit:** the browser parse gate is NOT in that chain — the
+   Pages build image isn't guaranteed to run playwright's Chromium, so the exact
+   2026-07-04 class is still only caught in GitHub CI (visible red ✗, but not
+   blocking).
+2. **Full (recommended when there's an ops window):** stop Pages from watching
+   Git, and publish *from* GitHub Actions after CI is green:
+   `npx wrangler pages deploy . --project-name gork-scape` in a job with
+   `needs: test`, using `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID` repo
+   secrets. Note Cloudflare doesn't allow direct-upload deploys to a
+   Git-connected Pages project, so this means disconnecting the Git integration
+   (or recreating the project as direct-upload; the custom domain re-attaches).
+   Don't add that workflow before the secrets exist — a permanently red deploy
+   job is exactly the misleading-✗ problem we removed `deploy.yml` over.
+
+Until one of these lands: **treat a red CI on `main` as a live-site incident** —
+the bad commit is already deployed; revert or hotfix immediately.
+
 The game is a **static site** — vanilla ES modules + JSON, Phaser from a CDN, no
 build step. That means it deploys to any static host with zero configuration. This
 also gives everyone **one shared URL** instead of fighting over local preview servers.
@@ -80,8 +130,10 @@ our preview does), or drop the files behind nginx/Caddy. Any static file server 
 
 ## Verifying a deploy
 - Open the URL; you should see the world load and the tabbed panel.
-- If it's blank: open devtools console. The usual culprit is a mid-edit
-  import/export break — run `node scripts/smoke.mjs` locally first (it catches that).
+- If it's blank: open devtools console. The usual culprits are a mid-edit
+  import/export break — `node scripts/smoke.mjs` catches that — or a
+  browser-only parse error `node --check` can't see —
+  `node scripts/browser_parse_check.mjs` catches that (see "Deploy gating" above).
 
 ## When the MMO server arrives
 The above hosts the **client** (correct for today's single-player build). Once we

@@ -31,6 +31,13 @@ elevation for each); check elevation logic on every chunk.
    ```
    Never pipe gate output through `tail`/`grep` to check status — pipes mask
    exit codes.
+   CI runs one MORE gate you can't skip by staying local:
+   `scripts/browser_parse_check.mjs` — real headless Chromium parses the whole
+   `/src/main.js` module graph. `node --check` is NOT the authority on browser
+   syntax (a `\'` in a template expression black-screened prod on 2026-07-04
+   while smoke stayed green). If you touched UI/template-string-heavy code, run
+   it locally too: `npm i --no-save playwright && npx playwright install
+   chromium && node scripts/browser_parse_check.mjs`.
 3. All green → commit with a specific message ("map: c0r2 — cleared 12
    wall_orphans"). Red → fix it, or if not fixed in ~15 minutes, revert
    (`git checkout -- <files>`) and pick a different task. Never commit red.
