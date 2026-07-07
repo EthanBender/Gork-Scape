@@ -16,6 +16,8 @@
     { "id": "the_oldest_oak", "name": "The Oldest Oak", "region": "oakwoods", "answered": "never",
       "hook": "The Root Keepers grow their homes from living wood and won't say how old the oldest oak is — or whether it grew the first root-keeper, or the other way around. Even they may no longer know." },
     { "id": "the_wreck", "name": "The Wreck Below", "region": "grublake", "answered": "never",
-      "hook": "At the bottom of Grublake lies a ship far too large for any lake — masts like bridge-timbers, fittings sized for the wrong hands, letters on the stern that nobody reads, boilers still shut tight. No river could have brought her in. What sea did she sail, and how did she come to rest HERE?" }
+      "hook": "At the bottom of Grublake lies a ship far too large for any lake — masts like bridge-timbers, fittings sized for the wrong hands, letters on the stern that nobody reads, boilers still shut tight. No river could have brought her in. What sea did she sail, and how did she come to rest HERE?" },
+    { "id": "rings_back", "name": "The Bench That Rings Back", "region": "grubpit", "answered": "never",
+      "hook": "Strike the deepest bench of Grubpit and it rings like a bell. Then something rings back — half a beat late, and not quite the same. Corrected, say the old cutters. Like something below knows the tune better, and has been waiting a hundred years for the quarry to sing it right." }
   ]
 }

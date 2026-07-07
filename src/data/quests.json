@@ -3102,5 +3102,169 @@
    "mystery:the_wreck",
    "npc:pike"
   ]
+ },
+ {
+  "id": "grubpit_first_chisel",
+  "name": "The First Chisel",
+  "act": 1,
+  "giver": {
+   "npc": "mallet",
+   "name": "Old Mallet",
+   "where": {
+    "x": 455,
+    "y": 285
+   }
+  },
+  "summary": "Every new cutter in Grubpit gets their first chisel from Old Mallet's own hand — blunted, on purpose. Work the edge back yourself, make one fair cut, and it's yours.",
+  "intro": "Here's your chisel. Yes, it's blunt. It's blunt because I blunted it, and you'll work the edge back yourself, because that's the way of it: nothing worth carving comes easy. Now — the fresh benches are crawling with cave-bugs, and bug-shell dulls good stone faster than bad habits. Clear them off, then make me a fair cut of copper. One fair cut, cutter. That's how everything in this pit began.",
+  "outro": "Let's see it. ...Hm. Square, clean, no bruising at the edge. A fair first cut. The chisel's sharp now, and it's yours. Why do I blunt them? The cutters will tell you nothing worth carving comes easy, and that's true enough. But between you and me: the first thing every young fool carves with a SHARP chisel is their name — and stone remembers longer than fools last. Carve your name into your WORK, cutter. There. That lesson's free.",
+  "requires": {
+   "quests": [
+    "first_pickaxe"
+   ]
+  },
+  "steps": [
+   {
+    "type": "goto",
+    "target": "grubpit",
+    "where": {
+     "x": 455,
+     "y": 285,
+     "name": "Grubpit Quarry",
+     "radius": 60
+    },
+    "text": "Report to Grubpit Quarry",
+    "say": "North of town — follow the cart ruts to the terraces."
+   },
+   {
+    "type": "kill",
+    "target": "cave_bug",
+    "count": 6,
+    "text": "Clear 6 Cave Bugs off the fresh benches",
+    "say": "Bug-shell dulls good stone. Sweep them off my benches."
+   },
+   {
+    "type": "obtain",
+    "target": "copper_ore",
+    "count": 4,
+    "text": "Make a fair cut — 4 Copper Ore",
+    "say": "Copper first. Copper forgives. Iron holds a grudge."
+   },
+   {
+    "type": "talk",
+    "target": "mallet",
+    "name": "Old Mallet",
+    "text": "Show Old Mallet your first cut",
+    "say": "I will be at the tool-wall, listening to the pit."
+   }
+  ],
+  "rewards": {
+   "coins": 160,
+   "xp": [
+    {
+     "skill": "Mining",
+     "amount": 400
+    },
+    {
+     "skill": "Smithing",
+     "amount": 180
+    }
+   ],
+   "items": [
+    {
+     "id": "bug_eye_ring"
+    }
+   ]
+  },
+  "thread": "local",
+  "teaches": [
+   "region:grubpit",
+   "npc:mallet",
+   "lore:blunted_chisel"
+  ]
+ },
+ {
+  "id": "grubpit_deepest_bench",
+  "name": "The Bench That Rings Back",
+  "act": 2,
+  "giver": {
+   "npc": "mallet",
+   "name": "Old Mallet",
+   "where": {
+    "x": 455,
+    "y": 285
+   }
+  },
+  "summary": "Old Mallet shows the ones who stay: strike the deepest bench and it rings, bell-true. Then count the beat — something rings back. The imps have moved in down there, sitting against the stone all day like it's warm.",
+  "intro": "You've a sharp chisel and a fair hand, so I'll show you what I show the ones who stay. The deepest bench. Strike it clean and it rings — bell-true, prettiest note in the pit. Then count the beat... and something rings BACK. Half a beat late. And not — quite — the same. Lately the imps have moved in down there; they sit against the stone all day like it's warm. Clear them off, cut me two fair blocks of flux, and then STRIKE the bench and count. Then come tell me what you heard.",
+  "outro": "...You heard it. I can see it on you. Half a beat late, and the note come back CORRECTED — aye, that's the word nobody likes. An echo comes back the same, cutter. This comes back like something down there knows the tune better than we do. Like the whole pit's been singing it wrong for a hundred years, and something below is too polite to say so and too stubborn to let it lie. Sixty years I've cut this pit. Every bench, every seam, every note — and I don't know. We keep cutting. It keeps correcting. Maybe one day we get the tune right. And then, I suppose, we find out what it's been waiting to hear.",
+  "requires": {
+   "quests": [
+    "grubpit_first_chisel"
+   ],
+   "level": {
+    "skill": "Mining",
+    "level": 15
+   }
+  },
+  "steps": [
+   {
+    "type": "goto",
+    "target": "grubpit",
+    "where": {
+     "x": 470,
+     "y": 297,
+     "name": "the deepest bench",
+     "radius": 45
+    },
+    "text": "Descend to the deepest bench",
+    "say": "Down every terrace there is, then one more. The air goes still. The stone goes smooth."
+   },
+   {
+    "type": "kill",
+    "target": "quarry_imp",
+    "count": 5,
+    "text": "Clear 5 Quarry Imps off the deep stone",
+    "say": "They sit against the bench like it is warm. Perhaps to them it is."
+   },
+   {
+    "type": "obtain",
+    "target": "flux_stone",
+    "count": 2,
+    "text": "Cut 2 fair blocks of Flux Stone",
+    "say": "The flux seam runs beside the bench. Two fair blocks — mind your edge."
+   },
+   {
+    "type": "talk",
+    "target": "mallet",
+    "name": "Old Mallet",
+    "text": "Tell Old Mallet what you heard",
+    "say": "Strike it clean before you climb. Count the beat. Then come tell me."
+   }
+  ],
+  "rewards": {
+   "coins": 280,
+   "xp": [
+    {
+     "skill": "Mining",
+     "amount": 560
+    },
+    {
+     "skill": "Defence",
+     "amount": 240
+    }
+   ],
+   "items": [
+    {
+     "id": "gem"
+    }
+   ]
+  },
+  "thread": "main",
+  "teaches": [
+   "region:grubpit",
+   "mystery:rings_back",
+   "npc:mallet"
+  ]
  }
 ]
