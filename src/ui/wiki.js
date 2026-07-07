@@ -317,7 +317,7 @@ export function openWiki(focusId = null) {
       wikiMode = t.dataset.mode;
       overlay.querySelectorAll('.wk-tab').forEach((x) => x.classList.toggle('sel', x === t));
       search.placeholder = wikiMode === 'lore' ? 'Search the lore…' : 'Search items…';
-      overlay.querySelector('.wk-detail').innerHTML = `<div class="wk-none">${wikiMode === 'lore' ? 'The peoples, regions, rumors, and mysteries of the world. Some rumors are true. Some are not.' : 'Search or pick an item to see what it is, where it comes from, and what it\\'s for.'}</div>`;
+      overlay.querySelector('.wk-detail').innerHTML = `<div class="wk-none">${wikiMode === 'lore' ? 'The peoples, regions, rumors, and mysteries of the world. Some rumors are true. Some are not.' : "Search or pick an item to see what it is, where it comes from, and what it's for."}</div>`;
       renderList(overlay, search.value);
     }; });
   }
