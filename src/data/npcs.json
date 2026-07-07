@@ -31,6 +31,9 @@
       "arc": "Architecture as a conversation with something alive. Taproot teaches taking-by-asking first, then stands the player before the oldest oak — the question even root-keepers no longer know the answer to, and have made their peace with not asking twice." },
     { "id": "granny_furrow", "name": "Granny Furrow", "home": "farmlands", "appearsIn": ["farmlands", "settlement"], "recurring": true,
       "role": "matriarch of the Main Farmlands; Best-in-Fair so many years the trophy is named after her now",
-      "arc": "Harvest-as-competitive-sport made flesh — she keeps the young farmers honest by beating them. And though she'd deny it to your face, she plants one extra row every season, out toward the far field, for whatever it is that empties the offerings." }
+      "arc": "Harvest-as-competitive-sport made flesh — she keeps the young farmers honest by beating them. And though she'd deny it to your face, she plants one extra row every season, out toward the far field, for whatever it is that empties the offerings." },
+    { "id": "basalt", "name": "Old Basalt", "home": "troll", "appearsIn": ["troll"], "recurring": true,
+      "role": "toll-keeper of Troll Ridge — by day he IS the gate no goblin admits to fearing; by dusk he counts the toll",
+      "arc": "The first troll a goblin can talk to instead of flee. Tolls at dusk, arguments till dawn, and somewhere in his slow stone head the next word of the four-hundred-year joke — due, he reckons, any decade now." }
   ]
 }

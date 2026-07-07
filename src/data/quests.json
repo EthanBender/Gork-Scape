@@ -2456,5 +2456,166 @@
    "mystery:walking_scarecrow",
    "npc:shopkeeper_farming_shed"
   ]
+ },
+ {
+  "id": "troll_the_toll",
+  "name": "The Toll",
+  "act": 3,
+  "giver": {
+   "npc": "basalt",
+   "name": "Old Basalt",
+   "where": {
+    "x": 835,
+    "y": 80
+   }
+  },
+  "summary": "Old Basalt keeps the ridge gate — by day he IS the gate. Wolves have taken to eating his toll-payers, which is terrible for business, and they've been at the thistle he brews for the night's arguing.",
+  "intro": "Stop. ...Toll. Hm? No coin? Then WORK, little green one. The wolves have gone bold — eaten three toll-payers this season. Nobody pays a toll twice if they're eaten after the once. Bad. For. Business. Thin them out. And bring back my thistle where they've trampled the patch — a troll cannot argue dry, and tonight's argument is a big one. It's about whose fault the sun is. It's ALWAYS about whose fault the sun is.",
+  "outro": "Wolves thinned, thistle steeping, toll-road open for honest payers. ...You're all right, little green one. Most of you run. The runners never learn a troll is only fearsome by day, and by day I'm a GATE — a gate never chased anybody. Here. Sapphire. Grew it myself. Don't ask how. THAT'S a toll secret.",
+  "requires": {
+   "level": {
+    "skill": "Attack",
+    "level": 50
+   }
+  },
+  "steps": [
+   {
+    "type": "goto",
+    "target": "troll",
+    "where": {
+     "x": 835,
+     "y": 80,
+     "name": "Troll Ridge",
+     "radius": 60
+    },
+    "text": "Climb to Troll Ridge",
+    "say": "Up the high crags, north past the mine hills. The gate is the big one that looks at you."
+   },
+   {
+    "type": "kill",
+    "target": "ridge_wolf",
+    "count": 5,
+    "text": "Thin out 5 Ridge Wolves eating the toll-payers",
+    "say": "They den above the gate. Make the road honest again."
+   },
+   {
+    "type": "obtain",
+    "target": "troll_thistle",
+    "count": 3,
+    "text": "Recover 3 Troll Thistle for the argument tea",
+    "say": "The wolves trample my patch. Bring back what they carry off."
+   },
+   {
+    "type": "talk",
+    "target": "basalt",
+    "name": "Old Basalt",
+    "text": "Return to Old Basalt at the gate",
+    "say": "I will be the gate. I am always the gate."
+   }
+  ],
+  "rewards": {
+   "coins": 420,
+   "xp": [
+    {
+     "skill": "Attack",
+     "amount": 800
+    },
+    {
+     "skill": "Hitpoints",
+     "amount": 400
+    }
+   ],
+   "items": [
+    {
+     "id": "troll_sapphire"
+    }
+   ]
+  },
+  "thread": "local",
+  "teaches": [
+   "region:troll",
+   "npc:basalt",
+   "lore:trolls_stone_argument"
+  ]
+ },
+ {
+  "id": "troll_whose_fault",
+  "name": "Whose Fault Is the Sun",
+  "act": 3,
+  "giver": {
+   "npc": "basalt",
+   "name": "Old Basalt",
+   "where": {
+    "x": 835,
+    "y": 80
+   }
+  },
+  "summary": "Tonight Old Basalt means to WIN the nightly argument — four hundred years of whose-fault-is-the-sun, and he finally has a theory. He just needs evidence: Bigjaw's shed teeth, from the whelps brawling on the argument crag.",
+  "intro": "Tonight I WIN. Four hundred years of the same argument and I have finally built the winning of it: it was BIGJAW bit the sunrise, back at the beginning, and that's why it burns us — and Bigjaw's own teeth will prove it. The whelps brawl on the argument crag and knock his old shed teeth about like toys. Fetch me two. ...What? No, Bigjaw won't mind. Bigjaw's been mid-sentence since MIDSUMMER. It was a very good sentence.",
+  "outro": "...I presented the teeth at dusk. And the argument became — oh, it was BEAUTIFUL — the argument became whether teeth COUNT as evidence, which nobody has ever argued before. Four hundred years and a NEW argument, whole and green as spring. The cousins wept. Flint fell over. ...Did I win? Little green one. Nobody WINS. Winning would END it, and then what would we do with the nights? You've given us a fresh hundred years. That's worth more than winning. Take the club — arguing stick, retired. It's got history in it.",
+  "requires": {
+   "quests": [
+    "troll_the_toll"
+   ]
+  },
+  "steps": [
+   {
+    "type": "goto",
+    "target": "troll",
+    "where": {
+     "x": 850,
+     "y": 95,
+     "name": "the argument crag",
+     "radius": 45
+    },
+    "text": "Climb to the argument crag",
+    "say": "Higher up, where the shouting echoes from. By day it is just the crag. The shouting soaks in."
+   },
+   {
+    "type": "kill",
+    "target": "troll_whelp",
+    "count": 4,
+    "text": "Scatter 4 brawling Troll Whelps",
+    "say": "They mean nothing by it. Whelps brawl like rain falls. But they are on my evidence."
+   },
+   {
+    "type": "obtain",
+    "target": "troll_tooth",
+    "count": 2,
+    "text": "Gather 2 of Bigjaw's shed teeth",
+    "say": "Big as your head, probably. Everything of Bigjaw is."
+   },
+   {
+    "type": "talk",
+    "target": "basalt",
+    "name": "Old Basalt",
+    "text": "Bring the evidence to Old Basalt before dusk",
+    "say": "Before dusk, mind. An argument missed is an argument LOST, and I have never once lost."
+   }
+  ],
+  "rewards": {
+   "coins": 450,
+   "xp": [
+    {
+     "skill": "Strength",
+     "amount": 850
+    },
+    {
+     "skill": "Defence",
+     "amount": 420
+    }
+   ],
+   "items": [
+    {
+     "id": "troll_club"
+    }
+   ]
+  },
+  "thread": "local",
+  "teaches": [
+   "region:troll",
+   "npc:basalt",
+   "lore:troll_joke"
+  ]
  }
 ]

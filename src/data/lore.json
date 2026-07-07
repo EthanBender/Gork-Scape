@@ -36,6 +36,8 @@
     { "id": "growing_house", "region": "oakwoods", "truth": "exaggerated",
       "text": "Root-keeper houses keep growing after the family moves on. Deep in the Oakwoods there's one that's stood empty three hundred years and still sets out a new room every spring — ready, they say, for somebody." },
     { "id": "granny_trophy", "region": "farmlands", "truth": "true",
-      "text": "Granny Furrow took Best in Fair so many years running the judges gave up and named the trophy after her. She still enters. She says it keeps the young ones honest." }
+      "text": "Granny Furrow took Best in Fair so many years running the judges gave up and named the trophy after her. She still enters. She says it keeps the young ones honest." },
+    { "id": "troll_joke", "region": "troll", "truth": "exaggerated",
+      "text": "A goblin trader once heard the ridge-trolls' joke up to the middle. He laughs at nothing now, sometimes, and says 'you had to be there.' He means the century." }
   ]
 }
