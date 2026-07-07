@@ -9,7 +9,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { TERRAIN_DEFS } from '../world/worldData.js';
 import { TILE_SIZE } from '../world/map.js';
-import { avatarStateFor } from '../render/characters.js';
+import { avatarStateFor, AV_SCALE } from '../render/characters.js';
 
 const HEIGHT = 13, WIN = 176, TSPX = 12, REBUILD = 40, MARGIN = 6;
 const GRASS = new Set([0, 11, 12, 19]), PATH = new Set([3, 6, 7, 20]), WATER = new Set([1, 13, 14]);
@@ -170,6 +170,70 @@ function _mount(Game) {
     }
   }, undefined, e => console.error('[r3d] goblin load failed', e));
 
+  // ---------- NPCs, monsters & other players: pooled low-poly clay bodies. One shared
+  // geometry set; per-creature tint from the SAME avatarStateFor state the 2D uses
+  // (skin colour, bodyType silhouette, size incl. boss footprint, walk/attack/hit). ----
+  const AG = {
+    torso: new THREE.CapsuleGeometry(0.32, 0.5, 3, 8),
+    head: new THREE.SphereGeometry(0.24, 10, 8),
+    ball: new THREE.SphereGeometry(0.4, 10, 8),
+    leg: new THREE.CylinderGeometry(0.07, 0.09, 0.34, 6),
+    wing: new THREE.BoxGeometry(0.5, 0.05, 0.22),
+    dome: new THREE.SphereGeometry(0.45, 10, 8, 0, Math.PI * 2, 0, Math.PI / 2),
+  };
+  const matCache = new Map();
+  const matFor = (hex) => { let m = matCache.get(hex); if (!m) { m = new THREE.MeshLambertMaterial({ color: hex }); matCache.set(hex, m); } return m; };
+  function makeActor(bodyType, skin) {
+    const g = new THREE.Group(); const m = matFor(skin); const dark = matFor((skin >> 1) & 0x7f7f7f);
+    const add = (geo, mat, x, y, z, sx = 1, sy = 1, sz = 1) => { const me = new THREE.Mesh(geo, mat); me.position.set(x, y, z); me.scale.set(sx, sy, sz); g.add(me); return me; };
+    switch (bodyType) {
+      case 'quadruped': add(AG.ball, m, 0, 0.55, 0, 1.35, 0.75, 0.85); add(AG.head, m, 0, 0.75, 0.62);
+        add(AG.leg, dark, 0.22, 0.18, 0.3); add(AG.leg, dark, -0.22, 0.18, 0.3); add(AG.leg, dark, 0.22, 0.18, -0.3); add(AG.leg, dark, -0.22, 0.18, -0.3); break;
+      case 'insectoid': add(AG.ball, m, 0, 0.4, -0.1, 1.15, 0.5, 1.35); add(AG.head, dark, 0, 0.45, 0.6, 0.8, 0.8, 0.8); break;
+      case 'avian': add(AG.ball, m, 0, 1.0, 0, 0.7, 0.6, 0.8); add(AG.wing, dark, 0.42, 1.05, 0); add(AG.wing, dark, -0.42, 1.05, 0); add(AG.head, m, 0, 1.3, 0.3, 0.7, 0.7, 0.7); break;
+      case 'serpent': add(AG.ball, m, 0, 0.3, 0.35, 0.8, 0.55, 0.8); add(AG.ball, m, 0, 0.28, -0.15, 0.65, 0.45, 0.7); add(AG.ball, dark, 0, 0.26, -0.55, 0.5, 0.35, 0.55); add(AG.head, m, 0, 0.5, 0.65, 0.9, 0.9, 0.9); break;
+      case 'blob': add(AG.dome, m, 0, 0.05, 0, 1.1, 1.0, 1.1); break;
+      default: add(AG.torso, m, 0, 0.75, 0); add(AG.head, m, 0, 1.35, 0.02);  // humanoid (incl. other players)
+        add(AG.leg, dark, 0.14, 0.17, 0); add(AG.leg, dark, -0.14, 0.17, 0); break;
+    }
+    return g;
+  }
+  const actorPool = new Map();   // npc object -> { g, lastX, lastZ, yaw }
+  let npcShown = 0;
+  function syncActors(time, dt) {
+    const list = Game.activeNpcs || [];
+    const seen = new Set();
+    npcShown = 0;
+    for (let i = 0; i < list.length && npcShown < 120; i++) {
+      const n = list[i];
+      if (!n || n.dead) continue;
+      let st = null; try { st = avatarStateFor(n, false, time); } catch (_) { continue; }
+      seen.add(n);
+      let a = actorPool.get(n);
+      if (!a) { a = { g: makeActor(st.bodyType, st.skin), lastX: n.px / TILE_SIZE, lastZ: n.py / TILE_SIZE, yaw: 0 }; scene.add(a.g); actorPool.set(n, a); }
+      const ax = n.px / TILE_SIZE, az2 = n.py / TILE_SIZE, ay = heightAt(ax, az2);
+      const sizeMul = Math.max(0.35, st.scale / AV_SCALE);
+      a.g.scale.setScalar(sizeMul);
+      // facing: turn toward movement, idle falls back to the sim's 4-way facing
+      const adx = ax - a.lastX, adz = az2 - a.lastZ;
+      let ty2 = a.yaw;
+      if (adx * adx + adz * adz > 1e-6) ty2 = Math.atan2(adx, adz);
+      else if (FACE[st.facing] !== undefined) ty2 = FACE[st.facing];
+      a.lastX = ax; a.lastZ = az2;
+      let dyw = ty2 - a.yaw; dyw = Math.atan2(Math.sin(dyw), Math.cos(dyw));
+      a.yaw += dyw * Math.min(1, dt * 10);
+      a.g.rotation.y = a.yaw;
+      // cheap clay animation: walk bob, attack lunge, hit recoil
+      let bobY = 0, lunge = 0;
+      if (st.anim === 'walk') bobY = Math.abs(Math.sin((time + (n._tOff || 0)) * 0.012)) * 0.09 * sizeMul;
+      else if (st.anim === 'attack') lunge = Math.sin(Math.PI * Math.min(1, st.phase)) * 0.3 * sizeMul;
+      else if (st.anim === 'hit') lunge = -Math.sin(Math.PI * Math.min(1, st.phase)) * 0.18 * sizeMul;
+      a.g.position.set(ax + Math.sin(a.yaw) * lunge, ay + bobY, az2 + Math.cos(a.yaw) * lunge);
+      npcShown++;
+    }
+    for (const [n, a] of actorPool) if (!seen.has(n)) { scene.remove(a.g); actorPool.delete(n); }
+  }
+
   // ---------- walk feedback: gold ring on the destination tile + white dots along the
   // live path (read from p.travelTarget / p.path every frame, same data the 2D uses) ----
   const destMarker = new THREE.Mesh(
@@ -249,6 +313,7 @@ function _mount(Game) {
       if (Math.abs(wx - winCX) > REBUILD || Math.abs(wz - winCY) > REBUILD) buildWindow(wx | 0, wz | 0);
       daylight3d();                                            // world-clock lighting (once per game minute)
       const dt = clock.getDelta();
+      syncActors(performance.now(), dt);                       // NPCs / monsters / other players
       if (p) {
         goblin.visible = true;
         goblin.position.set(wx, wy, wz);
@@ -301,7 +366,7 @@ function _mount(Game) {
       camera.lookAt(camTarget);
       renderer.render(scene, camera);
       frames++; const t = performance.now();
-      if (t - lastFps >= 500) { chip.textContent = '3D α · ' + Math.round(frames * 1000 / (t - lastFps)) + ' fps' + (p ? '' : ' · waiting for player…'); frames = 0; lastFps = t; }
+      if (t - lastFps >= 500) { chip.textContent = '3D α · ' + Math.round(frames * 1000 / (t - lastFps)) + ' fps · ' + npcShown + ' npcs' + (p ? '' : ' · waiting for player…'); frames = 0; lastFps = t; }
     } catch (e) {
       const msg = (e && e.message) ? e.message : String(e);
       if (msg !== lastErr) { lastErr = msg; console.error('[r3d] frame error', e); chipErr(msg); }
