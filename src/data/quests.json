@@ -2296,5 +2296,165 @@
    "mystery:the_oldest_oak",
    "npc:taproot"
   ]
+ },
+ {
+  "id": "farmlands_best_in_fair",
+  "name": "Best in Fair",
+  "act": 2,
+  "giver": {
+   "npc": "granny_furrow",
+   "name": "Granny Furrow",
+   "where": {
+    "x": 510,
+    "y": 640
+   }
+  },
+  "summary": "The harvest fair is days away, scavengers are raiding Granny Furrow's prize plot, and the trophy — which is named after her — is NOT leaving the family.",
+  "intro": "Fair's in three days, my war pumpkin's the finest thing I've grown in forty seasons, and the scavengers have found my plot. The trophy is named AFTER me, child. It is not leaving the family to a pack of thieving vermin. Run them off, and while you're out, pull me a proper show of cabbages — the judges dock you for a thin table, and my table has never once been thin.",
+  "outro": "Look at that pumpkin. LOOK at it. The judges wept, the young ones sulked, and the trophy stays where it belongs — that's the fair run honest, which is to say, won by me. You worked for the table, so the table provides: take this one off my own vine. Mind how you carry it. It's won things.",
+  "requires": {
+   "quests": [
+    "the_farmers_bad_smell"
+   ]
+  },
+  "steps": [
+   {
+    "type": "goto",
+    "target": "farmlands",
+    "where": {
+     "x": 510,
+     "y": 640,
+     "name": "the Main Farmlands",
+     "radius": 60
+    },
+    "text": "Travel to the Main Farmlands",
+    "say": "South of town, where the crop rows run to the lake."
+   },
+   {
+    "type": "kill",
+    "target": "farm_scavenger",
+    "count": 6,
+    "text": "Run off 6 Farm Scavengers raiding the prize plot",
+    "say": "Thieving vermin. Make the lesson stick."
+   },
+   {
+    "type": "obtain",
+    "target": "cabbage",
+    "count": 5,
+    "text": "Pull 5 Cabbages for the fair table",
+    "say": "A thin table loses points. My table is never thin."
+   },
+   {
+    "type": "talk",
+    "target": "granny_furrow",
+    "name": "Granny Furrow",
+    "text": "Return to Granny Furrow",
+    "say": "Back to my plot, and wipe your boots."
+   }
+  ],
+  "rewards": {
+   "coins": 220,
+   "xp": [
+    {
+     "skill": "Farming",
+     "amount": 480
+    },
+    {
+     "skill": "Strength",
+     "amount": 220
+    }
+   ],
+   "items": [
+    {
+     "id": "war_pumpkin"
+    }
+   ]
+  },
+  "thread": "local",
+  "teaches": [
+   "region:farmlands",
+   "npc:granny_furrow",
+   "lore:granny_trophy"
+  ]
+ },
+ {
+  "id": "farmlands_ten_paces_west",
+  "name": "Ten Paces West",
+  "act": 2,
+  "giver": {
+   "npc": "shopkeeper_farming_shed",
+   "name": "Farmhand",
+   "where": {
+    "x": 510,
+    "y": 640
+   }
+  },
+  "summary": "The scarecrow in the far field has moved again — ten paces west, and the Farmhand MEASURED. Nobody works that field anymore. Somebody should at least go look at it.",
+  "intro": "It moved. Again. Ten paces west — I MEASURED, don't you give me that look. Nobody works the far field anymore; nobody but me so much as walks it. Go out there and look at it. Stand with it a while. And take it three cabbages — it liked the cabbages, last year. ...Take turnips too, in case its taste has turned. Don't laugh. DON'T laugh.",
+  "outro": "Still where you found it? 'Course it was. It never moves while somebody's watching — ten years, never once while watching. That's not the part that gets me, friend. The offerings. Were they gone when you looked back? ...They always are. A fox, you'll say. Fine. A fox. ...It's facing my house now. Did you notice that? It didn't used to face my house.",
+  "requires": {
+   "quests": [
+    "farmlands_best_in_fair"
+   ]
+  },
+  "steps": [
+   {
+    "type": "goto",
+    "target": "farmlands",
+    "where": {
+     "x": 530,
+     "y": 655,
+     "name": "the far field",
+     "radius": 45
+    },
+    "text": "Walk out to the far field",
+    "say": "Past the last worked rows, where the fence wants mending. You will see it. It has seen you."
+   },
+   {
+    "type": "obtain",
+    "target": "cabbage",
+    "count": 3,
+    "text": "Bring 3 Cabbages as an offering",
+    "say": "It liked the cabbages last year. Set them down gentle."
+   },
+   {
+    "type": "obtain",
+    "target": "turnip",
+    "count": 3,
+    "text": "Bring 3 Turnips, in case its taste has turned",
+    "say": "Ten years is long. Tastes turn."
+   },
+   {
+    "type": "talk",
+    "target": "shopkeeper_farming_shed",
+    "name": "Farmhand",
+    "text": "Report back to the Farmhand",
+    "say": "Come find me at the shed. I will want to know exactly where it stood."
+   }
+  ],
+  "rewards": {
+   "coins": 300,
+   "xp": [
+    {
+     "skill": "Farming",
+     "amount": 560
+    },
+    {
+     "skill": "Hitpoints",
+     "amount": 280
+    }
+   ],
+   "items": [
+    {
+     "id": "moon_carrot"
+    }
+   ]
+  },
+  "thread": "main",
+  "teaches": [
+   "region:farmlands",
+   "mystery:walking_scarecrow",
+   "npc:shopkeeper_farming_shed"
+  ]
  }
 ]

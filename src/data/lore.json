@@ -34,6 +34,8 @@
     { "id": "tunnel_whistlers", "region": "minehills", "truth": "exaggerated", "links": ["mystery:deep_tunnels"],
       "text": "Whistle in a dwarf tunnel and something whistles back — in tune, they say, and half a beat late. No miner has stayed for the second verse." },
     { "id": "growing_house", "region": "oakwoods", "truth": "exaggerated",
-      "text": "Root-keeper houses keep growing after the family moves on. Deep in the Oakwoods there's one that's stood empty three hundred years and still sets out a new room every spring — ready, they say, for somebody." }
+      "text": "Root-keeper houses keep growing after the family moves on. Deep in the Oakwoods there's one that's stood empty three hundred years and still sets out a new room every spring — ready, they say, for somebody." },
+    { "id": "granny_trophy", "region": "farmlands", "truth": "true",
+      "text": "Granny Furrow took Best in Fair so many years running the judges gave up and named the trophy after her. She still enters. She says it keeps the young ones honest." }
   ]
 }
