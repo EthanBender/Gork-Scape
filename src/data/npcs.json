@@ -37,6 +37,9 @@
       "arc": "The first troll a goblin can talk to instead of flee. Tolls at dusk, arguments till dawn, and somewhere in his slow stone head the next word of the four-hundred-year joke — due, he reckons, any decade now." },
     { "id": "eddy", "name": "Eddy the Ferryman", "home": "willow", "appearsIn": ["willow", "bog"], "recurring": true,
       "role": "a bogling ferryman of the Willow Riverlands; the fares are polished junk and the rates are moods",
-      "arc": "Fare is whatever Eddy feels the crossing was worth — three polished spoons for a merchant, one good story for a penniless whelp. The player's way into the riverlands' pace, and a cousin-web that reaches every bogling in the marshes." }
+      "arc": "Fare is whatever Eddy feels the crossing was worth — three polished spoons for a merchant, one good story for a penniless whelp. The player's way into the riverlands' pace, and a cousin-web that reaches every bogling in the marshes." },
+    { "id": "knot", "name": "Knot the Logger", "home": "choppers", "appearsIn": ["choppers"], "recurring": true,
+      "role": "Chopper's Hollow's most reliable worker and least reliable witness",
+      "arc": "Three loggers swear the tallest oak chops back, and Knot is all three of them at heart. He KNOWS WHAT HE SAW. Every camp needs its tall-tale engine — the Hollow's is the best, and the strange thing is, his stories keep almost checking out." }
   ]
 }

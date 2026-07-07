@@ -40,6 +40,8 @@
     { "id": "troll_joke", "region": "troll", "truth": "exaggerated",
       "text": "A goblin trader once heard the ridge-trolls' joke up to the middle. He laughs at nothing now, sometimes, and says 'you had to be there.' He means the century." },
     { "id": "eddys_rates", "region": "willow", "truth": "true",
-      "text": "Eddy the ferryman once charged a merchant three polished spoons for a crossing, then poled a penniless whelp across for one good story. The rates are moods, and the moods are fair." }
+      "text": "Eddy the ferryman once charged a merchant three polished spoons for a crossing, then poled a penniless whelp across for one good story. The rates are moods, and the moods are fair." },
+    { "id": "stump_hats", "region": "choppers", "truth": "true",
+      "text": "On Timber Glut eve every stump in the Hollow gets a hat. Ask why and you'll get forty answers, all different, all delivered with total confidence. The stumps have never once complained." }
   ]
 }

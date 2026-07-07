@@ -2777,5 +2777,166 @@
    "npc:eddy",
    "lore:lucky_frog_bandits"
   ]
+ },
+ {
+  "id": "choppers_every_stump_a_hat",
+  "name": "Every Stump a Hat",
+  "act": 2,
+  "giver": {
+   "npc": "shopkeeper_lumber_stall",
+   "name": "Timber Row Foreman",
+   "where": {
+    "x": 335,
+    "y": 370
+   }
+  },
+  "summary": "It's Timber Glut eve, every stump in the Hollow must get its hat — nobody remembers why, everybody insists — and the forest rats have shredded the hat-crates. The Foreman is having a Timber Glut.",
+  "intro": "Of COURSE it's Timber Glut eve, and of COURSE the rats got into the hat-crates. Forty years of stump-hats chewed to confetti. Why do the stumps get hats? Don't start. NOBODY starts. They get hats because it's Timber Glut eve and stumps GET hats, and if one stump in my Hollow stands bare tomorrow I will never hear the end of it from every logger, spouse, and grandmother this side of the river. Clear the rats out and bring me boar-hide for the stitching. GO.",
+  "outro": "Stitched, blocked, and every stump in the Hollow wearing its hat by first light — even the sour old one by the sawpit that nobody likes. Why do we do it? Forty answers in this camp, all different, all CORRECT. My answer? The year we skipped it, the Glut went badly. That's answer enough for a working goblin. Take the hatchet — you've earned honest steel... well. Iron. Honest iron.",
+  "requires": {
+   "level": {
+    "skill": "Woodcutting",
+    "level": 10
+   }
+  },
+  "steps": [
+   {
+    "type": "goto",
+    "target": "choppers",
+    "where": {
+     "x": 335,
+     "y": 370,
+     "name": "Chopper's Hollow",
+     "radius": 60
+    },
+    "text": "Travel to Chopper's Hollow",
+    "say": "West of town, follow the sound of axes and complaining."
+   },
+   {
+    "type": "kill",
+    "target": "forest_rat",
+    "count": 6,
+    "text": "Clear 6 Forest Rats out of the hat-crates",
+    "say": "They are IN the crates. They are WEARING some of them."
+   },
+   {
+    "type": "obtain",
+    "target": "tough_hide",
+    "count": 3,
+    "text": "Bring 3 Tough Hides for stitching new hats",
+    "say": "Boar-hide blocks a fine hat. The boars will disagree."
+   },
+   {
+    "type": "talk",
+    "target": "shopkeeper_lumber_stall",
+    "name": "Timber Row Foreman",
+    "text": "Return to the Foreman before the eve",
+    "say": "The stitching circle starts at dusk. Do NOT be late with my hides."
+   }
+  ],
+  "rewards": {
+   "coins": 180,
+   "xp": [
+    {
+     "skill": "Woodcutting",
+     "amount": 420
+    },
+    {
+     "skill": "Crafting",
+     "amount": 200
+    }
+   ],
+   "items": [
+    {
+     "id": "iron_hatchet"
+    }
+   ]
+  },
+  "thread": "local",
+  "teaches": [
+   "region:choppers",
+   "npc:shopkeeper_lumber_stall",
+   "lore:stump_hats"
+  ]
+ },
+ {
+  "id": "choppers_chops_back",
+  "name": "The One That Chops Back",
+  "act": 2,
+  "giver": {
+   "npc": "knot",
+   "name": "Knot the Logger",
+   "where": {
+    "x": 335,
+    "y": 370
+   }
+  },
+  "summary": "Knot won't work the tall stand and neither will anyone else: the tallest oak chopped back. His axe came home nicked and his hat split clean down the middle. He KNOWS WHAT HE SAW.",
+  "intro": "You'll laugh. THEY laughed. But my axe came back nicked — GOOD steel, nicked — and my hat split clean down the middle, and I never felt the blow land. The tallest oak in the stand did it. Chopped. Back. Now nobody'll work the stand, the Foreman's docking us all, and I am NOT going back up there alone. Come with me — clear out whatever's up there, take a load off that stand, and we'll see who laughs. I know what I saw. I KNOW WHAT I SAW.",
+  "outro": "Boars. Big ones, gorers, right where I was felling — fine. FINE. That explains the shins. It does not explain the hat. You stood under the tall one yourself: not a mark on it, bird nesting in the fork, innocent as a sapling. THAT'S HOW IT WANTS TO LOOK. ...The Foreman's docked me a day's pay for the hat and taken the stand off the do-not-work list, so everyone's happy, except me, because I know what I saw, and one day, friend, so will you. It's WAITING, is what it's doing.",
+  "requires": {
+   "quests": [
+    "choppers_every_stump_a_hat"
+   ]
+  },
+  "steps": [
+   {
+    "type": "goto",
+    "target": "choppers",
+    "where": {
+     "x": 350,
+     "y": 358,
+     "name": "the tall stand",
+     "radius": 45
+    },
+    "text": "Climb to the tall stand with Knot",
+    "say": "Up the ridge path. You will know the tall one. It is the one that is TALLEST."
+   },
+   {
+    "type": "kill",
+    "target": "oak_boar",
+    "count": 5,
+    "text": "Clear 5 Oak Boars from the felling floor",
+    "say": "SOMETHING has been at the crews. Boars, probably. PROBABLY."
+   },
+   {
+    "type": "obtain",
+    "target": "oak_logs",
+    "count": 4,
+    "text": "Fell 4 Oak Logs to prove the stand works",
+    "say": "A full load down the ridge and the crews will come back."
+   },
+   {
+    "type": "talk",
+    "target": "knot",
+    "name": "Knot the Logger",
+    "text": "Report back to Knot",
+    "say": "I will be at the sawpit, keeping an eye on it. It knows I am keeping an eye on it."
+   }
+  ],
+  "rewards": {
+   "coins": 200,
+   "xp": [
+    {
+     "skill": "Woodcutting",
+     "amount": 460
+    },
+    {
+     "skill": "Defence",
+     "amount": 200
+    }
+   ],
+   "items": [
+    {
+     "id": "steel_hatchet"
+    }
+   ]
+  },
+  "thread": "local",
+  "teaches": [
+   "region:choppers",
+   "npc:knot",
+   "lore:the_chopping_oak"
+  ]
  }
 ]
