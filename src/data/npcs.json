@@ -34,6 +34,9 @@
       "arc": "Harvest-as-competitive-sport made flesh — she keeps the young farmers honest by beating them. And though she'd deny it to your face, she plants one extra row every season, out toward the far field, for whatever it is that empties the offerings." },
     { "id": "basalt", "name": "Old Basalt", "home": "troll", "appearsIn": ["troll"], "recurring": true,
       "role": "toll-keeper of Troll Ridge — by day he IS the gate no goblin admits to fearing; by dusk he counts the toll",
-      "arc": "The first troll a goblin can talk to instead of flee. Tolls at dusk, arguments till dawn, and somewhere in his slow stone head the next word of the four-hundred-year joke — due, he reckons, any decade now." }
+      "arc": "The first troll a goblin can talk to instead of flee. Tolls at dusk, arguments till dawn, and somewhere in his slow stone head the next word of the four-hundred-year joke — due, he reckons, any decade now." },
+    { "id": "eddy", "name": "Eddy the Ferryman", "home": "willow", "appearsIn": ["willow", "bog"], "recurring": true,
+      "role": "a bogling ferryman of the Willow Riverlands; the fares are polished junk and the rates are moods",
+      "arc": "Fare is whatever Eddy feels the crossing was worth — three polished spoons for a merchant, one good story for a penniless whelp. The player's way into the riverlands' pace, and a cousin-web that reaches every bogling in the marshes." }
   ]
 }

@@ -38,6 +38,8 @@
     { "id": "granny_trophy", "region": "farmlands", "truth": "true",
       "text": "Granny Furrow took Best in Fair so many years running the judges gave up and named the trophy after her. She still enters. She says it keeps the young ones honest." },
     { "id": "troll_joke", "region": "troll", "truth": "exaggerated",
-      "text": "A goblin trader once heard the ridge-trolls' joke up to the middle. He laughs at nothing now, sometimes, and says 'you had to be there.' He means the century." }
+      "text": "A goblin trader once heard the ridge-trolls' joke up to the middle. He laughs at nothing now, sometimes, and says 'you had to be there.' He means the century." },
+    { "id": "eddys_rates", "region": "willow", "truth": "true",
+      "text": "Eddy the ferryman once charged a merchant three polished spoons for a crossing, then poled a penniless whelp across for one good story. The rates are moods, and the moods are fair." }
   ]
 }

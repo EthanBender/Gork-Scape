@@ -2617,5 +2617,165 @@
    "npc:basalt",
    "lore:troll_joke"
   ]
+ },
+ {
+  "id": "willow_fare_is_fair",
+  "name": "Fare Is Fair",
+  "act": 2,
+  "giver": {
+   "npc": "eddy",
+   "name": "Eddy the Ferryman",
+   "where": {
+    "x": 285,
+    "y": 610
+   }
+  },
+  "summary": "Bandits are working the river off the new bridge — robbing Eddy's passengers mid-crossing and, worse, they've taken his fare-box of river opals. The ferry line is stopped until the river is honest again.",
+  "intro": "Nice bridge. Yours, isn't it? Thought so. Well — the bandits think it's THEIRS now. They drop off it onto my ferry, shake down my passengers, and yesterday they took the fare-box. THE FARE-BOX. Forty years of opals, every one paid fair — a fare is a mood, friend, but a mood honestly come by. Knock them off my river and bring back my opals, and I'll owe you a crossing. Several. A LIFETIME of crossings, if the mood takes me. It might.",
+  "outro": "The box, the opals, the river quiet enough to hear the reeds again. You know what a bogling calls that? RICH. Not the opals — the quiet. Here, your first fare back: I'm not charging you. That's the rate today. The rate is a mood, and the mood is grateful.",
+  "requires": {
+   "quests": [
+    "bridge_over_dumb_water"
+   ]
+  },
+  "steps": [
+   {
+    "type": "goto",
+    "target": "willow",
+    "where": {
+     "x": 285,
+     "y": 610,
+     "name": "the Willow Riverlands",
+     "radius": 60
+    },
+    "text": "Travel to the Willow Riverlands",
+    "say": "Southwest, down the river from your own bridge. The stilt huts mark the crossing."
+   },
+   {
+    "type": "kill",
+    "target": "bridge_bandit",
+    "count": 5,
+    "text": "Knock 5 Bridge Bandits off the river",
+    "say": "They lurk your bridge and drop on my ferry. Un-lurk them."
+   },
+   {
+    "type": "obtain",
+    "target": "river_opal",
+    "count": 3,
+    "text": "Recover 3 River Opals from the fare-box",
+    "say": "Forty years of fares. The bandits have them loose in their pockets, the animals."
+   },
+   {
+    "type": "talk",
+    "target": "eddy",
+    "name": "Eddy the Ferryman",
+    "text": "Return to Eddy at the crossing",
+    "say": "I will be at the rope-ferry, not ferrying. It hurts a bogling, not ferrying."
+   }
+  ],
+  "rewards": {
+   "coins": 230,
+   "xp": [
+    {
+     "skill": "Attack",
+     "amount": 460
+    },
+    {
+     "skill": "Fishing",
+     "amount": 240
+    }
+   ],
+   "items": [
+    {
+     "id": "bridge_bandit_banner"
+    }
+   ]
+  },
+  "thread": "local",
+  "teaches": [
+   "region:willow",
+   "people:boglings",
+   "lore:eddys_rates"
+  ]
+ },
+ {
+  "id": "willow_lucky_frog",
+  "name": "The Lucky Frog",
+  "act": 2,
+  "giver": {
+   "npc": "eddy",
+   "name": "Eddy the Ferryman",
+   "where": {
+    "x": 285,
+    "y": 610
+   }
+  },
+  "summary": "A passenger's lucky frog went overboard mid-crossing and she won't board again without him — which has stopped Eddy's whole line. The frogs upriver have gotten big and unreasonable. Somewhere among them is Frogsworth.",
+  "intro": "New problem. A passenger's lucky frog — Frogsworth, she calls him — went over the side mid-crossing, and she will NOT board without him. Won't be argued with. Cites the bandits. You know the saying: keep a lucky frog and the river bandits pass you by. Nonsense? Probably. PROBABLY. But she's blocking my queue and the frogs upriver have gotten big and unreasonable this season. Go look for him. You'll know Frogsworth when you see him. He looks... lucky.",
+  "outro": "The little crown! THE CROWN! That's his — Frogsworth never sheds it except swimming, she says, which means he's ALIVE out there, living large among the big frogs. She's boarding again — says the crown carries the luck, and honestly, the bandits HAVE passed us by all week. Coincidence. ...Probably. PROBABLY. Ah, take an opal — the mood today is generous, and the queue is moving, and the river, friend, the river is very nearly kind.",
+  "requires": {
+   "quests": [
+    "willow_fare_is_fair"
+   ]
+  },
+  "steps": [
+   {
+    "type": "goto",
+    "target": "willow",
+    "where": {
+     "x": 270,
+     "y": 595,
+     "name": "the frog pools upriver",
+     "radius": 45
+    },
+    "text": "Search the frog pools upriver",
+    "say": "Up past the bend, where the croaking gets ambitious."
+   },
+   {
+    "type": "kill",
+    "target": "swamp_frog",
+    "count": 5,
+    "text": "Drive off 5 big unreasonable Swamp Frogs",
+    "say": "The big ones bully the little ones. Frogsworth is a little one."
+   },
+   {
+    "type": "obtain",
+    "target": "frog_crown",
+    "count": 1,
+    "text": "Find Frogsworth's tiny crown",
+    "say": "He never sheds it except swimming. If the crown is safe, he is safe."
+   },
+   {
+    "type": "talk",
+    "target": "eddy",
+    "name": "Eddy the Ferryman",
+    "text": "Bring the crown back to Eddy",
+    "say": "Bring it gentle. It is a very small crown and a very large hope."
+   }
+  ],
+  "rewards": {
+   "coins": 260,
+   "xp": [
+    {
+     "skill": "Fishing",
+     "amount": 500
+    },
+    {
+     "skill": "Hitpoints",
+     "amount": 260
+    }
+   ],
+   "items": [
+    {
+     "id": "river_opal"
+    }
+   ]
+  },
+  "thread": "local",
+  "teaches": [
+   "region:willow",
+   "npc:eddy",
+   "lore:lucky_frog_bandits"
+  ]
  }
 ]
