@@ -147,8 +147,25 @@ function _mount(Game) {
   // ---------- OSRS-style click: raycast the 3D pick down to a world tile, then route
   // through the game's real interaction logic (walk/attack/interact/pickup). ----------
   const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
-  let downAt = null;
-  cv.addEventListener('pointerdown', (e) => { downAt = { x: e.clientX, y: e.clientY }; });
+  let downAt = null, midDrag = null;
+  let pol = Math.atan2(1, 0.85);                            // camera pitch (polar angle from vertical); middle-drag Y adjusts
+  cv.addEventListener('pointerdown', (e) => {
+    if (e.button === 1) { e.preventDefault(); midDrag = { x: e.clientX, y: e.clientY }; cv.setPointerCapture(e.pointerId); return; }
+    downAt = { x: e.clientX, y: e.clientY };
+  });
+  cv.addEventListener('pointermove', (e) => {
+    if (!midDrag) return;                                    // OSRS: hold middle mouse + drag to orbit
+    const dx = e.clientX - midDrag.x, dy = e.clientY - midDrag.y; midDrag = { x: e.clientX, y: e.clientY };
+    try { if (Game._camOrbit) Game._camOrbit(-dx * 0.006); } catch (_) {}
+    pol = Math.min(1.32, Math.max(0.30, pol + dy * 0.005)); // drag up = higher camera, down = lower
+  });
+  const endMid = (e) => { if (e.button === 1 || e.type === 'pointercancel') midDrag = null; };
+  cv.addEventListener('pointerup', endMid); cv.addEventListener('pointercancel', endMid);
+  cv.addEventListener('auxclick', (e) => { if (e.button === 1) e.preventDefault(); });
+  cv.addEventListener('wheel', (e) => {                      // scroll = zoom (drives the shared 2D targetZoom)
+    e.preventDefault();
+    try { if (Game._camZoomWheel) Game._camZoomWheel(e.deltaY); } catch (_) {}
+  }, { passive: false });
   cv.addEventListener('pointerup', (e) => {
     if (!downAt) return;
     const moved = Math.hypot(e.clientX - downAt.x, e.clientY - downAt.y); downAt = null;
@@ -197,12 +214,16 @@ function _mount(Game) {
       } else goblin.visible = false;
       const camMain = Game.scene && Game.scene.cameras && Game.scene.cameras.main;
       const az = camMain ? camMain.rotation : 0, zoom = camMain ? (camMain.zoom || 1) : 1;
-      // OSRS framing: character centered (slightly below middle), camera well back and
-      // high, orbiting with the 2D camera's rotation (arrow keys / Q / E / compass).
-      const rr = 16 / Math.sqrt(zoom);
+      // OSRS framing: character centered (slightly below middle); spherical orbit —
+      // azimuth mirrors the 2D camera (arrows/Q/E/compass/middle-drag), pitch is the
+      // 3D-only `pol` from middle-drag Y, wheel zooms via the shared 2D targetZoom.
+      const R = 21 / Math.sqrt(zoom);
       const goal = new THREE.Vector3(wx, wy + 1.0, wz);
       if (!inited) { camTarget.copy(goal); inited = true; } else camTarget.lerp(goal, 0.2);
-      camera.position.set(camTarget.x + Math.sin(az) * rr, camTarget.y + rr * 0.85, camTarget.z + Math.cos(az) * rr);
+      camera.position.set(
+        camTarget.x + Math.sin(az) * Math.sin(pol) * R,
+        camTarget.y + Math.cos(pol) * R,
+        camTarget.z + Math.cos(az) * Math.sin(pol) * R);
       camera.lookAt(camTarget);
       renderer.render(scene, camera);
       frames++; const t = performance.now();

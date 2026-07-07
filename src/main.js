@@ -869,6 +869,10 @@ function onWheel(pointer, over, dx, dy) {
 // Arrow keys ←/→ rotate around the player, ↑/↓ zoom; Q/E also rotate, +/- also
 // zoom, 0 resets both. Arrow keys preventDefault so the page doesn't scroll.
 const zoomBy = (d) => { targetZoom = Phaser.Math.Clamp(targetZoom + d, ZOOM_MIN, ZOOM_MAX); };
+// [r3d] camera hooks for the 3D overlay: middle-drag orbit + wheel zoom drive the SAME
+// targetRot/targetZoom the 2D camera eases toward, so minimap/labels stay in sync.
+Game._camOrbit = (dRad) => { targetRot += dRad; };
+Game._camZoomWheel = (dy) => { const f = dy > 0 ? 1 - ZOOM_STEP : 1 + ZOOM_STEP; targetZoom = Phaser.Math.Clamp(targetZoom * f, ZOOM_MIN, ZOOM_MAX); };
 function onCameraKey(e) {
   if (document.activeElement !== document.body) return;
   switch (e.key.toLowerCase()) {
