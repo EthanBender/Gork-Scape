@@ -22,6 +22,9 @@
       "arc": "The player's way into moss-folk culture — fashion first, then the older mushroom secrets the moss-folk keep from outsiders: the memory caps, and what no one has ever learned from them." },
     { "id": "thistle", "name": "Thistle the Sprite", "home": "ruins", "appearsIn": ["ruins"], "recurring": true,
       "role": "a forest-sprite caretaker of the ruin-chapel in the Old Forest Ruins",
-      "arc": "The player's way into the forest-sprites — everyday tending first, then the edge of the great question they guard: who built the ruins, and who still expects them kept. Thistle knows only that the sprites have always tended, and warns against seeking the who." }
+      "arc": "The player's way into the forest-sprites — everyday tending first, then the edge of the great question they guard: who built the ruins, and who still expects them kept. Thistle knows only that the sprites have always tended, and warns against seeking the who." },
+    { "id": "cairn", "name": "Cairn the Pebbler", "home": "minehills", "appearsIn": ["minehills"], "recurring": true,
+      "role": "a pebbler older than the mine camp who measures conversation in seasons",
+      "arc": "The pebblers remember what the hills remember. Ask Cairn who built the tunnels and he'll tell you — he began the answer forty years ago and is up to the second word. The player's way into pebbler patience, and the slow, slow road toward what's down there." }
   ]
 }

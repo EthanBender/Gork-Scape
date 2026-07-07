@@ -1968,5 +1968,166 @@
    "mystery:the_builders",
    "npc:thistle"
   ]
+ },
+ {
+  "id": "minehills_east_adit",
+  "name": "Trouble in the East Adit",
+  "act": 3,
+  "giver": {
+   "npc": "shopkeeper_miner_camp",
+   "name": "Miner Camp Boss",
+   "where": {
+    "x": 610,
+    "y": 190
+   }
+  },
+  "summary": "The hauling crews won't go down the east adit — mine-skulkers have moved in and the ore carts come up light. The Camp Boss wants his shaft back.",
+  "intro": "You picked a fine day. My haulers won't set boot in the east adit — skulkers have moved in, thieving ore straight off the carts, and every cart that does come up comes up light. Clear the wretches out and haul me up a proper load of iron so the crews see it's safe. And listen — whatever you do down there, DON'T whistle. Camp rule. Don't ask.",
+  "outro": "Carts running full and the crews grumbling about honest work again — that's the sweetest sound in these hills. You did fair work down there, goblin. Take the belt; a skulker won't be needing it. And you didn't whistle, did you. Good. Don't ask.",
+  "requires": {
+   "level": {
+    "skill": "Mining",
+    "level": 20
+   }
+  },
+  "steps": [
+   {
+    "type": "goto",
+    "target": "minehills",
+    "where": {
+     "x": 610,
+     "y": 190,
+     "name": "the Northern Mine Hills",
+     "radius": 60
+    },
+    "text": "Travel to the Northern Mine Hills",
+    "say": "North road, past the farmlands, up where the headframes stand."
+   },
+   {
+    "type": "kill",
+    "target": "mine_skulker",
+    "count": 6,
+    "text": "Clear 6 Mine-skulkers from the east adit",
+    "say": "They nest in the dark past the third lamp. Root them out."
+   },
+   {
+    "type": "obtain",
+    "target": "iron_ore",
+    "count": 4,
+    "text": "Haul up 4 Iron Ore to prove the shaft safe",
+    "say": "A full load up the ramp and the crews will follow."
+   },
+   {
+    "type": "talk",
+    "target": "shopkeeper_miner_camp",
+    "name": "Miner Camp Boss",
+    "text": "Report back to the Camp Boss",
+    "say": "Come tell me the adit’s clear and the carts are rolling."
+   }
+  ],
+  "rewards": {
+   "coins": 250,
+   "xp": [
+    {
+     "skill": "Mining",
+     "amount": 520
+    },
+    {
+     "skill": "Strength",
+     "amount": 260
+    }
+   ],
+   "items": [
+    {
+     "id": "miners_belt"
+    }
+   ]
+  },
+  "thread": "local",
+  "teaches": [
+   "region:minehills",
+   "npc:shopkeeper_miner_camp",
+   "lore:tunnel_whistlers"
+  ]
+ },
+ {
+  "id": "minehills_straight_dark",
+  "name": "The Straight Dark",
+  "act": 3,
+  "giver": {
+   "npc": "cairn",
+   "name": "Cairn the Pebbler",
+   "where": {
+    "x": 610,
+    "y": 190
+   }
+  },
+  "summary": "Every goblin shaft eventually breaks into an older, straighter dwarf tunnel going further down than anyone has dared. Cairn the Pebbler wants to listen to it — through the fangs of the bats that roost where the whistling starts.",
+  "intro": "...Sit. ...No — I'll speak quicker, for you. The goblin shafts wander. The old tunnels don't. Straight, and down, and further down than daring goes. ...I would LISTEN to what walks there. The cave-bats roost where the whistling starts; their fangs hold the echoes they fly through. Bring me two. The crawlers that nest where shaft meets tunnel will mind — un-mind them. ...Go. I will still be here.",
+  "outro": "...Hm. ...Yes. The machines, still turning. Water, going down. And under it — steps. Far down. Slow. ...Unhurried, the way stone is unhurried. ...You want to know who. I know the beginning of it. I began telling it forty years ago and I am nearly through the second word. Sit, if you like. ...Or come back. The answer isn't going anywhere. Neither, friend, is what's down there.",
+  "requires": {
+   "quests": [
+    "minehills_east_adit"
+   ]
+  },
+  "steps": [
+   {
+    "type": "goto",
+    "target": "minehills",
+    "where": {
+     "x": 625,
+     "y": 205,
+     "name": "where shaft meets dwarf tunnel",
+     "radius": 50
+    },
+    "text": "Descend to where the goblin shaft meets the dwarf tunnel",
+    "say": "Down past the last lamp, where the walls go straight and the picks go quiet."
+   },
+   {
+    "type": "kill",
+    "target": "deep_cave_crawler",
+    "count": 4,
+    "text": "Un-mind 4 Deep Cave Crawlers",
+    "say": "They nest at the meeting of the ways. They will mind you. Un-mind them."
+   },
+   {
+    "type": "obtain",
+    "target": "echo_fang",
+    "count": 2,
+    "text": "Collect 2 Echo Fangs from the cave-bats",
+    "say": "The bats roost where the whistling starts. Their fangs keep what they fly through."
+   },
+   {
+    "type": "talk",
+    "target": "cairn",
+    "name": "Cairn the Pebbler",
+    "text": "Bring the fangs back to Cairn",
+    "say": "...I will be where you left me. Pebblers usually are."
+   }
+  ],
+  "rewards": {
+   "coins": 340,
+   "xp": [
+    {
+     "skill": "Mining",
+     "amount": 640
+    },
+    {
+     "skill": "Defence",
+     "amount": 300
+    }
+   ],
+   "items": [
+    {
+     "id": "cave_ruby"
+    }
+   ]
+  },
+  "thread": "main",
+  "teaches": [
+   "region:minehills",
+   "mystery:deep_tunnels",
+   "people:pebblers"
+  ]
  }
 ]
