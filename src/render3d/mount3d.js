@@ -217,6 +217,31 @@ function _mount(Game) {
   }
   instanceGLB('/r3d/models/opt/tree.glb', 'treeG', 4096, 2.4);
   instanceGLB('/r3d/models/opt/bush.glb', 'bushG', 1024, 0.9);
+  // town models: label-matched structures render as the real generated pieces
+  instanceGLB('/r3d/models/opt/fence.glb', 'fenceG', 768, 0.7);
+  instanceGLB('/r3d/models/opt/barrel.glb', 'barrelG', 256, 0.8);
+  instanceGLB('/r3d/models/opt/crate.glb', 'crateG', 256, 0.7);
+  instanceGLB('/r3d/models/opt/chest.glb', 'chestG', 128, 0.6);
+  instanceGLB('/r3d/models/opt/campfire.glb', 'campfireG', 128, 0.5);
+  instanceGLB('/r3d/models/opt/signpost.glb', 'signG', 128, 1.6);
+  instanceGLB('/r3d/models/opt/anvil.glb', 'anvilG', 64, 0.8);
+  instanceGLB('/r3d/models/opt/well.glb', 'wellG', 64, 1.5);
+  instanceGLB('/r3d/models/opt/market_stall.glb', 'stallG', 128, 2.2);
+  instanceGLB('/r3d/models/opt/hut.glb', 'hutG', 256, 2.6);
+  instanceGLB('/r3d/models/opt/cottage.glb', 'cottageG', 256, 3.0);
+  // first regex match wins; anything unmatched stays the tinted clay box+roof
+  const STRUCT_MODELS = [
+    [/Barrel/i, 'barrelG', 1],
+    [/Campfire|Fire/i, 'campfireG', 1],
+    [/Anvil|Furnace|Forge|Smith/i, 'anvilG', 1],
+    [/Well\b/i, 'wellG', 1],
+    [/Stall|Market|Store|Shop|Trader/i, 'stallG', 1],
+    [/Chest/i, 'chestG', 1],
+    [/Crate|Box|Pack|Pile/i, 'crateG', 1],
+    [/Sign/i, 'signG', 1],
+    [/Hut|Tent|Blind|Shack/i, 'hutG', 1],
+    [/Cottage|House|Home|Bank|Hall|Inn|Tavern/i, 'cottageG', 1],
+  ];
   const pM = new THREE.Matrix4(), pP = new THREE.Vector3(), pS = new THREE.Vector3(), pC = new THREE.Color();
   const pQ0 = new THREE.Quaternion(), pQflat = new THREE.Quaternion().setFromEuler(new THREE.Euler(-Math.PI / 2, 0, 0));
   const hash01 = (x, y) => { let h = (Math.imul(x, 668265263) + Math.imul(y, 374761393)) >>> 0; return ((h ^ (h >>> 13)) % 1000) / 1000; };
@@ -236,7 +261,9 @@ function _mount(Game) {
     for (const o of list) {
       if (o.type === 'decor' || o.depleted) continue;
       if (o.x < propBounds.x0 || o.x > propBounds.x1 || o.y < propBounds.y0 || o.y > propBounds.y1) continue;
-      const x = o.x + 0.5, z = o.y + 0.5, y = heightAt(o.x, o.y), lbl = o.label || '', col = o.color || 0x8a7a5a;
+      const x = o.x + 0.5, z = o.y + 0.5, lbl = o.label || '', col = o.color || 0x8a7a5a;
+      // seat props at the LOWEST corner of their tile so nothing floats on a slope
+      const y = Math.min(heightAt(o.x, o.y), heightAt(o.x + 1, o.y), heightAt(o.x, o.y + 1), heightAt(o.x + 1, o.y + 1));
       const r = hash01(o.x, o.y), rot = r * Math.PI * 2;
       if (o.skill === 'Fishing') { put('fish', x, z, y + 0.06, 1, 1, 1, 0x9fd4ff); continue; }
       if (o.skill === 'Mining' || /Coal|Iron|Gold|Copper|Tin|Rock/.test(lbl)) { const s = 0.8 + r * 0.5; put('rock', x, z, y + 0.28 * s, s, s * 0.8, s, col, rot); continue; }
@@ -255,8 +282,18 @@ function _mount(Game) {
         put('leaf', x, z, y + (1.0 + 1.0) * s * 0.95, s, s, s, col, rot);
         continue;
       }
-      if (/Fence|Hedge Row|Rail/.test(lbl)) { put('fence', x, z, y + 0.3, 1, 1, 1, col, rot < Math.PI ? 0 : Math.PI / 2); continue; }
+      if (/Fence|Hedge Row|Rail/.test(lbl)) {
+        const fRot = rot < Math.PI ? 0 : Math.PI / 2;
+        if (props.fenceG) put('fenceG', x, z, y, 1, 1, 1, 0xffffff, fRot);
+        else put('fence', x, z, y + 0.3, 1, 1, 1, col, fRot);
+        continue;
+      }
       if (o.type === 'structure') {
+        let placed = false;
+        for (const [re, kind, ms] of STRUCT_MODELS) {
+          if (re.test(lbl) && props[kind]) { const s = ms * (0.92 + r * 0.16); put(kind, x, z, y, s, s, s, 0xffffff, rot); placed = true; break; }
+        }
+        if (placed) continue;
         const tall = o.blocking ? 1 : 0.55, s = 0.9 + r * 0.25;
         put('base', x, z, y + 0.55 * tall * s, s, tall * s, s, col, 0);
         if (o.blocking) put('roof', x, z, y + (1.1 * s) + 0.4 * s, s * 1.1, s, s * 1.1, 0x7a5a40, Math.PI / 4);
