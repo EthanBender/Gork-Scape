@@ -213,7 +213,7 @@ function _mount(Game) {
   // Trees/ore/fishing spots/structures from objectsInView; tiny 'decor' scatter is
   // skipped (the baked ground texture already carries it). Rebuilt with the terrain
   // window and every 2s so depleted trees vanish and respawns reappear. ----------
-  const P_CAP = { leaf: 4096, trunk: 4096, dead: 512, rock: 512, base: 1024, roof: 1024, fence: 768, fish: 256 };
+  const P_CAP = { leaf: 4096, trunk: 4096, dead: 512, rock: 512, base: 1024, roof: 1024, fence: 768, fish: 256, mcap: 512 };
   const P_GEO = {
     leaf: new THREE.ConeGeometry(1.05, 2.0, 7),
     trunk: new THREE.CylinderGeometry(0.16, 0.22, 1.0, 6),
@@ -223,6 +223,7 @@ function _mount(Game) {
     roof: new THREE.ConeGeometry(1.05, 0.8, 4),
     fence: new THREE.BoxGeometry(0.9, 0.55, 0.14),
     fish: new THREE.RingGeometry(0.18, 0.34, 12),
+    mcap: new THREE.SphereGeometry(0.95, 9, 5, 0, Math.PI * 2, 0, Math.PI / 2),   // giant toadstool cap
   };
   const props = {};
   for (const k of Object.keys(P_GEO)) {
@@ -324,6 +325,16 @@ function _mount(Game) {
     for (const k of Object.keys(props)) props[k].count = 0;
     const list = objectsInView(world, propBounds.x0, propBounds.y0, propBounds.x1, propBounds.y1);
     for (const o of list) {
+      // giant toadstools are BLOCKING decor (they're in the collision grid) —
+      // skipping them left invisible walls all over the Mushroom Forest
+      if (o.type === 'decor' && o.mush === 'giant') {
+        const mx = o.x + 0.5, mz = o.y + 0.5;
+        const my = Math.min(heightAt(o.x, o.y), heightAt(o.x + 1, o.y), heightAt(o.x, o.y + 1), heightAt(o.x + 1, o.y + 1));
+        const ms2 = (o.size || 17) / 17;
+        put('trunk', mx, mz, my + 0.55 * ms2, ms2 * 0.9, ms2 * 1.2, ms2 * 0.9, 0xd8cfc0, 0);
+        put('mcap', mx, mz, my + 1.05 * ms2, ms2 * 1.15, ms2, ms2 * 1.15, o.color || 0xc44a6a, 0);
+        continue;
+      }
       if (o.type === 'decor' || o.depleted) continue;
       if (o.x < propBounds.x0 || o.x > propBounds.x1 || o.y < propBounds.y0 || o.y > propBounds.y1) continue;
       const x = o.x + 0.5, z = o.y + 0.5, lbl = o.label || '', col = o.color || 0x8a7a5a;
