@@ -116,6 +116,20 @@ function _mount(Game) {
       } else if (id === 10) { g2.globalAlpha = 1; g2.fillStyle = shade(ci, 0.62); rc(px, py, TSPX + 1, TSPX + 1); g2.globalAlpha = 0.85; g2.fillStyle = shade(ci, 1.15); rc(px + 2 * S, py + 2 * S, 28 * S, 28 * S); }
     }
     g2.globalAlpha = 1;
+    // bake the flat 'decor' scatter into the ground texture — the 62k tiny
+    // ground details (ruts, rugs, tufts, hay, the great-hall carpet) that the
+    // 2D renderer draws as sprites; the 3D prop pass skips them, so without
+    // this bake none of them exist in the 3D view at all.
+    for (const o of objectsInView(world, x0, y0, x1, y1)) {
+      if (o.type !== 'decor' || o.mush) continue;
+      if (o.x < x0 || o.x >= x1 || o.y < y0 || o.y >= y1) continue;
+      const dpx = (o.x - x0) * TSPX + TSPX / 2, dpy = (o.y - y0) * TSPX + TSPX / 2;
+      const rad = Math.min(14, o.size || 4) * S;
+      g2.globalAlpha = 0.85; g2.fillStyle = '#' + (o.color || 0x3f6e2c).toString(16).padStart(6, '0');
+      if (o.shape === 'rect') g2.fillRect(dpx - rad, dpy - rad, rad * 2, rad * 2);
+      else { g2.beginPath(); g2.arc(dpx, dpy, rad, 0, Math.PI * 2); g2.fill(); }
+    }
+    g2.globalAlpha = 1;
     const tex = new THREE.CanvasTexture(cvx); tex.colorSpace = THREE.SRGBColorSpace; tex.flipY = false; tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
     // --- mesh (per-tile vertex, absolute tile coords, low-poly facets) ---
     const pos = [], uv = [], idx = [];
