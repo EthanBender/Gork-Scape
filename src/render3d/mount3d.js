@@ -40,7 +40,8 @@ function _mount(Game) {
   }
 
   const renderer = new THREE.WebGLRenderer({ antialias: true });
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  const coarse = typeof matchMedia !== 'undefined' && matchMedia('(pointer: coarse)').matches;
+  renderer.setPixelRatio(Math.min(devicePixelRatio, coarse ? 1.5 : 2));   // phones render fewer pixels
   renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.35;
   const cv = renderer.domElement; cv.id = 'r3d-canvas'; cv.style.cssText = 'position:fixed;z-index:5;';
   document.body.appendChild(cv);
@@ -505,49 +506,95 @@ function _mount(Game) {
   // through the game's real interaction logic (walk/attack/interact/pickup). ----------
   const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
   let downAt = null, midDrag = null;
-  let pol = Math.atan2(1, 0.85);                            // camera pitch (polar angle from vertical); middle-drag Y adjusts
+  let pol = Math.atan2(1, 0.85);                            // camera pitch (polar angle from vertical); drag Y adjusts
+  cv.style.touchAction = 'none';                            // we own all touch gestures on the 3D canvas
+  const tileAt = (cx, cy) => {                              // screen point -> world tile via terrain raycast
+    const r = cv.getBoundingClientRect();
+    ndc.x = ((cx - r.left) / r.width) * 2 - 1;
+    ndc.y = -((cy - r.top) / r.height) * 2 + 1;
+    ray.setFromCamera(ndc, camera);
+    const hit = terrainMesh ? ray.intersectObject(terrainMesh)[0] : null;
+    return hit ? { tx: Math.floor(hit.point.x), ty: Math.floor(hit.point.z) } : null;
+  };
+  const pickAt = (cx, cy) => { const t = tileAt(cx, cy); if (t) { try { if (Game._clickWorldTile) Game._clickWorldTile(t.tx, t.ty); } catch (err) { console.error('[r3d] click route failed', err); } } };
+  const menuAt = (cx, cy) => { const t = tileAt(cx, cy); if (t) { try { if (Game._rightClickWorldTile) Game._rightClickWorldTile(t.tx, t.ty, cx, cy); } catch (err) { console.error('[r3d] menu route failed', err); } } };
+  const orbitBy = (dx, dy) => {
+    try { if (Game._camOrbit) Game._camOrbit(-dx * 0.006); } catch (_) {}
+    pol = Math.min(1.32, Math.max(0.30, pol + dy * 0.005)); // drag up = higher camera, down = lower
+  };
+
+  // ----- mouse: left click = action, middle-drag = orbit, wheel = zoom, right = menu
   cv.addEventListener('pointerdown', (e) => {
+    if (e.pointerType === 'touch') return;                   // touch has its own path below
     if (e.button === 1) { e.preventDefault(); midDrag = { x: e.clientX, y: e.clientY }; cv.setPointerCapture(e.pointerId); return; }
     downAt = { x: e.clientX, y: e.clientY };
   });
   cv.addEventListener('pointermove', (e) => {
+    if (e.pointerType === 'touch') return;
+    mouseX = e.clientX; mouseY = e.clientY;
     if (!midDrag) return;                                    // OSRS: hold middle mouse + drag to orbit
     const dx = e.clientX - midDrag.x, dy = e.clientY - midDrag.y; midDrag = { x: e.clientX, y: e.clientY };
-    try { if (Game._camOrbit) Game._camOrbit(-dx * 0.006); } catch (_) {}
-    pol = Math.min(1.32, Math.max(0.30, pol + dy * 0.005)); // drag up = higher camera, down = lower
+    orbitBy(dx, dy);
   });
-  const endMid = (e) => { if (e.button === 1 || e.type === 'pointercancel') midDrag = null; };
-  cv.addEventListener('pointerup', endMid); cv.addEventListener('pointercancel', endMid);
+  cv.addEventListener('pointerup', (e) => {
+    if (e.pointerType === 'touch') return;
+    if (e.button === 1) { midDrag = null; return; }
+    if (!downAt) return;
+    const moved = Math.hypot(e.clientX - downAt.x, e.clientY - downAt.y); downAt = null;
+    if (moved > 6 || e.button !== 0) return;                 // a drag or non-left click, not a pick
+    pickAt(e.clientX, e.clientY);
+  });
+  cv.addEventListener('pointercancel', () => { midDrag = null; downAt = null; });
   cv.addEventListener('auxclick', (e) => { if (e.button === 1) e.preventDefault(); });
-  cv.addEventListener('contextmenu', (e) => {                // right-click = the game's own context menu
-    e.preventDefault();
-    const r = cv.getBoundingClientRect();
-    ndc.x = ((e.clientX - r.left) / r.width) * 2 - 1;
-    ndc.y = -((e.clientY - r.top) / r.height) * 2 + 1;
-    ray.setFromCamera(ndc, camera);
-    const hit = terrainMesh ? ray.intersectObject(terrainMesh)[0] : null;
-    if (!hit) return;
-    try { if (Game._rightClickWorldTile) Game._rightClickWorldTile(Math.floor(hit.point.x), Math.floor(hit.point.z), e.clientX, e.clientY); } catch (err) { console.error('[r3d] menu route failed', err); }
-  });
-  let mouseX = -1, mouseY = -1;
-  cv.addEventListener('pointermove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
+  cv.addEventListener('contextmenu', (e) => { e.preventDefault(); menuAt(e.clientX, e.clientY); });
   cv.addEventListener('wheel', (e) => {                      // scroll = zoom (drives the shared 2D targetZoom)
     e.preventDefault();
     try { if (Game._camZoomWheel) Game._camZoomWheel(e.deltaY); } catch (_) {}
   }, { passive: false });
-  cv.addEventListener('pointerup', (e) => {
-    if (!downAt) return;
-    const moved = Math.hypot(e.clientX - downAt.x, e.clientY - downAt.y); downAt = null;
-    if (moved > 6 || e.button !== 0) return;               // a drag or non-left click, not a pick
-    const r = cv.getBoundingClientRect();
-    ndc.x = ((e.clientX - r.left) / r.width) * 2 - 1;
-    ndc.y = -((e.clientY - r.top) / r.height) * 2 + 1;
-    ray.setFromCamera(ndc, camera);
-    const hit = terrainMesh ? ray.intersectObject(terrainMesh)[0] : null;
-    if (!hit) return;
-    const tx = Math.floor(hit.point.x), ty = Math.floor(hit.point.z);
-    try { if (Game._clickWorldTile) Game._clickWorldTile(tx, ty); } catch (err) { console.error('[r3d] click route failed', err); }
+  let mouseX = -1, mouseY = -1;
+
+  // ----- touch (OSRS-mobile): tap = action, one-finger drag = orbit, pinch = zoom,
+  // long-press = context menu. All gestures stay on the canvas (touch-action none).
+  const touches = new Map();
+  let touchDragged = false, longPressTimer = null, pinchDist = 0;
+  const clearLongPress = () => { if (longPressTimer) { clearTimeout(longPressTimer); longPressTimer = null; } };
+  cv.addEventListener('pointerdown', (e) => {
+    if (e.pointerType !== 'touch') return;
+    e.preventDefault();
+    touches.set(e.pointerId, { x: e.clientX, y: e.clientY, x0: e.clientX, y0: e.clientY, t0: performance.now() });
+    try { cv.setPointerCapture(e.pointerId); } catch (_) {}   // best-effort; never abort gesture state setup
+    if (touches.size === 1) {
+      touchDragged = false;
+      clearLongPress();
+      longPressTimer = setTimeout(() => { longPressTimer = null; if (!touchDragged && touches.size === 1) { const t = touches.values().next().value; menuAt(t.x, t.y); touches.clear(); } }, 480);
+    } else { clearLongPress(); }
+    if (touches.size === 2) { const [a, b] = [...touches.values()]; pinchDist = Math.hypot(a.x - b.x, a.y - b.y); }
   });
+  cv.addEventListener('pointermove', (e) => {
+    if (e.pointerType !== 'touch') return;
+    const t = touches.get(e.pointerId); if (!t) return;
+    const dx = e.clientX - t.x, dy = e.clientY - t.y;
+    t.x = e.clientX; t.y = e.clientY;
+    if (Math.hypot(t.x - t.x0, t.y - t.y0) > 9) { touchDragged = true; clearLongPress(); }
+    if (touches.size === 1 && touchDragged) orbitBy(dx, dy);
+    else if (touches.size === 2) {
+      const [a, b] = [...touches.values()];
+      const d = Math.hypot(a.x - b.x, a.y - b.y);
+      if (pinchDist > 0 && Math.abs(d - pinchDist) > 8) {   // pinch out = zoom in
+        try { if (Game._camZoomWheel) Game._camZoomWheel(d > pinchDist ? -120 : 120); } catch (_) {}
+        pinchDist = d;
+      }
+    }
+  });
+  const endTouch = (e) => {
+    if (e.pointerType !== 'touch') return;
+    const t = touches.get(e.pointerId); touches.delete(e.pointerId);
+    clearLongPress(); pinchDist = 0;
+    if (!t || e.type === 'pointercancel') return;
+    const quick = performance.now() - t.t0 < 350 && Math.hypot(t.x - t.x0, t.y - t.y0) <= 9;
+    if (quick && !touchDragged && touches.size === 0) pickAt(t.x, t.y);   // a clean tap = action
+  };
+  cv.addEventListener('pointerup', endTouch); cv.addEventListener('pointercancel', endTouch);
 
   // ---------- on-screen status chip: never fly blind — success shows fps, failure shows WHY ----------
   const chip = document.createElement('div');
