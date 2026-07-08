@@ -231,17 +231,29 @@ function _mount(Game) {
   instanceGLB('/r3d/models/opt/hut.glb', 'hutG', 256, 2.6);
   instanceGLB('/r3d/models/opt/cottage.glb', 'cottageG', 256, 3.0);
   // first regex match wins; anything unmatched stays the tinted clay box+roof
+  // third value = scale class: minor scatter renders SMALL so hay piles / dropped
+  // packs read as ground clutter, not full furniture dumped on the road.
+  // third value = scale class: minor scatter renders SMALL so hay piles / dropped
+  // packs read as ground clutter, not full furniture dumped on the road.
+  // fourth value = facing: 'row' = uniform (market aisles read aligned),
+  // 'cardinal' = snap to N/S/E/W (grid-town buildings), default = free random.
   const STRUCT_MODELS = [
-    [/Barrel/i, 'barrelG', 1],
+    [/Barrel/i, 'barrelG', 0.75],
     [/Campfire|Fire/i, 'campfireG', 1],
-    [/Anvil|Furnace|Forge|Smith/i, 'anvilG', 1],
-    [/Well\b/i, 'wellG', 1],
-    [/Stall|Market|Store|Shop|Trader/i, 'stallG', 1],
-    [/Chest/i, 'chestG', 1],
-    [/Crate|Box|Pack|Pile/i, 'crateG', 1],
-    [/Sign/i, 'signG', 1],
-    [/Hut|Tent|Blind|Shack/i, 'hutG', 1],
-    [/Cottage|House|Home|Bank|Hall|Inn|Tavern/i, 'cottageG', 1],
+    [/Anvil|Furnace|Forge|Smith/i, 'anvilG', 1, 'cardinal'],
+    [/Well\b/i, 'wellG', 1, 'cardinal'],
+    [/Bench|Cart\b|Table\b/i, 'crateG', 0.6],
+    [/Lamp|Cross\b|Dummy|Banner/i, 'signG', 0.9, 'cardinal'],
+    [/Exchange/i, 'stallG', 1.25, 'row'],
+    [/Fishmonger|Bait|Tackle/i, 'stallG', 1, 'row'],
+    [/Stall|Market|Store|Shop|Trader/i, 'stallG', 1, 'row'],
+    [/Sawmill|Fletcher|Grocer|Herbalist|Shed\b|Kiln|Cooking Range/i, 'hutG', 1, 'cardinal'],
+    [/Chest/i, 'chestG', 0.8, 'cardinal'],
+    [/Dropped|Pile|Heap/i, 'crateG', 0.45],
+    [/Crate|Box|Pack/i, 'crateG', 0.7],
+    [/Sign/i, 'signG', 1, 'cardinal'],
+    [/Hut|Tent|Blind|Shack/i, 'hutG', 1, 'cardinal'],
+    [/Cottage|House|Home|Bank|Hall|Inn|Tavern/i, 'cottageG', 1, 'cardinal'],
   ];
   const pM = new THREE.Matrix4(), pP = new THREE.Vector3(), pS = new THREE.Vector3(), pC = new THREE.Color();
   const pQ0 = new THREE.Quaternion(), pQflat = new THREE.Quaternion().setFromEuler(new THREE.Euler(-Math.PI / 2, 0, 0));
@@ -291,8 +303,12 @@ function _mount(Game) {
       }
       if (o.type === 'structure') {
         let placed = false;
-        for (const [re, kind, ms] of STRUCT_MODELS) {
-          if (re.test(lbl) && props[kind]) { const s = ms * (0.92 + r * 0.16); put(kind, x, z, y, s, s, s, 0xffffff, rot); placed = true; break; }
+        for (const [re, kind, ms, face] of STRUCT_MODELS) {
+          if (re.test(lbl) && props[kind]) {
+            const s = ms * (0.92 + r * 0.16);
+            const rr = face === 'row' ? 0 : face === 'cardinal' ? Math.round(rot / (Math.PI / 2)) * (Math.PI / 2) : rot;
+            put(kind, x, z, y, s, s, s, 0xffffff, rr); placed = true; break;
+          }
         }
         if (placed) continue;
         const tall = o.blocking ? 1 : 0.55, s = 0.9 + r * 0.25;

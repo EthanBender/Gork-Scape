@@ -94,7 +94,7 @@ export function generateWorld(seed = DEFAULT_SEED, opts = {}) {
   // pre-check against the SHIFTED position so occupancy stays consistent)
   const placeObj = (o, interactive = true) => { o.x += OFFX; o.y += OFFY; objects.push(o); if (interactive) { objectAt.set(okey(o.x, o.y), o); occupied.add(okey(o.x, o.y)); } return o; };
   const structure = (x, y, label, color, skill = null, blocking = true) => { if (!inB(x + OFFX, y + OFFY) || occupied.has(okey(x + OFFX, y + OFFY))) return null; return placeObj({ x, y, type: 'structure', label, color, skill, blocking, depleted: false }); };
-  const decor = (x, y, color, size, shape) => { if (!inB(x + OFFX, y + OFFY) || occupied.has(okey(x + OFFX, y + OFFY))) return; placeObj({ x, y, type: 'decor', color, size, shape, blocking: false }, false); };
+  const decor = (x, y, color, size, shape) => { if (!inB(x + OFFX, y + OFFY) || occupied.has(okey(x + OFFX, y + OFFY))) return; const dt = getT(x + OFFX, y + OFFY); if (dt === T.ROAD || dt === T.BRIDGE) return; placeObj({ x, y, type: 'decor', color, size, shape, blocking: false }, false); };
   // Run an authored builder translated to a new site. Enemy/friendly pushes inside
   // the builder bypass the helpers, so shift whatever it appended afterwards.
   const withOffset = (dx, dy, fn) => {
@@ -269,8 +269,11 @@ export function generateWorld(seed = DEFAULT_SEED, opts = {}) {
     // ---- MARKET SQUARE (the plaza ring): trade, rest, prayer ----
     building(482, 468, 2, 1, 'Crossroads Tavern', 0x8a6a4a, null, 'N');
     building(516, 468, 1, 1, 'Prayer Idol', 0xc0b070, null, 'N');
-    for (const [x, y] of [[494, 449], [506, 449], [494, 461], [506, 461]]) structure(x, y, 'Market Stall', 0xbf9a5a);
-    structure(490, 452, 'Grand Exchange', 0xe3c45a);
+    // Market row: one aligned aisle along the plaza's south rim, all stalls
+    // fronting the plaza with the Grand Exchange anchoring the west end.
+    // (x=500 skipped — the N-S avenue passes through.)
+    for (const x of [492, 496, 504, 508]) structure(x, 461, 'Market Stall', 0xbf9a5a);
+    structure(488, 461, 'Grand Exchange', 0xe3c45a);
 
     // ---- THE WARREN (back alleys): cramped goblin housing fills the gaps ----
     const alley = (ax, ay, bx, by) => { const dx = Math.sign(bx - ax), dy = Math.sign(by - ay); let x = ax, y = ay; for (let i = 0; i < 40 && (x !== bx || y !== by); i++) { if (getT(x, y) === T.GRASS) setT(x, y, T.DIRT); if (x !== bx) x += dx; if (y !== by) y += dy; } };
@@ -801,7 +804,10 @@ if (!GEO2) {
   scatter(685, 710, 110, 'tree_dead', 14, (x, y) => getT(x, y) === T.SWAMP && !occupied.has(okey(x, y))); scatter(685, 710, 110, 'fish_eel', 8, null);
   } else {
     // ---- GEO2 resources, anchored to the RELOCATED regions ----
-    scatter(A.settlement.x - 25, A.settlement.y - 20, 22, 'tree_oak', 4, openGround);
+    // Starter oaks live just OUTSIDE the west gate — never inside the walls,
+    // where random trees between buildings read as clutter.
+    const inTownWalls = (x, y) => x >= TB.x0 + townOff.dx && x <= TB.x1 + townOff.dx && y >= TB.y0 + townOff.dy && y <= TB.y1 + townOff.dy;
+    scatter(A.settlement.x - 62, A.settlement.y - 10, 16, 'tree_oak', 4, (x, y) => openGround(x, y) && !inTownWalls(x, y));
     scatter(A.settlement.x, A.settlement.y + 85, 55, 'tree', 20, openGround);
     scatter(A.settlement.x - 70, A.settlement.y + 45, 60, 'tree', 14, openGround);
     scatter(A.settlement.x - 60, A.settlement.y + 10, 70, 'fish_shrimp', 3, null); scatter(A.settlement.x - 80, A.settlement.y + 15, 80, 'fish_trout', 2, null);
@@ -1605,6 +1611,11 @@ if (!GEO2) {
       if (elevation[i - WORLD_W] - e >= 14 || elevation[i - 2 * WORLD_W] - e >= 22) terrain[i] = s;
     }
   })();
+
+  // Decor placed before a later road pass carved under it reads as litter on
+  // the carriageway — sweep any decor now sitting on ROAD/BRIDGE. Decor is
+  // non-blocking and never in objectAt, so dropping it touches nothing else.
+  for (let i = objects.length - 1; i >= 0; i--) { const o = objects[i]; if (o.type !== 'decor') continue; const t = terrain[idx(o.x, o.y)]; if (t === T.ROAD || t === T.BRIDGE) objects.splice(i, 1); }
 
   // ---- collision + chunk buckets ----
   const collision = new Uint8Array(WORLD_W * WORLD_H);

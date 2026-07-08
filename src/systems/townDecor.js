@@ -33,11 +33,11 @@ export const TOWN_DECOR = [
   { x: 497, y: 458, kind: 'crate' },
   { x: 503, y: 458, kind: 'barrel' },
   // market stalls — striped awnings + goods
-  { x: 494, y: 449, kind: 'awning', c: 0xb23b3b },
-  { x: 506, y: 449, kind: 'awning', c: 0x3b6bb2 },
-  { x: 494, y: 461, kind: 'awning', c: 0x3b9b52 },
-  { x: 506, y: 461, kind: 'awning', c: 0xb2843b },
-  { x: 490, y: 452, kind: 'awning', c: 0xe3c45a }, // Grand Exchange stall
+  { x: 492, y: 461, kind: 'awning', c: 0xb23b3b },
+  { x: 496, y: 461, kind: 'awning', c: 0x3b6bb2 },
+  { x: 504, y: 461, kind: 'awning', c: 0x3b9b52 },
+  { x: 508, y: 461, kind: 'awning', c: 0xb2843b },
+  { x: 488, y: 461, kind: 'awning', c: 0xe3c45a }, // Grand Exchange stall
   // lamp posts down the two avenues + plaza corners
   { x: 496, y: 452, kind: 'lamp' }, { x: 504, y: 458, kind: 'lamp' },
   { x: 499, y: 441, kind: 'lamp' }, { x: 501, y: 470, kind: 'lamp' },
@@ -59,8 +59,9 @@ export const TOWN_DECOR = [
   { x: 456, y: 452, kind: 'logs' }, { x: 456, y: 466, kind: 'crate' },
 ];
 
-function drawItem(g, d, t) {
-  const bx = d.x * TILE_SIZE, by = d.y * TILE_SIZE - lift(d.x, d.y);
+function drawItem(g, d, t, ox = 0, oy = 0) {
+  const dx = d.x + ox, dy = d.y + oy;
+  const bx = dx * TILE_SIZE, by = dy * TILE_SIZE - lift(dx, dy);
   const cx = bx + 16, cy = by + 16;
   switch (d.kind) {
     case 'lamp': {
@@ -168,5 +169,8 @@ function drawItem(g, d, t) {
 export function drawTownDecor(g) {
   g.clear();
   const t = Date.now() * 0.004;
-  for (const d of TOWN_DECOR) drawItem(g, d, t);
+  // GEO2 relocates the authored town to the chosen river ford; these props are
+  // authored in the fixed 500,455 layout, so shift them by the same offset.
+  const off = (Game.world && Game.world.townOffset) || { dx: 0, dy: 0 };
+  for (const d of TOWN_DECOR) drawItem(g, d, t, off.dx, off.dy);
 }
