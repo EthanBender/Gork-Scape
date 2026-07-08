@@ -318,8 +318,37 @@ function _mount(Game) {
   };
   const matCache = new Map();
   const matFor = (hex) => { let m = matCache.get(hex); if (!m) { m = new THREE.MeshLambertMaterial({ color: hex }); matCache.set(hex, m); } return m; };
+
+  // real creature bodies per silhouette: generated clay meshes tinted by each
+  // creature's own colour (untextured on purpose — the tint system does the work).
+  // Humanoid NPCs use the textured base goblin. Procedural shapes remain the
+  // pre-load fallback; existing actors rebuild when a body model arrives.
+  const bodyGLB = {};
+  function loadBody(url, type, targetH, textured, yOff = 0) {
+    const ld = new GLTFLoader(); ld.setMeshoptDecoder(MeshoptDecoder);
+    ld.load(url, gl => {
+      let best = null; gl.scene.updateMatrixWorld(true);
+      gl.scene.traverse(o => { if (o.isMesh && (!best || o.geometry.attributes.position.count > best.geometry.attributes.position.count)) best = o; });
+      if (!best) return;
+      const geo = best.geometry.clone(); geo.applyMatrix4(best.matrixWorld);
+      geo.computeBoundingBox(); const bb = geo.boundingBox, size = new THREE.Vector3(); bb.getSize(size);
+      const s = targetH / (size.y || 1), c = new THREE.Vector3(); bb.getCenter(c);
+      geo.translate(-c.x, -bb.min.y, -c.z); geo.scale(s, s, s);
+      bodyGLB[type] = { geo, mat: textured ? best.material : null, yOff };
+      for (const [, a] of actorPool) scene.remove(a.g); actorPool.clear();
+    }, undefined, e => console.error('[r3d] body model failed', url, e));
+  }
+  loadBody('/r3d/models/opt/wolf.glb', 'quadruped', 0.95, false);
+  loadBody('/r3d/models/opt/spider.glb', 'insectoid', 0.6, false);
+  loadBody('/r3d/models/opt/bat.glb', 'avian', 0.85, false, 0.55);
+  loadBody('/r3d/models/opt/snake.glb', 'serpent', 0.55, false);
+  loadBody('/r3d/models/opt/slime.glb', 'blob', 0.6, false);
+  loadBody('/r3d/models/opt/npc_goblin.glb', 'humanoid', 1.5, true);
   function makeActor(bodyType, skin) {
-    const g = new THREE.Group(); const m = matFor(skin); const dark = matFor((skin >> 1) & 0x7f7f7f);
+    const g = new THREE.Group();
+    const real = bodyGLB[bodyType];
+    if (real) { const me = new THREE.Mesh(real.geo, real.mat || matFor(skin)); me.position.y = real.yOff; g.add(me); return g; }
+    const m = matFor(skin); const dark = matFor((skin >> 1) & 0x7f7f7f);
     const add = (geo, mat, x, y, z, sx = 1, sy = 1, sz = 1) => { const me = new THREE.Mesh(geo, mat); me.position.set(x, y, z); me.scale.set(sx, sy, sz); g.add(me); return me; };
     switch (bodyType) {
       case 'quadruped': add(AG.ball, m, 0, 0.55, 0, 1.35, 0.75, 0.85); add(AG.head, m, 0, 0.75, 0.62);
