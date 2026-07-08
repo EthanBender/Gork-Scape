@@ -2620,6 +2620,7 @@ function drawCharacter(g, ent, time) {
 
 function drawProjectiles(g, time) {
   if (!projectiles.length) return;
+  Game._projectiles = projectiles;   // [r3d] the 3D layer renders these as arrows
   projectiles = projectiles.filter((pr) => {
     const k = (time - pr.at) / pr.dur;
     if (k >= 1) return false;

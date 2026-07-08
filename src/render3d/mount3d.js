@@ -11,6 +11,7 @@ import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { TERRAIN_DEFS } from '../world/worldData.js';
 import { TILE_SIZE, objectsInView } from '../world/map.js';
 import { avatarStateFor, AV_SCALE } from '../render/characters.js';
+import { activeFires, fireLifeRatio } from '../systems/firemaking.js';
 
 const HEIGHT = 13, WIN = 176, TSPX = 12, REBUILD = 40, MARGIN = 6;
 const GRASS = new Set([0, 11, 12, 19]), PATH = new Set([3, 6, 7, 20]), WATER = new Set([1, 13, 14]);
@@ -639,6 +640,62 @@ function _mount(Game) {
     if (c) { const cape = new THREE.Mesh(new THREE.PlaneGeometry(0.58, 0.88), new THREE.MeshLambertMaterial({ color: c.color, side: THREE.DoubleSide })); cape.position.set(0, -0.26, -0.32); cape.rotation.x = 0.14; torsoSocket.add(cape); }
   }
 
+  // ---------- dynamic FX the 2D canvas redraws each frame — dropped LOOT,
+  // player-lit FIRES, in-flight ARROWS. All three were invisible in 3D.
+  // Pooled meshes refreshed per frame (cheap: <=80 total). ----------
+  const lootPool = [], firePool = [], arrowPool = [];
+  const lootGeo = new THREE.OctahedronGeometry(0.16, 0);
+  const lootMat = new THREE.MeshLambertMaterial({ color: 0xd9b14a, emissive: 0x4a3a10 });
+  const flameGeo = new THREE.ConeGeometry(0.28, 0.65, 7);
+  const flameMat = new THREE.MeshLambertMaterial({ color: 0xff8a2a, emissive: 0xcc4400 });
+  const logGeo = new THREE.CylinderGeometry(0.07, 0.07, 0.55, 5);
+  const logMat = new THREE.MeshLambertMaterial({ color: 0x4a3520 });
+  const arrowGeo = new THREE.CylinderGeometry(0.028, 0.028, 0.55, 4);
+  const arrowMat = new THREE.MeshLambertMaterial({ color: 0x8a5a2c });
+  const poolSync = (pool, n, mk) => {
+    while (pool.length < n) { const m2 = mk(); scene.add(m2); pool.push(m2); }
+    for (let i2 = 0; i2 < pool.length; i2++) pool[i2].visible = i2 < n;
+  };
+  function syncFX(now) {
+    const gi = Game.groundItems || [];
+    const n1 = Math.min(48, gi.length);
+    poolSync(lootPool, n1, () => new THREE.Mesh(lootGeo, lootMat));
+    for (let i2 = 0; i2 < n1; i2++) {
+      const g3 = gi[i2], m2 = lootPool[i2];
+      m2.position.set(g3.x + 0.5, heightAt(g3.x, g3.y) + 0.26 + Math.sin(now * 0.003 + i2) * 0.05, g3.y + 0.5);
+      m2.rotation.y = now * 0.0015 + i2;                     // slow spin: "loot here"
+    }
+    let fs = []; try { fs = activeFires() || []; } catch (_) {}
+    const n2 = Math.min(16, fs.length);
+    poolSync(firePool, n2, () => {
+      const gr = new THREE.Group();
+      const l1 = new THREE.Mesh(logGeo, logMat); l1.rotation.z = Math.PI / 2; l1.position.y = 0.06; gr.add(l1);
+      const l2 = new THREE.Mesh(logGeo, logMat); l2.rotation.set(Math.PI / 2, 0, 0); l2.position.y = 0.06; gr.add(l2);
+      const fl = new THREE.Mesh(flameGeo, flameMat); fl.position.y = 0.42; gr.userData.flame = fl; gr.add(fl);
+      return gr;
+    });
+    const nowTick = Game.ticker ? Game.ticker.count : 0;
+    for (let i2 = 0; i2 < n2; i2++) {
+      const f2 = fs[i2], gr = firePool[i2];
+      gr.position.set(f2.x + 0.5, heightAt(f2.x, f2.y), f2.y + 0.5);
+      const life = fireLifeRatio(f2, nowTick);
+      const flick = 0.85 + 0.15 * Math.sin(now * 0.02 + f2.x * 1.7 + f2.y);
+      const s2 = Math.max(0.2, (0.55 + 0.45 * life) * flick);
+      gr.userData.flame.scale.set(s2, s2, s2);
+    }
+    const prs = Game._projectiles || [];
+    const gtime = (Game.scene && Game.scene.time && Game.scene.time.now) || now;
+    const n3 = Math.min(16, prs.length);
+    poolSync(arrowPool, n3, () => new THREE.Mesh(arrowGeo, arrowMat));
+    for (let i2 = 0; i2 < n3; i2++) {
+      const pr = prs[i2], m2 = arrowPool[i2];
+      const k = Math.max(0, Math.min(1, (gtime - pr.at) / pr.dur));
+      const px2 = (pr.x + (pr.tx - pr.x) * k) / TILE_SIZE, pz2 = (pr.y + (pr.ty - pr.y) * k) / TILE_SIZE;
+      m2.position.set(px2, heightAt(px2, pz2) + 1.0 + Math.sin(Math.PI * k) * 0.35, pz2);
+      m2.lookAt(pr.tx / TILE_SIZE, m2.position.y, pr.ty / TILE_SIZE); m2.rotateX(Math.PI / 2);
+    }
+  }
+
   // ---------- walk feedback: gold ring on the destination tile + white dots along the
   // live path (read from p.travelTarget / p.path every frame, same data the 2D uses) ----
   const destMarker = new THREE.Mesh(
@@ -827,7 +884,8 @@ function _mount(Game) {
       const wx = p ? p.px / TILE_SIZE : winCX, wz = p ? p.py / TILE_SIZE : winCY;
       const wy = heightAt(wx, wz);
       if (Math.abs(wx - winCX) > REBUILD || Math.abs(wz - winCY) > REBUILD) buildWindow(wx | 0, wz | 0);
-      daylight3d();                                            // world-clock lighting (once per game minute)
+      daylight3d();                                            // interior/day lighting (on change)
+      syncFX(performance.now());                               // loot / fires / arrows
       if (performance.now() - lastPropBuild > 2000) buildProps();   // depleted trees vanish, respawns return
       const dt = clock.getDelta();
       syncActors(performance.now(), dt);                       // NPCs / monsters / other players
