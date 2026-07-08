@@ -163,7 +163,7 @@ function _mount(Game) {
   const goblin = new THREE.Group(); scene.add(goblin);
   let mixer = null, walkAction = null, animRoot = null;
   const gltf = new GLTFLoader(); gltf.setMeshoptDecoder(MeshoptDecoder);   // compressed models (~95% smaller)
-  gltf.load('/r3d/models/goblin_walk.glb', gl => {
+  gltf.load('/r3d/models/opt/goblin_walk.glb', gl => {
     const m = gl.scene, b = new THREE.Box3().setFromObject(m), sz = b.getSize(new THREE.Vector3());
     m.scale.setScalar(2.2 / Math.max(sz.x, sz.y, sz.z));
     const b2 = new THREE.Box3().setFromObject(m);
