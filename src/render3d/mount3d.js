@@ -163,6 +163,7 @@ function _mount(Game) {
     if (wc) { const wg = new THREE.BufferGeometry(); wg.setAttribute('position', new THREE.Float32BufferAttribute(wpos, 3)); wg.setAttribute('normal', new THREE.Float32BufferAttribute(wnorm, 3)); wg.setIndex(widx);
       waterMesh = new THREE.Mesh(wg, new THREE.MeshLambertMaterial({ color: 0x3f7fc4, emissive: 0x11365e, transparent: true, opacity: 0.82, side: THREE.DoubleSide, depthWrite: true })); waterMesh.renderOrder = 2; scene.add(waterMesh); }
     winCX = cx; winCY = cy;
+    buildWalls(x0, y0, x1, y1);                          // raised wall blocks follow the window
     propBounds = { x0, y0, x1, y1 }; buildProps();      // props follow the terrain window
   }
 
@@ -172,7 +173,10 @@ function _mount(Game) {
   const gltf = new GLTFLoader(); gltf.setMeshoptDecoder(MeshoptDecoder);   // compressed models (~95% smaller)
   gltf.load('/r3d/models/opt/goblin_walk.glb', gl => {
     const m = gl.scene, b = new THREE.Box3().setFromObject(m), sz = b.getSize(new THREE.Vector3());
-    m.scale.setScalar(2.2 / Math.max(sz.x, sz.y, sz.z));
+    // player goblin ~1.6 tiles tall — a person, not a landmark. Buildings (below)
+    // are 3.8-5.5 so a house properly DWARFS the goblin (owner: "goblin as big as
+    // a house"). NPC bodies load at ~1.5 so player + crowd read the same height.
+    m.scale.setScalar(1.65 / Math.max(sz.x, sz.y, sz.z));
     const b2 = new THREE.Box3().setFromObject(m);
     m.position.y = -b2.min.y; goblin.add(m); animRoot = m;    // feet on ground; x/z zeroed per-frame (root motion)
     if (gl.animations && gl.animations.length) { const clip = gl.animations[0];
@@ -230,6 +234,56 @@ function _mount(Game) {
     const m = new THREE.InstancedMesh(P_GEO[k], new THREE.MeshLambertMaterial({ flatShading: true, ...(k === 'fish' ? { transparent: true, opacity: 0.7, side: THREE.DoubleSide, depthWrite: false } : {}) }), P_CAP[k]);
     m.count = 0; m.instanceMatrix.setUsage(THREE.DynamicDrawUsage); scene.add(m); props[k] = m;
   }
+  // ---------- raised WALL blocks: town / keep / camp / ruin perimeters (T.WALL
+  // tiles) stand UP as clean flat stone instead of being painted flat on the
+  // ground. Rebuilt per terrain window. (Owner: "you don't have walls up.") ----
+  const WALL_CAP = 6000, WALLH = 1.9, WALL_ID = 10;
+  const wallMesh = new THREE.InstancedMesh(new THREE.BoxGeometry(1.02, 1, 1.02),
+    new THREE.MeshLambertMaterial({ flatShading: true }), WALL_CAP);
+  wallMesh.count = 0; wallMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage); scene.add(wallMesh);
+  const wallM = new THREE.Matrix4(), wallP = new THREE.Vector3(), wallS = new THREE.Vector3(), wallQ = new THREE.Quaternion(), wallC = new THREE.Color();
+  // Only LARGE wall enclosures stand up (town perimeter, the keep, the training
+  // yard). Individual buildings are floor+wall rooms in the 2D data with a
+  // structure marker inside — in 3D the house MODEL is the building, so its
+  // little wall ring must NOT raise or every house sits boxed in stone. Flood-
+  // fill wall components once per world; raise only those spanning >=12 tiles.
+  function bigWallMask(wrld) {
+    if (wrld._bigWallMask) return wrld._bigWallMask;
+    const t = wrld.terrain, ww = wrld.W, hh = wrld.H, N = ww * hh;
+    const mask = new Uint8Array(N), seen = new Uint8Array(N), stack = [];
+    for (let i = 0; i < N; i++) {
+      if (t[i] !== WALL_ID || seen[i]) continue;
+      stack.length = 0; stack.push(i); seen[i] = 1; const comp = [i];
+      let x0c = 1e9, x1c = -1, y0c = 1e9, y1c = -1;
+      while (stack.length) {
+        const c = stack.pop(), cx = c % ww, cy = (c - cx) / ww;
+        if (cx < x0c) x0c = cx; if (cx > x1c) x1c = cx; if (cy < y0c) y0c = cy; if (cy > y1c) y1c = cy;
+        for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+          const nx = cx + dx, ny = cy + dy; if (nx < 0 || ny < 0 || nx >= ww || ny >= hh) continue;
+          const ni = ny * ww + nx; if (seen[ni] || t[ni] !== WALL_ID) continue;
+          seen[ni] = 1; stack.push(ni); comp.push(ni);
+        }
+      }
+      if (Math.max(x1c - x0c, y1c - y0c) >= 12) for (const ci of comp) mask[ci] = 1;
+    }
+    wrld._bigWallMask = mask;
+    return mask;
+  }
+  function buildWalls(x0, y0, x1, y1) {
+    const mask = bigWallMask(world);
+    let n = 0;
+    for (let gy = y0; gy <= y1 && n < WALL_CAP; gy++) for (let gx = x0; gx <= x1 && n < WALL_CAP; gx++) {
+      if (ter[gy * W + gx] !== WALL_ID || !mask[gy * W + gx]) continue;
+      const gh = (elev[gy * W + gx] / 255) * HEIGHT;
+      wallP.set(gx + 0.5, gh + WALLH / 2, gy + 0.5); wallS.set(1, WALLH, 1);
+      wallM.compose(wallP, wallQ, wallS); wallMesh.setMatrixAt(n, wallM);
+      const v = 0.92 + 0.1 * (((gx * 7 + gy * 13) % 5) / 5);   // subtle per-tile shade
+      wallC.setRGB(0.55 * v, 0.52 * v, 0.47 * v); wallMesh.setColorAt(n, wallC);
+      n++;
+    }
+    wallMesh.count = n; wallMesh.instanceMatrix.needsUpdate = true;
+    if (wallMesh.instanceColor) wallMesh.instanceColor.needsUpdate = true;
+  }
   // real generated models for the numerous props: load compressed GLBs, normalize
   // (feet at y=0, ~unit height), and swap them into the instancing in place of the
   // procedural cones — the whole forest becomes the owner's actual tree model.
@@ -250,6 +304,31 @@ function _mount(Game) {
       buildProps();                                        // re-lay props with the real model
     }, undefined, e => console.error('[r3d] prop model failed', url, e));
   }
+  // Clean CUTE buildings: load an UNTEXTURED preview mesh and paint flat 2-tone
+  // vertex colours by height (walls below, roof above roofFrac) — clean low-poly,
+  // no muddy photo texture. This is the look the owner wants ("clean low poly
+  // cute like the goblin"); it replaces the muddy textured building GLBs.
+  function instanceGLBClean(url, kind, cap, targetH, wallHex, roofHex, roofFrac) {
+    const ld = new GLTFLoader(); ld.setMeshoptDecoder(MeshoptDecoder);
+    ld.load(url, gl => {
+      let best = null; gl.scene.updateMatrixWorld(true);
+      gl.scene.traverse(o => { if (o.isMesh && (!best || o.geometry.attributes.position.count > best.geometry.attributes.position.count)) best = o; });
+      if (!best) return;
+      const geo = best.geometry.clone(); geo.applyMatrix4(best.matrixWorld);
+      geo.computeBoundingBox(); const bb = geo.boundingBox, size = new THREE.Vector3(); bb.getSize(size);
+      const s = targetH / (size.y || 1), c = new THREE.Vector3(); bb.getCenter(c);
+      geo.translate(-c.x, -bb.min.y, -c.z); geo.scale(s, s, s);
+      geo.computeBoundingBox(); const h2 = geo.boundingBox.max.y, cut = h2 * roofFrac;
+      const pos = geo.attributes.position, cols = new Float32Array(pos.count * 3);
+      const wc = new THREE.Color(wallHex), rc = new THREE.Color(roofHex);
+      for (let vi = 0; vi < pos.count; vi++) { const col = pos.getY(vi) >= cut ? rc : wc; cols[vi * 3] = col.r; cols[vi * 3 + 1] = col.g; cols[vi * 3 + 2] = col.b; }
+      geo.setAttribute('color', new THREE.BufferAttribute(cols, 3));
+      const m = new THREE.InstancedMesh(geo, new THREE.MeshLambertMaterial({ flatShading: true, vertexColors: true }), cap);
+      m.count = 0; m.instanceMatrix.setUsage(THREE.DynamicDrawUsage); scene.add(m);
+      P_CAP[kind] = cap; props[kind] = m;
+      buildProps();
+    }, undefined, e => console.error('[r3d] clean model failed', url, e));
+  }
   instanceGLB('/r3d/models/opt/tree.glb', 'treeG', 4096, 2.4);
   instanceGLB('/r3d/models/opt/bush.glb', 'bushG', 1024, 0.9);
   // town models: label-matched structures render as the real generated pieces
@@ -263,12 +342,14 @@ function _mount(Game) {
   // graceful fallback to treeG / clay box until each file exists)
   instanceGLB('/r3d/models/opt/willow.glb', 'willowG', 2048, 2.6);
   instanceGLB('/r3d/models/opt/oak.glb', 'oakG', 2048, 3.0);
-  instanceGLB('/r3d/models/opt/tower.glb', 'towerG', 64, 4.2);
-  instanceGLB('/r3d/models/opt/anvil.glb', 'anvilG', 64, 0.8);
-  instanceGLB('/r3d/models/opt/well.glb', 'wellG', 64, 1.5);
-  instanceGLB('/r3d/models/opt/market_stall.glb', 'stallG', 128, 2.2);
-  instanceGLB('/r3d/models/opt/hut.glb', 'hutG', 256, 2.6);
-  instanceGLB('/r3d/models/opt/cottage.glb', 'cottageG', 256, 3.0);
+  instanceGLB('/r3d/models/opt/anvil.glb', 'anvilG', 64, 0.9);
+  // CLEAN cute buildings (untextured previews, flat 2-tone by height) — replaces
+  // the muddy textured cottage/hut/stall/tower/well. wallHex, roofHex, roofFrac.
+  instanceGLBClean('/r3d/models/opt/cottage_clean.glb', 'cottageG', 256, 4.6, 0xe6d2a8, 0xc25a3c, 0.55);
+  instanceGLBClean('/r3d/models/opt/hut_clean.glb', 'hutG', 256, 3.8, 0xceb488, 0xd8b256, 0.5);
+  instanceGLBClean('/r3d/models/opt/stall_clean.glb', 'stallG', 128, 2.9, 0xc39a5e, 0xcf4d3c, 0.55);
+  instanceGLBClean('/r3d/models/opt/tower_clean.glb', 'towerG', 64, 5.5, 0xb99162, 0x9a6b3e, 0.7);
+  instanceGLBClean('/r3d/models/opt/well_clean.glb', 'wellG', 64, 1.9, 0xb4aca0, 0x8a6a48, 0.62);
   // first regex match wins; anything unmatched stays the tinted clay box+roof.
   // third value = scale class: minor scatter renders SMALL so hay piles / dropped
   // packs read as ground clutter, not full furniture dumped on the road.
