@@ -594,7 +594,8 @@ export function generateWorld(seed = DEFAULT_SEED, opts = {}) {
     const [x, y] = snapLand(850, 825, 70);
     ground(x, y, 23, T.DIRT); fenceRing(x, y, 23);
     for (const g of [[0, -23], [-17, 17], [17, 17]]) { setT(x + g[0], y + g[1], T.ROAD); setT(x + g[0] + 1, y + g[1], T.ROAD); } // gates
-    for (const [dx, dy] of [[-17, -17], [17, -17], [-17, 17], [17, 17]]) structure(x + dx, y + dy, 'Watchtower', 0x5a4a3a);
+    // south towers FLANK their gates ([-14,17]/[14,17]) instead of standing in the doorway
+    for (const [dx, dy] of [[-17, -17], [17, -17], [-14, 17], [14, 17]]) structure(x + dx, y + dy, 'Watchtower', 0x5a4a3a);
     // inner ring road (patrol path)
     for (let a = 0; a < 360; a += 3) { const px = Math.round(x + 15 * Math.cos(a * Math.PI / 180)), py = Math.round(y + 15 * Math.sin(a * Math.PI / 180)); if (getT(px, py) === T.DIRT) setT(px, py, T.ROAD); }
     tents(x - 8, y - 5, 5, 0x7a3a3a); tents(x + 8, y + 6, 4, 0x7a3a3a); tents(x - 9, y + 7, 3, 0x7a3a3a);
@@ -1062,10 +1063,15 @@ if (!GEO2) {
         if (seen.has(n.node_id + anchorId)) continue; seen.add(n.node_id + anchorId);
         const isFish = n.related_skill === 'fishing';
         const cnt = n.level_requirement < 20 ? 2 : 1;
+        // clearance: never inside the town walls, never crowding an authored
+        // structure — a Potato Patch beside the Fishmonger Stall reads as chaos
+        const inTown = (x, y) => x >= TB.x0 + townOff.dx && x <= TB.x1 + townOff.dx && y >= TB.y0 + townOff.dy && y <= TB.y1 + townOff.dy;
+        const nearStruct = (x, y) => { for (let dy2 = -3; dy2 <= 3; dy2++) for (let dx2 = -3; dx2 <= 3; dx2++) { const o2 = objectAt.get(okey(x + dx2, y + dy2)); if (o2 && o2.type === 'structure') return true; } return false; };
         for (let i = 0; i < cnt; i++) for (let t = 0; t < 50; t++) {
           // uniform spread across the region (not clustered at the anchor)
           const x = Math.round(a.x + (rng() * 2 - 1) * a.r * 0.92), y = Math.round(a.y + (rng() * 2 - 1) * a.r * 0.92);
           if (occupied.has(okey(x, y))) continue;
+          if (inTown(x, y) || nearStruct(x, y)) continue;
           const gt = getT(x, y);
           if (isFish ? gt === T.WATER : (gt === T.GRASS || gt === T.SWAMP)) {
             placeObj({ x, y, type: 'structure', label, color: colorFor(n), skill: null, blocking: isFish ? false : blocking, depleted: false, nodeId: n.node_id });
@@ -1150,7 +1156,9 @@ if (!GEO2) {
 
     function sBuilding(cx, cy, e, ruined) {
       const w = 2 + (rng() * 2 | 0), h = 2 + (rng() * 2 | 0), x0 = cx - w, y0 = cy - h, x1 = cx + w, y1 = cy + h;
-      if (!clearFoot(x0, y0, x1, y1)) { wmarker(cx, cy, e); return; }
+      // no footprint room = no POI: a bare 'Ruined Cottage' label floating in
+      // dense forest with no cottage reads as debris, not a discovery
+      if (!clearFoot(x0, y0, x1, y1)) return;
       for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
         if (getT(x, y) !== T.GRASS) continue;
         const border = x === x0 || x === x1 || y === y0 || y === y1;
@@ -1432,7 +1440,15 @@ if (!GEO2) {
           for (let a2 = 0; a2 < 360; a2 += 20) {
             const nx = Math.round(o.x + r * Math.cos(a2 * Math.PI / 180)), ny = Math.round(o.y + r * Math.sin(a2 * Math.PI / 180));
             if (nx < 2 || ny < 2 || nx >= WORLD_W - 2 || ny >= WORLD_H - 2) continue;
-            if (reach[idx(nx, ny)] && !occupied.has(okey(nx, ny))) {
+            // terrain-aware acceptance: fishing spots must stay IN water (with a
+            // reachable bank tile beside them); blocking resources only land on
+            // grass — never teleported into the middle of a road or bridge.
+            const rt = terrain[idx(nx, ny)];
+            let tOk;
+            if (o.skill === 'Fishing') tOk = rt === T.WATER && [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([ddx, ddy]) => reach[idx(nx + ddx, ny + ddy)]);
+            else if (o.blocking) tOk = reach[idx(nx, ny)] && (rt === T.GRASS || rt === T.GRASS2 || rt === T.GRASS3);
+            else tOk = reach[idx(nx, ny)] && rt !== T.ROAD && rt !== T.BRIDGE;
+            if (tOk && !occupied.has(okey(nx, ny))) {
               objectAt.delete(okey(o.x, o.y)); occupied.delete(okey(o.x, o.y));
               o.x = nx; o.y = ny; objectAt.set(okey(nx, ny), o); occupied.add(okey(nx, ny));
               moved = true; break;
@@ -1488,7 +1504,11 @@ if (!GEO2) {
             structure(op.x, op.y, op.label, op.color || 0xcfc0a0, op.skill || null, op.blocking !== false);
             if (op.examine) { const o = objectAt.get(okey(op.x, op.y)); if (o) { o.examine = op.examine; o.wild = op.wild || 'explore'; } }
           } else if (op.op === 'decor') {
-            decor(op.x, op.y, op.color || 0x3f6e2c, op.size || 4, op.shape || 'circle');
+            // authored patch decor may sit ON roads deliberately (processional
+            // carpets, market rugs, gate banners) — bypass decor()'s ROAD guard
+            // and mark roadOk so the post-carve sweep leaves it alone.
+            if (inB(op.x, op.y) && !occupied.has(okey(op.x, op.y)))
+              placeObj({ x: op.x, y: op.y, type: 'decor', color: op.color || 0x3f6e2c, size: op.size || 4, shape: op.shape || 'circle', blocking: false, roadOk: true }, false);
           } else if (op.op === 'elevation' && op.to != null) {
             const v = Math.max(0, Math.min(255, op.to));
             if (op.rect) { const [x0, y0, x1, y1] = op.rect; for (let y = Math.max(1, y0); y <= Math.min(WORLD_H - 2, y1); y++) for (let x = Math.max(1, x0); x <= Math.min(WORLD_W - 2, x1); x++) elevOverride[idx(x, y)] = v; }
@@ -1615,7 +1635,7 @@ if (!GEO2) {
   // Decor placed before a later road pass carved under it reads as litter on
   // the carriageway — sweep any decor now sitting on ROAD/BRIDGE. Decor is
   // non-blocking and never in objectAt, so dropping it touches nothing else.
-  for (let i = objects.length - 1; i >= 0; i--) { const o = objects[i]; if (o.type !== 'decor') continue; const t = terrain[idx(o.x, o.y)]; if (t === T.ROAD || t === T.BRIDGE) objects.splice(i, 1); }
+  for (let i = objects.length - 1; i >= 0; i--) { const o = objects[i]; if (o.type !== 'decor' || o.roadOk) continue; const t = terrain[idx(o.x, o.y)]; if (t === T.ROAD || t === T.BRIDGE) objects.splice(i, 1); }
 
   // ---- collision + chunk buckets ----
   const collision = new Uint8Array(WORLD_W * WORLD_H);

@@ -232,38 +232,55 @@ function _mount(Game) {
   instanceGLB('/r3d/models/opt/crate.glb', 'crateG', 256, 0.7);
   instanceGLB('/r3d/models/opt/chest.glb', 'chestG', 128, 0.6);
   instanceGLB('/r3d/models/opt/campfire.glb', 'campfireG', 128, 0.5);
-  instanceGLB('/r3d/models/opt/signpost.glb', 'signG', 128, 1.6);
+  instanceGLB('/r3d/models/opt/signpost.glb', 'signG', 256, 1.6);
+  // species trees + the tall wilderness landmark (models from the batch-2 gen;
+  // graceful fallback to treeG / clay box until each file exists)
+  instanceGLB('/r3d/models/opt/willow.glb', 'willowG', 2048, 2.6);
+  instanceGLB('/r3d/models/opt/oak.glb', 'oakG', 2048, 3.0);
+  instanceGLB('/r3d/models/opt/tower.glb', 'towerG', 64, 4.2);
   instanceGLB('/r3d/models/opt/anvil.glb', 'anvilG', 64, 0.8);
   instanceGLB('/r3d/models/opt/well.glb', 'wellG', 64, 1.5);
   instanceGLB('/r3d/models/opt/market_stall.glb', 'stallG', 128, 2.2);
   instanceGLB('/r3d/models/opt/hut.glb', 'hutG', 256, 2.6);
   instanceGLB('/r3d/models/opt/cottage.glb', 'cottageG', 256, 3.0);
-  // first regex match wins; anything unmatched stays the tinted clay box+roof
-  // third value = scale class: minor scatter renders SMALL so hay piles / dropped
-  // packs read as ground clutter, not full furniture dumped on the road.
+  // first regex match wins; anything unmatched stays the tinted clay box+roof.
   // third value = scale class: minor scatter renders SMALL so hay piles / dropped
   // packs read as ground clutter, not full furniture dumped on the road.
   // fourth value = facing: 'row' = uniform (market aisles read aligned),
   // 'cardinal' = snap to N/S/E/W (grid-town buildings), default = free random.
   // fifth value = tint multiplied over the texture: the barrel's pale rim +
   // dark open top reads as an EYEBALL from the game camera — warm it to wood.
+  // Intentionally UNMAPPED (tinted box is correct): unique quest landmarks
+  // (Throne of Gorkholm, gates, caves, Boss Arena, Boat to Lake Island...) and
+  // creature-ambush POIs (Feral Hog, Wild Goblin, Root Horror...) — no static
+  // prop honestly represents them; do not add rows for these.
   const STRUCT_MODELS = [
     [/Barrel/i, 'barrelG', 0.75, null, 0xb9885a],
+    [/Cauldron|Cookpot/i, 'campfireG', 0.8],
     [/Campfire|Fire/i, 'campfireG', 1],
     [/Anvil|Furnace|Forge|Smith/i, 'anvilG', 1, 'cardinal'],
     [/Well\b/i, 'wellG', 1, 'cardinal'],
-    [/Bench|Cart\b|Table\b/i, 'crateG', 0.6],
+    [/Bench|Cart\b|Table\b|Wagon|Trough|Wreck|Debris|Golem|Midden/i, 'crateG', 0.6],
     [/Lamp|Cross\b|Dummy|Banner/i, 'signG', 0.9, 'cardinal'],
     [/Exchange/i, 'stallG', 1.25, 'row'],
     [/Fishmonger|Bait|Tackle/i, 'stallG', 1, 'row'],
     [/Stall|Market|Store|Shop|Trader/i, 'stallG', 1, 'row'],
     [/Sawmill|Fletcher|Grocer|Herbalist|Shed\b|Kiln|Cooking Range/i, 'hutG', 1, 'cardinal'],
-    [/Chest/i, 'chestG', 0.8, 'cardinal'],
+    [/Watchtower|Guard Tower|Lookout/i, 'towerG', 1, 'cardinal'],
+    [/Chest|Stash|Cache|Hoard|Coffer|Strongbox/i, 'chestG', 0.7, 'cardinal'],
     [/Dropped|Pile|Heap/i, 'crateG', 0.45],
     [/Crate|Box|Pack/i, 'crateG', 0.7],
     [/Sign/i, 'signG', 1, 'cardinal'],
-    [/Hut|Tent|Blind|Shack/i, 'hutG', 1, 'cardinal'],
+    [/Hut|Tent|Blind|Shack|Lean-to/i, 'hutG', 1, 'cardinal'],
     [/Cottage|House|Home|Bank|Hall|Inn|Tavern/i, 'cottageG', 1, 'cardinal'],
+    // wayfinding vocabulary: shrines/milestones/boards read as upright markers,
+    // restoring the road-rhythm the boxes erased
+    [/Shrine|Idol|Totem|Obelisk|Milestone|Standing Stone|Boundary Stone|Prayer Stone|\bBoard\b|\bPost\b|Scarecrow/i, 'signG', 1, 'cardinal'],
+    // gardens/meadows/farm nodes: flat vegetation, NOT architecture
+    [/\b(Patch|Garden|Meadow|Planter|Bed)\b/i, 'bushG', 0.55],
+    // animal homes: a half-buried earth mound, not a cabin
+    [/\b(Nest|Den|Burrow|Warren|Sett|Wallow|Beehive)\b|Owl Hollow/i, 'rock', 0.55, null, 0x8a6f4f],
+    [/\bRack\b|Skinning Frame/i, 'fenceG', 0.8, 'cardinal'],
   ];
   const pM = new THREE.Matrix4(), pP = new THREE.Vector3(), pS = new THREE.Vector3(), pC = new THREE.Color();
   const pQ0 = new THREE.Quaternion(), pQflat = new THREE.Quaternion().setFromEuler(new THREE.Euler(-Math.PI / 2, 0, 0));
@@ -289,8 +306,10 @@ function _mount(Game) {
       const y = Math.min(heightAt(o.x, o.y), heightAt(o.x + 1, o.y), heightAt(o.x, o.y + 1), heightAt(o.x + 1, o.y + 1));
       const r = hash01(o.x, o.y), rot = r * Math.PI * 2;
       if (o.skill === 'Fishing') { put('fish', x, z, y + 0.06, 1, 1, 1, 0x9fd4ff); continue; }
-      if (o.skill === 'Mining' || /Coal|Iron|Gold|Copper|Tin|Rock/.test(lbl)) { const s = 0.8 + r * 0.5; put('rock', x, z, y + 0.28 * s, s, s * 0.8, s, col, rot); continue; }
-      if (/Dead Tree/.test(lbl)) { put('dead', x, z, y + 0.75, 1, 1, 1, 0x5a4a38, rot); continue; }
+      // minerals: word-bounded metal names + the gathering-node vocabulary (seams,
+      // veins, geodes...); exclusions keep Iron Lamp / Iron Bars / Deposit Box out
+      if (o.skill === 'Mining' || (/\b(Coal|Iron|Gold|Copper|Tin|Rock)\b|Node\b|Seam|Vein|Geode|Deposit|Outcrop|Boulder|Crag|Lode\b|Crust|Vent\b|Seep/.test(lbl) && !/Lamp|Bars|Crab|Box\b/i.test(lbl))) { const s = 0.8 + r * 0.5; put('rock', x, z, y + 0.28 * s, s, s * 0.8, s, col, rot); continue; }
+      if (/Dead Tree|Lightning-Struck|Dead Stump/.test(lbl)) { put('dead', x, z, y + 0.75, 1, 1, 1, 0x5a4a38, rot); continue; }
       if (/Bush|Hedge|Thicket|Copse/.test(lbl)) {
         const s = 0.8 + r * 0.5;
         if (props.bushG) put('bushG', x, z, y, s, s, s, 0xffffff, rot);
@@ -300,7 +319,9 @@ function _mount(Game) {
       if (o.skill === 'Woodcutting' || /Tree|Willow|Oak/.test(lbl)) {
         const big = /Oak/.test(lbl) ? 1.35 : /Willow/.test(lbl) ? 1.15 : 1.0;
         const s = big * (0.85 + r * 0.35);
-        if (props.treeG) { put('treeG', x, z, y, s, s, s, 0xffffff, rot); continue; }
+        // species-accurate trees when their models are in: oaks broad, willows weeping
+        const tk = /Oak/.test(lbl) && props.oakG ? 'oakG' : /Willow/.test(lbl) && props.willowG ? 'willowG' : 'treeG';
+        if (props[tk]) { put(tk, x, z, y, s, s, s, 0xffffff, rot); continue; }
         put('trunk', x, z, y + 0.5 * s, s, s, s, 0x6b4a2a, rot);
         put('leaf', x, z, y + (1.0 + 1.0) * s * 0.95, s, s, s, col, rot);
         continue;
@@ -376,11 +397,15 @@ function _mount(Game) {
   loadBody('/r3d/models/opt/boar.glb', 'boar', 0.8, false);
   loadBody('/r3d/models/opt/frog.glb', 'frog', 0.45, false);
   loadBody('/r3d/models/opt/crab.glb', 'crab', 0.5, false);
+  loadBody('/r3d/models/opt/bandit.glb', 'bandit', 1.5, false);
+  loadBody('/r3d/models/opt/bug.glb', 'bug', 0.55, false);
   const SPECIES_GLB = [
     [/\brat\b/i, 'rat'],
     [/boar|\bhog\b|\bpig\b/i, 'boar'],
     [/frog|toad/i, 'frog'],
     [/crab/i, 'crab'],
+    [/bandit|brigand|outlaw|cutpurse/i, 'bandit'],
+    [/\bbug\b|beetle|grub\b/i, 'bug'],
   ];
   function makeActor(bodyType, skin, name = '') {
     const g = new THREE.Group();
