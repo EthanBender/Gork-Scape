@@ -1,15 +1,15 @@
 {
  "_readme": "Map patches: small, typed fixes applied as the FINAL world-gen step. Each entry: {id, why, ops:[...]}. Ops: {op:'terrain', rect:[x0,y0,x1,y1]|cells:[[x,y]..], to:'GRASS'} | {op:'trail', from:[x,y], to:[x,y]} | {op:'remove_objects', rect:[x0,y0,x1,y1], types:['decor','resource','structure']} | {op:'object', x,y, label, color, examine} | {op:'decor', x,y, color, size, shape}. Terrain names must exist in worldData T. See docs/MAP_DESIGN_PASS.md.",
  "_notes": [
-  "HARD/INTENTIONAL TAIL (2026-07-03, after the automated spiral sweep took defects 396->13). The remaining 13 are deliberately left — forcing them risks worse artifacts:",
-  "sealed_obj x8 — the dense NW Willow-bank treeline (x71-78 y135-198 + one at 148,273). These unreachable trees sit 2-3 deep; pulling any one exposes a fresh sliver behind it (verified: removing all 8 ADDED 4 dead_pockets). Leave them as bank scenery; they are visible, just not choppable.",
-  "dead_pocket x5 — (585,293) a 12-tile grass sliver boxed by cliff+shallow-water (no clean ford); (457,442) a 2-tile floor fragment; (692,554) a 42-tile SAND sandbar island in a lake; (766,998)+(772,999) the SE-corner landmass. The sandbar + SE corner are intentional water features (islands read as islands, not bugs). All five have NO POI/content, so nothing is stranded.",
+  "HARD/INTENTIONAL TAIL (2026-07-03, after the automated spiral sweep took defects 396->13). The remaining 13 are deliberately left \u2014 forcing them risks worse artifacts:",
+  "sealed_obj x8 \u2014 the dense NW Willow-bank treeline (x71-78 y135-198 + one at 148,273). These unreachable trees sit 2-3 deep; pulling any one exposes a fresh sliver behind it (verified: removing all 8 ADDED 4 dead_pockets). Leave them as bank scenery; they are visible, just not choppable.",
+  "dead_pocket x5 \u2014 (585,293) a 12-tile grass sliver boxed by cliff+shallow-water (no clean ford); (457,442) a 2-tile floor fragment; (692,554) a 42-tile SAND sandbar island in a lake; (766,998)+(772,999) the SE-corner landmass. The sandbar + SE corner are intentional water features (islands read as islands, not bugs). All five have NO POI/content, so nothing is stranded.",
   "If a future pass wants these to zero: bridge the sandbar/SE corner as reachable island content, and fill the two slivers to match neighbours. Not worth premium tokens."
  ],
  "patches": [
   {
    "id": "c0r2-west-shoulder-slivers",
-   "why": "Unreachable 1-9 tile walkable slivers in the west mountain shoulder (defect scanner: dead_pocket around 79-86,203-239). Filled to rock — they were never meant to be stood on.",
+   "why": "Unreachable 1-9 tile walkable slivers in the west mountain shoulder (defect scanner: dead_pocket around 79-86,203-239). Filled to rock \u2014 they were never meant to be stood on.",
    "ops": [
     {
      "op": "terrain",
@@ -35,7 +35,7 @@
   },
   {
    "id": "wilds-ford-74-149",
-   "why": "MACRO connectivity (owner-approved): the 7642-tile north 'Goblin Wilds' was stranded from spawn (audit_world warning). Its whole region touches reachable ground across ONE shallow-water tile at (74,149) — the natural narrowest crossing, flanked by deep water. A footbridge/ford here reclaims all ~7643 tiles, giving the Wilds its entrance and un-stranding the sealed_room + treeline slivers for local cleanup. trail lays dirt approaches + a bridge (runs before the texture pass, so the ford tile is still base WATER and bridges cleanly).",
+   "why": "MACRO connectivity (owner-approved): the 7642-tile north 'Goblin Wilds' was stranded from spawn (audit_world warning). Its whole region touches reachable ground across ONE shallow-water tile at (74,149) \u2014 the natural narrowest crossing, flanked by deep water. A footbridge/ford here reclaims all ~7643 tiles, giving the Wilds its entrance and un-stranding the sealed_room + treeline slivers for local cleanup. trail lays dirt approaches + a bridge (runs before the texture pass, so the ford tile is still base WATER and bridges cleanly).",
    "ops": [
     {
      "op": "trail",
@@ -52,7 +52,7 @@
   },
   {
    "id": "wilds-fords-batch",
-   "why": "MACRO connectivity (owner-approved): six more wilderness regions were fully stranded from spawn, each cut off by a single narrow river/swamp channel. Each ford is the region's NARROWEST crossing (water-only, no rock carved) so it reads as a natural footbridge/ford, not a gash. Reclaims ~7045 tiles (2815+1282+1187+786+551+424). The 424 ford at (70,107) also clears c0,r1's dead_pocket (67,105). Skipped: a 225-tile SE-corner islet at (995,99x) that needs a 4-tile span to the map edge — left for review (may be an intentional offshore feature).",
+   "why": "MACRO connectivity (owner-approved): six more wilderness regions were fully stranded from spawn, each cut off by a single narrow river/swamp channel. Each ford is the region's NARROWEST crossing (water-only, no rock carved) so it reads as a natural footbridge/ford, not a gash. Reclaims ~7045 tiles (2815+1282+1187+786+551+424). The 424 ford at (70,107) also clears c0,r1's dead_pocket (67,105). Skipped: a 225-tile SE-corner islet at (995,99x) that needs a 4-tile span to the map edge \u2014 left for review (may be an intentional offshore feature).",
    "ops": [
     {
      "op": "trail",
@@ -142,7 +142,7 @@
   },
   {
    "id": "c1r3-wall-rings",
-   "why": "c1,r3: three hollow diamond rings of stray WALL tiles (no label, no floor, no structure = generation artifacts, not authored ruins), each flagged as ~8 wall_orphans enclosing a 5-tile dead_pocket. Convert each ring footprint to GRASS — clears the orphan walls and opens the enclosed pocket at once. Rects contain only wall/grass/decor (no water/rock/POI), so the fill is safe.",
+   "why": "c1,r3: three hollow diamond rings of stray WALL tiles (no label, no floor, no structure = generation artifacts, not authored ruins), each flagged as ~8 wall_orphans enclosing a 5-tile dead_pocket. Convert each ring footprint to GRASS \u2014 clears the orphan walls and opens the enclosed pocket at once. Rects contain only wall/grass/decor (no water/rock/POI), so the fill is safe.",
    "ops": [
     {
      "op": "terrain",
@@ -3264,7 +3264,7 @@
   },
   {
    "id": "coherence-stray-walls",
-   "why": "Human-coherence: dissolve 93 stray WALL tiles — WHOLE components only (<=6 tiles, no building floor, not part of a labelled ruin/crypt/camp), so no fragment is ever left behind. Each becomes its surroundings: WATER in lakes, ROCK against mountains, GRASS in open reachable ground (reach-guarded = no new pockets). Objects on tiles turned to water/rock are removed to avoid clipping. Grass keeps its tree (natural). Also grasses isolated meadow-cliffs.",
+   "why": "Human-coherence: dissolve 93 stray WALL tiles \u2014 WHOLE components only (<=6 tiles, no building floor, not part of a labelled ruin/crypt/camp), so no fragment is ever left behind. Each becomes its surroundings: WATER in lakes, ROCK against mountains, GRASS in open reachable ground (reach-guarded = no new pockets). Objects on tiles turned to water/rock are removed to avoid clipping. Grass keeps its tree (natural). Also grasses isolated meadow-cliffs.",
    "ops": [
     {
      "op": "terrain",
@@ -3682,7 +3682,7 @@
   },
   {
    "id": "poi-watchtower-rubble-307-635",
-   "why": "Minimal POI build-out (folded into the coherence pass): the lone BARE Collapsed Watchtower at (307,635) stood as a naked marker in a willow grove while its 13 siblings are full ruins. Dressed it with tumbled mossy stone rubble (decor only — no walls, so no willow clipping / no sealed room), so it reads as a collapsed, overgrown tower. Full structural build-out of bare/thin landmarks is the dedicated pass — see scripts/poi_inventory.mjs.",
+   "why": "Minimal POI build-out (folded into the coherence pass): the lone BARE Collapsed Watchtower at (307,635) stood as a naked marker in a willow grove while its 13 siblings are full ruins. Dressed it with tumbled mossy stone rubble (decor only \u2014 no walls, so no willow clipping / no sealed room), so it reads as a collapsed, overgrown tower. Full structural build-out of bare/thin landmarks is the dedicated pass \u2014 see scripts/poi_inventory.mjs.",
    "ops": [
     {
      "op": "decor",
@@ -6116,7 +6116,7 @@
   },
   {
    "id": "city-highgate-great-hall",
-   "note": "Highgate v2 — the Chief's great hall as BUILT architecture astride the ceremonial avenue. Projecting 3x3 corner bastions (walls, ladder in each core, door to the apron), a gatehouse with piers flanking the south portal, wall buttresses, a tiered elevation plinth (built mass 168 / skirt 146) so the ground falls away around it, a paved DIRT apron, and exterior dressing (iron lamps, braziers, bush hedges, paddock fence, supply yard of carts/barrels/crates, a well). Interior throne dais + mead hall + war hall kept. Bank at its exact tile. Probed geometry; reachability + coherence simulated.",
+   "note": "Highgate v2 \u2014 the Chief's great hall as BUILT architecture astride the ceremonial avenue. Projecting 3x3 corner bastions (walls, ladder in each core, door to the apron), a gatehouse with piers flanking the south portal, wall buttresses, a tiered elevation plinth (built mass 168 / skirt 146) so the ground falls away around it, a paved DIRT apron, and exterior dressing (iron lamps, braziers, bush hedges, paddock fence, supply yard of carts/barrels/crates, a well). Interior throne dais + mead hall + war hall kept. Bank at its exact tile. Probed geometry; reachability + coherence simulated.",
    "ops": [
     {
      "op": "remove_objects",
@@ -7629,7 +7629,7 @@
   },
   {
    "id": "city-plunder-market",
-   "note": "Plunder Market — the bazaar on the ceremonial axis south of Highgate. Cobbled plaza around the kept Grand Exchange + spawn + canal/road crossing + farm nodes; a stall bazaar (varied awnings/goods) ringing the square + a market lane down from Highgate’s gate; a central Market Cross monument on a stepped base; a BUILT Merchants’ Guildhall on a low plinth (walls, door to the plaza, guildmaster desk/coffer/ledger, banners) east of the square; Grand Exchange forecourt dressed with sacks/crates/barrels/awning; iron lamps, market barrels, produce carts, bunting. Patch-only; reachability + coherence simulated.",
+   "note": "Plunder Market \u2014 the bazaar on the ceremonial axis south of Highgate. Cobbled plaza around the kept Grand Exchange + spawn + canal/road crossing + farm nodes; a stall bazaar (varied awnings/goods) ringing the square + a market lane down from Highgate\u2019s gate; a central Market Cross monument on a stepped base; a BUILT Merchants\u2019 Guildhall on a low plinth (walls, door to the plaza, guildmaster desk/coffer/ledger, banners) east of the square; Grand Exchange forecourt dressed with sacks/crates/barrels/awning; iron lamps, market barrels, produce carts, bunting. Patch-only; reachability + coherence simulated.",
    "ops": [
     {
      "op": "remove_objects",
@@ -8306,7 +8306,7 @@
   },
   {
    "id": "city-market-guild-court",
-   "note": "Guild Court vignette — recompose the guildhall forecourt as a COMPOSED SCENE (pattern-language method, not scattered props): a clear paved walk from the plaza to the door (threshold kept clear — no lamp-in-the-doorway), door framed by planters, an offset entrance lamp, flowerbeds lining the path, and a low-hedge-enclosed green garden pocket with a bench that FACES a fountain, plus setback barrel/crate leaning on the guild wall. Applied after city-plunder-market to supersede its scattered court. Reachability + coherence simulated.",
+   "note": "Guild Court vignette \u2014 recompose the guildhall forecourt as a COMPOSED SCENE (pattern-language method, not scattered props): a clear paved walk from the plaza to the door (threshold kept clear \u2014 no lamp-in-the-doorway), door framed by planters, an offset entrance lamp, flowerbeds lining the path, and a low-hedge-enclosed green garden pocket with a bench that FACES a fountain, plus setback barrel/crate leaning on the guild wall. Applied after city-plunder-market to supersede its scattered court. Reachability + coherence simulated.",
    "ops": [
     {
      "op": "remove_objects",
@@ -8517,7 +8517,7 @@
   },
   {
    "id": "city-market-square",
-   "note": "Market Square vignette — recompose the Market Cross into a composed civic square (pattern-language): a stone-flagged base with the cross as centerpiece, benches gathered facing it, a town well as second focal + water source, planters and flowerbeds framing the edges, a proclamation board by the cross, and radiating cobble paths. Applied after the market to supersede the scattered centre. Reachability + coherence simulated.",
+   "note": "Market Square vignette \u2014 recompose the Market Cross into a composed civic square (pattern-language): a stone-flagged base with the cross as centerpiece, benches gathered facing it, a town well as second focal + water source, planters and flowerbeds framing the edges, a proclamation board by the cross, and radiating cobble paths. Applied after the market to supersede the scattered centre. Reachability + coherence simulated.",
    "ops": [
     {
      "op": "remove_objects",
@@ -8530,78 +8530,6 @@
      "types": [
       "decor"
      ]
-    },
-    {
-     "op": "decor",
-     "x": 466,
-     "y": 398,
-     "color": 9078140,
-     "size": 6,
-     "shape": "rect"
-    },
-    {
-     "op": "decor",
-     "x": 466,
-     "y": 399,
-     "color": 9078140,
-     "size": 6,
-     "shape": "rect"
-    },
-    {
-     "op": "decor",
-     "x": 466,
-     "y": 400,
-     "color": 9078140,
-     "size": 6,
-     "shape": "rect"
-    },
-    {
-     "op": "decor",
-     "x": 467,
-     "y": 398,
-     "color": 9078140,
-     "size": 6,
-     "shape": "rect"
-    },
-    {
-     "op": "decor",
-     "x": 467,
-     "y": 399,
-     "color": 9078140,
-     "size": 6,
-     "shape": "rect"
-    },
-    {
-     "op": "decor",
-     "x": 467,
-     "y": 400,
-     "color": 9078140,
-     "size": 6,
-     "shape": "rect"
-    },
-    {
-     "op": "decor",
-     "x": 468,
-     "y": 398,
-     "color": 9078140,
-     "size": 6,
-     "shape": "rect"
-    },
-    {
-     "op": "decor",
-     "x": 468,
-     "y": 399,
-     "color": 9078140,
-     "size": 6,
-     "shape": "rect"
-    },
-    {
-     "op": "decor",
-     "x": 468,
-     "y": 400,
-     "color": 9078140,
-     "size": 6,
-     "shape": "rect"
     },
     {
      "op": "decor",
@@ -8735,7 +8663,7 @@
   },
   {
    "id": "chunk-c4r5-south-gate-road",
-   "note": "Chunk c4r5 — South Gate Road & river crossing. The King's Road S leaves Gorkholm and crosses the diagonal river on a stone BRIDGE (auto-bridged only where road meets water; river preserved), then runs the east bank south (paved near town -> dirt lane) to hand off toward the mire at c4r6, skirting the SE bog pond. A bridgefoot riverside waystation (well/notice/bench/lamp/wildflowers); a bridge-head signpost + lamps; the Ruined Cottage reframed as an abandoned riverside homestead; reeds + bank-stones along the river, bog-edge reeds, undergrowth treeline, milestones, roadside lamps + wildflowers. All gather nodes/mobs preserved; every prop guarded onto dry land. Layered build; reachability + coherence simulated.",
+   "note": "Chunk c4r5 \u2014 South Gate Road & river crossing. The King's Road S leaves Gorkholm and crosses the diagonal river on a stone BRIDGE (auto-bridged only where road meets water; river preserved), then runs the east bank south (paved near town -> dirt lane) to hand off toward the mire at c4r6, skirting the SE bog pond. A bridgefoot riverside waystation (well/notice/bench/lamp/wildflowers); a bridge-head signpost + lamps; the Ruined Cottage reframed as an abandoned riverside homestead; reeds + bank-stones along the river, bog-edge reeds, undergrowth treeline, milestones, roadside lamps + wildflowers. All gather nodes/mobs preserved; every prop guarded onto dry land. Layered build; reachability + coherence simulated.",
    "ops": [
     {
      "op": "terrain",
@@ -10591,7 +10519,7 @@
   },
   {
    "id": "chunk-c4r6-mire-causeway",
-   "note": "Chunk c4r6 — Mire Causeway. The King's Road S crosses the top-of-chunk bog on a boardwalk CAUSEWAY (auto-bridged over the water; bog + E-W river preserved), then a dirt road curves SW past wayside ruins to a dressed PILGRIM'S REST waystation (wayshrine/fire/bench/lantern/notice) at the mire's edge, handing the road off to c4r7. Causeway lanterns, bog reeds + mud verges, forager stub to the onion/mushroom cluster, milestones, mire-edge scrub. All nodes/mobs preserved; props guarded onto dry land; reachability + coherence simulated.",
+   "note": "Chunk c4r6 \u2014 Mire Causeway. The King's Road S crosses the top-of-chunk bog on a boardwalk CAUSEWAY (auto-bridged over the water; bog + E-W river preserved), then a dirt road curves SW past wayside ruins to a dressed PILGRIM'S REST waystation (wayshrine/fire/bench/lantern/notice) at the mire's edge, handing the road off to c4r7. Causeway lanterns, bog reeds + mud verges, forager stub to the onion/mushroom cluster, milestones, mire-edge scrub. All nodes/mobs preserved; props guarded onto dry land; reachability + coherence simulated.",
    "ops": [
     {
      "op": "terrain",
@@ -11823,22 +11751,6 @@
     },
     {
      "op": "decor",
-     "x": 466,
-     "y": 602,
-     "color": 5929530,
-     "size": 4,
-     "shape": "rect"
-    },
-    {
-     "op": "decor",
-     "x": 466,
-     "y": 602,
-     "color": 5929530,
-     "size": 4,
-     "shape": "rect"
-    },
-    {
-     "op": "decor",
      "x": 473,
      "y": 602,
      "color": 5929530,
@@ -11855,30 +11767,6 @@
     },
     {
      "op": "decor",
-     "x": 465,
-     "y": 603,
-     "color": 5929530,
-     "size": 4,
-     "shape": "rect"
-    },
-    {
-     "op": "decor",
-     "x": 472,
-     "y": 603,
-     "color": 5929530,
-     "size": 4,
-     "shape": "rect"
-    },
-    {
-     "op": "decor",
-     "x": 465,
-     "y": 603,
-     "color": 5929530,
-     "size": 4,
-     "shape": "rect"
-    },
-    {
-     "op": "decor",
      "x": 472,
      "y": 603,
      "color": 5929530,
@@ -11889,38 +11777,6 @@
      "op": "decor",
      "x": 471,
      "y": 604,
-     "color": 5929530,
-     "size": 4,
-     "shape": "rect"
-    },
-    {
-     "op": "decor",
-     "x": 471,
-     "y": 604,
-     "color": 5929530,
-     "size": 4,
-     "shape": "rect"
-    },
-    {
-     "op": "decor",
-     "x": 471,
-     "y": 604,
-     "color": 5929530,
-     "size": 4,
-     "shape": "rect"
-    },
-    {
-     "op": "decor",
-     "x": 469,
-     "y": 605,
-     "color": 5929530,
-     "size": 4,
-     "shape": "rect"
-    },
-    {
-     "op": "decor",
-     "x": 469,
-     "y": 605,
      "color": 5929530,
      "size": 4,
      "shape": "rect"
@@ -12295,7 +12151,7 @@
   },
   {
    "id": "road-west-mossreach",
-   "note": "West Road — Gorkholm's west gate (Old Boundary Stone) to the Mossreach Woodcut Camp (Woodcutter Splinter). A 2-wide dirt lane auto-bridged over the mid-corridor water body, tying into the existing camp road; a west-gate marker (boundary lamp + notice), a bridge waystation (ford well/notice/lamp/wildflowers) at the crossing, a Mossreach camp signpost, roadside lamps/milestones/wildflowers + treeline verges. Spans c3r4+c2r4. All nodes/NPCs preserved; props land-guarded; reachability + coherence simulated.",
+   "note": "West Road \u2014 Gorkholm's west gate (Old Boundary Stone) to the Mossreach Woodcut Camp (Woodcutter Splinter). A 2-wide dirt lane auto-bridged over the mid-corridor water body, tying into the existing camp road; a west-gate marker (boundary lamp + notice), a bridge waystation (ford well/notice/lamp/wildflowers) at the crossing, a Mossreach camp signpost, roadside lamps/milestones/wildflowers + treeline verges. Spans c3r4+c2r4. All nodes/NPCs preserved; props land-guarded; reachability + coherence simulated.",
    "ops": [
     {
      "op": "terrain",
@@ -13830,14 +13686,6 @@
      "blocking": false
     },
     {
-     "op": "object",
-     "x": 416,
-     "y": 459,
-     "label": "West Road Notice Board",
-     "color": 9071162,
-     "blocking": false
-    },
-    {
      "op": "decor",
      "x": 395,
      "y": 457,
@@ -13985,7 +13833,7 @@
   },
   {
    "id": "road-east-lake-spokes",
-   "note": "East + Lake Roads — the last two primary spokes. LAKE ROAD: town east gate -> Blackmoor Landing (Bait-Seller Gribble), dressed as a fishing wharf (landing notice, fish barrel, crate, dock lamp, bench, shore reeds). EAST ROAD: town NE, skirting the lake's NORTH shore (auto-bridged) to the Thornhaunt Hunter Lodge (Huntsman Bracken), with a mid-route hunter waystation + a Thornhaunt gate signpost. Roadside lamps + milestones on both. All nodes/NPCs preserved; props land-guarded; reachability + coherence simulated.",
+   "note": "East + Lake Roads \u2014 the last two primary spokes. LAKE ROAD: town east gate -> Blackmoor Landing (Bait-Seller Gribble), dressed as a fishing wharf (landing notice, fish barrel, crate, dock lamp, bench, shore reeds). EAST ROAD: town NE, skirting the lake's NORTH shore (auto-bridged) to the Thornhaunt Hunter Lodge (Huntsman Bracken), with a mid-route hunter waystation + a Thornhaunt gate signpost. Roadside lamps + milestones on both. All nodes/NPCs preserved; props land-guarded; reachability + coherence simulated.",
    "ops": [
     {
      "op": "terrain",
@@ -14568,7 +14416,7 @@
     },
     {
      "op": "object",
-     "x": 603,
+     "x": 604,
      "y": 472,
      "label": "Fish Barrel",
      "color": 6965802,
@@ -17262,7 +17110,7 @@
   },
   {
    "id": "region-mossreach-woodcamp",
-   "note": "Mossreach regional identity — turn the bare woodcut camp into a LOGGING SETTLEMENT: a widened dirt log-yard, a Timber Sawmill + stacked-timber landing by the West Road (the region anchor), a Timber Lodge cabin, a cut-over clearing of stumps, split-log fences, a charcoal kiln + woodsmoke, a carved Forest Totem greeting the road, sawdust/wood-chip ground scatter. Keeps the Woodcutting Hut, Saw Pit, log piles, campfire, Woodcutter Splinter, oaks + mushroom node. Guarded (land + not on trees/structures); reachability + coherence simulated.",
+   "note": "Mossreach regional identity \u2014 turn the bare woodcut camp into a LOGGING SETTLEMENT: a widened dirt log-yard, a Timber Sawmill + stacked-timber landing by the West Road (the region anchor), a Timber Lodge cabin, a cut-over clearing of stumps, split-log fences, a charcoal kiln + woodsmoke, a carved Forest Totem greeting the road, sawdust/wood-chip ground scatter. Keeps the Woodcutting Hut, Saw Pit, log piles, campfire, Woodcutter Splinter, oaks + mushroom node. Guarded (land + not on trees/structures); reachability + coherence simulated.",
    "ops": [
     {
      "op": "terrain",
@@ -18134,7 +17982,7 @@
   },
   {
    "id": "region-blackmoor-wharf",
-   "note": "Blackmoor Landing regional identity — enhance the existing lakeside fishing landing (shacks, piers, Gribble, locked island-boat) into a FISHING WHARF: a planked shore apron, beached rowboats + a moored skiff (new boat prop), drying nets (new net prop), fish barrels + catch crates, a stone shore Beacon Tower (lighthouse), harbour lamps, a wharf bench facing the water, rope coils + net-float buoys + shore reeds. All on dry land/pier tiles (never water). Guarded; reachability + coherence simulated.",
+   "note": "Blackmoor Landing regional identity \u2014 enhance the existing lakeside fishing landing (shacks, piers, Gribble, locked island-boat) into a FISHING WHARF: a planked shore apron, beached rowboats + a moored skiff (new boat prop), drying nets (new net prop), fish barrels + catch crates, a stone shore Beacon Tower (lighthouse), harbour lamps, a wharf bench facing the water, rope coils + net-float buoys + shore reeds. All on dry land/pier tiles (never water). Guarded; reachability + coherence simulated.",
    "ops": [
     {
      "op": "terrain",
@@ -18578,7 +18426,7 @@
   },
   {
    "id": "region-thornhaunt-hunt",
-   "note": "Thornhaunt regional identity — intensify the East-Road hunter camp (lodge, tents, fire pit, weapon rack, snare, Bracken) into a HUNTING STATION: a widened dirt clearing, antler trophies (new prop), skinning frames of drying pelts, kill-bones + a hanging carcass (new bones prop), a smokehouse + smoke fire, a rough stockade, a trapper cart, and a Hunters Totem greeting the road; feather/bone scatter. Guarded onto dry clearing; reachability + coherence simulated.",
+   "note": "Thornhaunt regional identity \u2014 intensify the East-Road hunter camp (lodge, tents, fire pit, weapon rack, snare, Bracken) into a HUNTING STATION: a widened dirt clearing, antler trophies (new prop), skinning frames of drying pelts, kill-bones + a hanging carcass (new bones prop), a smokehouse + smoke fire, a rough stockade, a trapper cart, and a Hunters Totem greeting the road; feather/bone scatter. Guarded onto dry clearing; reachability + coherence simulated.",
    "ops": [
     {
      "op": "terrain",
@@ -19290,7 +19138,7 @@
   },
   {
    "id": "region-mire-coven",
-   "note": "Reeking Mire regional identity — turn the witch coven (2 witch huts, Strange Garden, Hidden Cave, Mushroom Ring, Vex) into a proper WITCH-BOG: boggy MUD ground, bubbling Witch Cauldrons + a Coven Fire, Skull Wards + Bone Fence warding stakes, greenish Bog Lanterns, a Bone Totem greeting the path, a hexed cart; toadstool + will-o-wisp + dark-reed scatter. Guarded onto dry land; reachability + coherence simulated.",
+   "note": "Reeking Mire regional identity \u2014 turn the witch coven (2 witch huts, Strange Garden, Hidden Cave, Mushroom Ring, Vex) into a proper WITCH-BOG: boggy MUD ground, bubbling Witch Cauldrons + a Coven Fire, Skull Wards + Bone Fence warding stakes, greenish Bog Lanterns, a Bone Totem greeting the path, a hexed cart; toadstool + will-o-wisp + dark-reed scatter. Guarded onto dry land; reachability + coherence simulated.",
    "ops": [
     {
      "op": "terrain",
@@ -19806,7 +19654,7 @@
   },
   {
    "id": "region-cragmaw-quarry",
-   "note": "Cragmaw regional identity — turn the miners' camp (lodge, tents, deposit box, ore cart, coal heap, Grint, ore nodes) into a working STONE-PIT: widened dirt pit-floor, laden Ore Carts, Spoil Heaps (tailings), Cut Stone Piles, extra Coal Heaps, a Pit-Head Tower headframe over the shaft, Miner Firepits, Ore Barrels, rope-and-post Pit Fences, a broken winch cart; rubble + coal-dust scatter. Guarded onto dry ground; reachability + coherence simulated.",
+   "note": "Cragmaw regional identity \u2014 turn the miners' camp (lodge, tents, deposit box, ore cart, coal heap, Grint, ore nodes) into a working STONE-PIT: widened dirt pit-floor, laden Ore Carts, Spoil Heaps (tailings), Cut Stone Piles, extra Coal Heaps, a Pit-Head Tower headframe over the shaft, Miner Firepits, Ore Barrels, rope-and-post Pit Fences, a broken winch cart; rubble + coal-dust scatter. Guarded onto dry ground; reachability + coherence simulated.",
    "ops": [
     {
      "op": "terrain",
@@ -20886,7 +20734,7 @@
   },
   {
    "id": "square-south-crossroads",
-   "note": "South Gate Crossroads — a junction-square waystation where the King's Road S crosses the E-W road leaving town. A multi-way signpost at the centre, a travellers' well with benches facing it, a wayfarer's shelter + a wayshrine, corner lamps, planters + wildflowers, flagstone corners and milestones. The N-S and E-W through-routes are kept clear (props never on the road); guarded onto dry land. Reachability + coherence simulated.",
+   "note": "South Gate Crossroads \u2014 a junction-square waystation where the King's Road S crosses the E-W road leaving town. A multi-way signpost at the centre, a travellers' well with benches facing it, a wayfarer's shelter + a wayshrine, corner lamps, planters + wildflowers, flagstone corners and milestones. The N-S and E-W through-routes are kept clear (props never on the road); guarded onto dry land. Reachability + coherence simulated.",
    "ops": [
     {
      "op": "decor",
@@ -21052,7 +20900,7 @@
   },
   {
    "id": "square-west-trailhead",
-   "note": "West Trailhead — a forest-gate junction marker where the West Road leaves town into dense Mossreach woods (too tree-choked for a plaza): a Mossreach trailhead signpost, a carved Forest Trail Totem, a wayfarer bench, flanking trail lamps, a woodpile (Mossreach timber), trail cairns, moss + trail-stone underfoot. Through-route kept clear; guarded around the trees. Reachability + coherence simulated.",
+   "note": "West Trailhead \u2014 a forest-gate junction marker where the West Road leaves town into dense Mossreach woods (too tree-choked for a plaza): a Mossreach trailhead signpost, a carved Forest Trail Totem, a wayfarer bench, flanking trail lamps, a woodpile (Mossreach timber), trail cairns, moss + trail-stone underfoot. Through-route kept clear; guarded around the trees. Reachability + coherence simulated.",
    "ops": [
     {
      "op": "object",
@@ -21154,7 +21002,7 @@
   },
   {
    "id": "ecotone-edges",
-   "note": "Ecotone edges (repair #4) — soften hard biome seams with transition decor on the LAND side of each edge: reeds/cattails/driftwood where grass meets water (whole lake + ponds + river banks), boulders/scree where grass meets rock/cliff (mountain feet), tussocks/cattails where land meets swamp/mud (southern bog fringe). Deterministic hash density (~34-38%), grass-tiles-only so never on water (no obj_water). Pure decor — no walkability/terrain change.",
+   "note": "Ecotone edges (repair #4) \u2014 soften hard biome seams with transition decor on the LAND side of each edge: reeds/cattails/driftwood where grass meets water (whole lake + ponds + river banks), boulders/scree where grass meets rock/cliff (mountain feet), tussocks/cattails where land meets swamp/mud (southern bog fringe). Deterministic hash density (~34-38%), grass-tiles-only so never on water (no obj_water). Pure decor \u2014 no walkability/terrain change.",
    "ops": [
     {
      "op": "decor",
@@ -38510,14 +38358,6 @@
     },
     {
      "op": "decor",
-     "x": 453,
-     "y": 525,
-     "color": 5929530,
-     "size": 4,
-     "shape": "rect"
-    },
-    {
-     "op": "decor",
      "x": 452,
      "y": 526,
      "color": 5929530,
@@ -38539,14 +38379,6 @@
      "color": 8016432,
      "size": 4,
      "shape": "circle"
-    },
-    {
-     "op": "decor",
-     "x": 450,
-     "y": 528,
-     "color": 4156972,
-     "size": 5,
-     "shape": "rect"
     },
     {
      "op": "decor",
@@ -39266,14 +39098,6 @@
      "y": 573,
      "color": 4156972,
      "size": 5,
-     "shape": "rect"
-    },
-    {
-     "op": "decor",
-     "x": 405,
-     "y": 573,
-     "color": 5929530,
-     "size": 4,
      "shape": "rect"
     },
     {
@@ -40551,30 +40375,6 @@
     {
      "op": "decor",
      "x": 411,
-     "y": 614,
-     "color": 5929530,
-     "size": 4,
-     "shape": "rect"
-    },
-    {
-     "op": "decor",
-     "x": 438,
-     "y": 614,
-     "color": 4156972,
-     "size": 5,
-     "shape": "rect"
-    },
-    {
-     "op": "decor",
-     "x": 450,
-     "y": 614,
-     "color": 5929530,
-     "size": 4,
-     "shape": "rect"
-    },
-    {
-     "op": "decor",
-     "x": 456,
      "y": 614,
      "color": 5929530,
      "size": 4,
@@ -42031,14 +41831,6 @@
     {
      "op": "decor",
      "x": 74,
-     "y": 690,
-     "color": 5929530,
-     "size": 4,
-     "shape": "rect"
-    },
-    {
-     "op": "decor",
-     "x": 479,
      "y": 690,
      "color": 5929530,
      "size": 4,
@@ -48864,7 +48656,7 @@
   },
   {
    "id": "district-war-ward",
-   "note": "War Ward — Gorkholm's martial quarter (SE). A squat built GAOL (cell-block with 3 barred cells, a caged prisoner + bones, gaoler post), a long built ARMORY (weapon/shield racks, war anvil, war table), and a sunken GRAND PIT arena (octagonal ring-wall stands around a lowered dirt fighting floor via the elevation op, N+S gates, champion post + training dummies + banners + braziers + flanking weapon racks). Martial DIRT muster-yard, a gibbet + skull pike, watchfires, war banners, blood-dark earth. Built architecture; every room reachable (no sealed room); guarded; reachability + coherence simulated.",
+   "note": "War Ward \u2014 Gorkholm's martial quarter (SE). A squat built GAOL (cell-block with 3 barred cells, a caged prisoner + bones, gaoler post), a long built ARMORY (weapon/shield racks, war anvil, war table), and a sunken GRAND PIT arena (octagonal ring-wall stands around a lowered dirt fighting floor via the elevation op, N+S gates, champion post + training dummies + banners + braziers + flanking weapon racks). Martial DIRT muster-yard, a gibbet + skull pike, watchfires, war banners, blood-dark earth. Built architecture; every room reachable (no sealed room); guarded; reachability + coherence simulated.",
    "ops": [
     {
      "op": "remove_objects",
@@ -54272,7 +54064,7 @@
   },
   {
    "id": "district-bone-shrine",
-   "note": "Bone Shrine — Gorkholm's eerie sacred quarter (NE). An alien RING of 8 standing stones + bone pillars around a RAISED central Great Bone Idol on a dais (elevation op), a sacrificial altar with skull offerings before it, teal ritual braziers at the cardinal points, bone offerings + totem charm-poles scattered around, concentric flagstone ritual rings + teal wisp/bone-dust decor on a pale dirt precinct. Guarded onto land; reachability + coherence simulated.",
+   "note": "Bone Shrine \u2014 Gorkholm's eerie sacred quarter (NE). An alien RING of 8 standing stones + bone pillars around a RAISED central Great Bone Idol on a dais (elevation op), a sacrificial altar with skull offerings before it, teal ritual braziers at the cardinal points, bone offerings + totem charm-poles scattered around, concentric flagstone ritual rings + teal wisp/bone-dust decor on a pale dirt precinct. Guarded onto land; reachability + coherence simulated.",
    "ops": [
     {
      "op": "terrain",
@@ -55732,22 +55524,6 @@
     },
     {
      "op": "decor",
-     "x": 512,
-     "y": 366,
-     "color": 5925478,
-     "size": 5,
-     "shape": "rect"
-    },
-    {
-     "op": "decor",
-     "x": 511,
-     "y": 367,
-     "color": 5925478,
-     "size": 5,
-     "shape": "rect"
-    },
-    {
-     "op": "decor",
      "x": 511,
      "y": 367,
      "color": 5925478,
@@ -55790,14 +55566,6 @@
      "op": "decor",
      "x": 507,
      "y": 367,
-     "color": 5925478,
-     "size": 5,
-     "shape": "rect"
-    },
-    {
-     "op": "decor",
-     "x": 506,
-     "y": 366,
      "color": 5925478,
      "size": 5,
      "shape": "rect"
@@ -55828,14 +55596,6 @@
     },
     {
      "op": "decor",
-     "x": 506,
-     "y": 364,
-     "color": 5925478,
-     "size": 5,
-     "shape": "rect"
-    },
-    {
-     "op": "decor",
      "x": 507,
      "y": 363,
      "color": 5925478,
@@ -55878,22 +55638,6 @@
      "op": "decor",
      "x": 511,
      "y": 363,
-     "color": 5925478,
-     "size": 5,
-     "shape": "rect"
-    },
-    {
-     "op": "decor",
-     "x": 511,
-     "y": 363,
-     "color": 5925478,
-     "size": 5,
-     "shape": "rect"
-    },
-    {
-     "op": "decor",
-     "x": 512,
-     "y": 364,
      "color": 5925478,
      "size": 5,
      "shape": "rect"
@@ -56151,14 +55895,6 @@
     {
      "op": "decor",
      "x": 507,
-     "y": 363,
-     "color": 6974042,
-     "size": 6,
-     "shape": "rect"
-    },
-    {
-     "op": "decor",
-     "x": 507,
      "y": 364,
      "color": 6974042,
      "size": 6,
@@ -56182,22 +55918,6 @@
     },
     {
      "op": "decor",
-     "x": 507,
-     "y": 367,
-     "color": 6974042,
-     "size": 6,
-     "shape": "rect"
-    },
-    {
-     "op": "decor",
-     "x": 508,
-     "y": 363,
-     "color": 6974042,
-     "size": 6,
-     "shape": "rect"
-    },
-    {
-     "op": "decor",
      "x": 508,
      "y": 364,
      "color": 6974042,
@@ -56216,14 +55936,6 @@
      "op": "decor",
      "x": 508,
      "y": 366,
-     "color": 6974042,
-     "size": 6,
-     "shape": "rect"
-    },
-    {
-     "op": "decor",
-     "x": 508,
-     "y": 367,
      "color": 6974042,
      "size": 6,
      "shape": "rect"
@@ -56311,14 +56023,6 @@
     {
      "op": "decor",
      "x": 511,
-     "y": 363,
-     "color": 6974042,
-     "size": 6,
-     "shape": "rect"
-    },
-    {
-     "op": "decor",
-     "x": 511,
      "y": 364,
      "color": 6974042,
      "size": 6,
@@ -56336,14 +56040,6 @@
      "op": "decor",
      "x": 511,
      "y": 366,
-     "color": 6974042,
-     "size": 6,
-     "shape": "rect"
-    },
-    {
-     "op": "decor",
-     "x": 511,
-     "y": 367,
      "color": 6974042,
      "size": 6,
      "shape": "rect"
@@ -56491,36 +56187,12 @@
      "color": 8380624,
      "size": 4,
      "shape": "circle"
-    },
-    {
-     "op": "decor",
-     "x": 512,
-     "y": 360,
-     "color": 8380624,
-     "size": 4,
-     "shape": "circle"
-    },
-    {
-     "op": "decor",
-     "x": 510,
-     "y": 363,
-     "color": 13617336,
-     "size": 3,
-     "shape": "circle"
-    },
-    {
-     "op": "decor",
-     "x": 508,
-     "y": 367,
-     "color": 13617336,
-     "size": 3,
-     "shape": "circle"
     }
    ]
   },
   {
    "id": "district-warren",
-   "note": "The Warren — Gorkholm's cramped slum (W strip). 11 irregular goblin shacks jammed at varied sizes/offsets, each with a door onto the yard; the paved negative space forms winding alleys + dead ends (controlled chaos, always navigable — no sealed room). Grubby alley dressing (rubbish heaps, ale/rain barrels, broken crates, cook-fires, washing/rags), a Warren Well + alley lamps, a THIEVES' DEN in the SE corner (fence stash chest, cutpurse cache, hidden ladder). Guarded; reachability + coherence simulated.",
+   "note": "The Warren \u2014 Gorkholm's cramped slum (W strip). 11 irregular goblin shacks jammed at varied sizes/offsets, each with a door onto the yard; the paved negative space forms winding alleys + dead ends (controlled chaos, always navigable \u2014 no sealed room). Grubby alley dressing (rubbish heaps, ale/rain barrels, broken crates, cook-fires, washing/rags), a Warren Well + alley lamps, a THIEVES' DEN in the SE corner (fence stash chest, cutpurse cache, hidden ladder). Guarded; reachability + coherence simulated.",
    "ops": [
     {
      "op": "terrain",
@@ -63720,7 +63392,7 @@
   },
   {
    "id": "town-grown-fill",
-   "note": "Gorkholm grown-town fill pass (settlement improvement 1/2/6/7). Fills dead space with relationship-based detail: 355 domestic yard items around homes (herb gardens, fences, wood piles, rain barrels, hay, washing lines, hen coops), 91 open-pocket greenery/wells/sheds/wayside-shrines/boulders, 8 roadside COMPOSITIONS (rest stops = two benches sharing a lamp, market pitches = a stall with its barrel+crate, wagon halts = a wagon with its hay+feed — never lone furniture), 192 edge-thicket feathering. Three hand story-vignettes: a goblin GRAVEYARD (graves, boneyard shrine, fence, dead stump), a VILLAGE POND (shallow pond, reeds, willows, bench, well), a SCARECROW GARDEN (veg beds, scarecrow, hay, compost, fence). Worn desire-line footpaths break the grid (market->quarter, market->warren, toward the shrine). All non-blocking, guarded onto free grass; every road/building/quest/NPC preserved; reachability + coherence simulated.",
+   "note": "Gorkholm grown-town fill pass (settlement improvement 1/2/6/7). Fills dead space with relationship-based detail: 355 domestic yard items around homes (herb gardens, fences, wood piles, rain barrels, hay, washing lines, hen coops), 91 open-pocket greenery/wells/sheds/wayside-shrines/boulders, 8 roadside COMPOSITIONS (rest stops = two benches sharing a lamp, market pitches = a stall with its barrel+crate, wagon halts = a wagon with its hay+feed \u2014 never lone furniture), 192 edge-thicket feathering. Three hand story-vignettes: a goblin GRAVEYARD (graves, boneyard shrine, fence, dead stump), a VILLAGE POND (shallow pond, reeds, willows, bench, well), a SCARECROW GARDEN (veg beds, scarecrow, hay, compost, fence). Worn desire-line footpaths break the grid (market->quarter, market->warren, toward the shrine). All non-blocking, guarded onto free grass; every road/building/quest/NPC preserved; reachability + coherence simulated.",
    "ops": [
     {
      "op": "object",
@@ -69530,7 +69202,7 @@
   },
   {
    "id": "city-market-life",
-   "note": "Market-life pass (break-the-grid, additive on Plunder Market). The bazaar stalls ringed the plaza at even spacing standing bare; give each stall its GOODS on the aisle side (fish/spice/ale barrels, veg/curio/cloth/fur/charm crates, grain sacks, a grill-fire by the skewer stall) and scatter irregular bazaar life — market benches + a water trough clustered at the Market Cross, parked hand-carts + laden carts in the corners, stacks of empty crates tucked off-axis, lamps flanking the Highgate entrance, and dropped-fruit/grain/pigeon decor underfoot. Additive (moves no stall), all non-blocking on the cobbled DIRT plaza, never on the ceremonial road spine, keeps the spawn + Grand Exchange approach clear; reachability + coherence simulated.",
+   "note": "Market-life pass (break-the-grid, additive on Plunder Market). The bazaar stalls ringed the plaza at even spacing standing bare; give each stall its GOODS on the aisle side (fish/spice/ale barrels, veg/curio/cloth/fur/charm crates, grain sacks, a grill-fire by the skewer stall) and scatter irregular bazaar life \u2014 market benches + a water trough clustered at the Market Cross, parked hand-carts + laden carts in the corners, stacks of empty crates tucked off-axis, lamps flanking the Highgate entrance, and dropped-fruit/grain/pigeon decor underfoot. Additive (moves no stall), all non-blocking on the cobbled DIRT plaza, never on the ceremonial road spine, keeps the spawn + Grand Exchange approach clear; reachability + coherence simulated.",
    "ops": [
     {
      "op": "object",
@@ -69776,7 +69448,7 @@
   },
   {
    "id": "city-village-green",
-   "note": "Village green (organic-city composed vignette) at [517,411] — the town's grown commons. Central goblin MOOT TOTEM + village WELL, benches ringing it (facing the totem), flower beds between the benches, worn desire-line paths converging on it, framed by hedges + lamps + a notice board, wildflowers + a resting cart/barrel. Everything relates. Guarded onto free grass; non-blocking; reachability + coherence simulated.",
+   "note": "Village green (organic-city composed vignette) at [517,411] \u2014 the town's grown commons. Central goblin MOOT TOTEM + village WELL, benches ringing it (facing the totem), flower beds between the benches, worn desire-line paths converging on it, framed by hedges + lamps + a notice board, wildflowers + a resting cart/barrel. Everything relates. Guarded onto free grass; non-blocking; reachability + coherence simulated.",
    "ops": [
     {
      "op": "object",
@@ -70752,7 +70424,7 @@
   },
   {
    "id": "town-west-woodcamp",
-   "note": "West woodcutter's camp (town-edge \"grew naturally\" pass) at [407,401] — where Gorkholm meets the western woods (a genuinely forested edge, 100+ trees). A trampled clearing worked for timber + charcoal: a woodcutter's HUT + camp FIRE + log bench, stacked LOG PILES, two CHARCOAL MOUNDS, a chopping STUMP, a timber CART, a split-rail fence penning the woodyard, wood-chip/sawdust ground and felled brush, framed by the existing forest, with a worn LANE east back to town. Everything relates; non-blocking, guarded; reachability + coherence simulated.",
+   "note": "West woodcutter's camp (town-edge \"grew naturally\" pass) at [407,401] \u2014 where Gorkholm meets the western woods (a genuinely forested edge, 100+ trees). A trampled clearing worked for timber + charcoal: a woodcutter's HUT + camp FIRE + log bench, stacked LOG PILES, two CHARCOAL MOUNDS, a chopping STUMP, a timber CART, a split-rail fence penning the woodyard, wood-chip/sawdust ground and felled brush, framed by the existing forest, with a worn LANE east back to town. Everything relates; non-blocking, guarded; reachability + coherence simulated.",
    "ops": [
     {
      "op": "terrain",
@@ -71118,7 +70790,7 @@
   },
   {
    "id": "town-north-homestead",
-   "note": "North homestead (town-edge \"grew naturally\" pass) at [509,341] — an outlying cottage + fenced KITCHEN GARDEN (veg field plot + garden beds + scarecrow), a cottage well, log pile, hay, hand cart, hedges, and a lane south to town. Guarded; reachability + coherence simulated.",
+   "note": "North homestead (town-edge \"grew naturally\" pass) at [509,341] \u2014 an outlying cottage + fenced KITCHEN GARDEN (veg field plot + garden beds + scarecrow), a cottage well, log pile, hay, hand cart, hedges, and a lane south to town. Guarded; reachability + coherence simulated.",
    "ops": [
     {
      "op": "terrain",
@@ -71356,7 +71028,7 @@
   },
   {
    "id": "town-east-waystation",
-   "note": "East waystation (town-edge \"grew naturally\" pass) at [540,375] — a resting place on the town's eastern approach: a wayfarer's hut, a waypost board, a wayside well, rest benches, a wayshrine, a traveller's fire, a hitching rail, hedges + wildflowers, and a lane west to town. Guarded; reachability + coherence simulated.",
+   "note": "East waystation (town-edge \"grew naturally\" pass) at [540,375] \u2014 a resting place on the town's eastern approach: a wayfarer's hut, a waypost board, a wayside well, rest benches, a wayshrine, a traveller's fire, a hitching rail, hedges + wildflowers, and a lane west to town. Guarded; reachability + coherence simulated.",
    "ops": [
     {
      "op": "object",

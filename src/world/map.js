@@ -410,7 +410,7 @@ export function generateWorld(seed = DEFAULT_SEED, opts = {}) {
                     Math.abs(macro.height[i] - macro.height[idx(x, Math.min(WORLD_H - 2, y + STEP))]);
       let c = 1 + slope * 600;
       if (macro.water[i] === 1) c = 9000;                    // never road the open sea
-      else if (macro.water[i]) c += 55;                      // river/lake crossing = bridge, costly
+      else if (macro.water[i]) c += 150;                     // crossings are DEAR: routes converge on narrow shared bridges instead of each smearing its own span
       if (macro.terrain[i] === T.ROCK) c += 420; else if (macro.terrain[i] === T.SWAMP) c += 12;
       cost[cy * CW + cx] = c;
     }
@@ -434,19 +434,46 @@ export function generateWorld(seed = DEFAULT_SEED, opts = {}) {
       for (let c = dst; c >= 0; c = prev[c]) { const px = (c % CW) * STEP + 1, py = (((c - c % CW) / CW) | 0) * STEP + 1; path.push([px, py]); if (c === src) break; }
       return path.reverse();
     }
-    const lay = (x, y, w) => disc(x, y, w, (ax, ay) => { const t = getT(ax, ay); if (t === T.WATER) setT(ax, ay, T.BRIDGE); else if (t === T.GRASS || t === T.SAND || t === T.SWAMP || t === T.DIRT) setT(ax, ay, T.ROAD); });
+    // bridges stay NARROW (≤0.9 radius) whatever the road width — a crossing is
+    // a span, not a smear of the full carriageway across the water
+    const lay = (x, y, w) => {
+      disc(x, y, Math.min(w, 0.9), (ax, ay) => { if (getT(ax, ay) === T.WATER) setT(ax, ay, T.BRIDGE); });
+      disc(x, y, w, (ax, ay) => { const t = getT(ax, ay); if (t === T.GRASS || t === T.SAND || t === T.SWAMP || t === T.DIRT) setT(ax, ay, T.ROAD); });
+    };
     const stamp = (path, w) => { if (!path) return; for (let k = 0; k < path.length; k++) { lay(path[k][0], path[k][1], w); if (k) lay((path[k][0] + path[k - 1][0]) / 2, (path[k][1] + path[k - 1][1]) / 2, w); } };
     // pass trails CARVE through rock (a cut switchback), not just decorate it
-    const layCarve = (x, y, w) => disc(x, y, w, (ax, ay) => { const t = getT(ax, ay); if (t === T.WATER) setT(ax, ay, T.BRIDGE); else if (t === T.GRASS || t === T.SAND || t === T.SWAMP || t === T.DIRT || t === T.ROCK) setT(ax, ay, T.ROAD); });
+    const layCarve = (x, y, w) => {
+      disc(x, y, Math.min(w, 0.9), (ax, ay) => { if (getT(ax, ay) === T.WATER) setT(ax, ay, T.BRIDGE); });
+      disc(x, y, w, (ax, ay) => { const t = getT(ax, ay); if (t === T.GRASS || t === T.SAND || t === T.SWAMP || t === T.DIRT || t === T.ROCK) setT(ax, ay, T.ROAD); });
+    };
     const stampCarve = (path, w) => { if (!path) return; for (let k = 0; k < path.length; k++) { layCarve(path[k][0], path[k][1], w); if (k) layCarve((path[k][0] + path[k - 1][0]) / 2, (path[k][1] + path[k - 1][1]) / 2, w); } };
     const g = TB.gates || {}; const gate = (k, fb) => { const p = g[k] || fb; return [p[0] + townOff.dx, p[1] + townOff.dy]; };
     const N_ = gate('N', [500, 404]), S_ = gate('S', [500, 511]), E_ = gate('E', [556, 455]), W_ = gate('W', [449, 455]);
+    // each road gets a destination signpost just outside its gate, worn dirt
+    // shoulders + rut/pebble decor along its length (~6% of points) — a used
+    // cart road, not a debug ribbon
+    const signAt = (px, py, name) => {
+      for (let rr = 1; rr <= 3; rr++) for (const [dx2, dy2] of [[rr, 0], [-rr, 0], [0, rr], [0, -rr], [rr, rr], [-rr, -rr], [rr, -rr], [-rr, rr]]) {
+        const sxp = px + dx2, syp = py + dy2;
+        if (inB(sxp, syp) && getT(sxp, syp) === T.GRASS && !occupied.has(okey(sxp, syp))) { structure(sxp, syp, 'Signpost: ' + name, 0x9a7a3a); return; }
+      }
+    };
+    const dress = (path) => { if (!path) return; for (const [px, py] of path) { if (rng() > 0.06) continue;
+      for (let s = 0; s < 2; s++) { const ang = rng() * Math.PI * 2, d = 2 + (rng() * 2 | 0); const gx = Math.round(px + Math.cos(ang) * d), gy = Math.round(py + Math.sin(ang) * d); if (getT(gx, gy) !== T.GRASS || occupied.has(okey(gx, gy))) continue; const r2 = rng(); if (r2 < 0.25) setT(gx, gy, T.DIRT); else if (r2 < 0.6) decor(gx, gy, 0x7a6a4a, 3, 'rect'); else decor(gx, gy, 0x8a8a7a, 2, 'rect'); } } };
+    const signQueue = [];
     for (const [from, id, w] of [
       [N_, 'grubpit', 1.6], [N_, 'minehills', 1.3], [N_, 'troll', 1.1], [N_, 'ruins', 1.1],
       [E_, 'grublake', 1.6], [E_, 'oakwoods', 1.3],
       [S_, 'farmlands', 1.6], [S_, 'bog', 1.1], [S_, 'rival', 1.1],
       [W_, 'choppers', 1.6], [W_, 'willow', 1.3], [W_, 'mushroom', 1.1],
-    ]) stamp(route(from, [A[id].x, A[id].y]), w);
+    ]) {
+      const p = route(from, [A[id].x, A[id].y]);
+      stamp(p, w); dress(p);
+      if (p && p.length > 8) signQueue.push([p[6][0], p[6][1], A[id].name || id]);
+    }
+    // signs placed AFTER every route is stamped — sibling roads from the same
+    // gate would otherwise pave over a sign placed beside an earlier route
+    for (const [px, py, nm] of signQueue) signAt(px, py, nm);
     // Mountain-valley regions (the ruins) get a pass trail: rock is climbable at
     // trail prices here, so a switchback path cuts through instead of stranding it.
     for (let i = 0; i < cost.length; i++) if (cost[i] > 400 && cost[i] < 8000) cost[i] = 90;
@@ -483,7 +510,7 @@ export function generateWorld(seed = DEFAULT_SEED, opts = {}) {
   // ---- PASS 3b: build named locations at pack coords ----
   const ground = (cx, cy, rad, t) => disc(cx, cy, rad, (x, y) => { if (getT(x, y) !== T.WATER && getT(x, y) !== T.WALL) setT(x, y, t); });
   const snapLand = (x, y, rad = 60) => { if (landish(x, y)) return [x, y]; for (let r = 1; r <= rad; r++) for (let a = 0; a < 360; a += 15) { const nx = Math.round(x + r * Math.cos(a * Math.PI / 180)), ny = Math.round(y + r * Math.sin(a * Math.PI / 180)); if (landish(nx, ny)) return [nx, ny]; } return [x, y]; };
-  const tents = (cx, cy, n, color) => { for (let i = 0; i < n; i++) { const a = (i / n) * Math.PI * 2; structure(Math.round(cx + 4 * Math.cos(a)), Math.round(cy + 4 * Math.sin(a)), 'Tent', color); } };
+  const tents = (cx, cy, n, color) => { for (let i = 0; i < n; i++) { const a = (i / n) * Math.PI * 2; const tx2 = Math.round(cx + 4 * Math.cos(a)), ty2 = Math.round(cy + 4 * Math.sin(a)); if (getT(tx2, ty2) === T.ROAD) continue; structure(tx2, ty2, 'Tent', color); } };
   const fenceRing = (cx, cy, rad) => { for (let a = 0; a < 360; a += 5) { const x = Math.round(cx + rad * Math.cos(a * Math.PI / 180)), y = Math.round(cy + rad * Math.sin(a * Math.PI / 180)); if (getT(x, y) !== T.WATER) setT(x, y, T.WALL); } };
 
   // ===== Grubpit Quarry — detailed starter mining bowl + cave-bug loop =====
@@ -694,7 +721,9 @@ export function generateWorld(seed = DEFAULT_SEED, opts = {}) {
     building(534, 686, 3, 1, 'Barn', 0x8a5a3a, null, 'N');
     structure(498, 638, 'Compost Bin', 0x5a4a2a); structure(522, 654, 'Compost Bin', 0x5a4a2a);
     structure(504, 636, 'Produce Cart', 0x9a7a4a); structure(516, 654, 'Water Trough', 0x6a7a8a);
-    for (const [hx, hy] of [[476, 688], [520, 604], [500, 688]]) decor(hx, hy, 0xc9b26a, 6, 'rect'); // hay bales
+    // hay clusters AT the barn (plus one by the farmhouse) — working farms pile
+    // hay where the work is, not one bale per distant corner of the compound
+    for (const [hx, hy] of [[530, 684], [531, 687], [528, 686], [520, 607]]) decor(hx, hy, 0xc9b26a, 6, 'rect'); // hay bales
     friendlies.push({ name: 'Farmer Grubfinger', x: 538, y: 608, color: 0x8a6a4a, dialog: 'Potatoes and cabbage up top, onions and herbs below. Take your catch to the town range to cook it up.' });
     friendlies.push({ name: 'Goblin Farmhand', x: 494, y: 648, color: 0x7a7a4a, dialog: 'Rats keep raiding the rows, and mud bugs crawl up from the ditch. Bash a few for me?' });
     for (let i = 0; i < 4; i++) { const x = x0 + 4 + Math.floor(rng() * (x1 - x0 - 8)), y = y0 + 4 + Math.floor(rng() * (y1 - y0 - 8)); if (landish(x, y) && !occupied.has(okey(x, y))) enemySpawns.push({ type: 'rat', x, y, name: rng() < 0.5 ? 'Field Rat' : 'Forest Rat' }); }
@@ -768,10 +797,19 @@ export function generateWorld(seed = DEFAULT_SEED, opts = {}) {
     };
     for (let y = 4; y < WORLD_H - 4; y++) for (let x = 4; x < WORLD_W - 4; x++) {
       const i = idx(x, y);
-      if (!macro.forest[i] || terrain[i] !== T.GRASS || occupied.has(okey(x, y))) continue;
+      if (terrain[i] !== T.GRASS || occupied.has(okey(x, y))) continue;
+      const inMask = macro.forest[i];
+      // fringe feathering: density ramps down through the tree line (7x7 mask
+      // fraction) instead of stopping at a hard 13%->0% cliff, with sparse
+      // outliers a few tiles past the edge
+      let f = inMask ? 1 : 0;
+      const edge = macro.forest[idx(x + 3, y)] !== inMask || macro.forest[idx(x - 3, y)] !== inMask || macro.forest[idx(x, y + 3)] !== inMask || macro.forest[idx(x, y - 3)] !== inMask;
+      if (edge) { let n = 0; for (let b = -3; b <= 3; b++) for (let a = -3; a <= 3; a++) if (macro.forest[idx(x + a, y + b)]) n++; f = n / 49; }
+      if (!inMask && f <= 0.08) continue;
       if (vnoise(x / 30, y / 30, Sg + 4) > 0.66) continue; // clearings
       const r = hash2(x, y, Sr + 7);
-      if (r < 0.13) { resObj(x, y, kindFor(x, y)); continue; }
+      if (r < 0.13 * Math.min(1, f * 1.6)) { resObj(x, y, kindFor(x, y)); continue; }
+      if (!inMask) continue; // fringe gets sparse trees only, no deadfall/mushrooms
       if (r < 0.145) { decor(x, y, 0x4a3a28, 5, 'rect'); continue; }
       if (regionAt(x, y) === A.mushroom.name && r > 0.80 && vnoise(x / 9, y / 9, Sg + 9) > 0.42) {
         const h = hash2(x, y, Sr + 13);
@@ -809,8 +847,11 @@ if (!GEO2) {
     // where random trees between buildings read as clutter.
     const inTownWalls = (x, y) => x >= TB.x0 + townOff.dx && x <= TB.x1 + townOff.dx && y >= TB.y0 + townOff.dy && y <= TB.y1 + townOff.dy;
     scatter(A.settlement.x - 62, A.settlement.y - 10, 16, 'tree_oak', 4, (x, y) => openGround(x, y) && !inTownWalls(x, y));
-    scatter(A.settlement.x, A.settlement.y + 85, 55, 'tree', 20, openGround);
-    scatter(A.settlement.x - 70, A.settlement.y + 45, 60, 'tree', 14, openGround);
+    // keep the near-town copses off the farm district: no trees within 2 tiles
+    // of a FIELD plot (the scatter centre sits 14 tiles from the farmlands anchor)
+    const nearField = (x, y, fr) => { for (let b = -fr; b <= fr; b++) for (let a = -fr; a <= fr; a++) if (getT(x + a, y + b) === T.FIELD) return true; return false; };
+    scatter(A.settlement.x, A.settlement.y + 85, 55, 'tree', 20, (x, y) => openGround(x, y) && !nearField(x, y, 2));
+    scatter(A.settlement.x - 70, A.settlement.y + 45, 60, 'tree', 14, (x, y) => openGround(x, y) && !nearField(x, y, 2));
     scatter(A.settlement.x - 60, A.settlement.y + 10, 70, 'fish_shrimp', 3, null); scatter(A.settlement.x - 80, A.settlement.y + 15, 80, 'fish_trout', 2, null);
     scatter(A.willow.x, A.willow.y, 120, 'tree_willow', 16, (x, y) => openGround(x, y) && nearWater(x, y, 3));
     scatter(A.willow.x, A.willow.y, 120, 'fish_trout', 8, null); scatter(A.willow.x, A.willow.y + 10, 120, 'fish_shrimp', 5, null);
@@ -898,7 +939,10 @@ if (!GEO2) {
   (function featherBiomeEdges() {
     // Forest fringes: sparse scattered trees + bushes fading OUT from each wood
     // (dense forest -> scattered trees -> bushes -> grass).
-    for (const f of FORESTS) polyFeather(f.poly, 26, (x, y, depth) => {
+    // LEGACY polygons only — under GEO2 the forests live elsewhere (relocated
+    // anchors) and this would paint phantom fringes on empty grass;
+    // forestsGeo2 does its own mask-based feathering.
+    if (!GEO2) for (const f of FORESTS) polyFeather(f.poly, 26, (x, y, depth) => {
       if (depth > 3 || getT(x, y) !== T.GRASS || occupied.has(okey(x, y))) return;
       const outside = -depth; // 0 at the tree-line .. 26 tiles out
       const p = 0.07 * Math.max(0, 1 - outside / 24);
@@ -931,7 +975,10 @@ if (!GEO2) {
   // ---- POLISH PASS 3: break geometric silhouettes ----
   // In-place edge sculpting so nothing reads as a circle / polygon / blob.
   // Cores are preserved; only edges are carved and satellites added.
-  (function breakGeometry() {
+  // LEGACY authored geometry (fixed lake/bog/highland coords) — under GEO2
+  // those features are relocated, so this pass would sculpt phantom coves and
+  // swamp fingers into plain grass. Gate it.
+  if (!GEO2) (function breakGeometry() {
     const soft = (x, y) => { const c = getT(x, y); return c === T.GRASS || c === T.SAND || c === T.WATER || c === T.SWAMP; };
     // --- Grublake: peninsulas + coves + satellite ponds (kills the round look) ---
     const lc = { x: 735, y: 495 };
@@ -1214,6 +1261,18 @@ if (!GEO2) {
 
     function buildScene(e, cx, cy) {
       const id = e.id, k = e.kind;
+      // road furniture belongs BESIDE roads: a milestone in trackless wilderness
+      // reads as a misplaced object. Snap to the nearest road (or skip).
+      if (/milestone|signpost/.test(id)) {
+        const rd = nearestRoad(cx, cy, 44); if (!rd) return;
+        let fx = -1, fy = -1;
+        for (let rr2 = 1; rr2 <= 3 && fx < 0; rr2++) for (const [a2, b2] of [[rr2, 0], [-rr2, 0], [0, rr2], [0, -rr2]]) {
+          const nx2 = rd[0] + a2, ny2 = rd[1] + b2;
+          if (inB(nx2, ny2) && getT(nx2, ny2) === T.GRASS && !occupied.has(okey(nx2, ny2))) { fx = nx2; fy = ny2; break; }
+        }
+        if (fx < 0) return;
+        cx = fx; cy = fy;
+      }
       if (k === 'oddity') return sNatural(cx, cy, e);
       if (k === 'gather') return sGrove(cx, cy, e);
       if (k === 'treasure') return sCache(cx, cy, e);
@@ -1487,6 +1546,10 @@ if (!GEO2) {
   // sit on a raised plinth that the blur passes let fall away around them).
   const elevOverride = new Float32Array(WORLD_W * WORLD_H).fill(-1);
   (function applyMapPatches() {
+    // All patch ops are authored ABSOLUTE against the GEO2 default-seed world
+    // (relocated town frame). Under ?geo2=0 or a changed seed they'd strand
+    // 30/57 tiles off target and embed in legacy walls — skip them entirely.
+    if (!GEO2 || seed !== DEFAULT_SEED) return;
     const list = (GameData.mapPatches || []);
     for (const patch of list) {
       for (const op of patch.ops || []) {
@@ -1501,8 +1564,17 @@ if (!GEO2) {
             const [x0, y0, x1, y1] = op.rect; const types = new Set(op.types || ['decor', 'resource', 'structure']);
             for (let i = objects.length - 1; i >= 0; i--) { const o = objects[i]; if (o.x >= x0 && o.x <= x1 && o.y >= y0 && o.y <= y1 && types.has(o.type)) { objectAt.delete(okey(o.x, o.y)); occupied.delete(okey(o.x, o.y)); objects.splice(i, 1); } }
           } else if (op.op === 'object' && op.label) {
-            structure(op.x, op.y, op.label, op.color || 0xcfc0a0, op.skill || null, op.blocking !== false);
-            if (op.examine) { const o = objectAt.get(okey(op.x, op.y)); if (o) { o.examine = op.examine; o.wild = op.wild || 'explore'; } }
+            // authored scenes should not silently lose props to occupancy —
+            // nudge one tile to keep the vignette grouped, warn if still stuck
+            let px2 = op.x, py2 = op.y, placed2 = structure(px2, py2, op.label, op.color || 0xcfc0a0, op.skill || null, op.blocking !== false);
+            if (!placed2) for (const [a2, b2] of [[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [-1, -1], [1, -1], [-1, 1]]) {
+              const t2 = getT(op.x + a2, op.y + b2);
+              if (t2 !== T.GRASS && t2 !== T.DIRT && t2 !== T.FLOOR && t2 !== T.SAND) continue;
+              placed2 = structure(op.x + a2, op.y + b2, op.label, op.color || 0xcfc0a0, op.skill || null, op.blocking !== false);
+              if (placed2) { px2 = op.x + a2; py2 = op.y + b2; break; }
+            }
+            if (!placed2) console.warn('[map] patch object blocked', patch.id, op.label, op.x, op.y);
+            if (op.examine) { const o = objectAt.get(okey(px2, py2)); if (o) { o.examine = op.examine; o.wild = op.wild || 'explore'; } }
           } else if (op.op === 'decor') {
             // authored patch decor may sit ON roads deliberately (processional
             // carpets, market rugs, gate banners) — bypass decor()'s ROAD guard
