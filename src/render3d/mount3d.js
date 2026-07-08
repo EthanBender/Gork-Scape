@@ -360,9 +360,23 @@ function _mount(Game) {
   loadBody('/r3d/models/opt/snake.glb', 'serpent', 0.55, false);
   loadBody('/r3d/models/opt/slime.glb', 'blob', 0.6, false);
   loadBody('/r3d/models/opt/npc_goblin.glb', 'humanoid', 1.5, true);
-  function makeActor(bodyType, skin) {
+  // species-accurate bodies: a rat shouldn't wear the wolf mesh. Name-keyed,
+  // checked before the bodyType fallback; missing files just fall through.
+  loadBody('/r3d/models/opt/rat.glb', 'rat', 0.55, false);
+  loadBody('/r3d/models/opt/boar.glb', 'boar', 0.8, false);
+  loadBody('/r3d/models/opt/frog.glb', 'frog', 0.45, false);
+  loadBody('/r3d/models/opt/crab.glb', 'crab', 0.5, false);
+  const SPECIES_GLB = [
+    [/\brat\b/i, 'rat'],
+    [/boar|\bhog\b|\bpig\b/i, 'boar'],
+    [/frog|toad/i, 'frog'],
+    [/crab/i, 'crab'],
+  ];
+  function makeActor(bodyType, skin, name = '') {
     const g = new THREE.Group();
-    const real = bodyGLB[bodyType];
+    let real = null;
+    for (const [re, key] of SPECIES_GLB) { if (re.test(name) && bodyGLB[key]) { real = bodyGLB[key]; break; } }
+    real = real || bodyGLB[bodyType];
     if (real) { const me = new THREE.Mesh(real.geo, real.mat || matFor(skin)); me.position.y = real.yOff; g.add(me); return g; }
     const m = matFor(skin); const dark = matFor((skin >> 1) & 0x7f7f7f);
     const add = (geo, mat, x, y, z, sx = 1, sy = 1, sz = 1) => { const me = new THREE.Mesh(geo, mat); me.position.set(x, y, z); me.scale.set(sx, sy, sz); g.add(me); return me; };
@@ -454,7 +468,7 @@ function _mount(Game) {
       let st = null; try { st = avatarStateFor(n, false, time); } catch (_) { continue; }
       seen.add(n);
       let a = actorPool.get(n);
-      if (!a) { a = { g: makeActor(st.bodyType, st.skin), lastX: n.px / TILE_SIZE, lastZ: n.py / TILE_SIZE, yaw: 0 }; a.g.userData.npc = n; scene.add(a.g); actorPool.set(n, a); }
+      if (!a) { a = { g: makeActor(st.bodyType, st.skin, n.name || ''), lastX: n.px / TILE_SIZE, lastZ: n.py / TILE_SIZE, yaw: 0 }; a.g.userData.npc = n; scene.add(a.g); actorPool.set(n, a); }
       const ax = n.px / TILE_SIZE, az2 = n.py / TILE_SIZE, ay = heightAt(ax, az2);
       const sizeMul = Math.max(0.35, st.scale / AV_SCALE);
       a.g.scale.setScalar(sizeMul);
