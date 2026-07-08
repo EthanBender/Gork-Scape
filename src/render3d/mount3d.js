@@ -117,7 +117,7 @@ function _mount(Game) {
         g2.globalAlpha = 0.5; g2.fillStyle = shade(ci, r < 0.5 ? 0.8 : 1.14); rc(px + (3 + (r * 24 | 0)) * S, py + (3 + ((r * 613) % 24)) * S, 3.4 * S, 3.4 * S); }
       } else if (WATER.has(id)) { g2.globalAlpha = 0.28; g2.fillStyle = shade(ci, 1.4); rc(px + 3 * S, py + 13 * S, 26 * S, 1.8 * S);
       } else if (id === 8) { g2.globalAlpha = 0.7; g2.fillStyle = shade(ci, 0.8); for (let fy = 4; fy < 31; fy += 6) rc(px, py + fy * S, TSPX + 1, 1.3 * S);
-      } else if (id === 9) { g2.globalAlpha = 0.28; g2.fillStyle = shade(ci, 1.08); rc(px + 2 * S, py + 2 * S, 28 * S, 28 * S); g2.globalAlpha = 0.6; g2.fillStyle = shade(ci, 0.72); rc(px, py, TSPX + 1, 1.3 * S); rc(px, py, 1.3 * S, TSPX + 1);
+      } else if (id === 9) { g2.globalAlpha = 0.22; g2.fillStyle = shade(ci, 1.1); rc(px + 2 * S, py + 2 * S, 28 * S, 28 * S); g2.globalAlpha = 0.28; g2.fillStyle = shade(ci, 0.9); rc(px, py, TSPX + 1, 1.3 * S); rc(px, py, 1.3 * S, TSPX + 1);   // clean stone foundation pad (soft seam, not a dark bevel)
       } else if (id === 10) { g2.globalAlpha = 1; g2.fillStyle = shade(ci, 0.62); rc(px, py, TSPX + 1, TSPX + 1); g2.globalAlpha = 0.85; g2.fillStyle = shade(ci, 1.15); rc(px + 2 * S, py + 2 * S, 28 * S, 28 * S); }
     }
     g2.globalAlpha = 1;
@@ -383,6 +383,8 @@ function _mount(Game) {
     // wayfinding vocabulary: shrines/milestones/boards read as upright markers,
     // restoring the road-rhythm the boxes erased
     [/Shrine|Idol|Totem|Obelisk|Milestone|Standing Stone|Boundary Stone|Prayer Stone|\bBoard\b|\bPost\b|Scarecrow/i, 'signG', 1, 'cardinal'],
+    [/Grave|Tomb|Headstone/i, 'signG', 0.85, 'cardinal'],   // gravestone = upright slab
+    [/Sack|Bale|\bBin\b|Compost/i, 'crateG', 0.6],          // farm sacks / bales / bins
     // gardens/meadows/farm nodes: flat vegetation, NOT architecture
     [/\b(Patch|Garden|Meadow|Planter|Bed)\b/i, 'bushG', 0.55],
     // animal homes: a half-buried earth mound, not a cabin
