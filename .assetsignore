@@ -1,0 +1,10 @@
+# Files wrangler must NOT upload as static assets.
+# THE FIX (2026-07-08): a fresh clone packs the whole ~44MB history into one
+# pack file that exceeds Cloudflare's 25 MiB per-asset limit — wrangler was
+# trying to upload .git/objects/pack/*.pack and every deploy failed ("Asset too
+# large"). None of these dirs are served by the game.
+.git/
+node_modules/
+scripts/
+server/
+keystone_inbox/
