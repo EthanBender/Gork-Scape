@@ -237,8 +237,10 @@ function _mount(Game) {
   // packs read as ground clutter, not full furniture dumped on the road.
   // fourth value = facing: 'row' = uniform (market aisles read aligned),
   // 'cardinal' = snap to N/S/E/W (grid-town buildings), default = free random.
+  // fifth value = tint multiplied over the texture: the barrel's pale rim +
+  // dark open top reads as an EYEBALL from the game camera — warm it to wood.
   const STRUCT_MODELS = [
-    [/Barrel/i, 'barrelG', 0.75],
+    [/Barrel/i, 'barrelG', 0.75, null, 0xb9885a],
     [/Campfire|Fire/i, 'campfireG', 1],
     [/Anvil|Furnace|Forge|Smith/i, 'anvilG', 1, 'cardinal'],
     [/Well\b/i, 'wellG', 1, 'cardinal'],
@@ -303,11 +305,11 @@ function _mount(Game) {
       }
       if (o.type === 'structure') {
         let placed = false;
-        for (const [re, kind, ms, face] of STRUCT_MODELS) {
+        for (const [re, kind, ms, face, tint] of STRUCT_MODELS) {
           if (re.test(lbl) && props[kind]) {
             const s = ms * (0.92 + r * 0.16);
             const rr = face === 'row' ? 0 : face === 'cardinal' ? Math.round(rot / (Math.PI / 2)) * (Math.PI / 2) : rot;
-            put(kind, x, z, y, s, s, s, 0xffffff, rr); placed = true; break;
+            put(kind, x, z, y, s, s, s, tint || 0xffffff, rr); placed = true; break;
           }
         }
         if (placed) continue;
