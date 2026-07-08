@@ -715,6 +715,14 @@ function _mount(Game) {
         // The walk clip carries ROOT MOTION — without this the model drifts off its
         // anchor (the goblin ends up in a screen corner). Walk in place, always.
         if (animRoot) { animRoot.position.x = 0; animRoot.position.z = 0; }
+        // combat feedback (same motion language as NPCs): lunge toward facing on
+        // attack, recoil on hit — driven by the sim's anim/phase.
+        if (st && (st.anim === 'attack' || st.anim === 'hit')) {
+          const ph = Math.min(1, st.phase || 0);
+          const amt = st.anim === 'attack' ? Math.sin(Math.PI * ph) * 0.35 : -Math.sin(Math.PI * ph) * 0.2;
+          goblin.position.x += Math.sin(yaw) * amt;
+          goblin.position.z += Math.cos(yaw) * amt;
+        }
         // destination ring (gently pulsing) + path dots from the live pathfinder state
         const tt = p.travelTarget;
         if (tt) { destMarker.visible = true;
