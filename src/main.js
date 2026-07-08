@@ -110,16 +110,16 @@ const ROT_STEP = Math.PI / 12; // 15° per key tap / wheel notch
 let targetZoom = 1;            // smoothed-toward values; main cam eases to these
 let targetRot = 0;            // radians, accumulates (not wrapped)
 const csCamPx = { x: null, y: null }; // [economy lane] eased cutscene camera position
-// [r3d] real-3D render mode, opt-in via ?r3d=1. Read ONCE. When off, the two guarded
-// hooks below are dead code and the 2D path is byte-identical (three.js never loads).
-// THE FLIP (owner-approved): 3D is the DEFAULT on desktop (fine pointer); phones stay
-// 2D until the mobile fps gate clears. ?r3d=1 forces 3D anywhere; ?r2d=1 forces the
+// [r3d] real-3D render mode. Read ONCE. When off, the two guarded hooks below are
+// dead code and the 2D path is byte-identical (three.js never loads).
+// THE FULL FLIP: 3D is the DEFAULT everywhere — desktop (owner-approved 2026-07-07)
+// and phones (owner's fps gate cleared 2026-07-08: 35fps on-device; touch controls
+// + reduced pixel ratio already ship for coarse pointers). ?r2d=1 forces the
 // classic 2D renderer anywhere. Render-only either way — the sim never changes.
 const R3D = (() => {
   const s = typeof location !== 'undefined' ? location.search : '';
   if (/[?&]r2d=1/.test(s)) return false;
-  if (/[?&]r3d=1/.test(s)) return true;
-  return typeof matchMedia !== 'undefined' && !matchMedia('(pointer: coarse)').matches;
+  return true;
 })();
 
 // ---------------------------------------------------------------- world setup
