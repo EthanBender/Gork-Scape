@@ -1549,7 +1549,8 @@ if (!GEO2) {
     // All patch ops are authored ABSOLUTE against the GEO2 default-seed world
     // (relocated town frame). Under ?geo2=0 or a changed seed they'd strand
     // 30/57 tiles off target and embed in legacy walls — skip them entirely.
-    if (!GEO2 || seed !== DEFAULT_SEED) return;
+    // opts.noPatches gives tooling a clean baseline world for comparison.
+    if (!GEO2 || seed !== DEFAULT_SEED || opts.noPatches) return;
     const list = (GameData.mapPatches || []);
     for (const patch of list) {
       for (const op of patch.ops || []) {
