@@ -30,9 +30,9 @@ export function mount3d(Game) {
 }
 
 function _mount(Game) {
-  const world = Game && Game.world;
+  let world = Game && Game.world;
   if (!world || !world.terrain || !world.elevation) { console.error('[r3d] no world data'); return; }
-  const W = world.W, H = world.H, ter = world.terrain, elev = world.elevation;
+  let W = world.W, H = world.H, ter = world.terrain, elev = world.elevation;
   const colors = {};
   for (let id = 0; id < TERRAIN_DEFS.length; id++) {
     const c = TERRAIN_DEFS[id] && TERRAIN_DEFS[id].color;
@@ -80,8 +80,12 @@ function _mount(Game) {
     const c = indoor ? [205, 180, 150] : [255, 255, 255];   // torch-lit interiors / clear day
     tintC.setRGB(c[0] / 255, c[1] / 255, c[2] / 255);
     tint2.copy(tintC).multiply(tintC);                 // squared for the LIGHTS: tonemapping washes a single multiply out
-    scene.background.copy(BASE.sky).multiply(tintC);   // sky keeps the softer single tint
-    scene.fog.color.copy(BASE.fog).multiply(tintC);
+    if (indoor) {                                       // beyond a cave's edge is DARKNESS, not blue sky
+      scene.background.set(0x141008); scene.fog.color.set(0x1a140c);
+    } else {
+      scene.background.copy(BASE.sky).multiply(tintC);  // sky keeps the softer single tint
+      scene.fog.color.copy(BASE.fog).multiply(tintC);
+    }
     sun.color.copy(BASE.sun).multiply(tint2);
     hemi.color.copy(BASE.hemiSky).multiply(tint2); hemi.groundColor.copy(BASE.hemiGnd).multiply(tint2);
     amb.color.copy(BASE.amb).multiply(tint2);
@@ -809,6 +813,16 @@ function _mount(Game) {
   let frames = 0, lastFps = performance.now(), lastErr = '';
   function step() {
     try {
+      // WORLD SWAP (enter/exit a dungeon): main.js replaces Game.world with an
+      // inner world (same contract: W/H/terrain/elevation/objectsByChunk).
+      // Rebind and rebuild everything, or 3D keeps rendering the stale
+      // overworld under the player's dungeon coordinates.
+      if (Game.world && Game.world !== world && Game.world.terrain && Game.world.elevation) {
+        world = Game.world; W = world.W; H = world.H; ter = world.terrain; elev = world.elevation;
+        winCX = -1e9; winCY = -1e9;                       // force terrain window + props rebuild
+        for (const [, a] of actorPool) scene.remove(a.g); actorPool.clear();
+        lastIndoor = null;                                 // re-evaluate interior lighting
+      }
       const p = Game.player;
       const wx = p ? p.px / TILE_SIZE : winCX, wz = p ? p.py / TILE_SIZE : winCY;
       const wy = heightAt(wx, wz);
