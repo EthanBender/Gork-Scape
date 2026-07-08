@@ -2701,30 +2701,14 @@ function updateGoalChip() {
   }
 }
 
-// The daylight curve: hour -> a multiply colour. Piecewise: night 21-05 (moonlit
-// blue), dawn 05-08 (warming gold), day 08-18 (clear), dusk 18-21 (amber fade).
-let lastDaylightMin = -1;
+// Day/night SCRAPPED (owner call 2026-07-08: "just scrap day night, day is
+// fine") — the overworld is permanent clear daylight. Interiors keep their
+// steady torch-lit warmth; that's indoor ambiance, not a time-of-day.
 function updateDaylight() {
   const dl = document.getElementById('daylight-overlay');
-  if (!dl || !Game.worldClock) return;
-  const t = Game.worldClock.timeOfDay();
-  const minute = (t * 24 * 60) | 0;
-  if (minute === lastDaylightMin) return;   // colour shifts once a game-minute
-  lastDaylightMin = minute;
-  const h = t * 24;
-  const lerp = (a, b, k) => a + (b - a) * Math.max(0, Math.min(1, k));
-  const NIGHT = [125, 135, 190], DAY = [255, 255, 255], DAWN = [255, 216, 165], DUSK = [255, 190, 140];
-  let c;
-  if (h < 5) c = NIGHT;
-  else if (h < 6.5) c = NIGHT.map((v, i) => lerp(v, DAWN[i], (h - 5) / 1.5));
-  else if (h < 8) c = DAWN.map((v, i) => lerp(v, DAY[i], (h - 6.5) / 1.5));
-  else if (h < 18) c = DAY;
-  else if (h < 19.5) c = DAY.map((v, i) => lerp(v, DUSK[i], (h - 18) / 1.5));
-  else if (h < 21) c = DUSK.map((v, i) => lerp(v, NIGHT[i], (h - 19.5) / 1.5));
-  else c = NIGHT;
-  dl.style.background = `rgb(${c[0] | 0},${c[1] | 0},${c[2] | 0})`;
-  // interiors are torch-lit — steady warm dim regardless of the sky
-  if (Game.world && Game.world.interior) dl.style.background = 'rgb(205,180,150)';
+  if (!dl) return;
+  const indoor = Game.world && Game.world.interior;
+  dl.style.background = indoor ? 'rgb(205,180,150)' : 'rgb(255,255,255)';
 }
 
 function updateLabels() {

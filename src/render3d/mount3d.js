@@ -65,31 +65,19 @@ function _mount(Game) {
   const hemi = new THREE.HemisphereLight(0xdcecff, 0x54633a, 1.05); scene.add(hemi);
   const amb = new THREE.AmbientLight(0xffffff, 0.35); scene.add(amb);
 
-  // ---------- day/night in real light: the 2D game's daylight film (#daylight-overlay,
-  // a DOM multiply layer) is hidden while 3D runs; instead the SAME worldClock curve
-  // multiplies the 3D sky/fog/sun/ambient — dawn gold, clear noon, amber dusk, moonlit
-  // blue night — with real shading instead of a flat grey wash. ----------
+  // Day/night SCRAPPED (owner call 2026-07-08: "just scrap day night, day is
+  // fine") — permanent clear daylight outdoors; interiors keep a steady warm
+  // torch tint. The 2D daylight film stays hidden while 3D runs.
   const dlFilm = document.getElementById('daylight-overlay');
   if (dlFilm) dlFilm.style.display = 'none';
   const BASE = { sky: new THREE.Color('#bcd8e8'), fog: new THREE.Color('#a9c7d6'),
     sun: new THREE.Color(0xfff4e0), hemiSky: new THREE.Color(0xdcecff), hemiGnd: new THREE.Color(0x54633a), amb: new THREE.Color(0xffffff) };
   const tintC = new THREE.Color(), tint2 = new THREE.Color();
-  let lastMin = -1;
+  let lastIndoor = null;
   function daylight3d() {
-    const wc = Game.worldClock; if (!wc || !wc.timeOfDay) return;
-    let t; try { t = wc.timeOfDay(); } catch (_) { return; }
-    const minute = (t * 24 * 60) | 0; if (minute === lastMin) return; lastMin = minute;
-    const h = t * 24, lerp = (a, b, k) => a + (b - a) * Math.max(0, Math.min(1, k));
-    const NIGHT = [125, 135, 190], DAY = [255, 255, 255], DAWN = [255, 216, 165], DUSK = [255, 190, 140];
-    let c;
-    if (h < 5) c = NIGHT;
-    else if (h < 6.5) c = NIGHT.map((v, i) => lerp(v, DAWN[i], (h - 5) / 1.5));
-    else if (h < 8) c = DAWN.map((v, i) => lerp(v, DAY[i], (h - 6.5) / 1.5));
-    else if (h < 18) c = DAY;
-    else if (h < 19.5) c = DAY.map((v, i) => lerp(v, DUSK[i], (h - 18) / 1.5));
-    else if (h < 21) c = DUSK.map((v, i) => lerp(v, NIGHT[i], (h - 19.5) / 1.5));
-    else c = NIGHT;
-    if (Game.world && Game.world.interior) c = [205, 180, 150];   // torch-lit interiors
+    const indoor = !!(Game.world && Game.world.interior);
+    if (indoor === lastIndoor) return; lastIndoor = indoor;
+    const c = indoor ? [205, 180, 150] : [255, 255, 255];   // torch-lit interiors / clear day
     tintC.setRGB(c[0] / 255, c[1] / 255, c[2] / 255);
     tint2.copy(tintC).multiply(tintC);                 // squared for the LIGHTS: tonemapping washes a single multiply out
     scene.background.copy(BASE.sky).multiply(tintC);   // sky keeps the softer single tint
@@ -173,6 +161,26 @@ function _mount(Game) {
       // NOTE: the meshopt/optimized goblin breaks its rig (scale tracks + bind units) —
       // player model stays the original GLB until the skinned-compression pass is solved.
       mixer = new THREE.AnimationMixer(m); walkAction = mixer.clipAction(clip); walkAction.play();
+    }
+    // Re-parent the gear sockets from the static group offsets onto the actual
+    // hand bones so weapons/shields ride the walk swing instead of floating.
+    // Socket scale compensates the bone chain's world scale so gear builders
+    // keep working in world units.
+    m.updateMatrixWorld(true);
+    const ws = new THREE.Vector3();
+    const rh = m.getObjectByName('RightHand'), lf = m.getObjectByName('LeftForeArm') || m.getObjectByName('LeftHand');
+    if (rh) {
+      rh.add(handSocket);
+      rh.getWorldScale(ws); handSocket.scale.setScalar(1 / (ws.x || 1));
+      // +Y blade along the fingers, tilted back off vertical so an idle sword
+      // rests down-and-forward beside the leg instead of skewering it
+      handSocket.position.set(0, 0.02, 0); handSocket.rotation.set(Math.PI / 2 - 0.55, 0, 0.18);
+    }
+    if (lf) {
+      lf.add(shieldSocket);
+      lf.getWorldScale(ws); shieldSocket.scale.setScalar(1 / (ws.x || 1));
+      // strapped to the OUTSIDE of the forearm, face outward so it reads from the camera
+      shieldSocket.position.set(0.16, 0.08, 0); shieldSocket.rotation.set(0, Math.PI / 2, Math.PI / 2);
     }
   }, undefined, e => console.error('[r3d] goblin load failed', e));
 
@@ -501,10 +509,43 @@ function _mount(Game) {
   const shieldSocket = new THREE.Group(); shieldSocket.position.set(-0.62, 1.0, 0.28); shieldSocket.rotation.set(0, 0.25, 0); goblin.add(shieldSocket);
   let gearKey = null;
   const wood = 0x6b4a2a, darkWood = 0x54381e;
+  // Real weapon models (textured Meshy statics) for the kinds we have; the
+  // procedural clay shapes below stay the fallback for everything else.
+  // Normalized: grip end at origin, blade along +Y, unit length (scaled per hint).
+  const weaponGLB = {};
+  for (const [kind, url] of [['sword', '/r3d/models/weapon_sword.glb'], ['pick', '/r3d/models/weapon_pickaxe.glb']]) {
+    const ld = new GLTFLoader(); ld.setMeshoptDecoder(MeshoptDecoder);
+    ld.load(url, gl => {
+      let best = null; gl.scene.updateMatrixWorld(true);
+      gl.scene.traverse(o => { if (o.isMesh && (!best || o.geometry.attributes.position.count > best.geometry.attributes.position.count)) best = o; });
+      if (!best) return;
+      const geo = best.geometry.clone(); geo.applyMatrix4(best.matrixWorld);
+      geo.computeBoundingBox(); let bb = geo.boundingBox; const size = new THREE.Vector3(); bb.getSize(size);
+      if (size.x >= size.y && size.x >= size.z) geo.rotateZ(-Math.PI / 2);        // longest axis -> +Y
+      else if (size.z >= size.y && size.z >= size.x) geo.rotateX(Math.PI / 2);
+      geo.computeBoundingBox(); bb = geo.boundingBox; const s2 = new THREE.Vector3(); bb.getSize(s2);
+      const c = new THREE.Vector3(); bb.getCenter(c);
+      geo.translate(-c.x, -bb.min.y, -c.z);
+      geo.scale(1 / (s2.y || 1), 1 / (s2.y || 1), 1 / (s2.y || 1));
+      weaponGLB[kind] = { geo, mat: best.material };
+      gearKey = null;                                   // rebuild so equipped gear upgrades to the model
+    }, undefined, () => {});                            // missing model = procedural fallback, no noise
+  }
   function buildWeapon(hint) {
     const g = new THREE.Group();
     if (!hint || hint.kind === 'fist' || !hint.len) return g;
     const L = Math.max(0.5, hint.len / 12);                    // 2D px len -> world units
+    const real = weaponGLB[hint.kind];
+    if (real) {
+      // tint the texture toward the item's metal so a bronze sword reads BRONZE
+      // (the raw Meshy steel texture is near-black at gameplay zoom)
+      const mat = real.mat.clone(); mat.color = new THREE.Color(hint.color).lerp(new THREE.Color(0xffffff), 0.25);
+      const me = new THREE.Mesh(real.geo, mat);
+      // stylized-oversize: longer than life and extra-chunky in cross-section
+      // so the weapon reads at gameplay zoom, not just in close-ups
+      me.scale.set(L * 2.2, L * 1.5, L * 2.2); me.position.y = -0.16 * L;
+      g.add(me); return g;
+    }
     const mk = (geo, color, y, rx = 0, rz = 0, x = 0, z = 0) => { const m = new THREE.Mesh(geo, matFor(color)); m.position.set(x, y, z); m.rotation.set(rx, 0, rz); g.add(m); return m; };
     const grip = () => mk(new THREE.CylinderGeometry(0.045, 0.055, 0.3, 6), darkWood, 0);
     switch (hint.kind) {
@@ -587,7 +628,7 @@ function _mount(Game) {
   // ----- mouse: left click = action, middle-drag = orbit, wheel = zoom, right = menu
   cv.addEventListener('pointerdown', (e) => {
     if (e.pointerType === 'touch') return;                   // touch has its own path below
-    if (e.button === 1) { e.preventDefault(); midDrag = { x: e.clientX, y: e.clientY }; cv.setPointerCapture(e.pointerId); return; }
+    if (e.button === 1) { e.preventDefault(); midDrag = { x: e.clientX, y: e.clientY }; try { cv.setPointerCapture(e.pointerId); } catch (_) {} return; }
     downAt = { x: e.clientX, y: e.clientY };
   });
   cv.addEventListener('pointermove', (e) => {
