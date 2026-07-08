@@ -498,7 +498,7 @@ function _mount(Game) {
   const camTarget = new THREE.Vector3();
   let inited = false;
   let lastWX = 0, lastWZ = 0, yaw = 0, targetYaw = 0;       // movement-based facing state
-  function onResize() { fitCanvas(); camera.aspect = vw / vh; camera.updateProjectionMatrix(); }
+  function onResize() { fitCanvas(); fitMinimap(); camera.aspect = vw / vh; camera.updateProjectionMatrix(); }
   addEventListener('resize', onResize);
   setTimeout(onResize, 500); setTimeout(onResize, 2500);   // layout settles after login/HUD mounts
 
@@ -596,6 +596,49 @@ function _mount(Game) {
   };
   cv.addEventListener('pointerup', endTouch); cv.addEventListener('pointercancel', endTouch);
 
+  // ---------- minimap for 3D players (the 2D one lives on the covered Phaser canvas):
+  // small north-up DOM canvas, terrain colours around the player + NPC/player dots +
+  // facing arrow; click-to-walk via the same tile routing. ----------
+  const MM = 148, MSPT = 3, MTILES = MM / MSPT;               // 148px, 3px/tile ≈ 49 tiles across
+  const mm = document.createElement('canvas'); mm.width = MM; mm.height = MM; mm.id = 'r3d-minimap';
+  mm.style.cssText = 'position:fixed;z-index:6;border:2px solid #3a2f22;border-radius:10px;box-shadow:0 2px 8px #0008;cursor:pointer;';
+  document.body.appendChild(mm);
+  const mmCtx = mm.getContext('2d');
+  function fitMinimap() { const r = cv.getBoundingClientRect(); mm.style.left = (r.left + r.width - MM - 12) + 'px'; mm.style.top = (r.top + 64) + 'px'; }
+  let mmLast = 0;
+  function drawMinimap3d() {
+    const now = performance.now(); if (now - mmLast < 150) return; mmLast = now;
+    const p = Game.player; if (!p) return;
+    const ctx2 = mmCtx, ptx = p.px / TILE_SIZE, pty = p.py / TILE_SIZE;
+    const x0 = ptx - MTILES / 2, y0 = pty - MTILES / 2;
+    for (let j = 0; j < MTILES; j++) for (let i = 0; i < MTILES; i++) {
+      const tx = (x0 + i) | 0, ty = (y0 + j) | 0;
+      ctx2.fillStyle = (tx < 0 || ty < 0 || tx >= W || ty >= H) ? '#181410' : (colors[ter[ty * W + tx]] || '#4a7c3a');
+      ctx2.fillRect(i * MSPT, j * MSPT, MSPT, MSPT);
+    }
+    // npc + player dots
+    for (const n of (Game.activeNpcs || [])) {
+      if (!n || n.dead) continue;
+      const mx = (n.px / TILE_SIZE - x0) * MSPT, my = (n.py / TILE_SIZE - y0) * MSPT;
+      if (mx < 0 || my < 0 || mx > MM || my > MM) continue;
+      ctx2.fillStyle = n.type === 'player' ? '#9fd4ff' : n.type === 'elder' ? '#ffe97a' : '#ff5a5a';
+      ctx2.fillRect(mx - 1.5, my - 1.5, 3, 3);
+    }
+    // player arrow (faces the goblin's yaw)
+    const cx2 = MM / 2, cy2 = MM / 2;
+    ctx2.save(); ctx2.translate(cx2, cy2); ctx2.rotate(Math.atan2(Math.sin(yaw), Math.cos(yaw)));
+    ctx2.fillStyle = '#ffffff'; ctx2.beginPath(); ctx2.moveTo(0, 5); ctx2.lineTo(-3.5, -4); ctx2.lineTo(3.5, -4); ctx2.closePath(); ctx2.fill();
+    ctx2.restore();
+    // N marker
+    ctx2.fillStyle = '#ffe97a'; ctx2.font = 'bold 11px monospace'; ctx2.fillText('N', MM / 2 - 3, 12);
+  }
+  mm.addEventListener('pointerup', (e) => {
+    const r = mm.getBoundingClientRect(), p = Game.player; if (!p) return;
+    const tx = Math.floor(p.px / TILE_SIZE - MTILES / 2 + (e.clientX - r.left) / MSPT);
+    const ty = Math.floor(p.py / TILE_SIZE - MTILES / 2 + (e.clientY - r.top) / MSPT);
+    try { if (Game._clickWorldTile) Game._clickWorldTile(tx, ty); } catch (_) {}
+  });
+
   // ---------- on-screen status chip: never fly blind — success shows fps, failure shows WHY ----------
   const chip = document.createElement('div');
   chip.id = 'r3d-status';
@@ -671,6 +714,7 @@ function _mount(Game) {
         camTarget.z + Math.cos(az) * Math.sin(pol) * R);
       camera.lookAt(camTarget);
       updateLabels3d();                                        // names + HP bars over actors
+      drawMinimap3d();
       renderer.render(scene, camera);
       frames++; const t = performance.now();
       if (t - lastFps >= 500) { chip.textContent = '3D α · ' + Math.round(frames * 1000 / (t - lastFps)) + ' fps · ' + npcShown + ' npcs' + (p ? '' : ' · waiting for player…'); frames = 0; lastFps = t; }
@@ -683,7 +727,7 @@ function _mount(Game) {
 
   window.__r3d = {
     frame() {},   // legacy hook from update() — self-driving loop renders now; kept so the guarded call is harmless
-    dispose() { try { if (dlFilm) dlFilm.style.display = ''; renderer.setAnimationLoop(null); renderer.dispose(); cv.remove(); chip.remove(); labelLayer.remove(); window.__r3d = null; } catch (_) {} }
+    dispose() { try { if (dlFilm) dlFilm.style.display = ''; renderer.setAnimationLoop(null); renderer.dispose(); cv.remove(); chip.remove(); labelLayer.remove(); mm.remove(); window.__r3d = null; } catch (_) {} }
   };
 
   const px0 = (Game.player && Game.player.px / TILE_SIZE | 0) || (W >> 1);
