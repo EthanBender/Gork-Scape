@@ -74,6 +74,9 @@ function _mount(Game) {
   const sun = new THREE.DirectionalLight(0xfff2d8, 2.15); sun.position.set(-70, 120, -30); scene.add(sun);
   const hemi = new THREE.HemisphereLight(0xdcecff, 0x5a6a3e, 1.0); scene.add(hemi);
   const amb = new THREE.AmbientLight(0xffffff, 0.32); scene.add(amb);
+  // cool back-rim light (no shadow) opposite the sun — edge separation so the
+  // low-poly forms and characters pop off the ground instead of reading flat
+  const rim = new THREE.DirectionalLight(0xbcd0ff, 0.55); rim.position.set(70, 55, 60); scene.add(rim);
   // shadow frustum follows the player each frame (see updateSunShadow); the light
   // DIRECTION stays fixed so shadows never swim as you walk.
   const SUN_DIR = new THREE.Vector3(-70, 120, -30).normalize();
