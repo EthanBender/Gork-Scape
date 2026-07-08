@@ -196,6 +196,12 @@ function _mount(Game) {
       // strapped to the OUTSIDE of the forearm, face outward so it reads from the camera
       shieldSocket.position.set(0.16, 0.08, 0); shieldSocket.rotation.set(0, Math.PI / 2, Math.PI / 2);
     }
+    const sp = m.getObjectByName('Spine02') || m.getObjectByName('Spine01');
+    if (sp) {
+      sp.add(torsoSocket);
+      sp.getWorldScale(ws); torsoSocket.scale.setScalar(1 / (ws.x || 1));
+      torsoSocket.position.set(0, 0.02, 0); torsoSocket.rotation.set(0, 0, 0);
+    }
   }, undefined, e => console.error('[r3d] goblin load failed', e));
 
   // ---------- world objects: instanced clay props tinted from each object's own colour.
@@ -546,6 +552,8 @@ function _mount(Game) {
   // Hints come from the SAME avatarStateFor().gear the 2D uses (kind/color/len). ----
   const handSocket = new THREE.Group(); handSocket.position.set(0.62, 1.02, 0.34); handSocket.rotation.set(0.15, 0, -0.3); goblin.add(handSocket);
   const shieldSocket = new THREE.Group(); shieldSocket.position.set(-0.62, 1.0, 0.28); shieldSocket.rotation.set(0, 0.25, 0); goblin.add(shieldSocket);
+  const torsoSocket = new THREE.Group(); torsoSocket.position.set(0, 1.05, 0); goblin.add(torsoSocket);
+  const HAND_REST_X = Math.PI / 2 - 0.55;   // idle blade angle; attack swings from here
   let gearKey = null;
   const wood = 0x6b4a2a, darkWood = 0x54381e;
   // Real weapon models (textured Meshy statics) for the kinds we have; the
@@ -611,14 +619,20 @@ function _mount(Game) {
     return g;
   }
   function syncPlayerGear(gear) {
-    const w = gear && gear.weapon, s = gear && gear.shield;
-    const key = (w ? w.kind + ':' + w.color + ':' + w.len : 'none') + '|' + (s ? s.shape + ':' + s.color : 'none');
+    const w = gear && gear.weapon, s = gear && gear.shield, b = gear && gear.body, c = gear && gear.cape;
+    const key = (w ? w.kind + ':' + w.color + ':' + w.len : 'none') + '|' + (s ? s.shape + ':' + s.color : 'none')
+      + '|' + (b ? 'b' + b.color : 'none') + '|' + (c ? 'c' + c.color : 'none');
     if (key === gearKey) return;
     gearKey = key;
     while (handSocket.children.length) handSocket.remove(handSocket.children[0]);
     while (shieldSocket.children.length) shieldSocket.remove(shieldSocket.children[0]);
+    while (torsoSocket.children.length) torsoSocket.remove(torsoSocket.children[0]);
     handSocket.add(buildWeapon(w));
     shieldSocket.add(buildShield(s));
+    // body armour: a chest plate wrapped over the tunic, tinted by the item
+    if (b) { const plate = new THREE.Mesh(new THREE.CylinderGeometry(0.36, 0.4, 0.58, 10), matFor(b.color)); plate.scale.z = 0.74; torsoSocket.add(plate); }
+    // cape: hangs from the shoulders, covers the baked-in one
+    if (c) { const cape = new THREE.Mesh(new THREE.PlaneGeometry(0.58, 0.88), new THREE.MeshLambertMaterial({ color: c.color, side: THREE.DoubleSide })); cape.position.set(0, -0.26, -0.32); cape.rotation.x = 0.14; torsoSocket.add(cape); }
   }
 
   // ---------- walk feedback: gold ring on the destination tile + white dots along the
@@ -835,6 +849,10 @@ function _mount(Game) {
           goblin.position.x += Math.sin(yaw) * amt;
           goblin.position.z += Math.cos(yaw) * amt;
         }
+        // melee SWING: the weapon socket sweeps forward through the attack phase
+        // (absolute set every frame — idempotent, no mixer interference)
+        const atkPh = st && st.anim === 'attack' ? Math.min(1, st.phase || 0) : 0;
+        handSocket.rotation.x = HAND_REST_X - Math.sin(Math.PI * atkPh) * 1.5;
         // destination ring (gently pulsing) + path dots from the live pathfinder state
         const tt = p.travelTarget;
         if (tt) { destMarker.visible = true;
