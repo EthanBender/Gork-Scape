@@ -43,7 +43,15 @@ function _mount(Game) {
   const renderer = new THREE.WebGLRenderer({ antialias: true });
   const coarse = typeof matchMedia !== 'undefined' && matchMedia('(pointer: coarse)').matches;
   renderer.setPixelRatio(Math.min(devicePixelRatio, coarse ? 1.5 : 2));   // phones render fewer pixels
-  renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.35;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.32;
+  // SHADOWS: a single sun shadow-map grounds everything (nothing floated before).
+  // Desktop ON by default (2048 PCFSoft); phones OFF by default to protect the
+  // ~35fps the owner approved — opt in with ?shadow=1 (renders 1024 PCF), and
+  // desktop can opt out with ?noshadow=1.
+  const _qs = typeof location !== 'undefined' ? location.search : '';
+  const wantShadow = /[?&]shadow=1/.test(_qs) || (!coarse && !/[?&]noshadow=1/.test(_qs));
+  renderer.shadowMap.enabled = wantShadow;
+  renderer.shadowMap.type = coarse ? THREE.PCFShadowMap : THREE.PCFSoftShadowMap;
   const cv = renderer.domElement; cv.id = 'r3d-canvas'; cv.style.cssText = 'position:fixed;z-index:5;';
   document.body.appendChild(cv);
   // Fit the 3D canvas over the GAME viewport (the #game-canvas area), not the whole
@@ -62,9 +70,31 @@ function _mount(Game) {
   const scene = new THREE.Scene();
   scene.background = new THREE.Color('#bcd8e8');
   scene.fog = new THREE.Fog('#a9c7d6', WIN * 0.8, WIN * 1.8);
-  const sun = new THREE.DirectionalLight(0xfff4e0, 2.1); sun.position.set(-70, 120, -30); scene.add(sun);
-  const hemi = new THREE.HemisphereLight(0xdcecff, 0x54633a, 1.05); scene.add(hemi);
-  const amb = new THREE.AmbientLight(0xffffff, 0.35); scene.add(amb);
+  // warm key sun (off-noon so shadows read as form) + cool sky fill + low ambient
+  const sun = new THREE.DirectionalLight(0xfff2d8, 2.15); sun.position.set(-70, 120, -30); scene.add(sun);
+  const hemi = new THREE.HemisphereLight(0xdcecff, 0x5a6a3e, 1.0); scene.add(hemi);
+  const amb = new THREE.AmbientLight(0xffffff, 0.32); scene.add(amb);
+  // shadow frustum follows the player each frame (see updateSunShadow); the light
+  // DIRECTION stays fixed so shadows never swim as you walk.
+  const SUN_DIR = new THREE.Vector3(-70, 120, -30).normalize();
+  if (wantShadow) {
+    sun.castShadow = true;
+    const ms = coarse ? 1024 : 2048;
+    sun.shadow.mapSize.set(ms, ms);
+    const R = 46;                                        // shadow covers ~92 tiles around the player
+    sun.shadow.camera.left = -R; sun.shadow.camera.right = R;
+    sun.shadow.camera.top = R; sun.shadow.camera.bottom = -R;
+    sun.shadow.camera.near = 1; sun.shadow.camera.far = 260;
+    sun.shadow.bias = -0.0006; sun.shadow.normalBias = 0.9;
+    scene.add(sun.target);
+  }
+  const _sunAnchor = new THREE.Vector3();
+  function updateSunShadow(px, py, pz) {
+    if (!wantShadow) return;
+    sun.target.position.set(px, py, pz);
+    _sunAnchor.copy(SUN_DIR).multiplyScalar(130).add(sun.target.position);
+    sun.position.copy(_sunAnchor);
+  }
 
   // Day/night SCRAPPED (owner call 2026-07-08: "just scrap day night, day is
   // fine") — permanent clear daylight outdoors; interiors keep a steady warm
@@ -149,7 +179,7 @@ function _mount(Game) {
     geo.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
     geo.setIndex(idx); geo.computeVertexNormals();
     if (terrainMesh) { scene.remove(terrainMesh); terrainMesh.geometry.dispose(); terrainMesh.material.map.dispose(); terrainMesh.material.dispose(); }
-    terrainMesh = new THREE.Mesh(geo, new THREE.MeshLambertMaterial({ map: tex, flatShading: true })); scene.add(terrainMesh);
+    terrainMesh = new THREE.Mesh(geo, new THREE.MeshLambertMaterial({ map: tex, flatShading: true })); terrainMesh.receiveShadow = true; scene.add(terrainMesh);
     // --- filled river surface over channel tiles at bank-lip minus margin ---
     const wpos = [], wnorm = [], widx = []; let wc = 0;
     for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) {
@@ -179,6 +209,7 @@ function _mount(Game) {
     m.scale.setScalar(1.65 / Math.max(sz.x, sz.y, sz.z));
     const b2 = new THREE.Box3().setFromObject(m);
     m.position.y = -b2.min.y; goblin.add(m); animRoot = m;    // feet on ground; x/z zeroed per-frame (root motion)
+    m.traverse(o => { if (o.isMesh) o.castShadow = true; });  // the player casts a shadow
     if (gl.animations && gl.animations.length) { const clip = gl.animations[0];
       clip.tracks = clip.tracks.filter(t => !/head|neck/i.test(t.name));   // steady the tall hood
       // NOTE: the meshopt/optimized goblin breaks its rig (scale tracks + bind units) —
@@ -232,7 +263,9 @@ function _mount(Game) {
   const props = {};
   for (const k of Object.keys(P_GEO)) {
     const m = new THREE.InstancedMesh(P_GEO[k], new THREE.MeshLambertMaterial({ flatShading: true, ...(k === 'fish' ? { transparent: true, opacity: 0.7, side: THREE.DoubleSide, depthWrite: false } : {}) }), P_CAP[k]);
-    m.count = 0; m.instanceMatrix.setUsage(THREE.DynamicDrawUsage); scene.add(m); props[k] = m;
+    m.count = 0; m.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+    if (k !== 'fish') { m.castShadow = true; m.receiveShadow = true; }   // props cast + catch shadows
+    scene.add(m); props[k] = m;
   }
   // ---------- raised WALL blocks: town / keep / camp / ruin perimeters (T.WALL
   // tiles) stand UP as clean flat stone instead of being painted flat on the
@@ -240,7 +273,7 @@ function _mount(Game) {
   const WALL_CAP = 6000, WALLH = 1.9, WALL_ID = 10;
   const wallMesh = new THREE.InstancedMesh(new THREE.BoxGeometry(1.02, 1, 1.02),
     new THREE.MeshLambertMaterial({ flatShading: true }), WALL_CAP);
-  wallMesh.count = 0; wallMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage); scene.add(wallMesh);
+  wallMesh.count = 0; wallMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage); wallMesh.castShadow = true; wallMesh.receiveShadow = true; scene.add(wallMesh);
   const wallM = new THREE.Matrix4(), wallP = new THREE.Vector3(), wallS = new THREE.Vector3(), wallQ = new THREE.Quaternion(), wallC = new THREE.Color();
   // Only LARGE wall enclosures stand up (town perimeter, the keep, the training
   // yard). Individual buildings are floor+wall rooms in the 2D data with a
@@ -299,7 +332,7 @@ function _mount(Game) {
       const s = targetH / (size.y || 1), c = new THREE.Vector3(); bb.getCenter(c);
       geo.translate(-c.x, -bb.min.y, -c.z); geo.scale(s, s, s);
       const m = new THREE.InstancedMesh(geo, best.material, cap);
-      m.count = 0; m.instanceMatrix.setUsage(THREE.DynamicDrawUsage); scene.add(m);
+      m.count = 0; m.instanceMatrix.setUsage(THREE.DynamicDrawUsage); m.castShadow = true; m.receiveShadow = true; scene.add(m);
       P_CAP[kind] = cap; props[kind] = m;
       buildProps();                                        // re-lay props with the real model
     }, undefined, e => console.error('[r3d] prop model failed', url, e));
@@ -324,7 +357,7 @@ function _mount(Game) {
       for (let vi = 0; vi < pos.count; vi++) { const col = pos.getY(vi) >= cut ? rc : wc; cols[vi * 3] = col.r; cols[vi * 3 + 1] = col.g; cols[vi * 3 + 2] = col.b; }
       geo.setAttribute('color', new THREE.BufferAttribute(cols, 3));
       const m = new THREE.InstancedMesh(geo, new THREE.MeshLambertMaterial({ flatShading: true, vertexColors: true }), cap);
-      m.count = 0; m.instanceMatrix.setUsage(THREE.DynamicDrawUsage); scene.add(m);
+      m.count = 0; m.instanceMatrix.setUsage(THREE.DynamicDrawUsage); m.castShadow = true; m.receiveShadow = true; scene.add(m);
       P_CAP[kind] = cap; props[kind] = m;
       buildProps();
     }, undefined, e => console.error('[r3d] clean model failed', url, e));
@@ -531,7 +564,7 @@ function _mount(Game) {
     let real = null;
     for (const [re, key] of SPECIES_GLB) { if (re.test(name) && bodyGLB[key]) { real = bodyGLB[key]; break; } }
     real = real || bodyGLB[bodyType];
-    if (real) { const me = new THREE.Mesh(real.geo, real.mat || matFor(skin)); me.position.y = real.yOff; g.add(me); return g; }
+    if (real) { const me = new THREE.Mesh(real.geo, real.mat || matFor(skin)); me.position.y = real.yOff; me.castShadow = true; g.add(me); return g; }
     const m = matFor(skin); const dark = matFor((skin >> 1) & 0x7f7f7f);
     const add = (geo, mat, x, y, z, sx = 1, sy = 1, sz = 1) => { const me = new THREE.Mesh(geo, mat); me.position.set(x, y, z); me.scale.set(sx, sy, sz); g.add(me); return me; };
     switch (bodyType) {
@@ -544,6 +577,7 @@ function _mount(Game) {
       default: add(AG.torso, m, 0, 0.75, 0); add(AG.head, m, 0, 1.35, 0.02);  // humanoid (incl. other players)
         add(AG.leg, dark, 0.14, 0.17, 0); add(AG.leg, dark, -0.14, 0.17, 0); break;
     }
+    g.traverse(o => { if (o.isMesh) o.castShadow = true; });   // procedural bodies cast too
     return g;
   }
   const actorPool = new Map();   // npc object -> { g, lastX, lastZ, yaw }
@@ -978,6 +1012,7 @@ function _mount(Game) {
       const wx = p ? p.px / TILE_SIZE : winCX, wz = p ? p.py / TILE_SIZE : winCY;
       const wy = heightAt(wx, wz);
       if (Math.abs(wx - winCX) > REBUILD || Math.abs(wz - winCY) > REBUILD) buildWindow(wx | 0, wz | 0);
+      updateSunShadow(wx, wy, wz);                             // shadow frustum tracks the player
       daylight3d();                                            // interior/day lighting (on change)
       syncFX(performance.now());                               // loot / fires / arrows
       if (performance.now() - lastPropBuild > 2000) buildProps();   // depleted trees vanish, respawns return
