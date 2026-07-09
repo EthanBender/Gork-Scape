@@ -806,6 +806,9 @@ export function generateWorld(seed = DEFAULT_SEED, opts = {}) {
       const edge = macro.forest[idx(x + 3, y)] !== inMask || macro.forest[idx(x - 3, y)] !== inMask || macro.forest[idx(x, y + 3)] !== inMask || macro.forest[idx(x, y - 3)] !== inMask;
       if (edge) { let n = 0; for (let b = -3; b <= 3; b++) for (let a = -3; a <= 3; a++) if (macro.forest[idx(x + a, y + b)]) n++; f = n / 49; }
       if (!inMask && f <= 0.08) continue;
+      // the forest (mask OR fringe) stops at the town walls — the north woods
+      // were spilling ~2k trees into the settlement through the fringe
+      if (x >= TB.x0 + townOff.dx && x <= TB.x1 + townOff.dx && y >= TB.y0 + townOff.dy && y <= TB.y1 + townOff.dy) continue;
       if (vnoise(x / 30, y / 30, Sg + 4) > 0.66) continue; // clearings
       const r = hash2(x, y, Sr + 7);
       if (r < 0.13 * Math.min(1, f * 1.6)) { resObj(x, y, kindFor(x, y)); continue; }
@@ -918,8 +921,11 @@ if (!GEO2) {
       }
       // light uniform sprinkle between clusters so nowhere is bare
       for (let i = 0, n = 30 + (rng() * 22 | 0); i < n; i++) detailAt(x0 + (rng() * (x1 - x0) | 0), y0 + (rng() * (y1 - y0) | 0));
-      // isolated trees / saplings (also break the flat green on the world map)
-      for (let i = 0, tn = 4 + (rng() * 6 | 0); i < tn; i++) { const x = x0 + (rng() * (x1 - x0) | 0), y = y0 + (rng() * (y1 - y0) | 0); if (getT(x, y) === T.GRASS && !occupied.has(okey(x, y))) resObj(x, y, 'tree'); }
+      // isolated trees / saplings (also break the flat green on the world map).
+      // NOT inside the town walls — this pass was stuffing ~270 random trees
+      // into the settlement; towns get their trees deliberately, like RS.
+      const townTreeGuard = (x, y) => x >= TB.x0 + townOff.dx && x <= TB.x1 + townOff.dx && y >= TB.y0 + townOff.dy && y <= TB.y1 + townOff.dy;
+      for (let i = 0, tn = 4 + (rng() * 6 | 0); i < tn; i++) { const x = x0 + (rng() * (x1 - x0) | 0), y = y0 + (rng() * (y1 - y0) | 0); if (getT(x, y) === T.GRASS && !occupied.has(okey(x, y)) && !townTreeGuard(x, y)) resObj(x, y, 'tree'); }
       // context-aware fringe detail
       const scatter2 = (color, size, shape, n, pred) => { for (let i = 0; i < n; i++) { const x = x0 + (rng() * (x1 - x0) | 0), y = y0 + (rng() * (y1 - y0) | 0); if (pred(x, y) && !occupied.has(okey(x, y))) decor(x, y, color, size, shape); } };
       if (water > 3) scatter2(0x6fae7a, 3, 'rect', 10, (x, y) => getT(x, y) === T.WATER && [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([a, b]) => getT(x + a, y + b) === T.GRASS)); // reeds
@@ -1702,6 +1708,21 @@ if (!GEO2) {
       const s = shade[t]; if (s === undefined) continue;
       const e = elevation[i];
       if (elevation[i - WORLD_W] - e >= 14 || elevation[i - 2 * WORLD_W] - e >= 22) terrain[i] = s;
+    }
+  })();
+
+  // TOWN TREE CULL: whatever their source (chunk sprinkle, patches, scatter),
+  // random trees don't belong inside the walls — keep a deterministic ~15 so
+  // the town has some green, cull the rest (RS towns plant trees on purpose).
+  (function cullTownTrees() {
+    const inTB = (x, y) => x >= TB.x0 + townOff.dx && x <= TB.x1 + townOff.dx && y >= TB.y0 + townOff.dy && y <= TB.y1 + townOff.dy;
+    const h2 = (x, y) => { let h = (Math.imul(x, 668265263) + Math.imul(y, 374761393)) >>> 0; return ((h ^ (h >>> 13)) % 1000) / 1000; };
+    for (let i = objects.length - 1; i >= 0; i--) {
+      const o = objects[i];
+      if (o.type !== 'resource' || !/Tree|Oak|Willow/.test(o.label || '') || !inTB(o.x, o.y)) continue;
+      if (h2(o.x, o.y) < 0.06) continue;                      // the keepers
+      objectAt.delete(okey(o.x, o.y)); occupied.delete(okey(o.x, o.y));
+      objects.splice(i, 1);
     }
   })();
 

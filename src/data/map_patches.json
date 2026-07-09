@@ -56334,14 +56334,6 @@
     },
     {
      "op": "object",
-     "x": 493,
-     "y": 377,
-     "label": "Old Well",
-     "color": 9075290,
-     "blocking": false
-    },
-    {
-     "op": "object",
      "x": 494,
      "y": 377,
      "label": "Copse Bush",
@@ -56494,14 +56486,6 @@
     },
     {
      "op": "object",
-     "x": 494,
-     "y": 383,
-     "label": "Old Well",
-     "color": 9075290,
-     "blocking": false
-    },
-    {
-     "op": "object",
      "x": 495,
      "y": 383,
      "label": "Thicket Bush",
@@ -56586,14 +56570,6 @@
      "y": 387,
      "label": "Thicket Bush",
      "color": 3103274,
-     "blocking": false
-    },
-    {
-     "op": "object",
-     "x": 458,
-     "y": 387,
-     "label": "Old Well",
-     "color": 9075290,
      "blocking": false
     },
     {
@@ -56722,14 +56698,6 @@
      "y": 391,
      "label": "Thicket Bush",
      "color": 3103274,
-     "blocking": false
-    },
-    {
-     "op": "object",
-     "x": 462,
-     "y": 391,
-     "label": "Old Well",
-     "color": 9075290,
      "blocking": false
     },
     {
@@ -57510,14 +57478,6 @@
     },
     {
      "op": "object",
-     "x": 461,
-     "y": 427,
-     "label": "Old Well",
-     "color": 9075290,
-     "blocking": false
-    },
-    {
-     "op": "object",
      "x": 462,
      "y": 427,
      "label": "Wayside Shrine",
@@ -57637,14 +57597,6 @@
      "blocking": false
     },
     {
-     "op": "object",
-     "x": 460,
-     "y": 430,
-     "label": "Old Well",
-     "color": 9075290,
-     "blocking": false
-    },
-    {
      "op": "decor",
      "x": 482,
      "y": 430,
@@ -57721,14 +57673,6 @@
      "x": 478,
      "y": 431,
      "label": "Wayside Shrine",
-     "color": 9075290,
-     "blocking": false
-    },
-    {
-     "op": "object",
-     "x": 459,
-     "y": 432,
-     "label": "Old Well",
      "color": 9075290,
      "blocking": false
     },

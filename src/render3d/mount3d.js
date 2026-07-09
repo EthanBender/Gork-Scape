@@ -414,7 +414,10 @@ function _mount(Game) {
   // creature-ambush POIs (Feral Hog, Wild Goblin, Root Horror...) — no static
   // prop honestly represents them; do not add rows for these.
   const STRUCT_MODELS = [
-    [/Barrel/i, 'barrelG', 0.75, null, 0xb9885a],
+    [/Barrel|\bKeg\b/i, 'barrelG', 0.75, null, 0xb9885a],
+    [/Pillar|\bPike\b|Gibbet|Ladder|Gate\b/i, 'signG', 1.05, 'cardinal'],   // gates + dark-precinct uprights
+    [/Altar/i, 'rock', 0.85, null, 0x5a5048],
+    [/Offering/i, 'rock', 0.4, null, 0xd8d0c0],                              // bone/skull offering mounds
     [/Cauldron|Cookpot/i, 'campfireG', 0.8],
     [/Campfire|Fire/i, 'campfireG', 1],
     [/Anvil|Furnace|Forge|Smith/i, 'anvilG', 1, 'cardinal'],
@@ -438,7 +441,7 @@ function _mount(Game) {
     [/Grave|Tomb|Headstone/i, 'signG', 0.85, 'cardinal'],   // gravestone = upright slab
     [/Sack|Bale|\bBin\b|Compost/i, 'crateG', 0.6],          // farm sacks / bales / bins
     // gardens/meadows/farm nodes: flat vegetation, NOT architecture
-    [/\b(Patch|Garden|Meadow|Planter|Bed)\b/i, 'bushG', 0.55],
+    [/\b(Patch|Garden|Meadow|Planter|Bed|Field)\b/i, 'bushG', 0.55],
     // animal homes: a half-buried earth mound, not a cabin
     [/\b(Nest|Den|Burrow|Warren|Sett|Wallow|Beehive)\b|Owl Hollow/i, 'rock', 0.55, null, 0x8a6f4f],
     [/\bRack\b|Skinning Frame/i, 'fenceG', 0.8, 'cardinal'],
