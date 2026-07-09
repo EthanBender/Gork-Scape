@@ -732,7 +732,17 @@ function _mount(Game) {
   // procedural clay shapes below stay the fallback for everything else.
   // Normalized: grip end at origin, blade along +Y, unit length (scaled per hint).
   const weaponGLB = {};
-  for (const [kind, url] of [['sword', '/r3d/models/weapon_sword.glb'], ['pick', '/r3d/models/weapon_pickaxe.glb']]) {
+  // clean flat-shaded weapon set (untextured previews, metal-tinted in engine —
+  // owner: equipped gear must LOOK MODELED). dagger reuses sword small; cbow
+  // reuses bow; club reuses mace (wood tint comes from the hint colour anyway).
+  for (const [kind, url] of [
+    ['sword', '/r3d/models/weapons/sword.glb'], ['axe', '/r3d/models/weapons/axe.glb'],
+    ['pick', '/r3d/models/weapons/pickaxe.glb'], ['spear', '/r3d/models/weapons/spear.glb'],
+    ['mace', '/r3d/models/weapons/mace.glb'], ['staff', '/r3d/models/weapons/staff.glb'],
+    ['bow', '/r3d/models/weapons/bow.glb'],
+    ['dagger', '/r3d/models/weapons/sword.glb'], ['cbow', '/r3d/models/weapons/bow.glb'],
+    ['club', '/r3d/models/weapons/mace.glb'], ['shield', '/r3d/models/weapons/shield.glb'],
+  ]) {
     const ld = new GLTFLoader(); ld.setMeshoptDecoder(MeshoptDecoder);
     ld.load(url, gl => {
       let best = null; gl.scene.updateMatrixWorld(true);
@@ -784,6 +794,13 @@ function _mount(Game) {
   function buildShield(hint) {
     const g = new THREE.Group();
     if (!hint) return g;
+    const real = weaponGLB.shield;
+    if (real && hint.shape === 'round') {                    // the modeled buckler, tinted
+      const mat = real.mat.clone(); mat.color = new THREE.Color(hint.color).lerp(new THREE.Color(0xffffff), 0.3);
+      const me = new THREE.Mesh(real.geo, mat);
+      me.scale.setScalar(0.75); me.rotation.z = Math.PI / 2;  // disc face outward from the forearm
+      g.add(me); return g;
+    }
     if (hint.shape === 'round') { const d = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 0.06, 14), matFor(hint.color)); d.rotation.x = Math.PI / 2; g.add(d);
       const b = new THREE.Mesh(new THREE.SphereGeometry(0.07, 8, 6), matFor(darkWood)); b.position.z = 0.05; g.add(b); }
     else { const k = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.58, 0.05), matFor(hint.color)); g.add(k);
@@ -801,8 +818,8 @@ function _mount(Game) {
     while (torsoSocket.children.length) torsoSocket.remove(torsoSocket.children[0]);
     handSocket.add(buildWeapon(w));
     shieldSocket.add(buildShield(s));
-    // body armour: a chest plate wrapped over the tunic, tinted by the item
-    if (b) { const plate = new THREE.Mesh(new THREE.CylinderGeometry(0.36, 0.4, 0.58, 10), matFor(b.color)); plate.scale.z = 0.74; torsoSocket.add(plate); }
+    // body armour: crude cylinder REMOVED (owner: gear must look modeled) —
+    // torso armour returns with the modular character; cape still renders.
     // cape: hangs from the shoulders, covers the baked-in one
     if (c) { const cape = new THREE.Mesh(new THREE.PlaneGeometry(0.58, 0.88), new THREE.MeshLambertMaterial({ color: c.color, side: THREE.DoubleSide })); cape.position.set(0, -0.26, -0.32); cape.rotation.x = 0.14; torsoSocket.add(cape); }
   }
@@ -886,7 +903,7 @@ function _mount(Game) {
   // saturation, a gentle S-curve of contrast, warm highlight lift, soft vignette
   // — makes the flat-shaded low-poly world pop like a picture book. On by default
   // desktop; ?flat=1 turns it off, ?grade=1 forces it on (e.g. to A/B on phone).
-  const wantGrade = /[?&]grade=1/.test(_qs) || (!coarse && !/[?&]flat=1/.test(_qs));
+  const wantGrade = /[?&]grade=1/.test(_qs);   // OPT-IN until the owner approves the look (?grade=1)
   let composer = null, gradePass = null;
   if (wantGrade) {
     composer = new EffectComposer(renderer);

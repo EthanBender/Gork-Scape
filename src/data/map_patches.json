@@ -54125,14 +54125,6 @@
      "shape": "rect"
     },
     {
-     "op": "object",
-     "x": 445,
-     "y": 361,
-     "label": "Rubbish Heap",
-     "color": 6969914,
-     "blocking": false
-    },
-    {
      "op": "decor",
      "x": 426,
      "y": 362,
@@ -54171,14 +54163,6 @@
      "color": 9075274,
      "size": 4,
      "shape": "rect"
-    },
-    {
-     "op": "object",
-     "x": 437,
-     "y": 364,
-     "label": "Rubbish Heap",
-     "color": 6969914,
-     "blocking": false
     },
     {
      "op": "decor",
@@ -54241,14 +54225,6 @@
      "x": 445,
      "y": 367,
      "label": "Broken Crate",
-     "color": 6969914,
-     "blocking": false
-    },
-    {
-     "op": "object",
-     "x": 425,
-     "y": 368,
-     "label": "Rubbish Heap",
      "color": 6969914,
      "blocking": false
     },
@@ -54317,14 +54293,6 @@
      "shape": "rect"
     },
     {
-     "op": "object",
-     "x": 429,
-     "y": 372,
-     "label": "Broken Crate",
-     "color": 6969914,
-     "blocking": false
-    },
-    {
      "op": "decor",
      "x": 441,
      "y": 372,
@@ -54371,22 +54339,6 @@
      "color": 9075274,
      "size": 4,
      "shape": "rect"
-    },
-    {
-     "op": "object",
-     "x": 437,
-     "y": 374,
-     "label": "Rubbish Heap",
-     "color": 6969914,
-     "blocking": false
-    },
-    {
-     "op": "object",
-     "x": 450,
-     "y": 374,
-     "label": "Rubbish Heap",
-     "color": 6969914,
-     "blocking": false
     },
     {
      "op": "decor",
@@ -54441,14 +54393,6 @@
      "x": 448,
      "y": 378,
      "label": "Ale Barrel",
-     "color": 6969914,
-     "blocking": false
-    },
-    {
-     "op": "object",
-     "x": 429,
-     "y": 379,
-     "label": "Rubbish Heap",
      "color": 6969914,
      "blocking": false
     },
@@ -54518,14 +54462,6 @@
     },
     {
      "op": "object",
-     "x": 437,
-     "y": 383,
-     "label": "Broken Crate",
-     "color": 6969914,
-     "blocking": false
-    },
-    {
-     "op": "object",
      "x": 440,
      "y": 383,
      "label": "Broken Crate",
@@ -54545,14 +54481,6 @@
      "x": 425,
      "y": 384,
      "label": "Rain Barrel",
-     "color": 6969914,
-     "blocking": false
-    },
-    {
-     "op": "object",
-     "x": 427,
-     "y": 384,
-     "label": "Rubbish Heap",
      "color": 6969914,
      "blocking": false
     },
@@ -54677,14 +54605,6 @@
      "blocking": false
     },
     {
-     "op": "object",
-     "x": 444,
-     "y": 390,
-     "label": "Broken Crate",
-     "color": 6969914,
-     "blocking": false
-    },
-    {
      "op": "decor",
      "x": 425,
      "y": 391,
@@ -54837,14 +54757,6 @@
      "shape": "rect"
     },
     {
-     "op": "object",
-     "x": 426,
-     "y": 395,
-     "label": "Broken Crate",
-     "color": 6969914,
-     "blocking": false
-    },
-    {
      "op": "decor",
      "x": 438,
      "y": 395,
@@ -54923,14 +54835,6 @@
      "color": 5925514,
      "size": 4,
      "shape": "rect"
-    },
-    {
-     "op": "object",
-     "x": 445,
-     "y": 406,
-     "label": "Broken Crate",
-     "color": 6969914,
-     "blocking": false
     },
     {
      "op": "decor",
@@ -55260,14 +55164,6 @@
     },
     {
      "op": "object",
-     "x": 454,
-     "y": 432,
-     "label": "Bone Pile",
-     "color": 15262416,
-     "blocking": false
-    },
-    {
-     "op": "object",
      "x": 450,
      "y": 428,
      "label": "Grave Fence",
@@ -55510,14 +55406,6 @@
     },
     {
      "op": "object",
-     "x": 461,
-     "y": 414,
-     "label": "Hay Pile",
-     "color": 13279818,
-     "blocking": false
-    },
-    {
-     "op": "object",
      "x": 455,
      "y": 415,
      "label": "Compost Bin",
@@ -55654,26 +55542,10 @@
     },
     {
      "op": "object",
-     "x": 448,
-     "y": 350,
-     "label": "Hay Pile",
-     "color": 13279818,
-     "blocking": false
-    },
-    {
-     "op": "object",
      "x": 450,
      "y": 350,
      "label": "Yard Fence",
      "color": 8016432,
-     "blocking": false
-    },
-    {
-     "op": "object",
-     "x": 478,
-     "y": 350,
-     "label": "Hay Pile",
-     "color": 13279818,
      "blocking": false
     },
     {
@@ -55718,34 +55590,10 @@
     },
     {
      "op": "object",
-     "x": 503,
-     "y": 350,
-     "label": "Hay Pile",
-     "color": 13279818,
-     "blocking": false
-    },
-    {
-     "op": "object",
-     "x": 505,
-     "y": 350,
-     "label": "Hay Pile",
-     "color": 13279818,
-     "blocking": false
-    },
-    {
-     "op": "object",
      "x": 506,
      "y": 350,
      "label": "Hay Pile",
      "color": 13279818,
-     "blocking": false
-    },
-    {
-     "op": "object",
-     "x": 508,
-     "y": 350,
-     "label": "Wood Pile",
-     "color": 9071172,
      "blocking": false
     },
     {
@@ -55798,31 +55646,7 @@
     },
     {
      "op": "object",
-     "x": 429,
-     "y": 351,
-     "label": "Hay Pile",
-     "color": 13279818,
-     "blocking": false
-    },
-    {
-     "op": "object",
      "x": 435,
-     "y": 351,
-     "label": "Wood Pile",
-     "color": 9071172,
-     "blocking": false
-    },
-    {
-     "op": "object",
-     "x": 446,
-     "y": 351,
-     "label": "Wood Pile",
-     "color": 9071172,
-     "blocking": false
-    },
-    {
-     "op": "object",
-     "x": 447,
      "y": 351,
      "label": "Wood Pile",
      "color": 9071172,
@@ -55885,14 +55709,6 @@
      "blocking": false
     },
     {
-     "op": "object",
-     "x": 500,
-     "y": 351,
-     "label": "Hay Pile",
-     "color": 13279818,
-     "blocking": false
-    },
-    {
      "op": "decor",
      "x": 506,
      "y": 351,
@@ -55923,14 +55739,6 @@
      "color": 9075274,
      "size": 4,
      "shape": "rect"
-    },
-    {
-     "op": "object",
-     "x": 461,
-     "y": 352,
-     "label": "Hay Pile",
-     "color": 13279818,
-     "blocking": false
     },
     {
      "op": "decor",
@@ -56158,14 +55966,6 @@
     },
     {
      "op": "object",
-     "x": 444,
-     "y": 358,
-     "label": "Wood Pile",
-     "color": 9071172,
-     "blocking": false
-    },
-    {
-     "op": "object",
      "x": 449,
      "y": 358,
      "label": "Herb Garden",
@@ -56214,14 +56014,6 @@
     },
     {
      "op": "object",
-     "x": 489,
-     "y": 359,
-     "label": "Hay Pile",
-     "color": 13279818,
-     "blocking": false
-    },
-    {
-     "op": "object",
      "x": 495,
      "y": 359,
      "label": "Yard Fence",
@@ -56254,26 +56046,10 @@
     },
     {
      "op": "object",
-     "x": 432,
-     "y": 360,
-     "label": "Wood Pile",
-     "color": 9071172,
-     "blocking": false
-    },
-    {
-     "op": "object",
      "x": 451,
      "y": 360,
      "label": "Rain Barrel",
      "color": 6965802,
-     "blocking": false
-    },
-    {
-     "op": "object",
-     "x": 522,
-     "y": 360,
-     "label": "Hay Pile",
-     "color": 13279818,
      "blocking": false
     },
     {
@@ -56446,14 +56222,6 @@
     },
     {
      "op": "object",
-     "x": 486,
-     "y": 373,
-     "label": "Hay Pile",
-     "color": 13279818,
-     "blocking": false
-    },
-    {
-     "op": "object",
      "x": 496,
      "y": 373,
      "label": "Thicket Bush",
@@ -56490,14 +56258,6 @@
      "y": 374,
      "label": "Garden Shed",
      "color": 9075290,
-     "blocking": false
-    },
-    {
-     "op": "object",
-     "x": 523,
-     "y": 374,
-     "label": "Hay Pile",
-     "color": 13279818,
      "blocking": false
     },
     {
@@ -56554,14 +56314,6 @@
      "y": 376,
      "label": "Herb Garden",
      "color": 14241615,
-     "blocking": false
-    },
-    {
-     "op": "object",
-     "x": 508,
-     "y": 376,
-     "label": "Wood Pile",
-     "color": 9071172,
      "blocking": false
     },
     {
@@ -56626,14 +56378,6 @@
      "y": 378,
      "label": "Cottage Bush",
      "color": 3103274,
-     "blocking": false
-    },
-    {
-     "op": "object",
-     "x": 453,
-     "y": 379,
-     "label": "Wood Pile",
-     "color": 9071172,
      "blocking": false
     },
     {
@@ -56805,14 +56549,6 @@
      "blocking": false
     },
     {
-     "op": "object",
-     "x": 473,
-     "y": 385,
-     "label": "Hay Pile",
-     "color": 13279818,
-     "blocking": false
-    },
-    {
      "op": "decor",
      "x": 527,
      "y": 384,
@@ -56842,14 +56578,6 @@
      "y": 386,
      "label": "Yard Fence",
      "color": 8016432,
-     "blocking": false
-    },
-    {
-     "op": "object",
-     "x": 510,
-     "y": 386,
-     "label": "Wood Pile",
-     "color": 9071172,
      "blocking": false
     },
     {
@@ -56886,26 +56614,10 @@
     },
     {
      "op": "object",
-     "x": 483,
-     "y": 387,
-     "label": "Hay Pile",
-     "color": 13279818,
-     "blocking": false
-    },
-    {
-     "op": "object",
      "x": 484,
      "y": 387,
      "label": "Cottage Bush",
      "color": 3103274,
-     "blocking": false
-    },
-    {
-     "op": "object",
-     "x": 485,
-     "y": 387,
-     "label": "Hay Pile",
-     "color": 13279818,
      "blocking": false
     },
     {
@@ -56950,14 +56662,6 @@
     },
     {
      "op": "object",
-     "x": 480,
-     "y": 388,
-     "label": "Wood Pile",
-     "color": 9071172,
-     "blocking": false
-    },
-    {
-     "op": "object",
      "x": 481,
      "y": 388,
      "label": "Yard Fence",
@@ -56966,26 +56670,10 @@
     },
     {
      "op": "object",
-     "x": 491,
-     "y": 388,
-     "label": "Wood Pile",
-     "color": 9071172,
-     "blocking": false
-    },
-    {
-     "op": "object",
      "x": 507,
      "y": 388,
      "label": "Wood Pile",
      "color": 9071172,
-     "blocking": false
-    },
-    {
-     "op": "object",
-     "x": 514,
-     "y": 388,
-     "label": "Hay Pile",
-     "color": 13279818,
      "blocking": false
     },
     {
@@ -57002,14 +56690,6 @@
      "y": 389,
      "label": "Yard Fence",
      "color": 8016432,
-     "blocking": false
-    },
-    {
-     "op": "object",
-     "x": 499,
-     "y": 389,
-     "label": "Hay Pile",
-     "color": 13279818,
      "blocking": false
     },
     {
@@ -57094,14 +56774,6 @@
     },
     {
      "op": "object",
-     "x": 499,
-     "y": 394,
-     "label": "Wood Pile",
-     "color": 9071172,
-     "blocking": false
-    },
-    {
-     "op": "object",
      "x": 490,
      "y": 395,
      "label": "Yard Fence",
@@ -57115,14 +56787,6 @@
      "color": 9071172,
      "size": 4,
      "shape": "circle"
-    },
-    {
-     "op": "object",
-     "x": 490,
-     "y": 396,
-     "label": "Wood Pile",
-     "color": 9071172,
-     "blocking": false
     },
     {
      "op": "object",
@@ -57165,14 +56829,6 @@
      "blocking": false
     },
     {
-     "op": "object",
-     "x": 490,
-     "y": 400,
-     "label": "Wood Pile",
-     "color": 9071172,
-     "blocking": false
-    },
-    {
      "op": "decor",
      "x": 511,
      "y": 401,
@@ -57186,14 +56842,6 @@
      "y": 401,
      "label": "Yard Fence",
      "color": 8016432,
-     "blocking": false
-    },
-    {
-     "op": "object",
-     "x": 518,
-     "y": 401,
-     "label": "Wood Pile",
-     "color": 9071172,
      "blocking": false
     },
     {
@@ -57318,26 +56966,10 @@
     },
     {
      "op": "object",
-     "x": 524,
-     "y": 407,
-     "label": "Hay Pile",
-     "color": 13279818,
-     "blocking": false
-    },
-    {
-     "op": "object",
      "x": 453,
      "y": 408,
      "label": "Rain Barrel",
      "color": 6965802,
-     "blocking": false
-    },
-    {
-     "op": "object",
-     "x": 456,
-     "y": 408,
-     "label": "Wood Pile",
-     "color": 9071172,
      "blocking": false
     },
     {
@@ -57365,28 +56997,12 @@
      "shape": "circle"
     },
     {
-     "op": "object",
-     "x": 489,
-     "y": 408,
-     "label": "Hay Pile",
-     "color": 13279818,
-     "blocking": false
-    },
-    {
      "op": "decor",
      "x": 513,
      "y": 408,
      "color": 9071172,
      "size": 4,
      "shape": "circle"
-    },
-    {
-     "op": "object",
-     "x": 524,
-     "y": 408,
-     "label": "Wood Pile",
-     "color": 9071172,
-     "blocking": false
     },
     {
      "op": "object",
@@ -57462,14 +57078,6 @@
     },
     {
      "op": "object",
-     "x": 483,
-     "y": 412,
-     "label": "Hay Pile",
-     "color": 13279818,
-     "blocking": false
-    },
-    {
-     "op": "object",
      "x": 490,
      "y": 412,
      "label": "Yard Fence",
@@ -57531,14 +57139,6 @@
      "color": 9071172,
      "size": 4,
      "shape": "circle"
-    },
-    {
-     "op": "object",
-     "x": 451,
-     "y": 414,
-     "label": "Hay Pile",
-     "color": 13279818,
-     "blocking": false
     },
     {
      "op": "object",
@@ -57630,26 +57230,10 @@
     },
     {
      "op": "object",
-     "x": 473,
-     "y": 416,
-     "label": "Hay Pile",
-     "color": 13279818,
-     "blocking": false
-    },
-    {
-     "op": "object",
      "x": 472,
      "y": 417,
      "label": "Feed Barrel",
      "color": 6965802,
-     "blocking": false
-    },
-    {
-     "op": "object",
-     "x": 484,
-     "y": 416,
-     "label": "Wood Pile",
-     "color": 9071172,
      "blocking": false
     },
     {
@@ -57750,26 +57334,10 @@
     },
     {
      "op": "object",
-     "x": 524,
-     "y": 421,
-     "label": "Wood Pile",
-     "color": 9071172,
-     "blocking": false
-    },
-    {
-     "op": "object",
      "x": 489,
      "y": 422,
      "label": "Rain Barrel",
      "color": 6965802,
-     "blocking": false
-    },
-    {
-     "op": "object",
-     "x": 499,
-     "y": 422,
-     "label": "Wood Pile",
-     "color": 9071172,
      "blocking": false
     },
     {
@@ -57870,14 +57438,6 @@
     },
     {
      "op": "object",
-     "x": 524,
-     "y": 425,
-     "label": "Wood Pile",
-     "color": 9071172,
-     "blocking": false
-    },
-    {
-     "op": "object",
      "x": 421,
      "y": 426,
      "label": "Rain Barrel",
@@ -57962,14 +57522,6 @@
      "y": 427,
      "label": "Wayside Shrine",
      "color": 9075290,
-     "blocking": false
-    },
-    {
-     "op": "object",
-     "x": 482,
-     "y": 427,
-     "label": "Hay Pile",
-     "color": 13279818,
      "blocking": false
     },
     {
@@ -58250,22 +57802,6 @@
      "y": 433,
      "label": "Thicket Bush",
      "color": 3103274,
-     "blocking": false
-    },
-    {
-     "op": "object",
-     "x": 497,
-     "y": 433,
-     "label": "Hay Pile",
-     "color": 13279818,
-     "blocking": false
-    },
-    {
-     "op": "object",
-     "x": 523,
-     "y": 433,
-     "label": "Hay Pile",
-     "color": 13279818,
      "blocking": false
     },
     {
@@ -58405,14 +57941,6 @@
      "shape": "rect"
     },
     {
-     "op": "object",
-     "x": 448,
-     "y": 437,
-     "label": "Hay Pile",
-     "color": 13279818,
-     "blocking": false
-    },
-    {
      "op": "decor",
      "x": 437,
      "y": 438,
@@ -58443,14 +57971,6 @@
      "color": 9071172,
      "size": 4,
      "shape": "circle"
-    },
-    {
-     "op": "object",
-     "x": 459,
-     "y": 438,
-     "label": "Wood Pile",
-     "color": 9071172,
-     "blocking": false
     },
     {
      "op": "object",
@@ -58491,14 +58011,6 @@
      "color": 9071172,
      "size": 4,
      "shape": "circle"
-    },
-    {
-     "op": "object",
-     "x": 437,
-     "y": 439,
-     "label": "Hay Pile",
-     "color": 13279818,
-     "blocking": false
     },
     {
      "op": "object",
@@ -58554,14 +58066,6 @@
      "y": 440,
      "label": "Roadside Bench",
      "color": 8016432,
-     "blocking": false
-    },
-    {
-     "op": "object",
-     "x": 436,
-     "y": 440,
-     "label": "Wood Pile",
-     "color": 9071172,
      "blocking": false
     },
     {
@@ -58637,14 +58141,6 @@
      "blocking": false
     },
     {
-     "op": "object",
-     "x": 452,
-     "y": 442,
-     "label": "Hay Pile",
-     "color": 13279818,
-     "blocking": false
-    },
-    {
      "op": "decor",
      "x": 476,
      "y": 442,
@@ -58709,14 +58205,6 @@
      "blocking": false
     },
     {
-     "op": "object",
-     "x": 451,
-     "y": 443,
-     "label": "Hay Pile",
-     "color": 13279818,
-     "blocking": false
-    },
-    {
      "op": "decor",
      "x": 462,
      "y": 443,
@@ -58734,14 +58222,6 @@
     },
     {
      "op": "object",
-     "x": 489,
-     "y": 443,
-     "label": "Wood Pile",
-     "color": 9071172,
-     "blocking": false
-    },
-    {
-     "op": "object",
      "x": 499,
      "y": 443,
      "label": "Cottage Bush",
@@ -58754,14 +58234,6 @@
      "y": 443,
      "label": "Rain Barrel",
      "color": 6965802,
-     "blocking": false
-    },
-    {
-     "op": "object",
-     "x": 521,
-     "y": 443,
-     "label": "Wood Pile",
-     "color": 9071172,
      "blocking": false
     },
     {
@@ -58838,14 +58310,6 @@
     },
     {
      "op": "object",
-     "x": 461,
-     "y": 445,
-     "label": "Hay Pile",
-     "color": 13279818,
-     "blocking": false
-    },
-    {
-     "op": "object",
      "x": 462,
      "y": 445,
      "label": "Yard Fence",
@@ -58859,14 +58323,6 @@
      "color": 9071172,
      "size": 4,
      "shape": "circle"
-    },
-    {
-     "op": "object",
-     "x": 482,
-     "y": 445,
-     "label": "Wood Pile",
-     "color": 9071172,
-     "blocking": false
     },
     {
      "op": "object",
@@ -58966,14 +58422,6 @@
     },
     {
      "op": "object",
-     "x": 475,
-     "y": 447,
-     "label": "Hay Pile",
-     "color": 13279818,
-     "blocking": false
-    },
-    {
-     "op": "object",
      "x": 476,
      "y": 447,
      "label": "Rain Barrel",
@@ -59053,14 +58501,6 @@
      "shape": "rect"
     },
     {
-     "op": "object",
-     "x": 472,
-     "y": 449,
-     "label": "Wood Pile",
-     "color": 9071172,
-     "blocking": false
-    },
-    {
      "op": "decor",
      "x": 496,
      "y": 449,
@@ -59125,28 +58565,12 @@
      "blocking": false
     },
     {
-     "op": "object",
-     "x": 490,
-     "y": 450,
-     "label": "Hay Pile",
-     "color": 13279818,
-     "blocking": false
-    },
-    {
      "op": "decor",
      "x": 492,
      "y": 450,
      "color": 9075274,
      "size": 4,
      "shape": "rect"
-    },
-    {
-     "op": "object",
-     "x": 493,
-     "y": 450,
-     "label": "Hay Pile",
-     "color": 13279818,
-     "blocking": false
     },
     {
      "op": "object",
@@ -59211,14 +58635,6 @@
      "color": 9075274,
      "size": 4,
      "shape": "rect"
-    },
-    {
-     "op": "object",
-     "x": 493,
-     "y": 451,
-     "label": "Hay Pile",
-     "color": 13279818,
-     "blocking": false
     },
     {
      "op": "object",
