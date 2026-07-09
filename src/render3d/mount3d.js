@@ -8,6 +8,10 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { TERRAIN_DEFS } from '../world/worldData.js';
 import { TILE_SIZE, objectsInView } from '../world/map.js';
 import { avatarStateFor, AV_SCALE } from '../render/characters.js';
@@ -283,8 +287,14 @@ function _mount(Game) {
   // structure marker inside — in 3D the house MODEL is the building, so its
   // little wall ring must NOT raise or every house sits boxed in stone. Flood-
   // fill wall components once per world; raise only those spanning >=12 tiles.
-  function bigWallMask(wrld) {
-    if (wrld._bigWallMask) return wrld._bigWallMask;
+  // RUNESCAPE GRAMMAR (owner direction 2026-07-09): the white walls MAKE the
+  // buildings; models are only ASSETS. Every wall tile raises. Flood-fill
+  // classifies each wall component: small spans = BUILDING walls (warm white
+  // plaster, shorter, roofless so the top-down camera sees interiors, doors are
+  // the data's own gaps); large spans = FORTIFICATION (town perimeter, keep,
+  // camp palisades — taller grey stone).
+  function wallClassMask(wrld) {
+    if (wrld._wallClassMask) return wrld._wallClassMask;
     const t = wrld.terrain, ww = wrld.W, hh = wrld.H, N = ww * hh;
     const mask = new Uint8Array(N), seen = new Uint8Array(N), stack = [];
     for (let i = 0; i < N; i++) {
@@ -300,21 +310,27 @@ function _mount(Game) {
           seen[ni] = 1; stack.push(ni); comp.push(ni);
         }
       }
-      if (Math.max(x1c - x0c, y1c - y0c) >= 12) for (const ci of comp) mask[ci] = 1;
+      const cls = Math.max(x1c - x0c, y1c - y0c) >= 12 ? 2 : 1;   // 1=building, 2=fortification
+      for (const ci of comp) mask[ci] = cls;
     }
-    wrld._bigWallMask = mask;
+    wrld._wallClassMask = mask;
     return mask;
   }
+  const WALLH_BLD = 1.5, WALLH_FORT = 2.1;
   function buildWalls(x0, y0, x1, y1) {
-    const mask = bigWallMask(world);
+    const mask = wallClassMask(world);
     let n = 0;
     for (let gy = y0; gy <= y1 && n < WALL_CAP; gy++) for (let gx = x0; gx <= x1 && n < WALL_CAP; gx++) {
-      if (ter[gy * W + gx] !== WALL_ID || !mask[gy * W + gx]) continue;
+      const cls = mask[gy * W + gx];
+      if (ter[gy * W + gx] !== WALL_ID || !cls) continue;
       const gh = (elev[gy * W + gx] / 255) * HEIGHT;
-      wallP.set(gx + 0.5, gh + WALLH / 2, gy + 0.5); wallS.set(1, WALLH, 1);
+      const hgt = cls === 1 ? WALLH_BLD : WALLH_FORT;
+      wallP.set(gx + 0.5, gh + hgt / 2, gy + 0.5); wallS.set(1, hgt, 1);
       wallM.compose(wallP, wallQ, wallS); wallMesh.setMatrixAt(n, wallM);
-      const v = 0.92 + 0.1 * (((gx * 7 + gy * 13) % 5) / 5);   // subtle per-tile shade
-      wallC.setRGB(0.55 * v, 0.52 * v, 0.47 * v); wallMesh.setColorAt(n, wallC);
+      const v = 0.94 + 0.06 * (((gx * 7 + gy * 13) % 5) / 5);   // subtle per-tile shade
+      if (cls === 1) wallC.setRGB(0.91 * v, 0.87 * v, 0.79 * v);   // warm white plaster
+      else wallC.setRGB(0.60 * v, 0.57 * v, 0.52 * v);             // fortification stone
+      wallMesh.setColorAt(n, wallC);
       n++;
     }
     wallMesh.count = n; wallMesh.instanceMatrix.needsUpdate = true;
@@ -427,6 +443,13 @@ function _mount(Game) {
     [/\b(Nest|Den|Burrow|Warren|Sett|Wallow|Beehive)\b|Owl Hollow/i, 'rock', 0.55, null, 0x8a6f4f],
     [/\bRack\b|Skinning Frame/i, 'fenceG', 0.8, 'cardinal'],
   ];
+  // whole-building models — assets that must never render INSIDE a walled room
+  // (the room itself is the building now; these stay for standalone wilderness use)
+  const BUILDING_KINDS = new Set(['hutG', 'cottageG', 'towerG']);
+  // town bounds (authored 450..555 x 405..510 + GEO2 offset): inside town, the
+  // white walls make ALL architecture — building models are wilderness-only.
+  const tOff = world.townOffset || { dx: 0, dy: 0 };
+  const inTownBox = (tx2, ty2) => tx2 >= 450 + tOff.dx && tx2 <= 555 + tOff.dx && ty2 >= 405 + tOff.dy && ty2 <= 510 + tOff.dy;
   const pM = new THREE.Matrix4(), pP = new THREE.Vector3(), pS = new THREE.Vector3(), pC = new THREE.Color();
   const pQ0 = new THREE.Quaternion(), pQflat = new THREE.Quaternion().setFromEuler(new THREE.Euler(-Math.PI / 2, 0, 0));
   const hash01 = (x, y) => { let h = (Math.imul(x, 668265263) + Math.imul(y, 374761393)) >>> 0; return ((h ^ (h >>> 13)) % 1000) / 1000; };
@@ -488,15 +511,28 @@ function _mount(Game) {
         continue;
       }
       if (o.type === 'structure') {
+        // RS grammar: markers sitting ON A FLOOR are *inside a walled room* the
+        // wall layer already draws — never stamp a whole-building model there.
+        // Small station props (anvil, range, barrel, chest…) still render as
+        // in-room furniture; building-class matches fall through to a low
+        // counter block. Standalone structures on grass keep their full models.
+        const inRoom = ter[o.y * W + o.x] === 9;
+        const noBldModels = inRoom || inTownBox(o.x, o.y);
         let placed = false;
         for (const [re, kind, ms, face, tint] of STRUCT_MODELS) {
           if (re.test(lbl) && props[kind]) {
+            if (noBldModels && BUILDING_KINDS.has(kind)) break;   // in town/room the WALLS are the building
             const s = ms * (0.92 + r * 0.16);
             const rr = face === 'row' ? 0 : face === 'cardinal' ? Math.round(rot / (Math.PI / 2)) * (Math.PI / 2) : rot;
             put(kind, x, z, y, s, s, s, tint || 0xffffff, rr); placed = true; break;
           }
         }
         if (placed) continue;
+        if (inRoom) {                                          // in-room fixture: a low counter, not a hut
+          const s = 0.62 + r * 0.12;
+          put('base', x, z, y + 0.3 * s, s, 0.6 * s, s, col, 0);
+          continue;
+        }
         const tall = o.blocking ? 1 : 0.55, s = 0.9 + r * 0.25;
         put('base', x, z, y + 0.55 * tall * s, s, tall * s, s, col, 0);
         if (o.blocking) put('roof', x, z, y + (1.1 * s) + 0.4 * s, s * 1.1, s, s * 1.1, 0x7a5a40, Math.PI / 4);
@@ -845,7 +881,39 @@ function _mount(Game) {
   const camTarget = new THREE.Vector3();
   let inited = false;
   let lastWX = 0, lastWZ = 0, yaw = 0, targetYaw = 0;       // movement-based facing state
-  function onResize() { fitCanvas(); fitMinimap(); camera.aspect = vw / vh; camera.updateProjectionMatrix(); }
+
+  // ---------- TIER-3 SHADING: storybook color grade (post-process). Boosts
+  // saturation, a gentle S-curve of contrast, warm highlight lift, soft vignette
+  // — makes the flat-shaded low-poly world pop like a picture book. On by default
+  // desktop; ?flat=1 turns it off, ?grade=1 forces it on (e.g. to A/B on phone).
+  const wantGrade = /[?&]grade=1/.test(_qs) || (!coarse && !/[?&]flat=1/.test(_qs));
+  let composer = null, gradePass = null;
+  if (wantGrade) {
+    composer = new EffectComposer(renderer);
+    composer.addPass(new RenderPass(scene, camera));
+    gradePass = new ShaderPass({
+      uniforms: { tDiffuse: { value: null }, uSat: { value: 1.10 }, uCon: { value: 1.0 }, uVig: { value: 0.0 } },
+      vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }',
+      fragmentShader: [
+        'uniform sampler2D tDiffuse; uniform float uSat, uCon, uVig; varying vec2 vUv;',
+        'void main(){',
+        '  vec4 c = texture2D(tDiffuse, vUv); vec3 col = c.rgb;',
+        '  float l = dot(col, vec3(0.299,0.587,0.114));',
+        // VIBRANCE: push saturation more where the pixel is dull, less where already vivid
+        '  float sat0 = max(max(col.r,col.g),col.b) - min(min(col.r,col.g),col.b);',
+        '  float amt = (uSat - 1.0) * (1.0 - sat0);',
+        '  col = mix(vec3(l), col, 1.0 + amt);',
+        '  col = min(col * 1.035 + 0.012, 1.0);',              // gentle brighten (keep it cheerful, never darken)
+        '  col += vec3(0.02,0.009,-0.009) * smoothstep(0.62,1.0,l);', // soft warm sun kiss on highlights
+        '  gl_FragColor = vec4(clamp(col,0.0,1.0), c.a);',
+        '}',
+      ].join('\n'),
+    });
+    composer.addPass(new OutputPass());                     // ACES tone-map + sRGB — restores the direct-render look
+    composer.addPass(gradePass);                            // grade the tone-mapped display image (last = to screen)
+    composer.setSize(vw, vh); composer.setPixelRatio(renderer.getPixelRatio());
+  }
+  function onResize() { fitCanvas(); fitMinimap(); camera.aspect = vw / vh; camera.updateProjectionMatrix(); if (composer) { composer.setSize(vw, vh); composer.setPixelRatio(renderer.getPixelRatio()); } }
   addEventListener('resize', onResize);
   setTimeout(onResize, 500); setTimeout(onResize, 2500);   // layout settles after login/HUD mounts
 
@@ -1086,7 +1154,7 @@ function _mount(Game) {
       camera.lookAt(camTarget);
       updateLabels3d();                                        // names + HP bars over actors
       drawMinimap3d();
-      renderer.render(scene, camera);
+      if (composer) composer.render(); else renderer.render(scene, camera);
       frames++; const t = performance.now();
       if (t - lastFps >= 500) { chip.textContent = '3D α · ' + Math.round(frames * 1000 / (t - lastFps)) + ' fps · ' + npcShown + ' npcs' + (p ? '' : ' · waiting for player…'); frames = 0; lastFps = t; }
     } catch (e) {
