@@ -1,5 +1,9 @@
-# Cloudflare Pages / Netlify _headers — the game is a fast-moving dev build, so
-# don't let browsers hard-cache modules/JSON (this also avoids the stale-module
-# problem we hit locally). Cloudflare's CDN edge cache still applies.
+# Gork Scape is a fast-moving dev build. Code (html + JS modules) must never be
+# served stale — the #1 report was two devices showing different versions. So:
+# no-store on the entry point + all source modules; models/images revalidate.
 /*
   Cache-Control: no-cache
+/index.html
+  Cache-Control: no-store
+/src/*
+  Cache-Control: no-store

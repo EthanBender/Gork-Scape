@@ -225,30 +225,10 @@ function _mount(Game) {
     }
     // Re-parent the gear sockets from the static group offsets onto the actual
     // hand bones so weapons/shields ride the walk swing instead of floating.
-    // Socket scale compensates the bone chain's world scale so gear builders
-    // keep working in world units.
-    m.updateMatrixWorld(true);
-    const ws = new THREE.Vector3();
-    const rh = m.getObjectByName('RightHand'), lf = m.getObjectByName('LeftForeArm') || m.getObjectByName('LeftHand');
-    if (rh) {
-      rh.add(handSocket);
-      rh.getWorldScale(ws); handSocket.scale.setScalar(1 / (ws.x || 1));
-      // +Y blade along the fingers, tilted back off vertical so an idle sword
-      // rests down-and-forward beside the leg instead of skewering it
-      handSocket.position.set(0, 0.02, 0); handSocket.rotation.set(Math.PI / 2 - 0.55, 0, 0.18);
-    }
-    if (lf) {
-      lf.add(shieldSocket);
-      lf.getWorldScale(ws); shieldSocket.scale.setScalar(1 / (ws.x || 1));
-      // strapped to the OUTSIDE of the forearm, face outward so it reads from the camera
-      shieldSocket.position.set(0.16, 0.08, 0); shieldSocket.rotation.set(0, Math.PI / 2, Math.PI / 2);
-    }
-    const sp = m.getObjectByName('Spine02') || m.getObjectByName('Spine01');
-    if (sp) {
-      sp.add(torsoSocket);
-      sp.getWorldScale(ws); torsoSocket.scale.setScalar(1 / (ws.x || 1));
-      torsoSocket.position.set(0, 0.02, 0); torsoSocket.rotation.set(0, 0, 0);
-    }
+    // NOTE: sockets stay on the goblin GROUP (created below), NOT re-parented to
+    // the animated hand bone. Bone-parenting made weapon orientation depend on
+    // the rig's bone axes + walk animation, which pointed spears/axes into the
+    // ground and clipped the shield. Group sockets = fully controlled, upright.
   }, undefined, e => console.error('[r3d] goblin load failed', e));
 
   // ---------- world objects: instanced clay props tinted from each object's own colour.
@@ -633,6 +613,44 @@ function _mount(Game) {
   labelLayer.style.cssText = 'position:fixed;inset:0;z-index:6;pointer-events:none;overflow:hidden;';
   document.body.appendChild(labelLayer);
   const labelPool = [];
+  // dedicated PLAYER hp bar (the label loop only covers NPCs — the player had
+  // no on-screen health, so you couldn't tell you were about to die)
+  const pHp = document.createElement('div');
+  pHp.style.cssText = 'position:absolute;transform:translate(-50%,-100%);width:54px;height:6px;background:#4a0e0e;border:1px solid #000;border-radius:3px;overflow:hidden;display:none;box-shadow:0 1px 3px #0007;';
+  const pHpFill = document.createElement('div');
+  pHpFill.style.cssText = 'height:100%;width:100%;background:linear-gradient(#5ee06a,#33bb44);';
+  pHp.appendChild(pHpFill); labelLayer.appendChild(pHp);
+  // rising float splats (damage / heal / xp / level-up) mirrored from the sim
+  const floatPool = [];
+  const getFloat = (i) => {
+    let f = floatPool[i];
+    if (!f) { f = document.createElement('div'); f.style.cssText = 'position:absolute;transform:translate(-50%,-100%);font:700 13px monospace;text-shadow:0 1px 2px #000,0 0 3px #000;white-space:nowrap;display:none;'; labelLayer.appendChild(f); floatPool[i] = f; }
+    return f;
+  };
+  const FLOAT_COL = { hit: '#ff5b5b', heal: '#5ee06a', miss: '#bcd0ff', xp: '#ffe14d', level: '#ffd24d' };
+  function renderFloats3d(r) {
+    const arr = Game._floats3d; if (!arr) { for (const f of floatPool) f.style.display = 'none'; return; }
+    const now = (Game.scene && Game.scene.time && Game.scene.time.now) || Date.now();
+    const LIFE = 900;
+    let fi = 0;
+    for (let i = arr.length - 1; i >= 0; i--) {
+      const s = arr[i], age = now - s.born;
+      if (age < 0) continue;
+      if (age > LIFE) { arr.splice(i, 1); continue; }
+      if (fi >= 20) continue;
+      const k = age / LIFE, wx3 = s.x, wz3 = s.y, wy3 = heightAt(wx3, wz3);
+      projV.set(wx3, wy3 + 2.3 + k * 1.3, wz3); projV.project(camera);
+      if (projV.z > 1 || projV.x < -1 || projV.x > 1) continue;
+      const f = getFloat(fi++);
+      f.textContent = s.txt; f.style.color = FLOAT_COL[s.kind] || '#fff';
+      f.style.fontSize = (s.kind === 'level' ? 16 : 13) + 'px';
+      f.style.left = (r.left + (projV.x + 1) / 2 * r.width) + 'px';
+      f.style.top = (r.top + (1 - projV.y) / 2 * r.height) + 'px';
+      f.style.opacity = String(Math.max(0, 1 - Math.max(0, k - 0.6) / 0.4));
+      f.style.display = 'block';
+    }
+    for (let i = fi; i < floatPool.length; i++) floatPool[i].style.display = 'none';
+  }
   const getLabel = (i) => {
     let L = labelPool[i];
     if (!L) {
@@ -687,6 +705,20 @@ function _mount(Game) {
       else L.bar.style.display = 'none';
     }
     for (let i = li; i < labelPool.length; i++) if (labelPool[i]) labelPool[i].el.style.display = 'none';
+    // PLAYER hp bar over the goblin's head when hurt
+    const php = Game.hp, pmax = Game.maxHp || (Game.hitpoints && Game.hitpoints.level) || 10;
+    if (Game.player && goblin.visible && php != null && php < pmax) {
+      projV.setFromMatrixPosition(goblin.matrixWorld); projV.y += 2.35; projV.project(camera);
+      if (projV.z <= 1 && projV.x >= -1 && projV.x <= 1 && projV.y >= -1 && projV.y <= 1) {
+        pHp.style.left = (r.left + (projV.x + 1) / 2 * r.width) + 'px';
+        pHp.style.top = (r.top + (1 - projV.y) / 2 * r.height) + 'px';
+        const frac = Math.max(0, Math.min(1, php / pmax));
+        pHpFill.style.width = (frac * 100) + '%';
+        pHpFill.style.background = frac < 0.25 ? '#e04444' : frac < 0.5 ? '#e0b23a' : 'linear-gradient(#5ee06a,#33bb44)';
+        pHp.style.display = 'block';
+      } else pHp.style.display = 'none';
+    } else pHp.style.display = 'none';
+    renderFloats3d(r);
   }
   function syncActors(time, dt) {
     const list = Game.activeNpcs || [];
@@ -725,10 +757,16 @@ function _mount(Game) {
   // ---------- equipment on the goblin: procedural clay weapon in a hand socket +
   // shield on the off-arm, tinted by the item's metal, rebuilt when gear changes.
   // Hints come from the SAME avatarStateFor().gear the 2D uses (kind/color/len). ----
-  const handSocket = new THREE.Group(); handSocket.position.set(0.62, 1.02, 0.34); handSocket.rotation.set(0.15, 0, -0.3); goblin.add(handSocket);
-  const shieldSocket = new THREE.Group(); shieldSocket.position.set(-0.62, 1.0, 0.28); shieldSocket.rotation.set(0, 0.25, 0); goblin.add(shieldSocket);
-  const torsoSocket = new THREE.Group(); torsoSocket.position.set(0, 1.05, 0); goblin.add(torsoSocket);
-  const HAND_REST_X = Math.PI / 2 - 0.55;   // idle blade angle; attack swings from here
+  // gear sockets on the goblin GROUP (goblin is ~2.2 world-units tall after the
+  // 1.65-tile scale). Weapon models are normalized grip-at-origin, tip toward
+  // +Y; the socket tilts that so the weapon stands upright, angled slightly
+  // forward-out from the right fist — OSRS-style carry, tip to the SKY.
+  const handSocket = new THREE.Group(); handSocket.position.set(0.5, 1.05, 0.35); goblin.add(handSocket);
+  const shieldSocket = new THREE.Group(); shieldSocket.position.set(-0.52, 1.15, 0.2); goblin.add(shieldSocket);
+  const torsoSocket = new THREE.Group(); torsoSocket.position.set(0, 1.35, 0); goblin.add(torsoSocket);
+  const HAND_REST_X = -0.32;   // slight forward lean from vertical; attack swings DOWN from here
+  handSocket.rotation.set(HAND_REST_X, 0, -0.12);
+  shieldSocket.rotation.set(0, -Math.PI / 2, 0);   // disc (native +Z face) turned to face outward −X
   let gearKey = null;
   const wood = 0x6b4a2a, darkWood = 0x54381e;
   // Real weapon models (textured Meshy statics) for the kinds we have; the
@@ -753,12 +791,14 @@ function _mount(Game) {
       if (!best) return;
       const geo = best.geometry.clone(); geo.applyMatrix4(best.matrixWorld);
       geo.computeBoundingBox(); let bb = geo.boundingBox; const size = new THREE.Vector3(); bb.getSize(size);
-      if (size.x >= size.y && size.x >= size.z) geo.rotateZ(-Math.PI / 2);        // longest axis -> +Y
-      else if (size.z >= size.y && size.z >= size.x) geo.rotateX(Math.PI / 2);
+      // the weapon set is already modeled TIP-UP (long axis = +Y) — do NOT
+      // re-orient it (that was flipping spears/axes tip-down). Shield is a disc,
+      // left as-is (native +Z face; the socket turns it outward).
       geo.computeBoundingBox(); bb = geo.boundingBox; const s2 = new THREE.Vector3(); bb.getSize(s2);
       const c = new THREE.Vector3(); bb.getCenter(c);
-      geo.translate(-c.x, -bb.min.y, -c.z);
-      geo.scale(1 / (s2.y || 1), 1 / (s2.y || 1), 1 / (s2.y || 1));
+      const normAxis = kind === 'shield' ? (s2.x || 1) : (s2.y || 1);
+      geo.translate(-c.x, kind === 'shield' ? -c.y : -bb.min.y, -c.z);
+      geo.scale(1 / normAxis, 1 / normAxis, 1 / normAxis);
       weaponGLB[kind] = { geo, mat: best.material };
       gearKey = null;                                   // rebuild so equipped gear upgrades to the model
     }, undefined, () => {});                            // missing model = procedural fallback, no noise
@@ -798,10 +838,10 @@ function _mount(Game) {
     const g = new THREE.Group();
     if (!hint) return g;
     const real = weaponGLB.shield;
-    if (real && hint.shape === 'round') {                    // the modeled buckler, tinted
+    if (real) {                                              // the modeled buckler, tinted (socket orients it)
       const mat = real.mat.clone(); mat.color = new THREE.Color(hint.color).lerp(new THREE.Color(0xffffff), 0.3);
       const me = new THREE.Mesh(real.geo, mat);
-      me.scale.setScalar(0.75); me.rotation.z = Math.PI / 2;  // disc face outward from the forearm
+      me.scale.setScalar(0.62);
       g.add(me); return g;
     }
     if (hint.shape === 'round') { const d = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 0.06, 14), matFor(hint.color)); d.rotation.x = Math.PI / 2; g.add(d);
@@ -830,9 +870,12 @@ function _mount(Game) {
   // ---------- dynamic FX the 2D canvas redraws each frame — dropped LOOT,
   // player-lit FIRES, in-flight ARROWS. All three were invisible in 3D.
   // Pooled meshes refreshed per frame (cheap: <=80 total). ----------
-  const lootPool = [], firePool = [], arrowPool = [];
-  const lootGeo = new THREE.OctahedronGeometry(0.16, 0);
-  const lootMat = new THREE.MeshLambertMaterial({ color: 0xd9b14a, emissive: 0x4a3a10 });
+  const lootPool = [], lootBeamPool = [], firePool = [], arrowPool = [];
+  const lootGeo = new THREE.OctahedronGeometry(0.34, 0);     // bigger — reads as an item, not a pebble
+  const lootMat = new THREE.MeshLambertMaterial({ color: 0xf2c94c, emissive: 0x7a5a12, emissiveIntensity: 0.8 });
+  // a soft glowing pillar under each drop so it's spottable across the field
+  const lootBeamGeo = new THREE.CylinderGeometry(0.22, 0.30, 2.0, 8, 1, true);
+  const lootBeamMat = new THREE.MeshBasicMaterial({ color: 0xffe27a, transparent: true, opacity: 0.16, side: THREE.DoubleSide, depthWrite: false });
   const flameGeo = new THREE.ConeGeometry(0.28, 0.65, 7);
   const flameMat = new THREE.MeshLambertMaterial({ color: 0xff8a2a, emissive: 0xcc4400 });
   const logGeo = new THREE.CylinderGeometry(0.07, 0.07, 0.55, 5);
@@ -847,10 +890,13 @@ function _mount(Game) {
     const gi = Game.groundItems || [];
     const n1 = Math.min(48, gi.length);
     poolSync(lootPool, n1, () => new THREE.Mesh(lootGeo, lootMat));
+    poolSync(lootBeamPool, n1, () => new THREE.Mesh(lootBeamGeo, lootBeamMat));
     for (let i2 = 0; i2 < n1; i2++) {
-      const g3 = gi[i2], m2 = lootPool[i2];
-      m2.position.set(g3.x + 0.5, heightAt(g3.x, g3.y) + 0.26 + Math.sin(now * 0.003 + i2) * 0.05, g3.y + 0.5);
+      const g3 = gi[i2], m2 = lootPool[i2], gh3 = heightAt(g3.x, g3.y);
+      m2.position.set(g3.x + 0.5, gh3 + 0.4 + Math.sin(now * 0.003 + i2) * 0.07, g3.y + 0.5);
       m2.rotation.y = now * 0.0015 + i2;                     // slow spin: "loot here"
+      const bm = lootBeamPool[i2];
+      bm.position.set(g3.x + 0.5, gh3 + 1.0, g3.y + 0.5);
     }
     let fs = []; try { fs = activeFires() || []; } catch (_) {}
     const n2 = Math.min(16, fs.length);
@@ -1118,7 +1164,12 @@ function _mount(Game) {
         // like OSRS — the 4-way _facing map is only the idle fallback.
         const mdx = wx - lastWX, mdz = wz - lastWZ;
         const speed = dt > 0 ? Math.hypot(mdx, mdz) / dt : 0;      // tiles/sec
-        if (mdx * mdx + mdz * mdz > 1e-6) targetYaw = Math.atan2(mdx, mdz);
+        // in combat, FACE THE TARGET (the sim's 4-way _facing lagged/inverted, so
+        // the goblin was attacking backwards) — else face travel, else idle map.
+        const ct = p.combatTarget || p.target;
+        if (st && (st.anim === 'attack' || st.anim === 'hit') && ct && ct.px != null) {
+          targetYaw = Math.atan2((ct.px / TILE_SIZE) - wx, (ct.py / TILE_SIZE) - wz);
+        } else if (mdx * mdx + mdz * mdz > 1e-6) targetYaw = Math.atan2(mdx, mdz);
         else if (st && FACE[st.facing] !== undefined) targetYaw = FACE[st.facing];
         lastWX = wx; lastWZ = wz;
         let dy = targetYaw - yaw; dy = Math.atan2(Math.sin(dy), Math.cos(dy));

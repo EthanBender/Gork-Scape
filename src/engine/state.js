@@ -245,6 +245,12 @@ export function grantXp(skillName, amount) {
   }
   // UI flourish hook (xp drops + level-up banner); registered by panels.js.
   if (Game.ui.onXp && amount > 0) Game.ui.onXp(skillName, amount, leveled ? sk.level : 0);
+  // [r3d] XP drop over the player's head in 3D (yellow), + a level-up shout.
+  const pp = Game.player;
+  if (amount > 0 && pp && pp.px != null) {
+    (Game._floats3d || (Game._floats3d = [])).push({ x: pp.px / 32, y: pp.py / 32, txt: '+' + amount + ' ' + skillName, kind: 'xp', born: Date.now() });
+    if (leveled) (Game._floats3d).push({ x: pp.px / 32, y: pp.py / 32, txt: skillName + ' Lv ' + sk.level + '!', kind: 'level', born: Date.now() + 260 });
+  }
 }
 
 // ---- inventory ----

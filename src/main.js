@@ -2053,9 +2053,15 @@ function reviveNpc(n) {
 // the number. Kind is inferred from the string so the combat call-sites stay
 // untouched: '0' -> miss (blue), '-N' -> damage (red), anything else -> heal.
 function floatText(ent, str /* color ignored: splat colour is by kind */) {
-  if (!scene) return;
   const kind = str === '0' ? 'miss' : (str[0] === '-' ? 'hit' : 'heal');
   const num = kind === 'miss' ? '0' : str.replace('-', '');
+  // [r3d] mirror the splat into the 3D overlay's float queue — combat had NO
+  // damage feedback in 3D (splats were on the hidden Phaser canvas).
+  if (ent && ent.px != null) (Game._floats3d || (Game._floats3d = [])).push({
+    x: ent.px / TILE_SIZE, y: ent.py / TILE_SIZE, txt: (kind === 'hit' ? '-' : kind === 'heal' ? '+' : '') + num,
+    kind, born: (scene ? scene.time.now : Date.now()),
+  });
+  if (!scene) return;
   const col = kind === 'miss' ? 0x2f5f9e : kind === 'heal' ? 0x2e8b3f : 0xb01e1e;
   const startY = ent.py + AV_FEET - 30 * AV_SCALE - 2; // just above the head
   const dia = [{ x: 0, y: -11 }, { x: 11, y: 0 }, { x: 0, y: 11 }, { x: -11, y: 0 }];
