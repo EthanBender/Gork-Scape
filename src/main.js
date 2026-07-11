@@ -957,6 +957,19 @@ function walkTo(tx, ty) {
   p.path = isWalkable(Game.world, tx, ty)
     ? findPath(Game.world, p.tileX, p.tileY, tx, ty, false)
     : findPath(Game.world, p.tileX, p.tileY, tx, ty, true);
+  // a tap must never silently do NOTHING: if the target is unreachable, walk to
+  // the nearest walkable tile toward it so the player always moves.
+  if (!p.path || !p.path.length) {
+    let best = null, bd = 1e9;
+    for (let r = 1; r <= 5; r++) for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) {
+      if (Math.max(Math.abs(dx), Math.abs(dy)) !== r) continue;
+      const nx = tx + dx, ny = ty + dy;
+      if (!isWalkable(Game.world, nx, ny)) continue;
+      const d = Math.abs(nx - p.tileX) + Math.abs(ny - p.tileY);
+      if (d < bd) { const pth = findPath(Game.world, p.tileX, p.tileY, nx, ny, false); if (pth && pth.length) { bd = d; best = { x: nx, y: ny, pth }; } }
+    }
+    if (best) { p.travelTarget = { x: best.x, y: best.y }; p.path = best.pth; }
+  }
 }
 
 function startInteract(obj) {
@@ -1147,6 +1160,19 @@ function gameTick(count, isLast = true) {
     } else if (tickHomeTeleport(count)) {
       teleportHome(); updateHomeHud();
     } else { updateHomeHud(); }
+  }
+
+  // --- UNSTICK: if the player is standing on a blocked tile (boxed in, or a
+  // tile that became blocking under them), snap to the nearest walkable tile so
+  // they can never be permanently frozen. No-op in normal play. ---
+  if (!isWalkable(world, p.tileX, p.tileY)) {
+    let best = null;
+    for (let r = 1; r <= 6 && !best; r++) for (let dy = -r; dy <= r && !best; dy++) for (let dx = -r; dx <= r && !best; dx++) {
+      if (Math.max(Math.abs(dx), Math.abs(dy)) !== r) continue;
+      const nx = p.tileX + dx, ny = p.tileY + dy;
+      if (isWalkable(world, nx, ny)) best = { x: nx, y: ny };
+    }
+    if (best) { p.tileX = best.x; p.tileY = best.y; p.px = tilePx(best.x); p.py = tilePx(best.y); p.path = []; clearTargets(p); }
   }
 
   // --- player movement target -> path ---
