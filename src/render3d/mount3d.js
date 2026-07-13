@@ -296,7 +296,7 @@ function _mount(Game) {
     wrld._wallClassMask = mask;
     return mask;
   }
-  const WALLH_BLD = 1.5, WALLH_FORT = 2.1;
+  const WALLH_BLD = 0.9, WALLH_FORT = 1.4;   // low enough to see OVER — not an oppressive maze
   function buildWalls(x0, y0, x1, y1) {
     const mask = wallClassMask(world);
     let n = 0;
@@ -361,7 +361,7 @@ function _mount(Game) {
       buildProps();
     }, undefined, e => console.error('[r3d] clean model failed', url, e));
   }
-  instanceGLB('/r3d/models/opt/tree.glb', 'treeG', 4096, 2.4);
+  instanceGLB('/r3d/models/opt/tree.glb', 'treeG', 4096, 3.4);   // dwarf the goblin like a real tree
   instanceGLB('/r3d/models/opt/bush.glb', 'bushG', 1024, 0.9);
   // town models: label-matched structures render as the real generated pieces
   instanceGLB('/r3d/models/opt/fence.glb', 'fenceG', 768, 0.7);
@@ -372,8 +372,8 @@ function _mount(Game) {
   instanceGLB('/r3d/models/opt/signpost.glb', 'signG', 256, 1.6);
   // species trees + the tall wilderness landmark (models from the batch-2 gen;
   // graceful fallback to treeG / clay box until each file exists)
-  instanceGLB('/r3d/models/opt/willow.glb', 'willowG', 2048, 2.6);
-  instanceGLB('/r3d/models/opt/oak.glb', 'oakG', 2048, 3.0);
+  instanceGLB('/r3d/models/opt/willow.glb', 'willowG', 2048, 3.4);
+  instanceGLB('/r3d/models/opt/oak.glb', 'oakG', 2048, 4.0);
   instanceGLB('/r3d/models/opt/anvil.glb', 'anvilG', 64, 0.9);
   // CLEAN cute buildings (untextured previews, flat 2-tone by height) — replaces
   // the muddy textured cottage/hut/stall/tower/well. wallHex, roofHex, roofFrac.
@@ -1085,7 +1085,9 @@ function _mount(Game) {
   mm.style.cssText = 'position:fixed;z-index:6;border:2px solid #3a2f22;border-radius:10px;box-shadow:0 2px 8px #0008;cursor:pointer;';
   document.body.appendChild(mm);
   const mmCtx = mm.getContext('2d');
-  function fitMinimap() { const r = cv.getBoundingClientRect(); mm.style.left = (r.left + r.width - MM - 12) + 'px'; mm.style.top = (r.top + 64) + 'px'; }
+  // top-LEFT (below the quest banner) — the top-right corner is the game's own
+  // Codex + home/chat HUD buttons; the minimap was clipping them.
+  function fitMinimap() { const r = cv.getBoundingClientRect(); mm.style.left = (r.left + 12) + 'px'; mm.style.top = (r.top + 58) + 'px'; }
   let mmLast = 0;
   function drawMinimap3d() {
     const now = performance.now(); if (now - mmLast < 150) return; mmLast = now;
