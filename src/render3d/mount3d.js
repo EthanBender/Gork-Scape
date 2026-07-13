@@ -258,9 +258,34 @@ function _mount(Game) {
   // tiles) stand UP as clean flat stone instead of being painted flat on the
   // ground. Rebuilt per terrain window. (Owner: "you don't have walls up.") ----
   const WALL_CAP = 6000, WALLH = 1.9, WALL_ID = 10;
-  const wallMesh = new THREE.InstancedMesh(new THREE.BoxGeometry(1.02, 1, 1.02),
-    new THREE.MeshLambertMaterial({ flatShading: true }), WALL_CAP);
-  wallMesh.count = 0; wallMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage); wallMesh.castShadow = true; wallMesh.receiveShadow = true; scene.add(wallMesh);
+  // WALL MATERIAL IDENTITY (owner: "blank boxes — can't tell a house from a
+  // castle"). Two textured wall kinds: half-timbered plaster (buildings) and
+  // coursed stone (fortifications). Baked once as small CanvasTextures.
+  function makeWallTex(kind) {
+    const cv2 = document.createElement('canvas'); cv2.width = cv2.height = 64; const g = cv2.getContext('2d');
+    if (kind === 'bld') {
+      g.fillStyle = '#e7d4ac'; g.fillRect(0, 0, 64, 64);                     // cream plaster
+      g.strokeStyle = '#6f4d2c'; g.fillStyle = '#6f4d2c';
+      g.fillRect(0, 0, 64, 7); g.fillRect(0, 57, 64, 7);                     // top + sill beams
+      g.fillRect(0, 0, 7, 64); g.fillRect(57, 0, 7, 64);                     // corner posts
+      g.lineWidth = 5; g.beginPath(); g.moveTo(7, 57); g.lineTo(57, 7); g.stroke();  // diagonal brace
+    } else {
+      g.fillStyle = '#8b867c'; g.fillRect(0, 0, 64, 64);                     // stone
+      g.strokeStyle = '#6b675e'; g.lineWidth = 3;
+      for (let yy = 0; yy <= 64; yy += 16) { g.beginPath(); g.moveTo(0, yy); g.lineTo(64, yy); g.stroke(); }   // courses
+      for (let row = 0; row < 4; row++) { const off = (row % 2) * 16; for (let xx = off; xx <= 64; xx += 32) { g.beginPath(); g.moveTo(xx, row * 16); g.lineTo(xx, row * 16 + 16); g.stroke(); } }  // running-bond joints
+      g.fillStyle = 'rgba(255,255,255,0.05)'; for (let yy = 2; yy < 64; yy += 16) g.fillRect(2, yy, 60, 5);    // faint face highlight
+    }
+    const t = new THREE.CanvasTexture(cv2); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; return t;
+  }
+  // slightly thinner than a full tile (owner: "too thick"); flush enough that
+  // straight runs don't gap. A darker coping cap gives the top a defined edge.
+  const wallGeo = new THREE.BoxGeometry(0.92, 1, 0.92);
+  const wallMeshes = {
+    bld: new THREE.InstancedMesh(wallGeo, new THREE.MeshLambertMaterial({ map: makeWallTex('bld') }), WALL_CAP),
+    fort: new THREE.InstancedMesh(wallGeo, new THREE.MeshLambertMaterial({ map: makeWallTex('fort') }), WALL_CAP),
+  };
+  for (const k of ['bld', 'fort']) { const m = wallMeshes[k]; m.count = 0; m.instanceMatrix.setUsage(THREE.DynamicDrawUsage); m.castShadow = true; m.receiveShadow = true; scene.add(m); }
   const wallM = new THREE.Matrix4(), wallP = new THREE.Vector3(), wallS = new THREE.Vector3(), wallQ = new THREE.Quaternion(), wallC = new THREE.Color();
   // Only LARGE wall enclosures stand up (town perimeter, the keep, the training
   // yard). Individual buildings are floor+wall rooms in the 2D data with a
@@ -299,22 +324,21 @@ function _mount(Game) {
   const WALLH_BLD = 0.9, WALLH_FORT = 1.4;   // low enough to see OVER — not an oppressive maze
   function buildWalls(x0, y0, x1, y1) {
     const mask = wallClassMask(world);
-    let n = 0;
-    for (let gy = y0; gy <= y1 && n < WALL_CAP; gy++) for (let gx = x0; gx <= x1 && n < WALL_CAP; gx++) {
+    let nb = 0, nf = 0;
+    for (let gy = y0; gy <= y1; gy++) for (let gx = x0; gx <= x1; gx++) {
       const cls = mask[gy * W + gx];
       if (ter[gy * W + gx] !== WALL_ID || !cls) continue;
       const gh = (elev[gy * W + gx] / 255) * HEIGHT;
       const hgt = cls === 1 ? WALLH_BLD : WALLH_FORT;
       wallP.set(gx + 0.5, gh + hgt / 2, gy + 0.5); wallS.set(1, hgt, 1);
-      wallM.compose(wallP, wallQ, wallS); wallMesh.setMatrixAt(n, wallM);
-      const v = 0.94 + 0.06 * (((gx * 7 + gy * 13) % 5) / 5);   // subtle per-tile shade
-      if (cls === 1) wallC.setRGB(0.91 * v, 0.87 * v, 0.79 * v);   // warm white plaster
-      else wallC.setRGB(0.60 * v, 0.57 * v, 0.52 * v);             // fortification stone
-      wallMesh.setColorAt(n, wallC);
-      n++;
+      wallM.compose(wallP, wallQ, wallS);
+      const v = 0.96 + 0.04 * (((gx * 7 + gy * 13) % 5) / 5);   // faint per-tile shade
+      wallC.setRGB(v, v, v);
+      if (cls === 1) { if (nb < WALL_CAP) { wallMeshes.bld.setMatrixAt(nb, wallM); wallMeshes.bld.setColorAt(nb, wallC); nb++; } }
+      else { if (nf < WALL_CAP) { wallMeshes.fort.setMatrixAt(nf, wallM); wallMeshes.fort.setColorAt(nf, wallC); nf++; } }
     }
-    wallMesh.count = n; wallMesh.instanceMatrix.needsUpdate = true;
-    if (wallMesh.instanceColor) wallMesh.instanceColor.needsUpdate = true;
+    wallMeshes.bld.count = nb; wallMeshes.bld.instanceMatrix.needsUpdate = true; if (wallMeshes.bld.instanceColor) wallMeshes.bld.instanceColor.needsUpdate = true;
+    wallMeshes.fort.count = nf; wallMeshes.fort.instanceMatrix.needsUpdate = true; if (wallMeshes.fort.instanceColor) wallMeshes.fort.instanceColor.needsUpdate = true;
   }
   // real generated models for the numerous props: load compressed GLBs, normalize
   // (feet at y=0, ~unit height), and swap them into the instancing in place of the

@@ -1165,12 +1165,15 @@ function gameTick(count, isLast = true) {
   // --- UNSTICK: if the player is standing on a blocked tile (boxed in, or a
   // tile that became blocking under them), snap to the nearest walkable tile so
   // they can never be permanently frozen. No-op in normal play. ---
-  if (!isWalkable(world, p.tileX, p.tileY)) {
+  const onBlocked = !isWalkable(world, p.tileX, p.tileY);
+  const boxedIn = ![[1, 0], [-1, 0], [0, 1], [0, -1]].some(([a, b]) => isWalkable(world, p.tileX + a, p.tileY + b));
+  if (onBlocked || boxedIn) {
     let best = null;
-    for (let r = 1; r <= 6 && !best; r++) for (let dy = -r; dy <= r && !best; dy++) for (let dx = -r; dx <= r && !best; dx++) {
+    for (let r = 1; r <= 8 && !best; r++) for (let dy = -r; dy <= r && !best; dy++) for (let dx = -r; dx <= r && !best; dx++) {
       if (Math.max(Math.abs(dx), Math.abs(dy)) !== r) continue;
       const nx = p.tileX + dx, ny = p.tileY + dy;
-      if (isWalkable(world, nx, ny)) best = { x: nx, y: ny };
+      // must be walkable AND reachable-adjacent to open space (not another pocket)
+      if (isWalkable(world, nx, ny) && [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([a, b]) => isWalkable(world, nx + a, ny + b))) best = { x: nx, y: ny };
     }
     if (best) { p.tileX = best.x; p.tileY = best.y; p.px = tilePx(best.x); p.py = tilePx(best.y); p.path = []; clearTargets(p); }
   }
